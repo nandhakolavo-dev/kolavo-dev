@@ -1,0 +1,137 @@
+<script>
+/* ============================================================
+   Pemilih tanggal lahir: satu kolom, kalender pop-up.
+   Kepalanya memakai menu bulan + tahun. Panah hanya menggeser satu
+   bulan — untuk lompat ke 1993 dipakai menunya, bukan panahnya.
+   ============================================================ */
+(function(){
+  const BULAN = ['Januari','Februari','Maret','April','Mei','Juni',
+                 'Juli','Agustus','September','Oktober','November','Desember'];
+  const HARI = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+
+  const btn  = document.getElementById('lahirBtn');
+  if(!btn) return;
+  const pop  = document.getElementById('lahirPop'),
+        teks = btn.querySelector('.val'),
+        simpan = document.getElementById('lahir'),
+        selB = document.getElementById('dpBln'),
+        selT = document.getElementById('dpThn'),
+        grid = document.getElementById('dpGrid'),
+        hapus = document.getElementById('dpHapus');
+
+  /* rentang usia masuk akal untuk komunitas alumni: 17–75 tahun */
+  const kini = new Date().getFullYear(),
+        THN_MAX = kini - 17,
+        THN_MIN = kini - 75;
+
+  let lihatB = 0, lihatT = 1995, pilih = null;
+
+  BULAN.forEach(function(n, i){
+    const o = document.createElement('option');
+    o.value = i; o.textContent = n;
+    selB.appendChild(o);
+  });
+  for(let y = THN_MAX; y >= THN_MIN; y--){
+    const o = document.createElement('option');
+    o.value = y; o.textContent = y;
+    selT.appendChild(o);
+  }
+
+  function batas(){
+    document.getElementById('dpPrev').disabled = (lihatT <= THN_MIN && lihatB === 0);
+    document.getElementById('dpNext').disabled = (lihatT >= THN_MAX && lihatB === 11);
+  }
+
+  function gambar(){
+    selB.value = lihatB;
+    selT.value = lihatT;
+
+    grid.innerHTML = '';
+    /* getDay() menaruh Minggu di 0; kalender Indonesia mulai Senin */
+    const geser = (new Date(lihatT, lihatB, 1).getDay() + 6) % 7,
+          jml   = new Date(lihatT, lihatB + 1, 0).getDate();
+
+    for(let i = 0; i < geser; i++){
+      const k = document.createElement('span');
+      k.className = 'dp-kosong';
+      grid.appendChild(k);
+    }
+    for(let d = 1; d <= jml; d++){
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'dp-day';
+      b.textContent = d;
+      b.setAttribute('aria-label', d + ' ' + BULAN[lihatB] + ' ' + lihatT);
+      if(pilih && pilih.d === d && pilih.b === lihatB && pilih.t === lihatT){
+        b.classList.add('on');
+        b.setAttribute('aria-current', 'date');
+      }
+      b.addEventListener('click', function(){ setuju(d); });
+      grid.appendChild(b);
+    }
+    batas();
+  }
+
+  function tampil(){
+    if(pilih){
+      teks.textContent = pilih.d + ' ' + BULAN[pilih.b] + ' ' + pilih.t;
+      simpan.value = pilih.t + '-' + String(pilih.b + 1).padStart(2,'0') + '-' + String(pilih.d).padStart(2,'0');
+      btn.classList.remove('kosong');
+    } else {
+      teks.textContent = 'Pilih tanggal lahir';
+      simpan.value = '';
+      btn.classList.add('kosong');
+    }
+    simpan.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function setuju(d){
+    pilih = { d: d, b: lihatB, t: lihatT };
+    tampil();
+    tutup();
+    btn.focus();
+  }
+
+  function buka(){
+    if(pilih){ lihatB = pilih.b; lihatT = pilih.t; }
+    gambar();
+    pop.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+  }
+  function tutup(){
+    pop.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    pop.hidden ? buka() : tutup();
+  });
+  pop.addEventListener('click', function(e){ e.stopPropagation(); });
+  document.addEventListener('click', function(){ if(!pop.hidden) tutup(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && !pop.hidden){ tutup(); btn.focus(); }
+  });
+
+  selB.addEventListener('change', function(){ lihatB = +selB.value; gambar(); });
+  selT.addEventListener('change', function(){ lihatT = +selT.value; gambar(); });
+
+  document.getElementById('dpPrev').addEventListener('click', function(){
+    if(--lihatB < 0){ lihatB = 11; lihatT--; }
+    gambar();
+  });
+  document.getElementById('dpNext').addEventListener('click', function(){
+    if(++lihatB > 11){ lihatB = 0; lihatT++; }
+    gambar();
+  });
+
+  hapus.addEventListener('click', function(){
+    pilih = null;
+    tampil();
+    gambar();
+  });
+
+  tampil();
+})();
+</script>
+

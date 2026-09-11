@@ -1,0 +1,639 @@
+<title>PRD Kolavo v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --bg:#FAFAFB; --surface:#FFFFFF; --surface-2:#F4F5F8; --sunken:#EEF0F5;
+    --ink:#1A1F2B; --ink-2:#48505F; --ink-3:#79808F; --line:#E4E7EE; --line-2:#EFF1F5;
+    --brand:#2D6BE4; --brand-hover:#0045CD; --brand-wash:#EAF1FE; --brand-ink:#1F4FB0;
+    --accent:#FF683D; --accent-wash:#FFEDE6;
+    --ok:#1F9D6B; --ok-wash:#E4F5EC; --warn:#C77A16; --warn-wash:#FBF0DC; --off:#8A8F9C; --off-wash:#EDEEF1;
+    --radius:13px; --radius-s:9px;
+    --shadow:0 1px 2px rgba(20,30,55,.04),0 6px 20px rgba(20,30,55,.06);
+    --maxw:760px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0D1017; --surface:#151A24; --surface-2:#1B212D; --sunken:#10141C;
+      --ink:#EDEFF4; --ink-2:#B4BCCB; --ink-3:#7E8798; --line:#262D3B; --line-2:#1E2431;
+      --brand:#5C90F0; --brand-hover:#83AEF6; --brand-wash:#17233B; --brand-ink:#9CBCF7;
+      --accent:#FF7E58; --accent-wash:#33201A;
+      --ok:#3FBE88; --ok-wash:#132A20; --warn:#E0A54B; --warn-wash:#2E2413; --off:#8A8F9C; --off-wash:#1C222E;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D1017; --surface:#151A24; --surface-2:#1B212D; --sunken:#10141C;
+    --ink:#EDEFF4; --ink-2:#B4BCCB; --ink-3:#7E8798; --line:#262D3B; --line-2:#1E2431;
+    --brand:#5C90F0; --brand-hover:#83AEF6; --brand-wash:#17233B; --brand-ink:#9CBCF7;
+    --accent:#FF7E58; --accent-wash:#33201A;
+    --ok:#3FBE88; --ok-wash:#132A20; --warn:#E0A54B; --warn-wash:#2E2413; --off:#8A8F9C; --off-wash:#1C222E;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    font-size:15.5px; line-height:1.62; margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+  .wrap{display:grid; grid-template-columns:248px minmax(0,1fr); gap:0; max-width:1180px; margin:0 auto;}
+  /* ---- sidebar ---- */
+  aside{
+    position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;
+    padding:30px 22px 40px; border-right:1px solid var(--line); background:var(--bg);
+  }
+  .brandmark{display:flex; align-items:center; gap:9px; margin-bottom:6px;}
+  .dot{width:22px; height:22px; border-radius:7px; background:linear-gradient(135deg,var(--brand),var(--brand-hover)); position:relative; flex:none;}
+  .dot::after{content:""; position:absolute; inset:6px; border-radius:3px; background:var(--accent);}
+  .brandmark b{font-family:"Poppins",sans-serif; font-weight:600; font-size:16px; letter-spacing:-.01em;}
+  aside .sub{font-size:12px; color:var(--ink-3); margin:0 0 22px; padding-left:31px;}
+  nav a{
+    display:block; text-decoration:none; color:var(--ink-2); font-size:13.5px;
+    padding:5px 10px; border-radius:7px; border-left:2px solid transparent; margin:1px 0;
+  }
+  nav a:hover{background:var(--surface-2); color:var(--ink);}
+  nav a .n{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-3); margin-right:8px;}
+  nav a:hover .n{color:var(--brand);}
+  nav .grp{font-size:10.5px; text-transform:uppercase; letter-spacing:.09em; color:var(--ink-3); margin:18px 0 6px 10px; font-weight:600;}
+
+  /* ---- content ---- */
+  main{padding:56px 60px 120px; min-width:0;}
+  .inner{max-width:var(--maxw);}
+  section{padding-top:34px; margin-top:34px; border-top:1px solid var(--line-2);}
+  section:first-of-type{border-top:0; margin-top:0; padding-top:0;}
+
+  h1{font-family:"Poppins",sans-serif; font-weight:600; font-size:34px; line-height:1.15; letter-spacing:-.02em; margin:0 0 14px; text-wrap:balance;}
+  h2{font-family:"Poppins",sans-serif; font-weight:600; font-size:23px; letter-spacing:-.015em; margin:0 0 4px; text-wrap:balance; scroll-margin-top:24px;}
+  h3{font-family:"Poppins",sans-serif; font-weight:600; font-size:16.5px; margin:26px 0 8px; letter-spacing:-.005em;}
+  p{margin:0 0 14px; max-width:68ch;}
+  .lead{font-size:17px; color:var(--ink-2); max-width:64ch;}
+  .eyebrow{font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--brand); font-weight:500; margin-bottom:14px; display:block;}
+  .secnum{font-family:"IBM Plex Mono",monospace; color:var(--ink-3); font-weight:400; margin-right:10px;}
+  ul,ol{max-width:68ch; padding-left:22px; margin:0 0 14px;}
+  li{margin:5px 0;}
+  a.inline{color:var(--brand); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1px;}
+  code{font-family:"IBM Plex Mono",monospace; font-size:.86em; background:var(--sunken); padding:1.5px 5px; border-radius:5px; color:var(--brand-ink); border:1px solid var(--line-2);}
+  strong{font-weight:600; color:var(--ink);}
+  hr{border:0; border-top:1px solid var(--line); margin:0;}
+
+  /* meta header */
+  .metahead{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:6px 22px; margin:22px 0 6px;}
+  .metahead dl{display:grid; grid-template-columns:auto 1fr; gap:0; margin:0;}
+  .metahead div{display:contents;}
+  .metahead dt{font-family:"IBM Plex Mono",monospace; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-3); padding:11px 24px 11px 0; border-bottom:1px solid var(--line-2); white-space:nowrap;}
+  .metahead dd{margin:0; padding:11px 0; border-bottom:1px solid var(--line-2); font-size:14px; color:var(--ink);}
+  .metahead div:last-child dt,.metahead div:last-child dd{border-bottom:0;}
+
+  /* badges */
+  .badge{display:inline-flex; align-items:center; gap:6px; font-family:"IBM Plex Mono",monospace; font-size:11.5px; font-weight:500; padding:2px 9px; border-radius:100px; border:1px solid transparent; white-space:nowrap; letter-spacing:.01em; line-height:1.5;}
+  .badge::before{content:""; width:6px; height:6px; border-radius:50%; background:currentColor; flex:none;}
+  .b-ok{background:var(--ok-wash); color:var(--ok); border-color:color-mix(in srgb,var(--ok) 22%,transparent);}
+  .b-warn{background:var(--warn-wash); color:var(--warn); border-color:color-mix(in srgb,var(--warn) 22%,transparent);}
+  .b-off{background:var(--off-wash); color:var(--off); border-color:color-mix(in srgb,var(--off) 28%,transparent);}
+  .b-brand{background:var(--brand-wash); color:var(--brand-ink); border-color:color-mix(in srgb,var(--brand) 22%,transparent);}
+
+  /* tables */
+  .tablewrap{overflow-x:auto; margin:6px 0 18px; border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow);}
+  table{border-collapse:collapse; width:100%; font-size:13.8px; background:var(--surface);}
+  th,td{text-align:left; padding:11px 15px; border-bottom:1px solid var(--line-2); vertical-align:top;}
+  th{font-family:"Poppins",sans-serif; font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-3); background:var(--surface-2); position:sticky; top:0;}
+  tbody tr:last-child td{border-bottom:0;}
+  tbody tr:hover{background:var(--surface-2);}
+  td code{font-size:12.5px;}
+  .rt{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--brand-ink); white-space:nowrap;}
+
+  /* callouts */
+  .call{border:1px solid var(--line); border-left:3px solid var(--brand); background:var(--surface); border-radius:var(--radius-s); padding:14px 18px; margin:18px 0; box-shadow:var(--shadow);}
+  .call.warn{border-left-color:var(--accent);}
+  .call.mgmt{border-left-color:var(--ok);}
+  .call .k{font-family:"Poppins",sans-serif; font-weight:600; font-size:13px; display:block; margin-bottom:4px; color:var(--ink);}
+  .call p{margin:0; font-size:14px; color:var(--ink-2); max-width:66ch;}
+
+  /* audience cards */
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin:18px 0 6px;}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+  .card .role{font-family:"Poppins",sans-serif; font-weight:600; font-size:15px; margin-bottom:2px;}
+  .card .who{font-size:12px; color:var(--ink-3); margin-bottom:10px; font-family:"IBM Plex Mono",monospace;}
+  .card p{font-size:13.5px; color:var(--ink-2); margin:0;}
+
+  /* feature requirement block */
+  .feat{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px 22px; margin:16px 0;}
+  .feat-h{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; margin-bottom:4px;}
+  .feat-h h3{margin:0; font-size:17px;}
+  .feat .rtag{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3);}
+  .feat .story{font-size:14.5px; color:var(--ink-2); font-style:italic; margin:8px 0 12px; padding-left:12px; border-left:2px solid var(--line);}
+  .ac{list-style:none; padding:0; margin:0; max-width:none;}
+  .ac li{position:relative; padding-left:26px; font-size:14px; margin:6px 0; color:var(--ink);}
+  .ac li::before{content:"✓"; position:absolute; left:0; top:0; color:var(--ok); font-weight:700; font-size:13px;}
+  .aclabel{font-family:"Poppins",sans-serif; font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-3); margin:14px 0 6px;}
+
+  /* priority pill inline */
+  .pri{font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:500; padding:1px 7px; border-radius:5px;}
+  .p0{background:var(--accent-wash); color:var(--accent);}
+  .p1{background:var(--brand-wash); color:var(--brand-ink);}
+  .p2{background:var(--off-wash); color:var(--off);}
+
+  .foot{margin-top:60px; padding-top:22px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-3);}
+  .foot code{font-size:11.5px;}
+
+  /* mobile */
+  .menubtn{display:none;}
+  @media (max-width:880px){
+    .wrap{grid-template-columns:1fr;}
+    aside{position:static; height:auto; border-right:0; border-bottom:1px solid var(--line); padding:20px 20px 14px;}
+    aside nav{display:none;}
+    aside nav.open{display:block;}
+    .menubtn{display:inline-block; margin-top:12px; font-family:"IBM Plex Mono",monospace; font-size:13px; background:var(--surface-2); border:1px solid var(--line); color:var(--ink); padding:7px 12px; border-radius:8px; cursor:pointer;}
+    main{padding:32px 22px 90px;}
+    h1{font-size:27px;}
+    h2{font-size:20px;}
+  }
+</style>
+
+<div class="wrap">
+  <aside>
+    <div class="brandmark"><span class="dot"></span><b>Kolavo</b></div>
+    <p class="sub">PRD · Rilis Pertama (v1)</p>
+    <button class="menubtn" onclick="document.getElementById('toc').classList.toggle('open')">☰ Daftar isi</button>
+    <nav id="toc">
+      <div class="grp">Untuk semua</div>
+      <a href="#baca"><span class="n">00</span>Cara membaca</a>
+      <a href="#ringkasan"><span class="n">01</span>Ringkasan eksekutif</a>
+      <a href="#masalah"><span class="n">02</span>Masalah &amp; peluang</a>
+      <a href="#tujuan"><span class="n">03</span>Tujuan &amp; metrik</a>
+      <a href="#persona"><span class="n">04</span>Persona</a>
+      <div class="grp">Untuk PM &amp; Dev</div>
+      <a href="#lingkup"><span class="n">05</span>Lingkup rilis</a>
+      <a href="#status"><span class="n">06</span>Peta fitur &amp; status</a>
+      <a href="#fungsional"><span class="n">07</span>Kebutuhan fungsional</a>
+      <a href="#alur"><span class="n">08</span>Alur pengguna</a>
+      <a href="#data"><span class="n">09</span>Model data</a>
+      <a href="#nonfungsional"><span class="n">10</span>Non-fungsional</a>
+      <a href="#design"><span class="n">11</span>Design system</a>
+      <div class="grp">Keputusan</div>
+      <a href="#keputusan"><span class="n">12</span>Sudah diputuskan</a>
+      <a href="#terbuka"><span class="n">13</span>Perlu diputuskan</a>
+      <a href="#roadmap"><span class="n">14</span>Roadmap</a>
+      <a href="#handover"><span class="n">15</span>Catatan handover</a>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="inner">
+
+    <span class="eyebrow">Product Requirements Document</span>
+    <h1>Kolavo — Basecamp digital komunitas</h1>
+    <p class="lead">Dokumen acuan untuk membangun rilis pertama Kolavo menjadi situs live. Menerjemahkan prototipe desain <code>ReDesign_Kolavo_3</code> dan business plan menjadi lingkup, kebutuhan fungsional, dan keputusan yang siap dieksekusi tim developer.</p>
+
+    <div class="metahead">
+      <dl>
+        <div><dt>Produk</dt><dd>Kolavo — community platform (PT. Suara Kolaborasi Komunitas)</dd></div>
+        <div><dt>Versi dok</dt><dd>v1.0 · draft handover</dd></div>
+        <div><dt>Tanggal</dt><dd>10 September 2026</dd></div>
+        <div><dt>Status</dt><dd><span class="badge b-warn">Draft — untuk review kickoff</span></dd></div>
+        <div><dt>Pemilik</dt><dd>Founder / Product</dd></div>
+        <div><dt>Audiens</dt><dd>PM · Management · Tim Developer</dd></div>
+        <div><dt>Sumber</dt><dd>Prototipe v3, Business Plan, riset kebutuhan pengurus</dd></div>
+      </dl>
+    </div>
+    <p style="font-size:13px;color:var(--ink-3)">Ruang lingkup dokumen ini: <strong>rilis pertama (MVP)</strong> — yaitu cakupan yang sudah didefinisikan penuh oleh prototipe v3. Fitur business plan yang lebih luas ada di bagian <a href="#roadmap" class="inline">Roadmap</a>, bukan bagian dari rilis pertama.</p>
+
+    <!-- 00 -->
+    <section id="baca">
+      <span class="eyebrow">Bagian 00</span>
+      <h2><span class="secnum">00</span>Cara membaca dokumen ini</h2>
+      <p>Tiga pembaca, tiga jalur baca. Tidak perlu membaca semuanya berurutan.</p>
+      <div class="cards">
+        <div class="card">
+          <div class="role">Management</div>
+          <div class="who">10 menit</div>
+          <p>Bagian 01–03. Apa yang dibangun, kenapa sekarang, dan bagaimana keberhasilannya diukur.</p>
+        </div>
+        <div class="card">
+          <div class="role">Product Manager</div>
+          <div class="who">seluruh dokumen</div>
+          <p>Fokus 05–08 dan 13. Lingkup, backlog, alur, dan daftar keputusan yang harus diambil sebelum sprint pertama.</p>
+        </div>
+        <div class="card">
+          <div class="role">Developer</div>
+          <div class="who">07–12, 15</div>
+          <p>Kebutuhan fungsional, model data, keputusan desain yang sudah dikunci, dan catatan teknis prototipe vs produksi.</p>
+        </div>
+      </div>
+      <div class="call warn">
+        <span class="k">Prototipe ≠ kode produksi</span>
+        <p>Prototipe v3 adalah <strong>satu berkas HTML self-contained</strong> (semua layar dalam satu DOM, aset base64, tanpa backend). Ini acuan visual + interaksi yang sudah divalidasi — bukan basis kode. Tim developer membangun ulang di framework nyata; prototipe menjawab "seperti apa hasilnya", PRD ini menjawab "apa yang harus dibangun".</p>
+      </div>
+    </section>
+
+    <!-- 01 -->
+    <section id="ringkasan">
+      <span class="eyebrow">Bagian 01</span>
+      <h2><span class="secnum">01</span>Ringkasan eksekutif</h2>
+      <p>Kolavo adalah <strong>community platform</strong>: basecamp digital untuk komunitas Indonesia (organisasi, asosiasi, ikatan alumni, himpunan) ditambah pendampingan pengurus. Pelanggannya adalah <strong>pendiri dan pengurus komunitas</strong> — bukan anggota biasa.</p>
+      <p>Kompetitor sesungguhnya bukan platform komunitas lain, melainkan <strong>kombinasi Google + WhatsApp + Zoom</strong> yang sudah dipakai gratis tanpa kurva belajar. Satu kolom yang hampir kosong di seluruh tabel kompetisi adalah <strong>pendampingan pengelolaan komunitas</strong> — dan di situlah Kolavo memposisikan diri.</p>
+      <p>Rilis pertama berfokus pada janji inti yang paling tajam: <strong>"Kenal anggota komunitas, sebelum ketemu orangnya."</strong> Di WhatsApp Group cuma ada nomor; di Kolavo ada orangnya — profil, keahlian, domisili, dan komunitas lain yang mereka ikuti. Rilis pertama membangun tiga hal: (1) <strong>penemuan komunitas publik</strong>, (2) <strong>profil pengguna + keanggotaan</strong> dengan penyaringan lewat formulir pengurus, dan (3) <strong>pembuatan halaman komunitas</strong> oleh pengurus.</p>
+      <div class="call mgmt">
+        <span class="k">Traksi saat ini</span>
+        <p>$1000 seed award (Babson Fast Track Cohort). Database anggota sudah dipakai <strong>67 pengguna dari 4 komunitas</strong>. Strategi masuk 2 tahun pertama: kurasi <strong>5–10 komunitas</strong>, bukan pencarian publik massal.</p>
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section id="masalah">
+      <span class="eyebrow">Bagian 02</span>
+      <h2><span class="secnum">02</span>Masalah &amp; peluang</h2>
+      <h3>Masalah pengguna</h3>
+      <p>Banyak komunitas Indonesia berpotensi besar (minimal 1000 anggota) tapi <strong>stagnan atau menurun</strong> karena pengurusnya tidak tahu cara mengelola komunitas. Alat yang ada (WAG, Google Form, Zoom) mengumpulkan orang tapi tidak membuat mereka <strong>saling kenal</strong> — sehingga potensi kolaborasi antar-anggota tidak pernah terwujud. Argumennya: <em>karena tak kenal, maka tak kolab.</em></p>
+      <h3>Kenapa alat yang ada tidak cukup</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Kebutuhan pengurus</th><th>Google + WhatsApp + Zoom</th><th>Kolavo</th></tr></thead>
+          <tbody>
+            <tr><td>Menyaring calon anggota sesuai syarat komunitas</td><td>Form manual, tanpa verifikasi</td><td>Formulir pendaftaran + auto-approve</td></tr>
+            <tr><td>Anggota saling kenal sebelum bertemu</td><td>Hanya nomor telepon di grup</td><td>Profil, keahlian, domisili, komunitas lain</td></tr>
+            <tr><td>Komunitas ditemukan orang baru</td><td>Tidak ada halaman publik</td><td>Halaman komunitas + direktori publik</td></tr>
+            <tr><td>Pendampingan mengelola komunitas</td><td><span class="badge b-off">Tidak ada</span></td><td>Panduan + konsultasi (roadmap)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Peluang pasar</h3>
+      <p>Segmen <em>Social &amp; Event-Based Communities</em> masih didominasi pemain global; pemain lokal dinanti. ~26 ribu SMA, ~4 ribu perguruan tinggi, ~500 ribu organisasi terdaftar, dan 6–9 juta pekerja Indonesia di luar negeri — semuanya membentuk komunitas berpengurus. <em>Barrier to entry</em> teknologi rendah (AI mempermudah membangun), jadi keunggulan bertahan Kolavo bukan fitur, melainkan <strong>adopsi tanpa syarat + pendampingan komunitas</strong>.</p>
+    </section>
+
+    <!-- 03 -->
+    <section id="tujuan">
+      <span class="eyebrow">Bagian 03</span>
+      <h2><span class="secnum">03</span>Tujuan, non-tujuan &amp; metrik</h2>
+      <h3>Tujuan rilis pertama</h3>
+      <ul>
+        <li><strong>G1</strong> — Pengunjung bisa menemukan komunitas dan melihat "siapa saja di dalamnya" tanpa akun.</li>
+        <li><strong>G2</strong> — Pengguna bisa membuat satu profil dan bergabung ke banyak komunitas, melewati formulir penyaringan pengurus.</li>
+        <li><strong>G3</strong> — Pengurus bisa membuat halaman komunitas beserta formulir pendaftarannya sendiri, dalam satu alur.</li>
+        <li><strong>G4</strong> — Anggota bisa saling kenal (profil + "juga di komunitas") dan terhubung lewat persetujuan dua arah, bukan nomor yang dipajang.</li>
+      </ul>
+      <h3>Non-tujuan (bukan rilis pertama)</h3>
+      <p>Pengelolaan kegiatan/event, pusat pengetahuan komunitas, pergantian kepengurusan, membership intelligence (auto-approve CSV), chat internal, dan modul pendampingan berbayar. Semua ada di <a href="#roadmap" class="inline">Roadmap</a>.</p>
+      <h3>Metrik keberhasilan</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Metrik</th><th>Kenapa penting</th><th>Target awal</th></tr></thead>
+          <tbody>
+            <tr><td>Komunitas kurasi ter-onboard</td><td>Basis entry strategy 2 tahun</td><td>5–10 komunitas</td></tr>
+            <tr><td>Profil pengguna lengkap / pengunjung masuk</td><td>Sinyal nilai profil</td><td>Ditetapkan PM</td></tr>
+            <tr><td>Pendaftaran keanggotaan disetujui</td><td>Alur inti berjalan</td><td>Ditetapkan PM</td></tr>
+            <tr><td>Ajakan kenalan diterima</td><td>Bukti "kenal sebelum ketemu" hidup</td><td>Ditetapkan PM</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:13px;color:var(--ink-3)">Target angka sengaja dikosongkan — perlu ditetapkan PM/Management di kickoff berdasarkan komunitas kurasi yang dipilih.</p>
+    </section>
+
+    <!-- 04 -->
+    <section id="persona">
+      <span class="eyebrow">Bagian 04</span>
+      <h2><span class="secnum">04</span>Persona</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Persona</th><th>Tujuan</th><th>Frustrasi hari ini</th><th>Layar utama</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Pengurus / Pendiri</strong><br><span style="color:var(--ink-3);font-size:12.5px">pelanggan utama</span></td><td>Punya "sekretariat digital", menyaring anggota, komunitas ditemukan</td><td>WAG penuh nomor tanpa konteks; form manual; komunitas tak terlihat</td><td>Buat Halaman, Kelola pendaftaran</td></tr>
+            <tr><td><strong>Calon anggota</strong></td><td>Menemukan &amp; bergabung ke komunitas yang cocok</td><td>Tidak tahu komunitas mana yang relevan / kredibel</td><td>Beranda, Halaman komunitas, Lengkapi profil</td></tr>
+            <tr><td><strong>Anggota</strong></td><td>Mengenal sesama anggota, menemukan kolaborasi</td><td>Di grup cuma ada nomor, bukan orang</td><td>Daftar anggota, Detail anggota</td></tr>
+            <tr><td><strong>Pengunjung umum</strong></td><td>Menilai komunitas sebelum memutuskan</td><td>Tidak ada halaman publik untuk menimbang</td><td>Beranda, Halaman komunitas (agregat)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 05 -->
+    <section id="lingkup">
+      <span class="eyebrow">Bagian 05</span>
+      <h2><span class="secnum">05</span>Lingkup rilis pertama</h2>
+      <p>Prioritas: <span class="pri p0">P0</span> wajib rilis · <span class="pri p1">P1</span> diharapkan · <span class="pri p2">P2</span> boleh menyusul.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Masuk rilis pertama</th><th>Prioritas</th><th style="width:44%">Di luar rilis pertama</th></tr></thead>
+          <tbody>
+            <tr><td>Direktori &amp; penemuan komunitas publik</td><td><span class="pri p0">P0</span></td><td rowspan="8" style="vertical-align:top;color:var(--ink-2)">
+              Pengelolaan kegiatan/event · Pusat pengetahuan komunitas · Pergantian kepengurusan · Membership intelligence &amp; auto-approve CSV · Undangan anggota &amp; auto-approve · Chat internal Kolavo · Keadaan pendaftaran <em>ditolak</em> · Notifikasi · Pendampingan komunitas berbayar · Aplikasi mobile native · Pembayaran/langganan
+              <div style="margin-top:10px"><span class="badge b-off">Lihat Roadmap §14</span></div>
+            </td></tr>
+            <tr><td>Halaman komunitas publik (agregat komposisi anggota)</td><td><span class="pri p0">P0</span></td></tr>
+            <tr><td>Autentikasi Google (masuk / daftar)</td><td><span class="pri p0">P0</span></td></tr>
+            <tr><td>Profil pengguna global + lengkapi profil</td><td><span class="pri p0">P0</span></td></tr>
+            <tr><td>Bergabung: formulir pendaftaran per komunitas</td><td><span class="pri p0">P0</span></td></tr>
+            <tr><td>Daftar &amp; detail anggota (untuk sesama anggota)</td><td><span class="pri p1">P1</span></td></tr>
+            <tr><td>Buat halaman komunitas + formulir pendaftaran</td><td><span class="pri p1">P1</span></td></tr>
+            <tr><td>Ajak kenalan (buka WhatsApp lewat persetujuan)</td><td><span class="pri p2">P2</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 06 -->
+    <section id="status">
+      <span class="eyebrow">Bagian 06</span>
+      <h2><span class="secnum">06</span>Peta fitur &amp; status prototipe</h2>
+      <p>Tujuh layar hidup di prototipe v3. Status menandai seberapa jauh masing-masing sudah didesain — <span class="badge b-ok">Siap</span> berarti alur &amp; copy sudah final di prototipe, <span class="badge b-warn">Sebagian</span> berarti ada bagian yang sengaja belum dibuat.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Layar</th><th>Rute (kolavo.app)</th><th>Isi</th><th>Status desain</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Beranda</strong><br><code>scrBeranda</code></td><td class="rt">/</td><td>Hero "orang, bukan nomor" + direktori komunitas + pencarian</td><td><span class="badge b-ok">Siap</span></td></tr>
+            <tr><td><strong>Halaman komunitas</strong><br><code>scrKomunitas</code></td><td class="rt">/:komunitas</td><td>Agregat komposisi anggota, daftar berkabut, tombol Gabung</td><td><span class="badge b-warn">Sebagian</span></td></tr>
+            <tr><td><strong>Lengkapi profil</strong><br><code>scrLengkapi</code></td><td class="rt">/profile/edit</td><td>Form 3 blok privasi, bilah progres, kalender lahir</td><td><span class="badge b-ok">Siap</span></td></tr>
+            <tr><td><strong>Profil pengguna</strong><br><code>scrProfil</code></td><td class="rt">/profile</td><td>Identitas + "Komunitas saya" (termasuk yang menunggu)</td><td><span class="badge b-ok">Siap</span></td></tr>
+            <tr><td><strong>Detail anggota</strong><br><code>scrAnggota</code></td><td class="rt">/:komunitas/members/:id</td><td>Foto, pekerjaan, tag, "juga di komunitas", ajak kenalan</td><td><span class="badge b-ok">Siap</span></td></tr>
+            <tr><td><strong>Buat halaman</strong><br><code>scrBuat</code></td><td class="rt">/create</td><td>Warna tema, formulir pendaftaran, alamat halaman, selesai</td><td><span class="badge b-warn">Sebagian</span></td></tr>
+            <tr><td><strong>Kelola</strong><br><code>scrKelola</code></td><td class="rt">/membership-settings</td><td>Penyusun formulir pendaftaran sisi pengurus</td><td><span class="badge b-warn">Sebagian</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="call warn">
+        <span class="k">Yang sengaja belum dibuat di prototipe</span>
+        <p>(1) Halaman komunitas yang <em>baru dibuat</em> belum bisa dibuka — komunitas umur nol tidak punya agregat anggota (pertanyaan desain: halaman yang jualannya angka, di hari pertama angkanya nol). (2) Keadaan pendaftaran <em>ditolak</em> (ada di kolavo.app, belum di prototipe). (3) Daftar anggota di prototipe hanya subset 6 orang — produksi menarik data sebenarnya.</p>
+      </div>
+    </section>
+
+    <!-- 07 -->
+    <section id="fungsional">
+      <span class="eyebrow">Bagian 07</span>
+      <h2><span class="secnum">07</span>Kebutuhan fungsional</h2>
+      <p>Per layar: user story + kriteria penerimaan (acceptance criteria). Detail visual dan copy final ada di prototipe; ini menetapkan perilaku yang harus dibangun.</p>
+
+      <div class="feat">
+        <div class="feat-h"><h3>F1 · Penemuan komunitas publik</h3><span class="rtag">Beranda · <span class="pri p0">P0</span></span></div>
+        <p class="story">Sebagai pengunjung, saya ingin menemukan komunitas yang relevan dan melihat sekilas siapa di dalamnya, tanpa harus punya akun.</p>
+        <div class="aclabel">Kriteria penerimaan</div>
+        <ul class="ac">
+          <li>Hero menampilkan janji "di WAG cuma ada nomornya, di Kolavo ada orangnya" dengan panel contoh daftar anggota.</li>
+          <li>Direktori menampilkan kartu komunitas; tiap kartu membawa warna aksen dari logonya.</li>
+          <li>Pencarian menyaring per nama + lokasi (pemilih lokasi bertingkat), dengan <strong>keadaan kosong yang mengarahkan</strong> (bukan buntu) karena mayoritas pencarian akan gagal saat komunitas masih sedikit.</li>
+          <li>Tombol utama hero = <strong>"Cari komunitasku"</strong>; ada jalur sekunder "ajak pengurusmu bikin halaman".</li>
+        </ul>
+      </div>
+
+      <div class="feat">
+        <div class="feat-h"><h3>F2 · Halaman komunitas</h3><span class="rtag">/:komunitas · <span class="pri p0">P0</span></span></div>
+        <p class="story">Sebagai pengunjung, saya ingin menimbang sebuah komunitas dari komposisi anggotanya sebelum memutuskan gabung — tanpa melihat identitas pribadi orang.</p>
+        <div class="aclabel">Kriteria penerimaan</div>
+        <ul class="ac">
+          <li>Halaman <strong>publik</strong> (bisa dibuka tanpa akun); gerbang login ada di tombol Gabung, bukan di "Lihat".</li>
+          <li>Menampilkan <strong>komposisi tanpa identitas</strong>: sebaran pekerjaan &amp; domisili sebagai batang berhitung, rentang angkatan, jumlah kota — angkanya menjual isi, tapi tak ada nama terbuka.</li>
+          <li>Daftar anggota ditampilkan sebagai baris kerangka berkabut/blur selama belum jadi anggota.</li>
+          <li>Tombol Gabung punya 3 keadaan: belum masuk → modal masuk · sudah masuk tapi profil draft → lengkapi profil · profil lengkap → formulir pertanyaan pengurus.</li>
+          <li>Status keanggotaan: <code>Gabung</code> → <code>Menunggu persetujuan</code> → <code>Kamu anggota di sini</code>. (Keadaan <em>ditolak</em> menyusul, lihat §13.)</li>
+          <li>Begitu diterima, daftar anggota terbuka memakai <strong>komponen yang sama persis</strong> dengan panel di hero — yang dijanjikan dan yang didapat harus satu benda.</li>
+        </ul>
+      </div>
+
+      <div class="feat">
+        <div class="feat-h"><h3>F3 · Profil pengguna &amp; lengkapi profil</h3><span class="rtag">/profile · /profile/edit · <span class="pri p0">P0</span></span></div>
+        <p class="story">Sebagai pengguna, saya ingin satu profil yang bisa dipakai untuk semua komunitas, dan jelas mana data yang privat dan mana yang dilihat anggota lain.</p>
+        <div class="aclabel">Kriteria penerimaan</div>
+        <ul class="ac">
+          <li>Satu profil global untuk bergabung ke / membuat banyak komunitas.</li>
+          <li>Data Google (nama, foto, email) <strong>dipakai, bukan diminta ulang</strong>; email terkunci ke akun Google.</li>
+          <li>Form dibagi 3 blok berlabel siapa yang melihat: <em>dari Google</em> · <em>hanya pengurus</em> · <em>dilihat sesama anggota</em>.</li>
+          <li>Kolom wajib: nama lengkap, tanggal lahir, jenis kelamin, WhatsApp, negara/provinsi/kota. Pekerjaan &amp; bio opsional.</li>
+          <li>Tanggal lahir = satu kolom dengan kalender pop-up bermenu bulan+tahun (bisa dilompati, bukan panah bulan-per-bulan).</li>
+          <li>Bilah progres yang jumlah langkahnya menyesuaikan komunitas tujuan; progres bisa ditinggal dan dilanjutkan.</li>
+          <li><strong>"Angkatan" bukan kolom profil</strong> — itu pertanyaan milik komunitas (lihat F4). Profil global hanya berisi yang melekat ke orangnya.</li>
+        </ul>
+      </div>
+
+      <div class="feat">
+        <div class="feat-h"><h3>F4 · Bergabung — formulir pendaftaran per komunitas</h3><span class="rtag">/:komunitas/join-membership · <span class="pri p0">P0</span></span></div>
+        <p class="story">Sebagai pengurus, saya ingin menyaring pendaftar lewat pertanyaan yang saya susun sendiri; sebagai pendaftar, saya menjawabnya saat gabung.</p>
+        <div class="aclabel">Kriteria penerimaan</div>
+        <ul class="ac">
+          <li>Pertanyaan pendaftaran <strong>disusun pengurus</strong> (bukan kolom platform); jawaban <strong>melekat ke keanggotaan</strong>, bukan ke profil orang.</li>
+          <li>Kartu bawaan <code>nickname</code> ("nama panggilan di komunitas ini") wajib &amp; terkunci; pengurus menambah pertanyaan lain (mis. "Tahun Lulus" untuk ikatan alumni).</li>
+          <li>Langkah ini <strong>terpisah</strong> dari lengkapi profil — supaya pengguna yang profilnya sudah lengkap tetap ditanya saat membuka komunitas kedua.</li>
+          <li>Jawaban muncul sebagai tag di daftar anggota &amp; di bawah komunitasnya di profil — bukan di tag profil global.</li>
+          <li>Anggota bisa <strong>"Edit Data Pendaftaran"</strong> (form terisi ulang), tanpa mengembalikan status ke menunggu.</li>
+        </ul>
+      </div>
+
+      <div class="feat">
+        <div class="feat-h"><h3>F5 · Daftar &amp; detail anggota</h3><span class="rtag">/members · /members/:id · <span class="pri p1">P1</span></span></div>
+        <p class="story">Sebagai anggota, saya ingin mengenal sesama anggota — siapa mereka dan komunitas apa lagi yang mereka ikuti — dan terhubung bila cocok.</p>
+        <div class="aclabel">Kriteria penerimaan</div>
+        <ul class="ac">
+          <li>Daftar anggota = kisi kartu (1 kolom sempit / 2 kolom ≥640px); hierarki nama + pekerjaan, bukan foto raksasa. Baris "Kamu" ditandai.</li>
+          <li>Chip penyaring "Lihat berdasarkan": Keahlian / Angkatan / Domisili, disusun dari baris yang benar-benar ada (bukan agregat yang bisa menyaring jadi kosong).</li>
+          <li>Detail anggota berurutan: foto + nama + satu baris pekerjaan → tag keahlian/domisili/angkatan + bio → <strong>"Juga di komunitas"</strong> (komunitas lain + peran) → catatan bahwa WhatsApp &amp; nama lengkap terkunci.</li>
+          <li>Nomor WhatsApp <strong>tidak dipajang</strong>; terbuka lewat <strong>persetujuan dua arah</strong> "Ajak kenalan" → (diterima) → nomor + tombol Chat.</li>
+          <li>Warna hover kartu mengikuti tema komunitas.</li>
+        </ul>
+      </div>
+
+      <div class="feat">
+        <div class="feat-h"><h3>F6 · Buat halaman komunitas</h3><span class="rtag">/create · <span class="pri p1">P1</span></span></div>
+        <p class="story">Sebagai pengurus, saya ingin membuat halaman komunitas dan formulir pendaftarannya dalam satu alur, lalu langsung menyebarkan linknya.</p>
+        <div class="aclabel">Kriteria penerimaan</div>
+        <ul class="ac">
+          <li>Menanyakan: <strong>warna tema</strong> (ketetapan pengurus, 13 pilihan, langsung dipakai di layar), <strong>formulir pendaftaran</strong> (judul bawaan terisi sesuai bentuk komunitas), dan <strong>alamat halaman</strong> (slug diturunkan otomatis dari nama).</li>
+          <li>Keluaran formulir berbentuk <strong>sama persis</strong> dengan yang dilihat calon anggota di F4.</li>
+          <li>Keadaan selesai menggantikan form di layar yang sama: kartu komunitas, link + Salin, dua langkah berikutnya, tombol sebar ke grup.</li>
+          <li>Komunitas buatan masuk ke "Komunitas saya" di profil dengan chip <code>Pengurus</code>.</li>
+        </ul>
+      </div>
+
+      <div class="feat">
+        <div class="feat-h"><h3>F7 · Autentikasi</h3><span class="rtag">modal masuk · <span class="pri p0">P0</span></span></div>
+        <p class="story">Sebagai pengguna, saya ingin masuk cepat dengan Google dan kembali ke aksi yang tadi saya tuju.</p>
+        <div class="aclabel">Kriteria penerimaan</div>
+        <ul class="ac">
+          <li>Masuk lewat Google (tombol gaya resmi).</li>
+          <li>Copy modal <strong>mengikuti niat pemicunya</strong> — 3 varian (cari komunitas / gabung / bikin halaman), bukan satu untuk semua.</li>
+          <li><strong>Wajib dibangun:</strong> setelah berhasil masuk, pengguna dikembalikan ke aksi yang tadi dituju — bukan dilempar ke homepage (lihat §13).</li>
+          <li>Pengguna yang sudah masuk tidak disodori modal lagi saat menekan aksi ber-gerbang.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 08 -->
+    <section id="alur">
+      <span class="eyebrow">Bagian 08</span>
+      <h2><span class="secnum">08</span>Alur pengguna utama</h2>
+      <h3>Alur A — Calon anggota bergabung</h3>
+      <p><code>Beranda</code> → cari/klik kartu → <code>Halaman komunitas</code> (lihat agregat) → <strong>Gabung</strong> → modal masuk (jika perlu) → <code>Lengkapi profil</code> (jika draft) → <strong>formulir pendaftaran pengurus</strong> → status <em>Menunggu persetujuan</em> → (disetujui) → <em>Kamu anggota</em>, daftar anggota terbuka, pengguna jadi bagian dari agregat.</p>
+      <h3>Alur B — Pengurus membuat komunitas</h3>
+      <p><code>Beranda</code>/nav → <strong>Buat Halaman</strong> → masuk (jika perlu) → <code>Lengkapi profil</code> (jika draft) → <code>Buat halaman</code>: warna tema → formulir pendaftaran → alamat → <strong>Selesai</strong> (link + sebar) → komunitas muncul di "Komunitas saya" dengan chip Pengurus.</p>
+      <h3>Alur C — Anggota mengenal &amp; terhubung</h3>
+      <p><code>Halaman komunitas</code> (sebagai anggota) → <code>Daftar anggota</code> → filter "Lihat berdasarkan" → <code>Detail anggota</code> → "Juga di komunitas" atau <strong>Ajak kenalan</strong> → (diterima) → WhatsApp terbuka.</p>
+      <div class="call">
+        <span class="k">Titik gerbang login</span>
+        <p>Hanya <strong>tombol Gabung</strong> dan <strong>Buat Halaman</strong> yang memicu login. Semua halaman komunitas & agregat dapat dijelajah tanpa akun — ini disengaja agar orang menimbang isi dulu sebelum diminta masuk.</p>
+      </div>
+    </section>
+
+    <!-- 09 -->
+    <section id="data">
+      <span class="eyebrow">Bagian 09</span>
+      <h2><span class="secnum">09</span>Model data (konseptual)</h2>
+      <p>Prinsip pemisahan terpenting: <strong>data yang melekat ke orang</strong> vs <strong>data yang melekat ke keanggotaan</strong>. Satu orang bisa punya jawaban berbeda di dua komunitas — jadi jawaban pertanyaan & tanggal bergabung <em>tidak</em> boleh di entitas User.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Entitas</th><th>Berisi</th><th>Catatan</th></tr></thead>
+          <tbody>
+            <tr><td><strong>User</strong><br><span style="color:var(--ink-3);font-size:12px">melekat ke orang</span></td><td>foto, nama lengkap, tanggal lahir, jenis kelamin, WhatsApp, email (Google), negara/provinsi/kota, pekerjaan*, bio*</td><td>Email dari Google &amp; terkunci. *Pekerjaan &amp; bio adalah tambahan v3 (live belum simpan).</td></tr>
+            <tr><td><strong>Community</strong></td><td>nama, slug, logo, warna tema, deskripsi, pengurus, definisi formulir pendaftaran</td><td>Warna tema = ketetapan pengurus saat dibuat, bukan pilihan pengunjung.</td></tr>
+            <tr><td><strong>MembershipForm</strong></td><td>daftar pertanyaan (id, judul, wajib?, terkunci?, urutan)</td><td><code>nickname</code> selalu ada &amp; terkunci; sisanya <code>custom-*</code>. Maks 5 pertanyaan (rilis pertama).</td></tr>
+            <tr><td><strong>Membership</strong><br><span style="color:var(--ink-3);font-size:12px">melekat ke keanggotaan</span></td><td>user × community, peran (anggota/pengurus), status (menunggu/diterima/ditolak), jawaban formulir, tanggal bergabung</td><td>Jawaban &amp; tanggal bergabung di sini — bukan di User. Orang sama bisa beda jawaban/tanggal antar komunitas.</td></tr>
+            <tr><td><strong>Connection</strong></td><td>user A × user B, status (menunggu/terhubung)</td><td>Persetujuan dua arah membuka nomor WhatsApp. Chat dilempar ke WhatsApp (rilis pertama).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Agregat halaman komunitas</h3>
+      <p>Komposisi (sebaran pekerjaan, domisili, rentang angkatan, jumlah kota) diturunkan dari kumpulan <strong>Membership</strong> yang berstatus diterima. Butuh normalisasi ejaan domisili (mis. "Kab. Bekasi" vs "Kabupaten Bekasi") agar tidak jatuh ke keranjang berbeda.</p>
+    </section>
+
+    <!-- 10 -->
+    <section id="nonfungsional">
+      <span class="eyebrow">Bagian 10</span>
+      <h2><span class="secnum">10</span>Kebutuhan non-fungsional</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Aspek</th><th>Kebutuhan</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Platform</strong></td><td>Web responsif (mobile-first). SaaS berbasis cloud. Aplikasi native = roadmap.</td></tr>
+            <tr><td><strong>Autentikasi</strong></td><td>Google Sign-In. Email dari Google jadi identitas terkunci.</td></tr>
+            <tr><td><strong>Privasi</strong></td><td>WhatsApp &amp; nama lengkap hanya untuk pengurus + kenalan yang disetujui. Janji privasi harus konsisten (jangan memajang data yang dijanjikan tersembunyi — kelemahan live yang tidak boleh diwarisi).</td></tr>
+            <tr><td><strong>Tema</strong></td><td>Mendukung mode terang &amp; gelap; warna wajib lewat token. Tiap komunitas punya warna tema sendiri (13 pilihan) yang diterapkan ke tombol, kotak angka, batang komposisi.</td></tr>
+            <tr><td><strong>Bahasa</strong></td><td>Indonesia. Copy dari sudut pandang pengguna, bukan penjelasan sistem.</td></tr>
+            <tr><td><strong>Aksesibilitas</strong></td><td>Kontras memadai di kedua tema; fokus keyboard terlihat; hormati <code>prefers-reduced-motion</code>.</td></tr>
+            <tr><td><strong>Data dummy</strong></td><td>Jangan pakai foto orang / nomor WhatsApp sungguhan. Prototipe pakai 4 foto AI &amp; nomor karangan.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section id="design">
+      <span class="eyebrow">Bagian 11</span>
+      <h2><span class="secnum">11</span>Design system</h2>
+      <p>Token final &amp; komponen ada di <code>Redesign/REFERENCE.md</code> dan hidup di prototipe. Ringkasnya:</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Token</th><th>Nilai</th></tr></thead>
+          <tbody>
+            <tr><td>Font</td><td>Poppins 400/500/600 · Roboto 500 (khusus tombol Google)</td></tr>
+            <tr><td>Primary</td><td><code>#2D6BE4</code> · hover <code>#0045CD</code> · disabled <code>#E3E3E3</code></td></tr>
+            <tr><td>Aksen</td><td><code>#FF683D</code></td></tr>
+            <tr><td>Netral</td><td><code>#222222</code> · <code>#6B7280</code> · <code>#9CA3AF</code> · garis <code>#EFEFEF</code></td></tr>
+            <tr><td>Radius</td><td>tombol/chip 100 (pill) · kartu 13 · modal 32</td></tr>
+            <tr><td>Tinggi tombol</td><td>L 52 · M 48 · S 40 · XS 32</td></tr>
+            <tr><td>Arsitektur pesan</td><td>Brand: "Basecamp digital komunitasmu" · Hero: "Kenal anggota komunitas, sebelum ketemu orangnya"</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="call">
+        <span class="k">Untuk developer</span>
+        <p>Token diekstrak dari Design System di Figma (bukan tebakan dari screenshot). Jadikan CSS variables / design tokens sejak awal — jangan menanam warna harfiah, khususnya di blok tema gelap. Radius kartu di Design System = 13; live kolavo.app pakai 20 (perlu keputusan, §13).</p>
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section id="keputusan">
+      <span class="eyebrow">Bagian 12</span>
+      <h2><span class="secnum">12</span>Keputusan yang sudah dikunci</h2>
+      <p>Keputusan ini sudah dipikirkan &amp; divalidasi di prototipe — <strong>jangan dibuka ulang tanpa alasan baru</strong>. Ini menghemat waktu developer &amp; PM.</p>
+      <ol>
+        <li><strong>Halaman komunitas menjual isi lewat angka agregat</strong>, bukan daftar nama — janji "daftar anggota cuma buat sesama anggota" tetap utuh sambil menunjukkan kenapa layak gabung.</li>
+        <li><strong>Nama anggota dibuka di halaman komunitasnya sendiri</strong>, bukan disembunyikan di halaman terpisah seperti live — yang paling berharga tak boleh paling susah ditemukan.</li>
+        <li><strong>Pertanyaan pengurus ada di langkah gabung, bukan di lengkapi profil</strong> — jawaban melekat ke keanggotaan.</li>
+        <li><strong>Warna tema = ketetapan pengurus</strong>, tidak ada pemilih warna di tampilan anggota.</li>
+        <li><strong>WhatsApp terbuka lewat persetujuan dua arah</strong>, tidak dipajang — beda dari live yang melanggar janji privasinya sendiri.</li>
+        <li><strong>Tombol utama hero = "Cari komunitasku"</strong> (pengunjung umum lebih dulu melihat homepage), meski pelanggan inti adalah pengurus.</li>
+        <li><strong>Modal masuk: copy mengikuti niat pemicunya</strong> (3 varian).</li>
+        <li><strong>Satu nama untuk satu aksi</strong> — live memakai 4 nama berbeda untuk "edit profil"; disatukan.</li>
+        <li><strong>Data Google dipakai, tidak diminta ulang</strong> di form profil.</li>
+      </ol>
+    </section>
+
+    <!-- 13 -->
+    <section id="terbuka">
+      <span class="eyebrow">Bagian 13</span>
+      <h2><span class="secnum">13</span>Perlu diputuskan sebelum / saat build</h2>
+      <p>Bawa daftar ini ke rapat kickoff. Tiap baris memblokir sesuatu bila dibiarkan.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Keputusan</th><th>Kenapa penting</th><th>Pemilik</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Harga / model langganan</strong></td><td>Masih <code>XXXX</code> di business plan. Kata "Gratis" sudah dihapus dari semua halaman karena belum ada dasar. Memengaruhi copy &amp; alur.</td><td>Management</td></tr>
+            <tr><td><strong>Backend, database, hosting</strong></td><td>Prototipe tanpa backend. Perlu pilihan stack, skema, penyedia cloud, region.</td><td>Dev Lead</td></tr>
+            <tr><td><strong>Detail autentikasi &amp; redirect</strong></td><td>Belum terverifikasi apakah user kembali ke aksi tujuan setelah login. Bila ke homepage, seluruh copy kontekstual modal sia-sia.</td><td>Dev + PM</td></tr>
+            <tr><td><strong>Keadaan pendaftaran "ditolak"</strong></td><td>Ada di live (tak bisa mengajukan ulang), belum di prototipe. Perlu didesain.</td><td>Product</td></tr>
+            <tr><td><strong>Halaman komunitas umur nol</strong></td><td>Halaman yang jualannya angka, di hari pertama angkanya nol. Perlu keadaan awal.</td><td>Product</td></tr>
+            <tr><td><strong>Chat: WhatsApp atau internal?</strong></td><td>Sekarang dilempar ke WhatsApp. Belum diputuskan apakah Kolavo punya chat sendiri.</td><td>Product</td></tr>
+            <tr><td><strong>Geolocation "di sekitar saya"</strong></td><td>Masih diperagakan statis (Jakarta Utara), belum geolocation asli + penanganan izin ditolak.</td><td>Dev</td></tr>
+            <tr><td><strong>Radius kartu: 13 atau 20?</strong></td><td>Design System 13; live 20. Perlu satu sumber kebenaran.</td><td>Design</td></tr>
+            <tr><td><strong>Logo Kolavo (SVG)</strong></td><td>Aset saat ini PNG dipotong dari Figma, lembut di retina. Perlu SVG.</td><td>Design</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 14 -->
+    <section id="roadmap">
+      <span class="eyebrow">Bagian 14</span>
+      <h2><span class="secnum">14</span>Roadmap pasca rilis pertama</h2>
+      <p>Fitur business plan yang belum masuk rilis pertama. Urutan indikatif, dikonfirmasi PM.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Fitur</th><th>Nilai</th><th>Fase</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Membership intelligence &amp; auto-approve</strong></td><td>Cocokkan pendaftar dengan CSV database anggota nyata; undangan antar-anggota yang langsung diterima</td><td><span class="badge b-brand">Fase 2</span></td></tr>
+            <tr><td><strong>Pengelolaan kegiatan / event</strong></td><td>Volunteer, sponsor, peserta — melibatkan lebih banyak anggota</td><td><span class="badge b-brand">Fase 2</span></td></tr>
+            <tr><td><strong>Pusat pengetahuan komunitas</strong></td><td>Aturan, sejarah, informasi penting layaknya sekretariat</td><td><span class="badge b-brand">Fase 2</span></td></tr>
+            <tr><td><strong>Pergantian kepengurusan</strong></td><td>Pemilihan ketua &amp; rekrutmen pengurus dari anggota</td><td><span class="badge b-off">Fase 3</span></td></tr>
+            <tr><td><strong>Profil &amp; cerita pendiri</strong></td><td>Kenapa &amp; bagaimana komunitas didirikan — memanggil orang yang sepaham</td><td><span class="badge b-off">Fase 3</span></td></tr>
+            <tr><td><strong>Pendampingan komunitas</strong></td><td>Materi dasar (semua) + lanjutan &amp; konsultasi (pengguna Kolavo). Kolom yang hampir kosong di tabel kompetisi.</td><td><span class="badge b-off">Fase 3</span></td></tr>
+            <tr><td><strong>Aplikasi mobile native + pembayaran</strong></td><td>Distribusi Play Store / App Store, langganan</td><td><span class="badge b-off">Fase 3+</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 15 -->
+    <section id="handover">
+      <span class="eyebrow">Bagian 15</span>
+      <h2><span class="secnum">15</span>Catatan handover teknis</h2>
+      <h3>Isi paket handover</h3>
+      <ul>
+        <li><strong>Prototipe</strong> — <code>Redesign/ReDesign_Kolavo_3.html</code> (buka langsung di browser sebagai acuan visual + interaksi).</li>
+        <li><strong>Sumber modul</strong> — <code>Redesign/src/</code> (21 modul per-fitur, lebih mudah dibaca per bagian).</li>
+        <li><strong>Referensi desain</strong> — <code>Redesign/REFERENCE.md</code> (token, komponen, seluruh alasan keputusan).</li>
+        <li><strong>Aset</strong> — <code>Redesign/assets/</code> (logo, foto AI, logo komunitas).</li>
+        <li><strong>Konteks bisnis</strong> — <code>brain/README.md</code>, <code>brain/bisnis/Business Plan.md</code>.</li>
+        <li><strong>PRD ini</strong>.</li>
+      </ul>
+      <h3>Yang harus dipahami developer soal prototipe</h3>
+      <div class="call warn">
+        <span class="k">Baca sebagai spesifikasi perilaku, bukan sebagai arsitektur</span>
+        <p>Satu-file, DOM tunggal, base64, router mini, tanpa backend — semua itu batasan Artifact (CSP memblokir aset luar), <strong>bukan cara membangun produk</strong>. Ambil: alur, copy, komponen visual, keputusan §12. Buang: struktur satu-file, state di memori, data dummy.</p>
+      </div>
+      <h3>Langkah menuju GitHub</h3>
+      <ol>
+        <li>Buat repo (privat), <code>git init</code>, commit isi paket handover.</li>
+        <li>Tambah <code>README.md</code> root yang menegaskan "prototipe = acuan, bukan kode".</li>
+        <li>Lampirkan PRD ini + daftar §13 sebagai <em>issues</em> awal.</li>
+        <li>Kickoff: putuskan §13 (harga, stack, auth) sebelum sprint pertama.</li>
+      </ol>
+      <div class="foot">
+        <p>PRD Kolavo v1.0 · disusun dari prototipe <code>ReDesign_Kolavo_3</code>, <code>REFERENCE.md</code>, dan <code>Business Plan.md</code> · 10 September 2026. Angka target &amp; harga sengaja dikosongkan sampai keputusan Management. Dokumen hidup — perbarui bersama keputusan §13.</p>
+      </div>
+    </section>
+
+  </div>
+  </main>
+</div>

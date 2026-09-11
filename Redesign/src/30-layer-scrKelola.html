@@ -1,0 +1,52 @@
+<div class="scr" id="scrKelola" hidden>
+  <div class="kom">
+    <div class="shell">
+      <p class="kom-jalur">
+        <button type="button" data-komunitas-dibuat id="klJalurKom">Halaman komunitas</button>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        <span class="kini" id="klJalurNm">Dashboard pengurus</span>
+      </p>
+
+      <div class="kom-head">
+        <span class="kom-logo logo-sq baru" id="klLogo" role="img" aria-label="Logo komunitas">K</span>
+        <div class="kom-t">
+          <h1 class="kom-nm" id="klNm">—</h1>
+          <p class="kom-meta" id="klMeta"></p>
+        </div>
+        <div class="kom-aksi">
+          <p class="kom-status pengurus" id="klRole"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v5c0 4.5 3.4 8 8 10 4.6-2 8-5.5 8-10V6l-8-3Z"/></svg>Kamu Community Builder di sini</p>
+        </div>
+      </div>
+
+      <div class="kl-tabs" id="klTabs" role="tablist">
+        <button type="button" class="kl-tab on" data-tab="minta" role="tab">Permintaan gabung<span class="kl-badge" id="klMintaN">0</span></button>
+        <button type="button" class="kl-tab" data-tab="anggota" role="tab">Anggota<span class="kl-badge" id="klAnggotaN">0</span></button>
+        <button type="button" class="kl-tab" data-tab="pengurus" role="tab">Kepengurusan</button>
+        <button type="button" class="kl-tab" data-tab="riwayat" role="tab">Riwayat<span class="kl-badge" id="klRiwayatN">0</span></button>
+      </div>
+
+      <section class="kl-panel" id="klPanelMinta" role="tabpanel">
+        <div class="kl-lock" id="klLock" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <span id="klLockTeks"></span>
+        </div>
+        <div id="klMintaList"></div>
+      </section>
+
+      <section class="kl-panel" id="klPanelAnggota" role="tabpanel" hidden>
+        <p class="kl-sub">Semua yang sudah kamu setujui. Angkat siapa pun jadi pengurus untuk berbagi tugas mengurus komunitas.</p>
+        <div id="klAnggotaList"></div>
+      </section>
+
+      <section class="kl-panel" id="klPanelPengurus" role="tabpanel" hidden>
+        <p class="kl-sub">Pengurus bisa saling berbagi tugas. Hak menyetujui pendaftaran dipegang <b>peninjau pendaftaran</b> — boleh beberapa orang sekaligus, dan bisa kamu tambah atau lepas kapan saja. Selalu ada minimal satu peninjau.</p>
+        <div id="klPengurusList"></div>
+      </section>
+
+      <section class="kl-panel" id="klPanelRiwayat" role="tabpanel" hidden>
+        <p class="kl-sub">Catatan siapa yang sudah ditinjau — diterima atau ditolak — dan oleh pengurus mana. Semua pengurus melihat catatan yang sama.</p>
+        <div id="klRiwayatList"></div>
+      </section>
+    </div>
+  </div>
+</div><!-- /scrKelola -->

@@ -1,0 +1,183 @@
+<div class="scr" id="scrBuat" hidden>
+<div class="page">
+<main class="shell wrap">
+  <div>
+
+  <div id="buatForm">
+    <div class="ph-kicker">Buat halaman komunitas</div>
+    <h1 class="ph-h1">Bikin basecamp komunitasmu.</h1>
+    <p class="ph-lede">Isi sekali, lalu sebar satu link ke grup. <b>Anggotamu yang mengisi profilnya sendiri</b> — kamu tinggal menyetujui.</p>
+
+    <div class="buat-pratinjau">
+      <button type="button" class="btn outline sm" id="bkPratinjau"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>Lihat contoh halaman</button>
+      <span class="buat-pratinjau-note">Lihat tampilan halamanmu dari sisi calon anggota, kapan pun — belum perlu selesai.</span>
+    </div>
+
+    <div class="prog">
+      <div class="prog-bar"><i id="bkFill" style="width:0%"></i></div>
+      <p class="prog-txt"><b id="bkN">0</b> dari <span>4</span> · <span id="bkEst">sekitar 3 menit</span></p>
+    </div>
+
+    <!-- Blok 1 — yang dilihat orang sebelum menekan Gabung -->
+    <section class="blk">
+      <div class="blk-h">
+        <span class="blk-ic eye" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg></span>
+        <div>
+          <h2>Yang dilihat calon anggota</h2>
+          <p class="blk-sub">Muncul di direktori Kolavo dan di kepala halamanmu. <b>Semuanya masih bisa diubah nanti.</b></p>
+        </div>
+      </div>
+
+      <div class="logopick">
+        <div class="logopick-kotak">
+          <span class="logo-sq baru" id="bkLogo" role="img" aria-label="Logo komunitas">K</span>
+          <button type="button" class="logopick-cam" id="bkLogoPilih" aria-label="Pilih logo komunitas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.4"/></svg>
+          </button>
+          <input type="file" id="bkLogoFile" accept="image/*" hidden>
+        </div>
+        <div class="logopick-t">
+          <span class="f-lbl">Logo komunitas<span class="opt">Opsional</span></span>
+          <p class="f-why">Bentuknya kotak, minimal 256×256. Belum punya? Sementara dipakai inisial nama di atas warna temamu.</p>
+          <div class="logopick-aksi"><button type="button" class="lnk" id="bkLogoHapus" hidden>Balikin ke inisial</button></div>
+        </div>
+      </div>
+
+      <div class="f">
+        <label class="f-lbl" for="bkNama">Nama komunitas<span class="must" aria-hidden="true">*</span></label>
+        <input class="inp" id="bkNama" type="text" maxlength="70" placeholder="Ikatan Alumni SMAN 52 Jakarta">
+        <p class="f-why">Tulis seperti yang dikenal anggotamu — itu yang mereka ketik waktu mencari.</p>
+        <p class="f-galat">Nama komunitas perlu diisi.</p>
+      </div>
+
+      <div class="f">
+        <span class="f-lbl" id="bkLblBentuk">Bentuk komunitas<span class="must" aria-hidden="true">*</span></span>
+        <div class="pills" role="group" aria-labelledby="bkLblBentuk">
+          <label class="pill-r"><input type="radio" name="bkBentuk" value="Ikatan Alumni"><span>Ikatan Alumni</span></label>
+          <label class="pill-r"><input type="radio" name="bkBentuk" value="Organisasi"><span>Organisasi</span></label>
+          <label class="pill-r"><input type="radio" name="bkBentuk" value="Asosiasi"><span>Asosiasi</span></label>
+          <label class="pill-r"><input type="radio" name="bkBentuk" value="Himpunan"><span>Himpunan</span></label>
+          <label class="pill-r"><input type="radio" name="bkBentuk" value="Komunitas"><span>Komunitas</span></label>
+        </div>
+        <p class="f-why">Dipakai buat menyaring direktori — sekaligus menentukan pertanyaan bawaan di formulir pendaftaran di bawah.</p>
+        <p class="f-galat">Pilih dulu bentuk komunitasmu.</p>
+      </div>
+
+      <div class="f">
+        <span class="f-lbl" id="bkLblDom">Titik kumpul<span class="must" aria-hidden="true">*</span></span>
+        <div class="f-grid tiga" role="group" aria-labelledby="bkLblDom">
+          <select class="sel" id="bkNegara" aria-label="Negara"><option value="">Negara</option><option>Indonesia</option><option>Malaysia</option><option>Singapura</option></select>
+          <select class="sel" id="bkProvinsi" aria-label="Provinsi" disabled><option value="">Provinsi</option></select>
+          <select class="sel" id="bkKota" aria-label="Kota atau kabupaten" disabled><option value="">Kota/kabupaten</option></select>
+        </div>
+        <p class="f-why">Anggota yang pindah kota tetap bisa gabung — ini cuma penanda asal komunitasnya.</p>
+        <p class="f-galat">Titik kumpul komunitas perlu diisi.</p>
+      </div>
+
+      <div class="f">
+        <label class="f-lbl" for="bkAjak">Satu kalimat ajakan<span class="must" aria-hidden="true">*</span></label>
+        <textarea class="ta" id="bkAjak" maxlength="120" placeholder="Tempat alumni SMAN 52 saling kenal, bukan cuma saling punya nomor."></textarea>
+        <p class="hitung"><span id="bkAjakN">0</span>/120</p>
+        <p class="f-why">Yang dibaca orang tepat sebelum menekan Gabung. Satu kalimat cukup.</p>
+        <p class="f-galat">Satu kalimat ajakan perlu diisi.</p>
+      </div>
+    </section>
+
+    <!-- Blok 2 — warna tema & alamat -->
+    <section class="blk">
+      <div class="blk-h">
+        <span class="blk-ic cat" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 0 0 18h1.5a2.5 2.5 0 0 0 2-4 2.5 2.5 0 0 1 2-4H20a1 1 0 0 0 1-1 9 9 0 0 0-9-9Z"/><circle cx="8" cy="11" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="16" cy="11" r="1.1" fill="currentColor" stroke="none"/></svg></span>
+        <div>
+          <h2>Warna dan alamat halaman</h2>
+          <p class="blk-sub">Warna temanya dipakai di tombol, angka, dan kartu anggota. <b>Ditetapkan sekali di sini</b> — anggota tidak bisa menggantinya sendiri.</p>
+        </div>
+      </div>
+
+      <div class="f">
+        <span class="f-lbl" id="bkLblTema">Warna tema</span>
+        <div class="tema" id="bkTema" role="group" aria-labelledby="bkLblTema"></div>
+        <p class="f-why">Tigabelas warna yang sama dipakai semua komunitas di Kolavo, jadi halamannya tetap terasa satu keluarga.</p>
+      </div>
+
+      <div class="f">
+        <label class="f-lbl" for="bkSlug">Alamat halaman</label>
+        <div class="slug">
+          <span class="slug-pfx">kolavo.app/</span>
+          <input id="bkSlug" type="text" spellcheck="false" autocomplete="off" placeholder="iasman52">
+        </div>
+        <p class="f-why">Inilah link yang kamu sebar ke grup. Diisi otomatis dari nama komunitas, boleh diganti.</p>
+      </div>
+    </section>
+
+    <!-- Blok 3 — formulir pendaftaran, milik komunitas -->
+    <section class="blk">
+      <div class="blk-h">
+        <span class="blk-ic tanya" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h6a2 2 0 0 1 2 2v13H7V7a2 2 0 0 1 2-2Z"/><path d="M9 3h6v3H9zM10 12h4M10 16h4"/></svg></span>
+        <div>
+          <h2>Pertanyaan buat yang mendaftar</h2>
+          <p class="blk-sub">Jawabannya jadi tag di daftar anggota — itu yang bikin anggotamu bisa saling cari. <b>Nama, kota, dan pekerjaan sudah ditanyakan Kolavo</b>, tidak perlu diulang di sini.</p>
+        </div>
+      </div>
+
+      <div class="qlist" id="bkTanyaList"></div>
+      <button type="button" class="qtambah" id="bkTambah">+ Tambah pertanyaan</button>
+      <p class="f-why" id="bkTanyaSisa">Maksimal lima pertanyaan. Formulir yang panjang bikin orang berhenti di tengah.</p>
+    </section>
+
+    <div class="privacy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div>Halaman komunitasmu boleh dilihat siapa pun, tapi <strong>daftar anggotanya cuma kebuka buat sesama anggota</strong> yang sudah kamu setujui.</div>
+    </div>
+
+    <div class="blk-galat" id="bkGalat" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+      <span>Masih ada yang kosong. Yang bertanda merah di atas perlu diisi dulu.</span>
+    </div>
+
+    <div class="act">
+      <button type="button" class="btn lead" id="bkKirim">Buat halaman komunitas</button>
+      <p class="act-sub">
+        <span class="simpan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Tersimpan otomatis</span>
+        <span aria-hidden="true">·</span>
+        <button type="button" class="lnk">Lanjut nanti</button>
+      </p>
+    </div>
+  </div>
+
+  <!-- keadaan selesai: yang dibutuhkan pengurus setelah ini cuma linknya -->
+  <div class="done" id="buatDone" hidden>
+    <span class="done-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>
+    <h1 class="ph-h1" id="bkDoneH">Halamannya sudah jadi.</h1>
+    <p class="ph-lede">Sekarang bagian yang menentukan: sebar linknya ke grup. Sampai anggota pertama masuk, halaman ini masih kosong.</p>
+
+    <div class="pf-item">
+      <span class="logo-sq baru" id="bkDoneLogo" role="img" aria-label="Logo komunitas">K</span>
+      <div class="t">
+        <div class="n" id="bkDoneNm">Komunitas</div>
+        <div class="s" id="bkDoneMeta">Belum ada anggota</div>
+      </div>
+      <span class="status pengurus">Pengurus</span>
+    </div>
+
+    <div class="linkrow">
+      <span class="linkrow-url" id="bkDoneLink">kolavo.app/</span>
+      <button type="button" class="btn outline sm" id="bkSalin">Salin link</button>
+    </div>
+
+    <ul class="steps">
+      <li class="step"><span class="no">1</span><div><strong>Sebar link ke grup</strong><p>Satu link, tidak perlu Google Form lagi. Yang mendaftar mengisi profilnya sendiri.</p></div></li>
+      <li class="step"><span class="no">2</span><div><strong>Setujui yang mendaftar</strong><p>Kamu yang menentukan siapa yang boleh masuk. Setelah disetujui, daftar anggota kebuka buat mereka.</p></div></li>
+    </ul>
+
+    <div class="empty-cta">
+      <button type="button" class="btn" data-komunitas-dibuat>Lihat halaman komunitas</button>
+      <button type="button" class="btn outline" id="bkWa">Kirim ke grup WhatsApp</button>
+    </div>
+    <p class="empty-note">Dari halaman komunitasmu kamu bisa masuk ke dashboard pengurus — tempat menyetujui yang mendaftar, mengangkat kepengurusan, dan mengatur siapa yang meninjau pendaftaran.</p>
+  </div>
+
+  </div>
+</main>
+</div>
+</div><!-- /scrBuat -->
+

@@ -1,0 +1,25 @@
+# Urutan perakitan bundle.py — JANGAN ubah urutan tanpa alasan.
+# Baris diawali '#' diabaikan. Satu berkas per baris, dirakit dari atas ke bawah.
+00-preamble.html
+10-styles.html
+20-nav.html
+30-layer-scrBeranda.html
+30-layer-scrLengkapi.html
+30-layer-scrProfil.html
+30-layer-scrKomunitas.html
+30-layer-scrAnggota.html
+30-layer-scrBuat.html
+30-layer-scrKelola.html
+40-footer.html
+50-js-direktori-filter.html
+50-js-pemilih-lokasi.html
+50-js-modal-masuk.html
+50-js-lengkapi-profil.html
+50-js-runtime-router.html
+50-js-pemilih-tanggal.html
+50-js-sunting-identitas.html
+50-js-layar-komunitas.html
+50-js-tema-komunitas.html
+50-js-layar-buat.html
+50-js-dashboard-pengurus.html
+90-tail.html

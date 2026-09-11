@@ -1,0 +1,974 @@
+<script>
+/* ============================================================
+   Layar komunitas.
+   Komposisi anggota disimpan sebagai angka agregat, bukan daftar orang —
+   itu satu-satunya cara menjual isi komunitas tanpa melanggar janji
+   "daftar anggota cuma buat sesama anggota".
+   ============================================================ */
+(function(){
+  const DATA = {
+    'l-forpastara': {
+      profesi:[['Pelajar & mahasiswa',7],['Wiraswasta',4],['Guru',3],['Karyawan swasta',3],['PNS',2],['Lainnya',3]],
+      kota:[['Kab. Bekasi',12],['Kota Bekasi',5],['Jakarta Timur',3],['Lainnya',2]],
+      angkatan:'2008–2023',
+      anggota:[
+        {n:'Ayu Lestari',k:'Apoteker',d:'Depok',a:2016,f:'p-ayu',s:'Mei 2024'},
+        {n:'Wahyu Firmansyah',k:'Karyawan swasta',d:'Kota Bekasi',a:2013,s:'Agustus 2024'},
+        {n:'Dimas Saputra',k:'Pelajar & mahasiswa',d:'Kab. Bekasi',a:2021,s:'Januari 2025'},
+        {n:'Nurul Hidayah',k:'Wiraswasta',d:'Kota Bekasi',a:2015,s:'Juni 2024'},
+        {n:'Rizky Ananda',k:'PNS',d:'Jakarta Timur',a:2009,s:'Maret 2025'},
+        {n:'Sekar Wulandari',k:'Pelajar & mahasiswa',d:'Kab. Bekasi',a:2023,s:'Februari 2026'}
+      ],
+      pengurus:[{n:'Ayu Lestari',j:'Ketua',f:'p-ayu'},{n:'Rizal Hakim',j:'Sekretaris'}]
+    },
+    'l-iapnj': {
+      profesi:[['Software engineer',3],['Data analyst',2],['Dosen',1],['Wiraswasta',1],['Lainnya',2]],
+      kota:[['Depok',3],['Jakarta Selatan',2],['Bandung',2],['Lainnya',2]],
+      angkatan:'2011–2021',
+      anggota:[
+        {n:'Rani Setiawati',k:'Desainer produk',d:'Jakarta Selatan',a:2015,f:'p-rani',s:'April 2024'},
+        {n:'Adit Kurniawan',k:'Software engineer',d:'Depok',a:2013,s:'September 2024'},
+        {n:'Melati Anggraini',k:'Data analyst',d:'Bandung',a:2018,s:'November 2024'},
+        {n:'Hendra Pratama',k:'Software engineer',d:'Depok',a:2011,s:'Juli 2025'},
+        {n:'Tio Wibowo',k:'Dosen',d:'Depok',a:2012,s:'Oktober 2025'},
+        {n:'Salma Nabila',k:'Wiraswasta',d:'Jakarta Selatan',a:2021,s:'Januari 2026'}
+      ],
+      pengurus:[{n:'Rani Setiawati',j:'Ketua',f:'p-rani'}]
+    },
+    'l-iasman52': {
+      profesi:[['Karyawan swasta',4],['Guru',3],['Kontraktor',2],['Apoteker',2],['Desainer produk',2],['Lainnya',4]],
+      kota:[['Jakarta Utara',6],['Bekasi',3],['Depok',3],['Jakarta Selatan',2],['Lainnya',3]],
+      angkatan:'1998–2019',
+      anggota:[
+        {n:'Fajar Nugroho',k:'Kontraktor',d:'Jakarta Utara',a:2009,f:'p-fajar',s:'Maret 2024'},
+        {n:'Rani Setiawati',k:'Desainer produk',d:'Jakarta Selatan',a:2014,f:'p-rani',s:'Juli 2024'},
+        {n:'Ayu Lestari',k:'Apoteker',d:'Depok',a:2016,f:'p-ayu',s:'Desember 2024'},
+        {n:'Intan Permatasari',k:'Guru',d:'Bekasi',a:2013,s:'Februari 2025'},
+        {n:'Tari Andriani',k:'Karyawan swasta',d:'Jakarta Utara',a:2005,s:'Agustus 2025'},
+        {n:'Reza Maulana',k:'Karyawan swasta',d:'Jakarta Utara',a:1999,s:'Mei 2026'}
+      ],
+      pengurus:[{n:'Fajar Nugroho',j:'Ketua',f:'p-fajar'},{n:'Rani Setiawati',j:'Bendahara',f:'p-rani'}]
+    },
+    'l-ppiju': {
+      profesi:[['Mahasiswa',6],['Karyawan swasta',5],['PNS',3],['TNI/Polri',2],['Wiraswasta',2],['Lainnya',2]],
+      kota:[['Jakarta Utara',14],['Jakarta Pusat',3],['Bekasi',3]],
+      angkatan:'2015–2024',
+      anggota:[
+        {n:'Rendra Aditya',k:'Karyawan swasta',d:'Jakarta Utara',a:2018,s:'Juni 2024'},
+        {n:'Yoga Anggara',k:'Mahasiswa',d:'Jakarta Utara',a:2022,s:'Oktober 2024'},
+        {n:'Nadia Kusuma',k:'Karyawan swasta',d:'Jakarta Utara',a:2017,s:'Januari 2025'},
+        {n:'Bima Saputra',k:'TNI/Polri',d:'Jakarta Pusat',a:2015,s:'April 2025'},
+        {n:'Laras Pramesti',k:'PNS',d:'Jakarta Utara',a:2016,s:'September 2025'},
+        {n:'Gilang Ramadhan',k:'Wiraswasta',d:'Bekasi',a:2019,s:'Maret 2026'}
+      ],
+      pengurus:[{n:'Dedi Kurniawan',j:'Ketua'},{n:'Ayu Lestari',j:'Humas',f:'p-ayu'}]
+    }
+  };
+
+  /* Bekal "orang ini siapa", dipisah dari keanggotaan karena melekat ke orangnya
+     dan sama di komunitas mana pun dia muncul. kolavo.app tidak punya data ini
+     sama sekali — /profile/edit di sana cuma menyimpan foto, nama, tanggal lahir,
+     jenis kelamin, WhatsApp, e-mail, dan kota. Tanpa satu baris "sekarang ngapain",
+     daftar anggota tidak bisa jadi apa-apa selain daftar kontak. */
+  const ORANG = {
+    'Ayu Lestari':       { p: 'Apoteker penanggung jawab di sebuah apotek daerah Depok', bio: 'Kalau ada yang bingung soal obat atau urusan BPJS, boleh tanya-tanya.' },
+    'Wahyu Firmansyah':  { p: 'Staf logistik di perusahaan ekspedisi Cakung', bio: 'Sering bantu urusan kirim barang buat acara komunitas.' },
+    'Dimas Saputra':     { p: 'Mahasiswa Teknik Sipil, semester lima', bio: 'Lagi cari tempat magang, terbuka buat masukan dari siapa pun.' },
+    'Nurul Hidayah':     { p: 'Punya usaha katering rumahan di Bekasi', bio: 'Biasanya pegang konsumsi kalau ada acara angkatan.' },
+    'Rizky Ananda':      { p: 'PNS di Dinas Pendidikan Jakarta Timur', bio: 'Bisa bantu mengarahkan kalau ada urusan perizinan kegiatan.' },
+    'Sekar Wulandari':   { p: 'Mahasiswi Ilmu Komunikasi, angkatan paling muda di sini', bio: 'Suka pegang dokumentasi dan media sosial acara.' },
+    'Rani Setiawati':    { p: 'Desainer produk di sebuah perusahaan rintisan Jakarta', bio: 'Senang diajak ngobrol soal desain, riset pengguna, atau pindah karier ke tech.' },
+    'Adit Kurniawan':    { p: 'Software engineer, banyak main di sisi backend', bio: 'Terbuka buat baca CV atau nemenin latihan wawancara.' },
+    'Melati Anggraini':  { p: 'Data analyst di sebuah perusahaan retail', bio: 'Lagi belajar bikin dasbor yang tidak bikin orang pusing.' },
+    'Hendra Pratama':    { p: 'Software engineer, sekarang pegang tim kecil', bio: 'Kalau ada yang mau tanya soal naik jadi lead, boleh.' },
+    'Tio Wibowo':        { p: 'Dosen di kampus swasta, mengajar pemrograman dasar', bio: 'Sering cari praktisi buat jadi dosen tamu.' },
+    'Salma Nabila':      { p: 'Punya studio kecil, menggarap web untuk UMKM', bio: 'Sering butuh tangan tambahan buat proyek pendek.' },
+    'Fajar Nugroho':     { p: 'Kontraktor, banyak pegang renovasi rumah dan ruko', bio: 'Boleh ditanya soal rencana bangun atau renovasi, tidak dipungut apa-apa.' },
+    'Intan Permatasari': { p: 'Guru Bahasa Inggris di SMP swasta Bekasi', bio: 'Sering bantu anak-anak alumni yang mau lanjut sekolah.' },
+    'Tari Andriani':     { p: 'Staf HR di sebuah perusahaan manufaktur', bio: 'Kalau ada lowongan di tempat saya, biasanya saya kabari ke sini dulu.' },
+    'Reza Maulana':      { p: 'Bagian keuangan di sebuah perusahaan pelayaran', bio: 'Angkatan paling tua yang masih rajin datang reuni.' },
+    'Rendra Aditya':     { p: 'Karyawan swasta, pegang operasional gudang', bio: 'Biasa jadi koordinator lapangan kalau ada kegiatan.' },
+    'Yoga Anggara':      { p: 'Mahasiswa Hubungan Internasional, semester tiga', bio: 'Aktif jadi panitia kalau ada pengibaran.' },
+    'Nadia Kusuma':      { p: 'Karyawan swasta di bidang periklanan', bio: 'Bisa bantu bikin materi publikasi kegiatan.' },
+    'Bima Saputra':      { p: 'Anggota Polri, bertugas di Jakarta Pusat', bio: 'Sering bantu urusan pengamanan kegiatan komunitas.' },
+    'Laras Pramesti':    { p: 'PNS di kelurahan wilayah Jakarta Utara', bio: 'Paham alur izin keramaian, boleh tanya.' },
+    'Gilang Ramadhan':   { p: 'Buka bengkel motor kecil-kecilan di Bekasi', bio: 'Kalau motor mogok pas kegiatan, panggil saya.' }
+  };
+
+  /* Data yang di kolavo.app dipajang begitu saja di halaman detail anggota:
+     nama lengkap dan nomor WhatsApp. Di sini keduanya dikunci sampai kedua
+     belah pihak setuju kenalan — lihat KENALAN di bawah. Nomornya karangan;
+     jangan pernah menaruh nomor sungguhan di prototipe. */
+  const KONTAK = {
+    'Ayu Lestari':       { full: 'Ayu Lestari Rahmawati',   wa: '0812-4417-2016' },
+    'Wahyu Firmansyah':  { full: 'Wahyu Firmansyah',        wa: '0813-2280-2013' },
+    'Dimas Saputra':     { full: 'Dimas Saputra Nugroho',   wa: '0857-9014-2021' },
+    'Nurul Hidayah':     { full: 'Nurul Hidayah',           wa: '0821-6635-2015' },
+    'Rizky Ananda':      { full: 'Rizky Ananda Pratama',    wa: '0817-4402-2009' },
+    'Sekar Wulandari':   { full: 'Sekar Ayu Wulandari',     wa: '0895-3371-2023' },
+    'Rani Setiawati':    { full: 'Rani Setiawati Putri',    wa: '0811-5528-2014' },
+    'Adit Kurniawan':    { full: 'Aditya Kurniawan',        wa: '0852-7719-2013' },
+    'Melati Anggraini':  { full: 'Melati Anggraini',        wa: '0822-3306-2018' },
+    'Hendra Pratama':    { full: 'Hendra Pratama Wijaya',   wa: '0818-9042-2011' },
+    'Tio Wibowo':        { full: 'Sulistio Wibowo',         wa: '0856-1183-2012' },
+    'Salma Nabila':      { full: 'Salma Nabila Zahra',      wa: '0896-2274-2021' },
+    'Fajar Nugroho':     { full: 'Fajar Nugroho Saputra',   wa: '0815-3390-2009' },
+    'Intan Permatasari': { full: 'Intan Permatasari',       wa: '0853-6628-2013' },
+    'Tari Andriani':     { full: 'Lestari Andriani',        wa: '0819-4471-2005' },
+    'Reza Maulana':      { full: 'Reza Maulana Akbar',      wa: '0858-1907-1999' },
+    'Rendra Aditya':     { full: 'Rendra Aditya Nugraha',   wa: '0812-7736-2018' },
+    'Yoga Anggara':      { full: 'Yoga Anggara Putra',      wa: '0895-5502-2022' },
+    'Nadia Kusuma':      { full: 'Nadia Kusuma Dewi',       wa: '0813-8814-2017' },
+    'Bima Saputra':      { full: 'Bima Saputra Aji',        wa: '0821-2260-2015' },
+    'Laras Pramesti':    { full: 'Laras Ayu Pramesti',      wa: '0857-4493-2016' },
+    'Gilang Ramadhan':   { full: 'Gilang Ramadhan',         wa: '0852-3318-2019' }
+  };
+
+  const el = function(id){ return document.getElementById(id); };
+  let kini = null;   /* komunitas yang sedang dibuka */
+  let founder = false;   /* halaman ini sedang dilihat pemiliknya sendiri? */
+  let pratinjau = false; /* contoh halaman dari layar buat — belum jadi komunitas */
+
+  let kartuAsal = null;   /* elemen kartunya, dipakai modal masuk buat menyusun copy-nya */
+
+  /* dibaca dari kartunya langsung supaya tidak ada data kembar */
+  function dariKartu(kartu){
+    const kelas = [...kartu.querySelector('.logo-sq').classList].find(function(c){ return c.indexOf('l-') === 0; });
+    let tanya = [];
+    try { tanya = JSON.parse(kartu.dataset.tanya || '[]'); } catch(e) { tanya = []; }
+    return {
+      kelas: kelas,
+      nama: kartu.querySelector('h3').textContent.trim(),
+      desc: kartu.querySelector('.desc').textContent.trim(),
+      lokasi: kartu.querySelector('.loc').textContent.trim(),
+      bentuk: kartu.dataset.bentuk,
+      jumlah: kartu.querySelector('.mem').textContent.trim(),
+      angka: parseInt(kartu.querySelector('.mem').textContent, 10) || 0,
+      tanya: tanya,
+      agg: DATA[kelas] || null
+    };
+  }
+
+  function bar(daftar, wadah, total){
+    wadah.innerHTML = '';
+    daftar.forEach(function(p){
+      const baris = document.createElement('div');
+      baris.className = 'agg-item' + (p[0] === 'Lainnya' ? ' lain' : '');
+      const lebar = Math.round(p[1] / total * 100);
+      baris.innerHTML =
+        '<span class="nm"></span>' +
+        '<span class="agg-bar"><i style="width:' + lebar + '%"></i></span>' +
+        '<span class="n">' + p[1] + '</span>';
+      baris.querySelector('.nm').textContent = p[0];
+      wadah.appendChild(baris);
+    });
+  }
+
+  /* ---------- daftar anggota setelah diterima ----------
+     Panelnya sengaja komponen yang sama dengan yang dijanjikan di hero.
+     Isinya subset — prototipe menampilkan 6 baris dari jumlah sebenarnya,
+     dan itu dikatakan terus terang di kaki daftarnya. */
+  function inisial(n){
+    return n.split(' ').slice(0, 2).map(function(k){ return k[0]; }).join('').toUpperCase();
+  }
+
+  function nilaiProfil(id){
+    const e = document.getElementById(id);
+    return e ? (e.value || '').trim() : '';
+  }
+
+  function akuAnggota(){
+    if(founder) return true;   /* pemilik selalu di dalam komunitasnya sendiri */
+    return !!kini && (window.KolavoApp.diajukan || {})[kini.kelas] === 'anggota';
+  }
+
+  /* ---------- halaman versi pemilik (founder) ----------
+     Komunitas yang dibuat pengguna tidak ada di DATA contoh; isinya dibaca
+     langsung dari keadaan dashboard pengurus (KolavoDashboard) supaya satu
+     sumber: yang disetujui di dashboard langsung muncul di daftar anggota di
+     sini, tanpa data kembar. */
+  function aggDibuat(){
+    const D = window.KolavoDashboard;
+    if(!D || !D.built) return { profesi: [], kota: [], angkatan: '—', anggota: [], pengurus: [] };
+    const nama = D.pengurus.map(function(p){ return p.nama; }).concat(D.anggotaBiasa);
+    const anggota = nama.map(function(n){
+      const m = D.mem[n] || { nama: n };
+      return { n: n, k: m.kerja || '—', d: m.kota || '—', j: (m.tags || []).slice(), aku: !!m.aku };
+    });
+    const tally = function(key){
+      const peta = {};
+      anggota.forEach(function(o){ const v = o[key] || 'Lainnya'; peta[v] = (peta[v] || 0) + 1; });
+      return Object.keys(peta).map(function(k){ return [k, peta[k]]; });
+    };
+    return {
+      profesi: tally('k'), kota: tally('d'), angkatan: '—',
+      anggota: anggota,
+      pengurus: D.pengurus.map(function(p){ return { n: p.nama, j: p.jabatan }; })
+    };
+  }
+
+  function dibuatKeKini(kom){
+    return {
+      kelas: 'l-dibuat', nama: kom.nama, desc: kom.ajakan || '',
+      lokasi: kom.kota || '', bentuk: kom.bentuk || 'Komunitas',
+      jumlah: '', angka: 0, tanya: kom.tanya || [], agg: aggDibuat(),
+      warna: kom.warna, logo: kom.logo, inisial: kom.inisial
+    };
+  }
+
+  window.KolavoBukaKomunitasDibuat = function(){
+    const kom = (window.KolavoApp || {}).dibuat;
+    if(!kom){
+      if(window.KolavoToast) window.KolavoToast('Bikin dulu halaman komunitasmu.');
+      window.KolavoKe('scrBuat');
+      return;
+    }
+    /* dashboard menyimpan anggota & pengurus komunitas ini — dibangun kalau belum */
+    if(window.KolavoSiapkanDashboard) window.KolavoSiapkanDashboard();
+    founder = true; pratinjau = false;
+    kartuAsal = null;
+    kini = dibuatKeKini(kom);
+    gambar();
+    window.KolavoKe('scrKomunitas');
+  };
+
+  /* ---------- contoh halaman: pratinjau dari layar buat ----------
+     Halaman belum jadi komunitas, jadi datanya dari form yang sedang diisi
+     (nama, warna, logo, ajakan, pertanyaan). Komposisi anggotanya cuma misal
+     supaya semua bagian tergambar — itu dinyatakan terus terang di spanduknya. */
+  const CONTOH_AGG = {
+    profesi: [['Karyawan swasta', 5], ['Wiraswasta', 3], ['Guru', 3], ['Mahasiswa', 2], ['PNS', 2], ['Lainnya', 3]],
+    kota: [['Jakarta', 7], ['Bekasi', 4], ['Depok', 3], ['Lainnya', 4]],
+    angkatan: '2008–2023',
+    anggota: [],
+    pengurus: []
+  };
+
+  /* contoh komunitas siap-pakai untuk tombol "Lihat contoh halaman" di beranda,
+     tempat belum ada form yang diisi */
+  const CONTOH_KOM = {
+    nama: 'Ikatan Alumni SMAN 3 Bandung', slug: 'iasman3bdg', bentuk: 'Ikatan Alumni',
+    kota: 'Bandung', warna: '#0D7FFD', logo: '', inisial: 'IA',
+    ajakan: 'Tempat alumni SMAN 3 saling kenal lagi, bukan cuma saling simpan nomor.',
+    pengurusNama: 'Dewi Anggraini',
+    tanya: [
+      { id: 'nickname', judul: 'Nama Panggilan', tanya: 'Apa nama panggilan kamu di komunitas ini?', tipe: 'teks', wajib: true },
+      { id: 'q1', judul: 'Tahun Lulus', tanya: 'Kamu lulus tahun berapa?', tipe: 'tahun', wajib: true }
+    ]
+  };
+
+  /* ke mana tombol di spanduk contoh mengembalikan: ke form (dari layar buat)
+     atau ke beranda (dari tombol contoh di homepage) */
+  let pratinjauKembali = { ke: 'scrBuat', anchor: null, label: 'Kembali ke form' };
+
+  function pratinjauKeKini(kom){
+    const nm = kom.pengurusNama || (document.getElementById('pfNm') && document.getElementById('pfNm').textContent.trim()) || 'Kamu';
+    const agg = Object.assign({}, CONTOH_AGG, {
+      pengurus: [{ n: nm, j: 'Ketua', aku: !kom.pengurusNama }]
+    });
+    return {
+      kelas: 'l-pratinjau', nama: kom.nama, desc: kom.ajakan || '',
+      lokasi: kom.kota || '', bentuk: kom.bentuk || 'Komunitas',
+      jumlah: '', angka: 18, tanya: kom.tanya || [], agg: agg,
+      warna: kom.warna, logo: kom.logo, inisial: kom.inisial
+    };
+  }
+
+  window.KolavoPratinjau = function(kom, kembali){
+    founder = false; pratinjau = true;
+    pratinjauKembali = kembali || { ke: 'scrBuat', anchor: null, label: 'Kembali ke form' };
+    kartuAsal = null;
+    kini = pratinjauKeKini(kom);
+    gambar();
+    window.KolavoKe('scrKomunitas');
+    window.scrollTo(0, 0);
+  };
+
+  /* Begitu diterima, penggunanya ikut jadi isi komunitas: satu baris di daftar,
+     satu di angka, satu di komposisi. Kalau tidak diikutkan, jumlah di kepala
+     halaman dan isi daftarnya berselisih satu — dan itu terbaca sebagai bug,
+     bukan sebagai pilihan. */
+  function angkaKini(){
+    if(founder) return (kini && kini.agg) ? kini.agg.anggota.length : 0;
+    return kini ? kini.angka + (akuAnggota() ? 1 : 0) : 0;
+  }
+
+  function aku(){
+    const nm = document.getElementById('pfNm');
+    const jawab = window.KolavoJawaban ? window.KolavoJawaban() : [];
+    /* tahun dari jawaban dipakai supaya baris sendiri ikut tersaring di sumbu
+       Angkatan — bukan untuk ditampilkan, karena tag jawabannya sudah lebih
+       kaya ("Angkatan Paskibra 2011" mengalahkan "Angkatan 2011") */
+    const tahun = (jawab.join(' ').match(/\b(?:19|20)\d{2}\b/) || [])[0];
+    const kotaAgg = ((kini && kini.agg && kini.agg.kota) || []).filter(function(p){
+      return samakan(p[0]) === samakan(nilaiProfil('kota'));
+    })[0];
+    const foto = document.querySelector('#scrProfil .av.photo') || document.querySelector('#idKartu .av.photo');
+    const kelasFoto = foto ? [...foto.classList].filter(function(c){ return c.indexOf('p-') === 0; })[0] : null;
+    return {
+      n: (nm && nm.textContent.trim()) || 'Kamu',
+      k: nilaiProfil('kerja') || window.KolavoKerjaDefault || 'Anggota komunitas',
+      /* dipetakan ke ejaan yang dipakai agregat komunitasnya — kalau tidak,
+         chip domisili menampilkan "Kab. Bekasi" dan "Kabupaten Bekasi"
+         berdampingan seolah dua tempat berbeda */
+      d: (kotaAgg && kotaAgg[0]) || nilaiProfil('kota') || '—',
+      f: kelasFoto || 'p-bagas',
+      a: tahun ? Number(tahun) : undefined,
+      bio: nilaiProfil('bio'),
+      /* jawaban ke pengurus melekat ke keanggotaan, jadi di sinilah tempatnya —
+         tag yang sama dengan yang dipakai baris anggota lain */
+      j: jawab,
+      aku: true
+    };
+  }
+
+  function daftarOrang(){
+    const dasar = (kini && kini.agg && kini.agg.anggota) || [];
+    /* di halaman pemilik, dasar sudah memuat dirinya (dari dashboard) —
+       jangan ditambah baris "aku" lagi supaya tidak dobel */
+    if(founder) return dasar;
+    return akuAnggota() ? [aku()].concat(dasar) : dasar;
+  }
+
+  /* komposisi ikut bertambah satu di keranjang yang cocok; kalau nama kotanya
+     tidak persis sama dengan yang di agregat, jatuh ke 'Lainnya' */
+  /* agregat menulis "Kab. Bekasi", pemilih domisili menulis "Kabupaten Bekasi" —
+     tanpa penyeragaman ini penggunanya selalu jatuh ke keranjang 'Lainnya' */
+  function samakan(s){
+    return (s || '').toLowerCase()
+      .replace(/^kab\.?\s+|^kabupaten\s+/, 'kab ')
+      .replace(/^kota\s+/, 'kota ')
+      .trim();
+  }
+
+  function komposisi(daftar, nilai){
+    const salin = daftar.map(function(p){ return [p[0], p[1]]; });
+    if(!akuAnggota()) return salin;
+    const cocok = salin.filter(function(p){ return samakan(p[0]) === samakan(nilai); })[0]
+               || salin.filter(function(p){ return p[0] === 'Lainnya'; })[0];
+    if(cocok) cocok[1] += 1;
+    else salin.push([nilai || 'Lainnya', 1]);
+    return salin;
+  }
+
+  /* Sumbu penelusuran. kolavo.app menaruh ini sebagai pengalih di dalam modal
+     ("Lihat Berdasarkan: Tahun Angkatan | Kelas"); di sini dinaikkan ke daftarnya. */
+  const SUMBU = [
+    { id: 'k', nama: 'Keahlian' },
+    { id: 'a', nama: 'Angkatan' },
+    { id: 'd', nama: 'Domisili' }
+  ];
+  let sumbuKini = 'k';
+
+  /* Anggota di kolavo.app tetap bisa membetulkan jawabannya lewat
+     "Edit Data Pendaftaran" — formulirnya sama, cuma sudah terisi. */
+  let modeSunting = false;
+
+  function jawabanKini(){
+    const peta = {};
+    document.querySelectorAll('#gabungList [data-tanya-id]').forEach(function(e){
+      peta[e.dataset.tanyaId] = e.value;
+    });
+    return peta;
+  }
+
+  function pasangJawaban(peta){
+    document.querySelectorAll('#gabungList [data-tanya-id]').forEach(function(e){
+      if(peta[e.dataset.tanyaId] != null) e.value = peta[e.dataset.tanyaId];
+    });
+  }
+
+  function saring(bidang){
+    const orang = daftarOrang().filter(function(o){
+      return !bidang || String(o[sumbuKini] == null ? '' : o[sumbuKini]) === bidang;
+    });
+    const wadah = el('bukaList');
+    if(!orang.length){
+      wadah.innerHTML = '<p class="buka-kosong">Belum ada anggota dengan keahlian itu.</p>';
+      return;
+    }
+    wadah.innerHTML = orang.map(function(o, i){
+      const av = o.f
+        ? '<div class="av photo ' + o.f + '" role="img" aria-label="Foto profil ' + o.n + ' — gambar AI"></div>'
+        : '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(o.n) + '</div>';
+      return '<div class="m" role="button" tabindex="0" data-nm="' + o.n + '">' + av +
+        '<div><div class="nm-baris"><div class="nm">' + o.n + '</div>' +
+        (o.aku ? '<span class="aku">Kamu</span>' : '') + '</div>' +
+        '<div class="tags"><span class="tag hi">' + o.k + '</span>' +
+        '<span class="tag">' + o.d + '</span>' +
+        (o.a && !(o.j || []).length ? '<span class="tag">Angkatan ' + o.a + '</span>' : '') +
+        (o.j || []).map(function(v){ return '<span class="tag">' + v + '</span>'; }).join('') +
+        '</div></div></div>';
+    }).join('');
+    if(!bidang && kini && orang.length < angkaKini()){
+      wadah.insertAdjacentHTML('beforeend',
+        '<p class="buka-kosong">Menampilkan ' + orang.length + ' dari ' + angkaKini() +
+        ' anggota — sisanya belum dibuat di prototipe.</p>');
+    }
+  }
+
+  /* chip disusun dari baris yang benar-benar ada, bukan dari agregat —
+     chip dari agregat bisa menyaring jadi kosong dan itu terbaca sebagai rusak */
+  function gambarNilai(orang){
+    const nilai = [];
+    orang.forEach(function(o){
+      const v = o[sumbuKini];
+      if(v == null || v === '') return;
+      if(nilai.indexOf(String(v)) < 0) nilai.push(String(v));
+    });
+    if(sumbuKini === 'a') nilai.sort(function(a, b){ return b - a; });
+    el('bukaFilter').innerHTML =
+      '<span class="chip on" data-saring="">Semua</span>' +
+      nilai.map(function(v){
+        return '<span class="chip" data-saring="' + v + '">' + v + '</span>';
+      }).join('');
+    saring('');
+  }
+
+  /* Nama komunitas dibaca dari kartunya di direktori, bukan disalin ke sini —
+     satu sumber, supaya tidak ada dua nama yang bisa berselisih. */
+  function namaKelas(kelas){
+    const logo = document.querySelector('#direktori .ccard .logo-sq.' + kelas);
+    const kartu = logo && logo.closest('.ccard');
+    return kartu ? kartu.querySelector('h3').textContent.trim() : kelas;
+  }
+
+  function komunitasOrang(nama){
+    const hasil = [];
+    Object.keys(DATA).forEach(function(kelas){
+      const d = DATA[kelas];
+      const peng = (d.pengurus || []).filter(function(p){ return p.n === nama; })[0];
+      const ang = (d.anggota || []).filter(function(p){ return p.n === nama; })[0];
+      if(!peng && !ang) return;
+      hasil.push({ kelas: kelas, peran: peng ? peng.j : 'Anggota' });
+    });
+    return hasil;
+  }
+
+  /* ---------- kenalan ----------
+     Persetujuan dua arah: satu minta, satu menerima, baru nomornya kebuka.
+     Ini yang membedakan halaman anggota Kolavo dari daftar kontak — di WAG
+     nomor semua orang otomatis kelihatan, di sini orangnya yang memutuskan. */
+  function statusKenal(nama){
+    return ((window.KolavoApp || {}).kenalan || {})[nama];
+  }
+
+  function gambarKenal(nama, o){
+    const wadah = el('agKenal');
+    /* tidak ada tombol kenalan di profil sendiri */
+    if(o.aku){ wadah.hidden = true; return; }
+    wadah.hidden = false;
+
+    const st = statusKenal(nama);
+    const panggil = nama.split(' ')[0];
+
+    if(st === 'terhubung'){
+      wadah.className = 'ag-kenal buka';
+      wadah.innerHTML =
+        '<p class="ag-kenal-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.4 2.4 2.4 4.6-5"/></svg>Kalian sudah kenalan</p>' +
+        '<p class="ag-kenal-s">' + panggil + ' menerima ajakanmu, jadi nomornya kebuka buat kamu — dan nomormu kebuka buat dia.</p>' +
+        '<div class="ag-wa"><span class="ag-wa-n">' + (o.wa || '—') + '</span>' +
+        '<button type="button" class="btn sm" id="agKenalChat">Chat di WhatsApp</button></div>';
+      return;
+    }
+
+    if(st === 'menunggu'){
+      wadah.className = 'ag-kenal';
+      wadah.innerHTML =
+        '<p class="ag-kenal-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Ajakan kenalan terkirim</p>' +
+        '<p class="ag-kenal-s">Nomornya kebuka begitu ' + panggil + ' menerima. Sampai itu terjadi, dia cuma tahu kamu ingin kenalan.</p>' +
+        '<button type="button" class="btn outline sm" id="agKenalBatal">Batalkan ajakan</button>';
+      return;
+    }
+
+    wadah.className = 'ag-kenal';
+    wadah.innerHTML =
+      '<p class="ag-kenal-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Nomor WhatsApp belum kebuka</p>' +
+      '<p class="ag-kenal-s">Sesama anggota tidak otomatis saling pegang nomor. Ajak ' + panggil + ' kenalan — kalau dia setuju, nomor kalian kebuka dua-duanya.</p>' +
+      '<button type="button" class="btn sm" id="agKenalMinta">Ajak kenalan</button>';
+  }
+
+  window.KolavoTerimaKenalan = function(){
+    const App = window.KolavoApp || {};
+    const kn = App.kenalan || {};
+    const nama = Object.keys(kn).filter(function(n){ return kn[n] === 'menunggu'; })[0];
+    if(!nama) return;
+    kn[nama] = 'terhubung';
+    tandaiDemo();
+    if(el('agNm').textContent === nama) gambarAnggota(nama);
+    if(window.KolavoToast) window.KolavoToast(nama.split(' ')[0] + ' menerima ajakan kenalanmu. Nomornya kebuka.');
+  };
+
+  /* Keanggotaan pengguna sendiri tidak ada di DATA — dia bukan bagian dari data
+     contoh, keanggotaannya tumbuh saat prototipe dipakai. Jadi dibaca dari
+     App.diajukan, dan yang masih menunggu ikut ditampilkan apa adanya. */
+  function komunitasAku(){
+    const d = (window.KolavoApp || {}).diajukan || {};
+    return Object.keys(d).map(function(kelas){
+      return { kelas: kelas, peran: d[kelas] === 'anggota' ? 'Anggota' : 'Menunggu persetujuan' };
+    });
+  }
+
+  function gambarAnggota(nama){
+    const dasar = daftarOrang().filter(function(p){ return p.n === nama; })[0];
+    if(!dasar) return false;
+    /* baris sendiri tidak diambilkan dari ORANG — apa yang tampil harus persis
+       yang diisi penggunanya, termasuk kalau isiannya masih tipis */
+    const o = dasar.aku ? dasar : Object.assign({}, ORANG[nama] || {}, KONTAK[nama] || {}, dasar);
+
+    const foto = el('agFoto');
+    foto.className = 'ag-foto' + (o.f ? ' ' + o.f : ' ini ' + 'abc'[nama.length % 3]);
+    foto.textContent = o.f ? '' : inisial(nama);
+    foto.setAttribute('aria-label', 'Foto profil ' + nama + (o.f ? ' — gambar AI' : ''));
+
+    el('agNm').textContent = nama;
+    el('agJalurNm').textContent = nama;
+    el('agBalik').textContent = kini ? kini.nama : 'Komunitas';
+    /* baris teratas setelah nama: apa yang dia kerjakan sekarang. Di kolavo.app
+       tempat ini diisi nomor WhatsApp dan nama lengkap — keduanya keterangan
+       administratif, bukan alasan orang membuka profil sesama anggota. */
+    el('agKerja').textContent = o.p || o.k || '';
+
+    const full = el('agFull');
+    full.textContent = o.full || '';
+    full.hidden = !o.full;
+
+    /* domisili pindah dari tag ke baris meta — mengikuti kolavo.app, yang
+       menaruh kota sebagai baris tersendiri dan menyisakan tag untuk jawaban
+       pertanyaan pengurus. Sebelumnya domisili tampil dua kali. */
+    el('agTags').innerHTML =
+      '<span class="tag hi">' + o.k + '</span>' +
+      (o.a && !(o.j || []).length ? '<span class="tag">Angkatan ' + o.a + '</span>' : '') +
+      (o.j || []).map(function(v){ return '<span class="tag">' + v + '</span>'; }).join('');
+
+    const sejak = o.aku ? 'Baru bergabung' : (o.s ? 'Anggota sejak ' + o.s : '');
+    el('agMeta').innerHTML =
+      '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>' + o.d + ' \uD83C\uDDEE\uD83C\uDDE9</span>' +
+      (sejak ? '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>' + sejak + '</span>' : '');
+
+    gambarKenal(nama, o);
+
+    const bio = el('agBio');
+    bio.textContent = o.bio || '';
+    bio.hidden = !o.bio;
+
+    /* Di profil orang lain komunitas yang sedang dibuka disembunyikan — sudah
+       jelas dia anggota di sini, itu sebabnya kamu melihatnya dari daftar ini.
+       Di profil sendiri justru semuanya ditampilkan: yang dicari "aku ada di
+       mana saja", bukan "selain di sini dia di mana". */
+    const lain = o.aku
+      ? komunitasAku()
+      : komunitasOrang(nama).filter(function(k){ return !kini || k.kelas !== kini.kelas; });
+    el('agKomH').textContent = o.aku ? 'Komunitas saya' : 'Juga di komunitas';
+    el('agKomSub').textContent = o.aku
+      ? 'Semua komunitas yang kamu ikuti.'
+      : 'Tempat lain yang dia ikuti — mungkin kamu juga ada di situ.';
+    el('agKomSec').hidden = !lain.length;
+    el('agKom').innerHTML = lain.map(function(k){
+      return '<div class="pf-item"><span class="logo-sq ' + k.kelas + '" role="img" aria-label="Logo komunitas"></span>' +
+             '<div class="t"><div class="n">' + namaKelas(k.kelas) + '</div>' +
+             '<div class="s">' + k.peran + '</div></div></div>';
+    }).join('');
+    return true;
+  }
+
+  window.KolavoBukaAnggota = function(nama){
+    if(gambarAnggota(nama)) window.KolavoKe('scrAnggota');
+  };
+
+  function gambarDaftar(terbuka){
+    el('komKunci').hidden = terbuka;
+    el('komBuka').hidden = !terbuka;
+    /* bagian Pengurus baru muncul setelah diterima jadi anggota */
+    el('komPengSec').hidden = !terbuka;
+    el('komKunciSub').textContent = terbuka
+      ? 'Kebuka karena kamu anggota di sini. Dari luar, halaman ini tetap tertutup.'
+      : 'Kebuka setelah pengurus menyetujui pendaftaranmu.';
+    /* peninjauannya sudah lewat begitu diterima — kalimatnya ikut pindah
+       dari "yang akan menilai kamu" ke "yang mengurus tempat ini" */
+    el('komPengSub').textContent = terbuka
+      ? 'Mereka yang mengurus komunitas ini.'
+      : 'Mereka yang akan meninjau pendaftaranmu.';
+    if(!terbuka) return;
+
+    const orang = daftarOrang();
+    el('bukaJml').textContent = angkaKini() + ' anggota';
+
+    el('bukaSumbu').innerHTML = '<span class="buka-lbl">Lihat berdasarkan</span>' +
+      SUMBU.map(function(s){
+        return '<span class="chip' + (s.id === sumbuKini ? ' on' : '') + '" data-sumbu="' + s.id + '">' + s.nama + '</span>';
+      }).join('');
+
+    gambarNilai(orang);
+  }
+
+  /* Tombol "Setujui pendaftaran" di bilah demo memerankan pengurus — di produk
+     keputusan ini datang dari orang lain, jadi tidak ada padanannya di layar
+     pengguna. Ditaruh di bilah demo supaya jelas itu alat prototipe. */
+  function tandaiDemo(){
+    const b = document.getElementById('demoSetuju');
+    if(b){
+      const d = (window.KolavoApp || {}).diajukan || {};
+      b.hidden = !Object.keys(d).some(function(k){ return d[k] === 'menunggu'; });
+    }
+    const k = document.getElementById('demoKenal');
+    if(k){
+      const kn = (window.KolavoApp || {}).kenalan || {};
+      k.hidden = !Object.keys(kn).some(function(n){ return kn[n] === 'menunggu'; });
+    }
+  }
+
+  window.KolavoSetujui = function(){
+    const App = window.KolavoApp || {};
+    const d = App.diajukan || {};
+    const kelas = Object.keys(d).filter(function(k){ return d[k] === 'menunggu'; })[0];
+    if(!kelas) return;
+    d[kelas] = 'anggota';
+    tandaiDemo();
+
+    const nama = (kini && kini.kelas === kelas) ? kini.nama
+               : ((App.komunitas && App.komunitas.nama) || 'komunitas itu');
+    /* daftar komunitas di layar profil membaca angka ini — kalau tidak ikut
+       diperbarui, profilnya bilang 22 sementara halaman komunitasnya 23 */
+    if(kini && kini.kelas === kelas && App.komunitas && App.komunitas.kelas === kelas){
+      App.komunitas.jumlah = angkaKini() + ' anggota';
+    }
+    if(kini && kini.kelas === kelas) gambar();
+    if(window.KolavoIsiProfil) window.KolavoIsiProfil();
+    if(window.KolavoToast) window.KolavoToast('Pengurus ' + nama + ' menyetujui pendaftaranmu.');
+    if(kini && kini.kelas === kelas && !document.getElementById('scrKomunitas').hidden){
+      el('komBuka').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  function gambarAksi(){
+    const wadah = el('komAksi');
+    wadah.innerHTML = '';
+
+    /* halaman pemilik: bukan tombol Gabung, tapi pintu ke dashboard pengurus */
+    if(founder){
+      const jab = (window.KolavoDashboard && window.KolavoDashboard.jabatanAku && window.KolavoDashboard.jabatanAku()) || 'Pengurus';
+      wadah.innerHTML =
+        '<p class="kom-status pengurus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v5c0 4.5 3.4 8 8 10 4.6-2 8-5.5 8-10V6l-8-3Z"/></svg>Kamu ' + jab + ' di sini</p>' +
+        '<button type="button" class="btn" data-dashboard>Dashboard pengurus</button>';
+      return;
+    }
+
+    const status = (window.KolavoApp.diajukan || {})[kini.kelas];
+
+    if(status === 'anggota'){
+      wadah.innerHTML =
+        '<p class="kom-status anggota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.4 2.4 2.4 4.6-5"/></svg>Kamu anggota di sini</p>' +
+        '<button type="button" class="btn outline" id="komEdit">Edit Data Pendaftaran</button>';
+      return;
+    }
+
+    if(status === 'menunggu'){
+      wadah.innerHTML =
+        '<p class="kom-status tunggu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Menunggu persetujuan</p>' +
+        '<p class="catat">Pengurus akan meninjau pendaftaranmu.</p>';
+      return;
+    }
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn lead';
+    b.id = 'komGabungBtn';
+    b.textContent = 'Gabung';
+    wadah.appendChild(b);
+    const c = document.createElement('p');
+    c.className = 'catat';
+    c.textContent = 'Pengurus yang memutuskan diterima atau tidak.';
+    wadah.appendChild(c);
+  }
+
+  function gambar(){
+    if(!kini) return;
+    el('komJalurNm').textContent = kini.nama;
+    el('komNm').textContent = kini.nama;
+    el('komDesc').textContent = kini.desc;
+    const logo = el('komLogo');
+    if(founder || pratinjau){
+      logo.className = 'kom-logo logo-sq baru';
+      logo.style.backgroundImage = kini.logo ? 'url("' + kini.logo + '")' : '';
+      logo.textContent = kini.logo ? '' : (kini.inisial || '');
+    } else {
+      logo.className = 'kom-logo logo-sq ' + kini.kelas;
+      logo.style.backgroundImage = '';
+      logo.textContent = '';
+    }
+
+    el('komMeta').innerHTML = '';
+    /* jumlahnya dihitung, bukan diambil apa adanya dari kartu — begitu
+       penggunanya diterima, kepala halaman dan angka besar harus sama */
+    [kini.bentuk, kini.lokasi, angkaKini() + ' anggota'].forEach(function(v, i){
+      if(i){ const t = document.createElement('span'); t.className = 'titik'; t.textContent = '·'; el('komMeta').appendChild(t); }
+      const s = document.createElement('span');
+      s.textContent = v;
+      el('komMeta').appendChild(s);
+    });
+
+    const a = kini.agg;
+    el('komStat').innerHTML =
+      '<div><span class="n">' + angkaKini() + '</span><span class="k">anggota</span></div>' +
+      '<div><span class="n">' + (a ? a.kota.filter(function(k){ return k[0] !== 'Lainnya'; }).length + '+' : '—') + '</span><span class="k">kota</span></div>' +
+      '<div><span class="n">' + (a ? a.profesi.filter(function(k){ return k[0] !== 'Lainnya'; }).length + '+' : '—') + '</span><span class="k">bidang pekerjaan</span></div>' +
+      '<div><span class="n">' + (a ? a.angkatan : '—') + '</span><span class="k">rentang angkatan</span></div>';
+
+    if(a){
+      /* di halaman pemilik agregatnya sudah lengkap dari dashboard — tidak
+         perlu menyuntikkan baris "aku" seperti di tampilan calon anggota */
+      if(founder || pratinjau){
+        bar(a.profesi, el('aggProfesi'), angkaKini());
+        bar(a.kota, el('aggKota'), angkaKini());
+      } else {
+      bar(komposisi(a.profesi, nilaiProfil('kerja')), el('aggProfesi'), angkaKini());
+      bar(komposisi(a.kota, nilaiProfil('kota')), el('aggKota'), angkaKini());
+      }
+      /* Bagas Prakoso dilepas dari daftar pengurus: dia pengguna demonya sendiri,
+         dan sebelumnya orang mendaftar ke komunitas yang mencantumkan namanya
+         sendiri sebagai Sekretaris. Penggantinya tanpa foto — cuma empat wajah
+         hasil AI yang boleh dipakai. */
+      el('komPengurus').innerHTML = a.pengurus.map(function(p, i){
+        const av = p.f
+          ? '<span class="av photo ' + p.f + '" role="img" aria-label="Foto profil ' + p.n + ' — gambar AI"></span>'
+          : '<span class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(p.n) + '</span>';
+        return '<div class="peng-i">' + av +
+               '<div><div class="peng-nm">' + p.n + '</div><div class="peng-j">' + p.j + '</div></div></div>';
+      }).join('');
+    }
+
+    if(founder || pratinjau){
+      if(window.KolavoWarnai) window.KolavoWarnai(document.getElementById('scrKomunitas'), kini.warna);
+    } else if(window.KolavoTema) window.KolavoTema(kini.kelas);
+    el('komKunciT').textContent = angkaKini() + ' anggota di dalam';
+    gambarAksi();
+    gambarFounder();
+    gambarDaftar(founder || (window.KolavoApp.diajukan || {})[kini.kelas] === 'anggota');
+    el('komGabung').hidden = true;
+    el('komGabungBtn') && (el('komGabung').hidden = true);
+  }
+
+  /* ---------- notifikasi pemilik: siapa yang menunggu disetujui ----------
+     Cara termudah tahu ada yang mau gabung: begitu buka halaman komunitasmu,
+     angkanya langsung di depan, dengan pintu langsung ke tinjauannya. */
+  function gambarFounder(){
+    const fb = el('komFounder');
+    if(!fb) return;
+    if(pratinjau){
+      fb.hidden = false;
+      fb.className = 'kom-founder ada';
+      fb.innerHTML =
+        '<div class="kom-founder-t"><span class="kom-founder-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg></span>' +
+          '<div><strong>Ini contoh tampilan halaman komunitas</strong>' +
+          '<p>Begini yang dilihat calon anggota. Komposisi anggota di sini cuma misal — halaman komunitas beneran mulai dari kosong.</p></div></div>' +
+        '<div class="kom-founder-aksi"><button type="button" class="btn sm" data-ke="' + pratinjauKembali.ke + '"' +
+          (pratinjauKembali.anchor ? ' data-anchor="' + pratinjauKembali.anchor + '"' : '') + '>' + pratinjauKembali.label + '</button></div>';
+      return;
+    }
+    if(!founder){ fb.hidden = true; fb.innerHTML = ''; return; }
+    fb.hidden = false;
+    const D = window.KolavoDashboard;
+    const pend = (D && D.minta) ? D.minta.length : 0;
+    fb.className = 'kom-founder' + (pend ? ' ada' : '');
+    if(pend){
+      fb.innerHTML =
+        '<div class="kom-founder-t"><span class="kom-founder-badge">' + pend + '</span>' +
+          '<div><strong>' + pend + ' orang menunggu persetujuanmu</strong>' +
+          '<p>Tinjau dan setujui di dashboard pengurus.</p></div></div>' +
+        '<div class="kom-founder-aksi"><button type="button" class="btn sm" data-dashboard="minta">Tinjau permintaan</button></div>';
+    } else {
+      fb.innerHTML =
+        '<div class="kom-founder-t"><span class="kom-founder-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>' +
+          '<div><strong>Semua permintaan sudah kamu tinjau</strong>' +
+          '<p>Belum ada permintaan gabung baru. Sebar lagi linknya ke grup.</p></div></div>';
+    }
+  }
+
+  /* ---------- dipanggil router ---------- */
+  window.KolavoBukaKomunitas = function(kartu){
+    founder = false; pratinjau = false;   /* dari direktori: tampilan calon anggota */
+    kartuAsal = kartu;
+    kini = dariKartu(kartu);
+    window.KolavoApp.komunitas = {
+      nama: kini.nama, kelas: kini.kelas, jumlah: kini.jumlah,
+      bentuk: kini.bentuk, tanya: kini.tanya
+    };
+    gambar();
+  };
+  window.KolavoKomunitasKini = function(){ return kini; };
+  window.KolavoLihatKomunitas = function(kartu){
+    window.KolavoBukaKomunitas(kartu);
+    window.KolavoKe('scrKomunitas');
+  };
+  window.KolavoGambarKomunitas = gambar;
+
+  /* ---------- gabung ---------- */
+  document.addEventListener('click', function(e){
+    if(e.target.closest('#komGabungBtn')){
+      const App = window.KolavoApp || {};
+
+      /* di mode contoh, Gabung cuma pajangan — halamannya belum ada */
+      if(pratinjau){
+        if(window.KolavoToast) window.KolavoToast('Ini cuma contoh. Buat halamannya dulu supaya orang bisa mendaftar.');
+        return;
+      }
+
+      /* gerbangnya di sini, bukan di tombol "Lihat": orang boleh melihat
+         isi komunitas dulu, baru diminta masuk waktu benar-benar mau gabung */
+      if(!App.masuk){
+        window.KolavoBukaModal('anggota', kartuAsal, e.target.closest('#komGabungBtn'));
+        return;
+      }
+      if(!App.lengkap){
+        if(window.KolavoToast) window.KolavoToast('Lengkapi profilmu dulu supaya pengurus bisa menilai.');
+        window.KolavoKe('scrLengkapi');
+        return;
+      }
+
+      const g = el('komGabung');
+      modeSunting = false;
+      el('gabungKirim').textContent = 'Kirim permintaan gabung';
+      window.KolavoGambarTanya('gabungList');
+      g.hidden = false;
+      g.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const p = el('gabungH');
+      if(p && kini) p.textContent = 'Pertanyaan dari pengurus ' + kini.nama;
+      return;
+    }
+    const sumbu = e.target.closest('#bukaSumbu .chip');
+    if(sumbu){
+      sumbuKini = sumbu.dataset.sumbu;
+      gambarDaftar(true);
+      return;
+    }
+    const baris = e.target.closest('#bukaList .m');
+    if(baris && baris.dataset.nm){
+      window.KolavoBukaAnggota(baris.dataset.nm);
+      return;
+    }
+    const chip = e.target.closest('#bukaFilter .chip');
+    if(chip){
+      document.querySelectorAll('#bukaFilter .chip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+      saring(chip.dataset.saring || '');
+      return;
+    }
+    if(e.target.closest('#demoSetuju')){
+      window.KolavoSetujui();
+      return;
+    }
+    if(e.target.closest('#demoKenal')){
+      window.KolavoTerimaKenalan();
+      return;
+    }
+    if(e.target.closest('#agKenalMinta') || e.target.closest('#agKenalBatal')){
+      const nama = el('agNm').textContent;
+      const App = window.KolavoApp || {};
+      App.kenalan = App.kenalan || {};
+      const minta = !!e.target.closest('#agKenalMinta');
+      if(minta) App.kenalan[nama] = 'menunggu';
+      else delete App.kenalan[nama];
+      tandaiDemo();
+      gambarAnggota(nama);
+      if(window.KolavoToast){
+        window.KolavoToast(minta
+          ? 'Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + '.'
+          : 'Ajakan kenalan dibatalkan.');
+      }
+      return;
+    }
+    if(e.target.closest('#agKenalChat')){
+      if(window.KolavoToast) window.KolavoToast('Mode demo — di produk, ini membuka WhatsApp ke nomornya.');
+      return;
+    }
+    if(e.target.closest('#komEdit')){
+      const g = el('komGabung');
+      modeSunting = true;
+      window.KolavoGambarTanya('gabungList');
+      pasangJawaban(((window.KolavoApp || {}).jawabanTersimpan || {})[kini.kelas] || {});
+      el('gabungKirim').textContent = 'Simpan perubahan';
+      el('gabungH').textContent = 'Pertanyaan dari pengurus ' + kini.nama;
+      g.hidden = false;
+      g.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if(e.target.closest('#gabungBatal')){
+      el('komGabung').hidden = true;
+      el('gabungGalat').hidden = true;
+      modeSunting = false;
+      el('gabungKirim').textContent = 'Kirim permintaan gabung';
+      return;
+    }
+    if(e.target.closest('#gabungKirim')){
+      let kurang = null;
+      document.querySelectorAll('#gabungList .f.salah').forEach(function(f){ f.classList.remove('salah'); });
+      document.querySelectorAll('#gabungList [data-wajib]').forEach(function(inp){
+        if(inp.value.trim()) return;
+        const f = inp.closest('.f');
+        if(f) f.classList.add('salah');
+        if(!kurang) kurang = f;
+      });
+      if(kurang){
+        el('gabungGalat').hidden = false;
+        kurang.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      el('gabungGalat').hidden = true;
+      window.KolavoApp.jawabanTersimpan = window.KolavoApp.jawabanTersimpan || {};
+      window.KolavoApp.jawabanTersimpan[kini.kelas] = jawabanKini();
+
+      if(modeSunting){
+        modeSunting = false;
+        el('komGabung').hidden = true;
+        el('gabungKirim').textContent = 'Kirim permintaan gabung';
+        gambar();
+        if(window.KolavoIsiProfil) window.KolavoIsiProfil();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if(window.KolavoToast) window.KolavoToast('Data pendaftaranmu diperbarui.');
+        return;
+      }
+
+      window.KolavoApp.diajukan = window.KolavoApp.diajukan || {};
+      window.KolavoApp.diajukan[kini.kelas] = 'menunggu';
+      el('komGabung').hidden = true;
+      gambarAksi();
+      tandaiDemo();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if(window.KolavoToast) window.KolavoToast('Permintaan gabung dikirim ke pengurus ' + kini.nama + '.');
+    }
+  });
+
+  /* barisnya role="button", jadi papan ketik harus bisa membukanya juga */
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter' && e.key !== ' ') return;
+    const baris = e.target.closest && e.target.closest('#bukaList .m');
+    if(!baris || !baris.dataset.nm) return;
+    e.preventDefault();
+    window.KolavoBukaAnggota(baris.dataset.nm);
+  });
+
+  /* galat per kolom hilang begitu diisi */
+  ['input','change'].forEach(function(ev){
+    document.addEventListener(ev, function(e){
+      const f = e.target.closest('#gabungList .f.salah');
+      if(f) f.classList.remove('salah');
+    });
+  });
+
+  /* pemicu dari layar profil: kartu komunitas yang dibuat sendiri membuka
+     halaman komunitas versi pemilik, bukan langsung dashboard */
+  document.addEventListener('click', function(e){
+    if(e.target.closest('[data-komunitas-dibuat]')){ e.preventDefault(); window.KolavoBukaKomunitasDibuat(); return; }
+    /* "Lihat contoh halaman" di beranda: contoh siap-pakai, kembali ke beranda */
+    if(e.target.closest('[data-contoh]')){
+      e.preventDefault();
+      window.KolavoPratinjau(CONTOH_KOM, { ke: 'scrBeranda', anchor: 'pengurus', label: 'Tutup contoh' });
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('[data-komunitas-dibuat]')){
+      e.preventDefault(); window.KolavoBukaKomunitasDibuat();
+    }
+  });
+})();
+</script>
+

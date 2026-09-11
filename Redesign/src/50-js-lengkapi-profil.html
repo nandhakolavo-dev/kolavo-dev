@@ -1,0 +1,183 @@
+<script>
+/* ============================================================
+   Perilaku layar "Lengkapi Profil".
+   Dua hal saja: menu akun dan isi menu pilih.
+   ============================================================ */
+
+/* ---------- menu akun ---------- */
+(function(){
+  var btn = document.getElementById('acctBtn'),
+      menu = document.getElementById('acctMenu');
+  if(!btn || !menu) return;
+
+  function tutup(){ menu.hidden = true; btn.setAttribute('aria-expanded','false'); }
+  function buka(){ menu.hidden = false; btn.setAttribute('aria-expanded','true'); }
+
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    menu.hidden ? buka() : tutup();
+  });
+  document.addEventListener('click', function(e){
+    if(!menu.hidden && !menu.contains(e.target)) tutup();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && !menu.hidden){ tutup(); btn.focus(); }
+  });
+  /* memilih butir menu ikut menutupnya — klik di dalam menu tidak kena
+     penutup "klik di luar" di atas */
+  menu.addEventListener('click', function(e){
+    if(e.target.closest('.acct-i')) tutup();
+  });
+})();
+
+/* ---------- isi menu pilih ---------- */
+(function(){
+  function isi(el, daftar, nilaiSama){
+    if(!el) return;
+    daftar.forEach(function(v){
+      var o = document.createElement('option');
+      o.value = nilaiSama ? v : v.v;
+      o.textContent = nilaiSama ? v : v.t;
+      el.appendChild(o);
+    });
+  }
+
+  var hariIni = new Date().getFullYear();
+
+  /* dipakai lagi oleh pertanyaan bertipe tahun dari pengurus komunitas */
+  window.KolavoTahun = [];
+  for(i = hariIni; i >= hariIni - 45; i--) window.KolavoTahun.push(String(i));
+})();
+
+/* ---------- domisili bertingkat ---------- */
+(function(){
+  var WILAYAH = {
+    'Indonesia': {
+      'DKI Jakarta': ['Jakarta Pusat','Jakarta Utara','Jakarta Barat','Jakarta Selatan','Jakarta Timur'],
+      'Jawa Barat' : ['Kota Bekasi','Kabupaten Bekasi','Kota Bogor','Kota Depok','Kota Bandung'],
+      'Banten'     : ['Kota Tangerang','Tangerang Selatan','Kota Serang'],
+      'Jawa Tengah': ['Kota Semarang','Kota Surakarta','Kota Magelang'],
+      'DI Yogyakarta': ['Kota Yogyakarta','Kabupaten Sleman','Kabupaten Bantul']
+    },
+    'Malaysia' : { 'Kuala Lumpur': ['Kuala Lumpur'], 'Selangor': ['Shah Alam','Petaling Jaya'] },
+    'Singapura': { 'Singapura': ['Singapura'] }
+  };
+
+  /* layar buat halaman komunitas memakai daftar yang sama — satu sumber,
+     supaya ejaan kotanya tidak bercabang */
+  window.KolavoWilayah = WILAYAH;
+
+  var negara   = document.getElementById('negara'),
+      provinsi = document.getElementById('provinsi'),
+      kota     = document.getElementById('kota');
+  if(!negara) return;
+
+  function kosongkan(sel, teks){
+    sel.innerHTML = '';
+    var o = document.createElement('option');
+    o.value = ''; o.textContent = teks;
+    sel.appendChild(o);
+  }
+
+  negara.addEventListener('change', function(){
+    kosongkan(provinsi, 'Provinsi');
+    kosongkan(kota, 'Kota/kabupaten');
+    kota.disabled = true;
+    var p = WILAYAH[negara.value];
+    provinsi.disabled = !p;
+    if(p) Object.keys(p).forEach(function(n){
+      var o = document.createElement('option'); o.textContent = n; provinsi.appendChild(o);
+    });
+    hitung();
+  });
+
+  provinsi.addEventListener('change', function(){
+    kosongkan(kota, 'Kota/kabupaten');
+    var k = WILAYAH[negara.value] && WILAYAH[negara.value][provinsi.value];
+    kota.disabled = !k;
+    if(k) k.forEach(function(n){
+      var o = document.createElement('option'); o.textContent = n; kota.appendChild(o);
+    });
+    hitung();
+  });
+})();
+
+/* ---------- progres ---------- */
+function hitung(){}
+(function(){
+  var kerja = document.getElementById('kerja'),
+      kota  = document.getElementById('kota'),
+      bio   = document.getElementById('bio'),
+      fill  = document.getElementById('progFill'),
+      progN = document.getElementById('progN'),
+      est   = document.getElementById('progEst');
+
+  /* identitas Google sudah beres sejak awal, lalu empat hal wajib di profil,
+     ditambah pertanyaan wajib dari pengurus komunitas — jumlahnya berubah
+     tergantung komunitas mana yang sedang dituju */
+  function gambarProgres(){
+    var beres = 1, total = 5;
+    var wa = document.getElementById('wa');
+    if(wa && wa.value.trim().length >= 8) beres++;
+    var lahir = document.getElementById('lahir');
+    if(lahir && lahir.value) beres++;
+    if(document.querySelector('#scrLengkapi input[name="jk"]:checked')) beres++;
+    if(kota && kota.value) beres++;
+
+    if(progN) progN.textContent = beres;
+    if(document.getElementById('progTotal')) document.getElementById('progTotal').textContent = total;
+    if(fill) fill.style.width = (beres / total * 100) + '%';
+    if(est) est.textContent = beres === total ? 'siap dikirim' : 'sekitar 1 menit';
+  }
+
+  hitung = function(){ gambarProgres(); };
+
+  ['input','change'].forEach(function(ev){
+    document.addEventListener(ev, function(e){
+      if(e.target.closest('.blk, .act')) hitung();
+    });
+  });
+
+  /* pekerjaan/keahlian: dropdown terkurasi supaya nilainya seragam dan gampang
+     dicari. "Lainnya — tulis sendiri" membuka kolom teks bebas; teksnya
+     disisipkan sebagai opsi terpilih sehingga kerja.value tetap mengembalikan
+     nilai efektif — semua pembaca lain (profil, agregat komunitas, dashboard)
+     cukup baca .value seperti biasa. */
+  window.KolavoKerjaDefault = 'Anggota komunitas';
+  var kerjaLainWrap = document.getElementById('kerjaLainWrap'),
+      kerjaLain     = document.getElementById('kerjaLain');
+
+  function kerjaOptCustom(){
+    var o = kerja.querySelector('option.kerja-custom');
+    if(!o){ o = document.createElement('option'); o.className = 'kerja-custom'; kerja.appendChild(o); }
+    return o;
+  }
+  if(kerja) kerja.addEventListener('change', function(){
+    if(kerja.value === '__lain__'){
+      if(kerjaLainWrap) kerjaLainWrap.hidden = false;
+      if(kerjaLain) kerjaLain.focus();
+    } else {
+      if(kerjaLainWrap) kerjaLainWrap.hidden = true;
+      var o = kerja.querySelector('option.kerja-custom');   /* balik ke daftar: buang opsi custom */
+      if(o) o.remove();
+    }
+    hitung();
+  });
+  if(kerjaLain) kerjaLain.addEventListener('input', function(){
+    var v = kerjaLain.value.trim();
+    var o = kerjaOptCustom();
+    o.value = v;
+    o.textContent = v || 'Lainnya';
+    o.selected = true;   /* kerja.value == teks custom */
+    hitung();
+  });
+
+  if(bio) bio.addEventListener('input', function(){
+    var n = document.getElementById('bioN');
+    if(n) n.textContent = bio.value.length;
+  });
+
+  hitung();
+})();
+</script>
+

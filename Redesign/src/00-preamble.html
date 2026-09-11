@@ -1,0 +1,42 @@
+<!--
+  ============================================================================
+  KOLAVO — PROTOTIPE BERJALAN. Satu berkas, empat layar, tanpa jaringan.
+  ============================================================================
+
+  JANGAN BACA BERKAS INI UTUH. ~50% isinya aset base64.
+    peta struktur : python3 Redesign/kit/peta.py
+    audit statis  : python3 Redesign/kit/audit.py Redesign/ReDesign_Kolavo_3.html
+    menyunting    : python3 Redesign/kit/edit.py Redesign/ReDesign_Kolavo_3.html <<'JSON' ...
+    alasan desain : Redesign/REFERENCE.md   (bukan halaman HTML)
+
+  LAYAR — <div class="scr" id="scr…">, saling menggantikan lewat router
+  di blok skrip "Prototipe berjalan". Router pakai variabel, bukan
+  location.hash: berkas ini juga dibuka dari data: URL dan iframe
+  ber-sandbox, tempat hash tidak selalu bisa ditulis.
+
+    scrBeranda    hero + direktori komunitas + ajakan pengurus
+    scrKomunitas  halaman komunitas — publik, tanpa perlu masuk
+    scrLengkapi   lengkapi profil — perlu masuk
+    scrProfil     profil saya — perlu masuk + profil lengkap
+
+  ALUR
+    kartu "Lihat"  -> scrKomunitas (siapa pun)
+    tombol Gabung  -> belum masuk   : modal masuk
+                      profil draft  : scrLengkapi
+                      profil lengkap: formulir pertanyaan pengurus
+
+  ATURAN YANG SUDAH MEMAKAN KORBAN
+    · [hidden] kalah dari display kelas -> ada aturan .btn[hidden] dsb.
+      Tambahkan kelas baru ke daftar itu kalau elemennya di-toggle.
+    · Warna wajib lewat token. Jangan tulis warna harfiah di blok @media
+      atau [data-theme] — halaman jadi tak terbaca di salah satu tema.
+    · Kata "Gratis" sudah dihapus dari semua halaman aktif. Jangan
+      dikembalikan tanpa keputusan harga.
+  ============================================================================
+-->
+<meta charset="utf-8">
+<title>ReDesign Kolavo 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@500&display=swap">
+

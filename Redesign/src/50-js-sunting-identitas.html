@@ -1,0 +1,117 @@
+<script>
+/* ============================================================
+   Sunting identitas dari Google.
+   Foto dibaca lewat FileReader jadi data URL — tidak ada jaringan
+   sama sekali, sesuai janji "Mode demo" di pojok. Foto barunya
+   dipasang ke semua tempat wajah itu muncul (nav, kartu, profil),
+   karena kalau cuma satu yang berubah, prototipenya terasa bohong.
+   ============================================================ */
+(function(){
+  const kartu  = document.getElementById('idKartu'),
+        edit   = document.getElementById('idEdit'),
+        ganti  = document.getElementById('idGanti');
+  if(!kartu || !edit) return;
+
+  const simpan   = document.getElementById('idSimpan'),
+        batal    = document.getElementById('idBatal'),
+        input    = document.getElementById('idInputNama'),
+        fNama    = document.getElementById('idFNama'),
+        file     = document.getElementById('idFile'),
+        pilih    = document.getElementById('idPilihFoto'),
+        balik    = document.getElementById('idBalikFoto'),
+        namaKartu = document.getElementById('idNama');
+
+  const NAMA_GOOGLE = namaKartu.textContent.trim();
+  let namaSimpan = NAMA_GOOGLE,   /* yang sudah disetujui */
+      fotoSimpan = null,          /* data URL, null = masih foto Google */
+      fotoDraf   = null;          /* pilihan yang belum disimpan */
+
+  function semuaFoto(){ return document.querySelectorAll('.p-bagas'); }
+
+  function pasangFoto(url){
+    semuaFoto().forEach(function(el){
+      if(url) el.style.backgroundImage = 'url("' + url + '")';
+      else el.style.removeProperty('background-image');
+    });
+  }
+
+  function pasangNama(n){
+    namaKartu.textContent = n;
+    const pf = document.getElementById('pfNm');
+    if(pf) pf.textContent = n;
+    const menuNama = document.querySelector('#acctMenu .acct-nm');
+    if(menuNama) menuNama.textContent = n;
+    /* pakai id, bukan posisi: anak pertama #acctBtn adalah avatarnya, dan
+       selektor berbasis urutan pernah menulis nama ke dalam elemen foto */
+    const chip = document.getElementById('acctChip');
+    if(chip) chip.textContent = n.split(' ')[0];
+  }
+
+  function bukaEdit(){
+    fotoDraf = fotoSimpan;
+    input.value = namaSimpan;
+    fNama.classList.remove('salah');
+    balik.hidden = !fotoDraf;
+    kartu.hidden = true;
+    edit.hidden = false;
+    input.focus();
+  }
+
+  function tutupEdit(){
+    /* buang pratinjau yang tidak jadi disimpan */
+    pasangFoto(fotoSimpan);
+    edit.hidden = true;
+    kartu.hidden = false;
+    ganti.focus();
+  }
+
+  ganti.addEventListener('click', bukaEdit);
+  batal.addEventListener('click', tutupEdit);
+
+  simpan.addEventListener('click', function(){
+    const n = input.value.trim();
+    if(!n){
+      fNama.classList.add('salah');
+      input.focus();
+      return;
+    }
+    namaSimpan = n;
+    fotoSimpan = fotoDraf;
+    pasangNama(namaSimpan);
+    pasangFoto(fotoSimpan);
+    tutupEdit();
+    if(window.KolavoToast) window.KolavoToast('Identitas kamu diperbarui.');
+  });
+
+  input.addEventListener('input', function(){
+    if(input.value.trim()) fNama.classList.remove('salah');
+  });
+
+  pilih.addEventListener('click', function(){ file.click(); });
+
+  file.addEventListener('change', function(){
+    const f = file.files && file.files[0];
+    if(!f) return;
+    if(!/^image\//.test(f.type)){
+      if(window.KolavoToast) window.KolavoToast('Berkasnya harus gambar.');
+      file.value = '';
+      return;
+    }
+    const baca = new FileReader();
+    baca.onload = function(){
+      fotoDraf = baca.result;
+      pasangFoto(fotoDraf);      /* pratinjau; baru permanen setelah Simpan */
+      balik.hidden = false;
+    };
+    baca.readAsDataURL(f);
+    file.value = '';
+  });
+
+  balik.addEventListener('click', function(){
+    fotoDraf = null;
+    pasangFoto(null);
+    balik.hidden = true;
+  });
+})();
+</script>
+

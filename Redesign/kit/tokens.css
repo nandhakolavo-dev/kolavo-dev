@@ -1,0 +1,82 @@
+/* ============================================================
+   Kolavo Design Kit — Token
+   Diekstrak dari ReDesign_Kolavo_2.html. Jangan disunting langsung:
+   ubah di sumbernya lalu jalankan kit/extract.py lagi.
+   ============================================================ */
+/* ============================================================
+   Token diambil dari file Figma "Kolavo" — page Design System.
+   Primary #2D6BE4 · hover #0045CD · disabled #E3E3E3/#9CA3AF
+   Radius tombol 100 (pill) · tinggi L52 M48 S40 XS32
+   Poppins 400/500/600 · netral #9CA3AF #6B7280 #222222
+   Aksen #FF683D
+   ============================================================ */
+:root{
+  --bg:#FFFFFF;
+  --bg-alt:#FAFAFA;
+  --card:#FFFFFF;
+  --ink:#222222;
+  --ink-2:#6B7280;
+  --ink-3:#9CA3AF;
+  --line:#EFEFEF;
+  --line-2:#F4F5F7;
+  --blue:#2D6BE4;
+  --blue-hover:#0045CD;
+  --blue-wash:#EBF1FD;
+  --blue-ink:#2D6BE4;
+  --blue-tint:#F5F8FE;
+  --orange:#FF683D;
+  --orange-ink:#C64216;
+  --orange-wash:#FFF1EC;
+  --green:#12855F;
+  --green-wash:#E8F5EF;
+  --disabled:#E3E3E3;
+  --btn-ink:#FFFFFF;
+  --red:#C0362C; --red-wash:#FDF0EE; --red-line:#F3CFCA;
+  --scrim:rgba(20,26,38,.34);
+  --g-bg:#FFFFFF; --g-ink:#1F1F1F; --g-line:#747775;
+  --ring:rgba(45,107,228,.4);
+  --sh-sm:0 1px 2px rgba(34,34,34,.05);
+  --sh:0 2px 6px rgba(34,34,34,.05), 0 14px 30px -18px rgba(45,107,228,.35);
+  --sh-lg:0 4px 10px rgba(34,34,34,.05), 0 30px 64px -30px rgba(45,107,228,.5);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1017;--bg-alt:#141821;--card:#181D28;
+    --ink:#F0F2F6;--ink-2:#A9B0BF;--ink-3:#7E8695;
+    --line:#262C39;--line-2:#1E242F;
+    --blue:#6F97F5;--blue-hover:#8FB0FF;--blue-wash:#1A2337;--blue-ink:#8FB0FF;--blue-tint:#151B27;
+    --orange:#FF8156;--orange-ink:#FF9A78;--orange-wash:#2A170F;
+    --green:#4FBF98;--green-wash:#12281F;
+    --disabled:#2A303C;--btn-ink:#0D1017;--ring:rgba(111,151,245,.5);
+    --red:#FF9A8F;--red-wash:#2B1512;--red-line:#4A241F;
+    --scrim:rgba(0,0,0,.55);
+    --g-bg:#131314;--g-ink:#E3E3E3;--g-line:#8E918F;
+    --sh-sm:0 1px 2px rgba(0,0,0,.45);
+    --sh:0 2px 6px rgba(0,0,0,.35), 0 16px 32px -18px rgba(0,0,0,.85);
+    --sh-lg:0 4px 10px rgba(0,0,0,.4), 0 34px 68px -32px rgba(0,0,0,.95);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1017;--bg-alt:#141821;--card:#181D28;
+  --ink:#F0F2F6;--ink-2:#A9B0BF;--ink-3:#7E8695;
+  --line:#262C39;--line-2:#1E242F;
+  --blue:#6F97F5;--blue-hover:#8FB0FF;--blue-wash:#1A2337;--blue-ink:#8FB0FF;--blue-tint:#151B27;
+  --orange:#FF8156;--orange-ink:#FF9A78;--orange-wash:#2A170F;
+  --green:#4FBF98;--green-wash:#12281F;
+  --disabled:#2A303C;--btn-ink:#0D1017;--ring:rgba(111,151,245,.5);
+  --red:#FF9A8F;--red-wash:#2B1512;--red-line:#4A241F;
+  --scrim:rgba(0,0,0,.55);
+  --g-bg:#131314;--g-ink:#E3E3E3;--g-line:#8E918F;
+  --sh-sm:0 1px 2px rgba(0,0,0,.45);
+  --sh:0 2px 6px rgba(0,0,0,.35), 0 16px 32px -18px rgba(0,0,0,.85);
+  --sh-lg:0 4px 10px rgba(0,0,0,.4), 0 34px 68px -32px rgba(0,0,0,.95);
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Poppins",system-ui,-apple-system,sans-serif;
+  font-size:16px;font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased}
+p{margin:0}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.02em;line-height:1.18;text-wrap:balance}
+ul{margin:0;padding:0;list-style:none}
+.shell{max-width:1160px;margin:0 auto;padding:0 22px}

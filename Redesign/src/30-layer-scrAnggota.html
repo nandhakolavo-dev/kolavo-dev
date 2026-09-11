@@ -1,0 +1,46 @@
+<div class="scr" id="scrAnggota" hidden>
+  <div class="kom">
+    <div class="shell">
+      <p class="kom-jalur">
+        <button type="button" data-ke="scrBeranda" data-anchor="direktori">Komunitas</button>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        <button type="button" id="agBalik" data-ke="scrKomunitas">—</button>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        <span class="kini" id="agJalurNm">—</span>
+      </p>
+
+      <div class="ag-head">
+        <span class="ag-foto" id="agFoto" role="img" aria-label="Foto profil"></span>
+        <div class="ag-t">
+          <h1 class="ag-nm" id="agNm">—</h1>
+          <p class="ag-full" id="agFull" hidden>—</p>
+          <p class="ag-kerja" id="agKerja">—</p>
+          <div class="tags" id="agTags"></div>
+          <p class="ag-meta" id="agMeta"></p>
+        </div>
+      </div>
+
+      <p class="ag-bio" id="agBio" hidden></p>
+
+      <!-- dinaikkan dari dasar halaman: komunitas lain yang diikuti seseorang
+           adalah keterangan sosial yang sungguhan, sekaligus lingkar penemuan
+           komunitas berikutnya -->
+      <section class="kom-sec" id="agKomSec" hidden>
+        <h2 class="kom-h" id="agKomH">Juga di komunitas</h2>
+        <p class="kom-sub" id="agKomSub">Tempat lain yang dia ikuti — mungkin kamu juga ada di situ.</p>
+        <div class="pf-list" id="agKom"></div>
+      </section>
+
+      <!-- kontak dibuka lewat persetujuan dua arah, bukan dipajang begitu saja -->
+      <div class="ag-kenal" id="agKenal"></div>
+    </div>
+  </div>
+</div><!-- /scrAnggota -->
+
+<!-- ============================================================
+     LAYAR BUAT HALAMAN KOMUNITAS — satu-satunya layar milik pengurus.
+     Tiga ketetapan sekaligus: identitas, warna tema, dan formulir
+     pendaftaran. Yang ketiga paling menentukan — jawabannya jadi tag
+     di daftar anggota, jadi pertanyaannya milik komunitas, bukan
+     kolom platform.
+     ============================================================ -->

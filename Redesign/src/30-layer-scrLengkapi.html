@@ -1,0 +1,229 @@
+<div class="scr" id="scrLengkapi" hidden>
+<div class="page">
+<main class="shell wrap">
+
+  <!-- ============ kolom isian ============ -->
+  <div>
+    <div class="ph-kicker">Langkah terakhir sebelum gabung</div>
+    <h1 class="ph-h1">Satu menit lagi, Bagas.</h1>
+    <p class="ph-lede" id="lengkapiLede">Pengurus <b>Ikatan Alumni SMAN 52</b> perlu memastikan kamu orang asli sebelum menyetujui. Sisanya boleh dilewati — tapi justru itu yang bikin kamu dikenali.</p>
+
+    <div class="prog">
+      <div class="prog-bar"><i id="progFill" style="width:20%"></i></div>
+      <p class="prog-txt"><b id="progN">1</b> dari <span id="progTotal">5</span> · <span id="progEst">sekitar 1 menit</span></p>
+    </div>
+
+    <!-- Blok 1 — sudah beres dari Google -->
+    <section class="blk">
+      <div class="blk-h">
+        <span class="blk-ic ok" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div>
+          <h2>Sudah kami ambil dari Google</h2>
+          <p class="blk-sub">Nama, foto, dan e-mail datang dari akun yang barusan kamu pakai. Tidak perlu diketik ulang.</p>
+        </div>
+      </div>
+      <div class="idcard" id="idKartu">
+        <span class="av photo p-bagas" role="img" aria-label="Foto profil Bagas Prakoso — gambar AI"></span>
+        <div class="idcard-t">
+          <div class="idcard-nm" id="idNama">Bagas Prakoso</div>
+          <div class="idcard-em">bagas.prakoso@gmail.com</div>
+        </div>
+        <button type="button" class="btn outline xs" id="idGanti">Ganti</button>
+      </div>
+
+      <!-- Keadaan sunting. "Ganti" tadi satu kata untuk tiga hal yang beda
+           perlakuannya: foto bisa diganti, nama bisa diubah, e-mail tidak
+           bisa sama sekali karena itu identitas akun Google-nya. -->
+      <div class="idedit" id="idEdit" hidden>
+        <div class="idedit-foto">
+          <span class="av photo p-bagas" aria-hidden="true"></span>
+          <button type="button" class="idedit-cam" id="idPilihFoto" aria-label="Pilih foto lain">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.4"/></svg>
+          </button>
+          <input type="file" id="idFile" accept="image/*" hidden>
+        </div>
+
+        <div class="idedit-kolom">
+          <div class="f" id="idFNama">
+            <label class="f-lbl" for="idInputNama">Nama lengkap</label>
+            <input class="inp" id="idInputNama" type="text" value="Bagas Prakoso" autocomplete="name">
+            <p class="f-galat">Nama tidak boleh kosong.</p>
+          </div>
+
+          <p class="idedit-em">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            <span><b>bagas.prakoso@gmail.com</b> terikat ke akun Google dan tidak bisa diubah di sini. Buat menggantinya, keluar lalu masuk pakai akun lain.</span>
+          </p>
+
+          <div class="idedit-aksi">
+            <button type="button" class="btn sm" id="idSimpan">Simpan</button>
+            <button type="button" class="btn outline sm" id="idBatal">Batal</button>
+            <button type="button" class="lnk" id="idBalikFoto" hidden>Balikin foto Google</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blok 2 — privat -->
+    <section class="blk">
+      <div class="blk-h">
+        <span class="blk-ic lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+        <div>
+          <h2>Cuma buat pengurus</h2>
+          <p class="blk-sub">Dipakai buat memastikan kamu orang asli, bukan akun kosong. <b>Tidak pernah muncul di daftar anggota</b> dan tidak dibagikan ke anggota lain.</p>
+        </div>
+      </div>
+
+      <div class="f">
+        <label class="f-lbl" for="wa">Nomor WhatsApp<span class="must" aria-hidden="true">*</span></label>
+        <div class="tel">
+          <span class="tel-pfx">🇮🇩 +62</span>
+          <input id="wa" type="tel" inputmode="numeric" placeholder="812 3456 7890" autocomplete="tel-national" data-wajib>
+        </div>
+        <p class="f-why">Dipakai pengurus kalau perlu mengonfirmasi kamu. Bukan buat dimasukkan ke grup WhatsApp baru.</p>
+        <p class="f-galat">Nomor WhatsApp perlu diisi.</p>
+      </div>
+
+      <div class="f-grid dua">
+        <div class="f">
+          <span class="f-lbl" id="lblLahir">Tanggal lahir<span class="must" aria-hidden="true">*</span></span>
+          <div class="dp">
+            <button type="button" class="dp-btn kosong" id="lahirBtn"
+                    aria-haspopup="dialog" aria-expanded="false" aria-labelledby="lblLahir">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+              <span class="val">Pilih tanggal lahir</span>
+            </button>
+            <input type="hidden" id="lahir" data-wajib>
+
+            <div class="dp-pop" id="lahirPop" role="dialog" aria-label="Pilih tanggal lahir" hidden>
+              <div class="dp-head">
+                <button type="button" class="dp-nav" id="dpPrev" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+                <select class="dp-sel" id="dpBln" aria-label="Bulan"></select>
+                <select class="dp-sel thn" id="dpThn" aria-label="Tahun"></select>
+                <button type="button" class="dp-nav" id="dpNext" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+              </div>
+              <div class="dp-dow" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+              <div class="dp-grid" id="dpGrid" role="grid"></div>
+              <div class="dp-foot">
+                <span class="dp-hint">Pakai menu bulan &amp; tahun buat lompat jauh</span>
+                <button type="button" class="lnk" id="dpHapus">Hapus</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="f">
+          <span class="f-lbl">Jenis kelamin<span class="must" aria-hidden="true">*</span></span>
+          <div class="pills">
+            <label class="pill-r"><input type="radio" name="jk" value="Laki-laki" data-wajib><span>Laki-laki</span></label>
+            <label class="pill-r"><input type="radio" name="jk" value="Perempuan" data-wajib><span>Perempuan</span></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blok 3 — publik -->
+    <section class="blk">
+      <div class="blk-h">
+        <span class="blk-ic eye" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg></span>
+        <div>
+          <h2>Yang dilihat sesama anggota</h2>
+          <p class="blk-sub">Bagian inilah yang bikin orang mengenali kamu sebelum ketemu — dan yang dipakai anggota lain waktu mencari orang.</p>
+        </div>
+      </div>
+
+      <div class="f">
+        <span class="f-lbl" id="lblDom">Domisili<span class="must" aria-hidden="true">*</span></span>
+        <div class="f-grid tiga" role="group" aria-labelledby="lblDom">
+          <select class="sel" id="negara" aria-label="Negara" data-wajib><option value="">Negara</option><option>Indonesia</option><option>Malaysia</option><option>Singapura</option></select>
+          <select class="sel" id="provinsi" aria-label="Provinsi" disabled data-wajib><option value="">Provinsi</option></select>
+          <select class="sel" id="kota" aria-label="Kota atau kabupaten" disabled data-wajib><option value="">Kota/kabupaten</option></select>
+        </div>
+      </div>
+
+      <div class="f">
+        <label class="f-lbl" for="kerja">Pekerjaan atau keahlian<span class="opt">Opsional</span></label>
+        <select class="sel" id="kerja">
+          <option value="">Pilih dari daftar…</option>
+          <optgroup label="Pendidikan">
+            <option>Pelajar &amp; mahasiswa</option>
+            <option>Mahasiswa</option>
+            <option>Guru</option>
+            <option>Dosen</option>
+          </optgroup>
+          <optgroup label="Karyawan &amp; pemerintahan">
+            <option>Karyawan swasta</option>
+            <option>PNS</option>
+            <option>Pegawai BUMN</option>
+            <option>TNI/Polri</option>
+            <option>Perbankan / keuangan</option>
+          </optgroup>
+          <optgroup label="Wirausaha">
+            <option>Wiraswasta</option>
+            <option>Kontraktor</option>
+            <option>Konsultan</option>
+            <option>Freelancer</option>
+          </optgroup>
+          <optgroup label="Teknologi &amp; kreatif">
+            <option>Software engineer</option>
+            <option>Data analyst</option>
+            <option>Desainer produk</option>
+            <option>Desainer grafis</option>
+            <option>Digital marketing</option>
+            <option>Content creator</option>
+            <option>Fotografer</option>
+            <option>Penulis</option>
+          </optgroup>
+          <optgroup label="Kesehatan &amp; profesional">
+            <option>Dokter</option>
+            <option>Perawat</option>
+            <option>Bidan</option>
+            <option>Apoteker</option>
+            <option>Akuntan</option>
+            <option>Pengacara</option>
+            <option>Notaris</option>
+            <option>Arsitek</option>
+            <option>Insinyur</option>
+          </optgroup>
+          <optgroup label="Lainnya">
+            <option>Ibu rumah tangga</option>
+            <option>Belum bekerja</option>
+            <option>Pensiunan</option>
+          </optgroup>
+          <option value="__lain__">Lainnya — tulis sendiri…</option>
+        </select>
+        <div class="kerja-lain" id="kerjaLainWrap" hidden>
+          <input class="inp" id="kerjaLain" type="text" maxlength="40" placeholder="Tulis pekerjaan atau keahlianmu…">
+        </div>
+        <p class="f-why">Dipilih dari daftar biar anggota lain gampang menyaring dan menemukanmu. Tidak ketemu? Pilih “Lainnya — tulis sendiri”.</p>
+      </div>
+
+      <div class="f">
+        <label class="f-lbl" for="bio">Apa yang ingin kamu dapat dari komunitas?<span class="opt">Opsional</span></label>
+        <textarea class="ta" id="bio" maxlength="90" placeholder="Lagi cari partner buat proyek renovasi sekolah."></textarea>
+        <p class="hitung"><span id="bioN">0</span>/90</p>
+      </div>
+    </section>
+
+    <div class="blk-galat" id="galat" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+      <span>Masih ada kolom wajib yang kosong. Yang bertanda merah di atas perlu diisi dulu.</span>
+    </div>
+
+    <div class="act">
+      <button type="button" class="btn lead" id="kirim">Simpan &amp; kirim permintaan gabung</button>
+      <p class="act-sub">
+        <span class="simpan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Tersimpan otomatis</span>
+        <span aria-hidden="true">·</span>
+        <button type="button" class="lnk">Lanjut nanti</button>
+      </p>
+    </div>
+  </div>
+
+
+</main>
+</div>
+</div><!-- /scrLengkapi -->
+
+<!-- ============================================================
+     LAYAR PROFIL — hasil akhir, menutup alurnya.
+     ============================================================ -->

@@ -1,0 +1,34 @@
+<div class="scr" id="scrProfil" hidden>
+  <div class="pf">
+    <div class="shell">
+      <!-- penanda halaman: tiga layar saling menggantikan di satu berkas,
+           jadi tanpa ini tidak ada yang memberitahu kamu sedang di mana -->
+      <p class="pf-page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+        Profil saya
+      </p>
+
+      <div class="pf-top">
+        <div class="pf-foto p-bagas" role="img" aria-label="Foto profil Bagas Prakoso — gambar AI"></div>
+        <div>
+          <h1 class="pf-nm" id="pfNm">Bagas Prakoso</h1>
+          <p class="pf-loc" id="pfLoc">—</p>
+        </div>
+        <div class="pf-tags" id="pfTags"></div>
+        <a class="btn outline sm" href="#0" data-ke="scrLengkapi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          Ubah profil
+        </a>
+      </div>
+
+      <h2 class="pf-h">Komunitas saya</h2>
+      <div class="pf-list" id="pfList"></div>
+    </div>
+  </div>
+</div><!-- /scrProfil -->
+
+<!-- ============================================================
+     LAYAR KOMUNITAS — dilihat orang yang sudah masuk tapi belum
+     jadi anggota. Daftar anggotanya terkunci, jadi yang menjual
+     isinya adalah angka agregat: tidak satu pun identitas terbuka.
+     ============================================================ -->

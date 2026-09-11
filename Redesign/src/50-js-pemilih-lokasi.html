@@ -1,0 +1,144 @@
+<script>
+/* Pemilih lokasi bertingkat di kolom pencarian beranda. */
+(function(){
+  var data = {
+    "Indonesia": {
+      "DKI Jakarta": ["Jakarta Utara","Jakarta Selatan","Jakarta Pusat","Jakarta Barat","Jakarta Timur"],
+      "Jawa Barat": ["Kabupaten Bekasi","Kota Bekasi","Depok","Bogor","Bandung"],
+      "DI Yogyakarta": ["Kota Yogyakarta","Sleman","Bantul"]
+    },
+    "Malaysia": {
+      "Selangor": ["Shah Alam","Petaling Jaya","Ampang"],
+      "Wilayah Persekutuan Kuala Lumpur": ["Bukit Bintang","Cheras"]
+    },
+    "United States of America": {
+      "California": ["Los Angeles","San Francisco"],
+      "New York": ["New York","Buffalo"]
+    }
+  };
+
+  var btn=document.getElementById('locbtn'), panel=document.getElementById('locpanel'),
+      label=document.getElementById('loclabel'), clear=document.getElementById('locclear'),
+      near=document.getElementById('locnear'), apply=document.getElementById('locapply'),
+      reset=document.getElementById('locreset'),
+      negara=document.getElementById('fNegara'), provinsi=document.getElementById('fProvinsi'),
+      kota=document.getElementById('fKota'),
+      hProv=document.getElementById('hProvinsi'), hKota=document.getElementById('hKota');
+  if(!btn) return;
+
+  function fill(sel, items, placeholder){
+    sel.innerHTML = '';
+    var o = document.createElement('option'); o.value=''; o.textContent=placeholder; sel.appendChild(o);
+    items.forEach(function(v){ var x=document.createElement('option'); x.value=v; x.textContent=v; sel.appendChild(x); });
+  }
+  fill(negara, Object.keys(data), 'Pilih negara');
+
+  function lock(sel, hint, msg){
+    sel.disabled = true; sel.innerHTML = '<option value="">'+msg+'</option>'; hint.hidden = false;
+  }
+  function refresh(){
+    apply.disabled = !negara.value;
+  }
+
+  negara.addEventListener('change', function(){
+    near.classList.remove('on');
+    if(negara.value){
+      fill(provinsi, Object.keys(data[negara.value]), 'Semua provinsi');
+      provinsi.disabled = false; hProv.hidden = true;
+    } else { lock(provinsi, hProv, 'Pilih negara dulu'); }
+    lock(kota, hKota, 'Pilih provinsi dulu');
+    refresh();
+  });
+
+  provinsi.addEventListener('change', function(){
+    if(provinsi.value){
+      fill(kota, data[negara.value][provinsi.value], 'Semua kota/kabupaten');
+      kota.disabled = false; hKota.hidden = true;
+    } else { lock(kota, hKota, 'Pilih provinsi dulu'); }
+    refresh();
+  });
+  kota.addEventListener('change', refresh);
+
+  function open(v){
+    panel.classList.toggle('open', v);
+    btn.setAttribute('aria-expanded', v ? 'true' : 'false');
+  }
+  btn.addEventListener('click', function(e){ e.stopPropagation(); open(!panel.classList.contains('open')); });
+  panel.addEventListener('click', function(e){ e.stopPropagation(); });
+  document.addEventListener('click', function(){ open(false); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') open(false); });
+
+  function setLabel(text, active){
+    label.textContent = text;
+    if(!active) btn.removeAttribute('title');
+    btn.classList.toggle('active', active);
+    clear.hidden = !active;
+  }
+
+  near.addEventListener('click', function(){
+    near.classList.add('on');
+    negara.value=''; lock(provinsi,hProv,'Pilih negara dulu'); lock(kota,hKota,'Pilih provinsi dulu');
+    setLabel('Di sekitar saya', true);
+    apply.disabled = true;
+    if(window.kolavoSetLokasi) window.kolavoSetLokasi({sekitar:true});
+    open(false);
+  });
+
+  apply.addEventListener('click', function(){
+    var parts = [kota.value, provinsi.value, negara.value].filter(Boolean);
+    setLabel(parts[0], true);              // yang paling spesifik
+    btn.title = parts.join(', ');          // rincian lengkap saat di-hover
+    if(window.kolavoSetLokasi) window.kolavoSetLokasi({
+      negara: negara.value, provinsi: provinsi.value, kota: kota.value
+    });
+    open(false);
+  });
+
+  function doReset(){
+    near.classList.remove('on');
+    negara.value=''; lock(provinsi,hProv,'Pilih negara dulu'); lock(kota,hKota,'Pilih provinsi dulu');
+    apply.disabled = true;
+    setLabel('Semua lokasi', false);
+    if(window.kolavoSetLokasi) window.kolavoSetLokasi({});
+  }
+  window.kolavoResetLokasi = doReset;
+  reset.addEventListener('click', function(){ doReset(); open(false); });
+  clear.addEventListener('click', function(e){ e.stopPropagation(); doReset(); });
+})();
+</script>
+
+<!-- ============================================================
+     MODAL MASUK — dipicu oleh tombol "Masuk" di nav, "Lihat" pada
+     kartu komunitas, dan "Buat Halaman Komunitas" di bagian pengurus.
+     Copy-nya mengikuti niat pemicunya, bukan satu copy untuk semua.
+     ============================================================ -->
+<div class="lgn" id="lgn" hidden>
+  <div class="lgn-scrim" id="lgnScrim"></div>
+  <div class="lgn-box" role="dialog" aria-modal="true" aria-labelledby="lgnHead" aria-describedby="lgnSub">
+    <div class="lgn-grab"></div>
+    <button class="lgn-x" id="lgnX" type="button" aria-label="Tutup">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+
+    <div class="lgn-proof" id="lgnProof"></div>
+    <h2 class="lgn-head" id="lgnHead"></h2>
+    <p class="lgn-sub" id="lgnSub"></p>
+
+    <div class="lgn-cta">
+      <button class="gbtn" id="lgnG" type="button"></button>
+    </div>
+    <p class="lgn-alt">Belum punya akun Kolavo? <b>Tombol yang sama sekaligus bikin akunmu.</b></p>
+
+    <div class="lgn-note" id="lgnNote" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+      <span id="lgnNoteTxt"></span>
+    </div>
+
+    <div class="lgn-trust">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6.5v5c0 4.6 3.4 8.4 8 9.5 4.6-1.1 8-4.9 8-9.5v-5L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+      <span>Kolavo cuma menerima nama, email, dan foto profil Google-mu. Kami tidak bisa membaca isi emailmu atau memposting apa pun di akunmu.
+      <a href="#0">Kebijakan Privasi</a> · <a href="#0">Ketentuan Layanan</a></span>
+    </div>
+  </div>
+</div>
+

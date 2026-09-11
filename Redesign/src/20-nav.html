@@ -1,0 +1,61 @@
+
+
+<nav>
+  <div class="shell nav-in">
+    <div class="logo">Kolavo Beta</div>
+    <div class="nav-sp"></div>
+    <a class="btn secondary md" href="#pengurus" data-ke="scrBeranda" data-anchor="pengurus" id="navPengurus">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      Halaman Komunitas
+    </a>
+    <a class="btn md" href="#0" data-login="nav" id="btnMasuk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+      Masuk
+    </a>
+
+    <!-- keadaan sudah masuk lewat Google. Akun contoh, bukan orang sungguhan. -->
+    <div class="acct" id="acct" hidden>
+      <button type="button" class="acct-btn" id="acctBtn" aria-expanded="false" aria-haspopup="true" aria-controls="acctMenu">
+        <span class="av photo p-bagas" role="img" aria-label="Foto profil Bagas Prakoso — gambar AI"></span>
+        <span id="acctChip">Bagas</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        <span class="acct-warn" aria-hidden="true"></span>
+      </button>
+
+      <div class="acct-menu" id="acctMenu" hidden>
+        <div class="acct-head">
+          <span class="av photo p-bagas" role="img" aria-label="Foto profil Bagas Prakoso — gambar AI"></span>
+          <div>
+            <div class="acct-nm">Bagas Prakoso</div>
+            <div class="acct-em">bagas.prakoso@gmail.com</div>
+          </div>
+        </div>
+        <div class="acct-g">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.35 11.1H12v3.24h5.35c-.23 1.4-1.66 4.1-5.35 4.1-3.22 0-5.85-2.67-5.85-5.94S8.78 6.56 12 6.56c1.83 0 3.06.78 3.76 1.45l2.56-2.47C16.68 3.99 14.52 3.1 12 3.1 6.98 3.1 2.9 7.17 2.9 12.2s4.08 9.1 9.1 9.1c5.25 0 8.73-3.69 8.73-8.89 0-.6-.06-1.05-.15-1.5Z"/></svg>
+          Masuk lewat Google · terverifikasi
+        </div>
+        <div class="acct-sep"></div>
+        <a class="acct-i" href="#0" data-ke="scrProfil">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+          Profil saya
+          <span class="pill" id="acctPill">Belum lengkap</span>
+        </a>
+        <a class="acct-i" href="#0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+          Komunitas saya
+          <span class="num">2</span>
+        </a>
+        <a class="acct-i" href="#0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.7 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.56V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9v.09a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1.03Z"/></svg>
+          Pengaturan akun
+        </a>
+        <div class="acct-sep"></div>
+        <a class="acct-i keluar" href="#0" id="keluar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Keluar
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+

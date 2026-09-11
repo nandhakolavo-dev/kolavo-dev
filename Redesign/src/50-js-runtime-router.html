@@ -1,0 +1,373 @@
+<script>
+/* ============================================================
+   Prototipe berjalan: keadaan + router + sambungan antar layar.
+   Sengaja tanpa penyimpanan — muat ulang mengulang alur dari awal,
+   supaya siapa pun yang membuka tautannya melihat cerita yang sama.
+   ============================================================ */
+(function(){
+  const App = {
+    masuk: false,       /* sudah lewat modal Google? */
+    lengkap: false,     /* profil sudah diisi? */
+    niat: null,         /* 'anggota' | 'pengurus' | 'nav' — pemicu yang membawa ke sini */
+    komunitas: null     /* {nama, kelas, jumlah} — kartu yang tadi diklik */
+  };
+  window.KolavoApp = App;
+
+  /* ---------- router ----------
+     Layar disimpan di variabel, bukan di location.hash. Prototipe ini juga
+     dibuka dari data: URL dan iframe ber-sandbox, tempat hash tidak selalu
+     bisa ditulis — di sana routing berbasis hash diam-diam tidak jalan.
+     Anchor dalam halaman (#direktori, #pengurus) tetap seperti biasa. */
+  const LAYAR = ['scrBeranda', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
+  /* Halaman komunitas sengaja tidak perlu masuk — di kolavo.app pun publik.
+     Orang boleh menjelajah dulu; login baru diminta saat menekan Gabung. */
+  /* detail anggota cuma bisa dicapai dari daftar yang sudah terbuka, tapi
+     penjaganya tetap dipasang supaya tidak bisa dibuka lewat KolavoKe langsung */
+  const perluMasuk = { scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
+  let sekarang = 'scrBeranda';
+
+  window.KolavoKe = function(id, anchor){ ke(id, anchor); };
+
+  function ke(id, anchor){
+    sekarang = id;
+    gambar();
+    if(anchor){
+      const a = document.getElementById(anchor);
+      if(a) a.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  function gambar(){
+    let id = sekarang;
+    /* penjaga: layar yang butuh akun tidak bisa dibuka sebelum masuk */
+    if(perluMasuk[id] && !App.masuk) id = 'scrBeranda';
+    /* buat halaman juga menunggu profil beres — calon anggota perlu lihat
+       pengurusnya orang asli, bukan akun kosong */
+    if((id === 'scrProfil' || id === 'scrBuat') && !App.lengkap) id = 'scrLengkapi';
+    /* dashboard pengurus baru ada setelah komunitasnya dibuat */
+    if(id === 'scrKelola' && !App.dibuat) id = App.lengkap ? 'scrBuat' : 'scrLengkapi';
+    sekarang = id;
+
+    LAYAR.forEach(function(n){
+      const el = document.getElementById(n);
+      if(el) el.hidden = (n !== id);
+    });
+    window.scrollTo(0, 0);
+    if(id === 'scrProfil') isiProfil();
+  }
+
+  /* ---------- keadaan masuk di nav ---------- */
+  function gambarNav(){
+    const masuk = document.getElementById('btnMasuk'),
+          acct  = document.getElementById('acct'),
+          warn  = document.querySelector('.acct-warn'),
+          pill  = document.getElementById('acctPill');
+    if(masuk) masuk.hidden = App.masuk;
+    if(acct)  acct.hidden  = !App.masuk;
+    if(warn)  warn.hidden  = App.lengkap;
+    if(pill)  pill.hidden  = App.lengkap;
+  }
+
+  /* ---------- pemberitahuan ---------- */
+  let toastTimer = null;
+  function toast(teks){
+    const t = document.getElementById('toast');
+    if(!t) return;
+    document.getElementById('toastTeks').textContent = teks;
+    t.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('on'); }, 4200);
+  }
+  window.KolavoToast = toast;
+
+  /* ---------- masuk selesai: dipanggil dari modal ---------- */
+  window.KolavoMasuk = function(niat, kartu){
+    App.masuk = true;
+    App.niat = niat;
+    App.kartu = kartu || null;
+    if(kartu){
+      var tanya = [];
+      try { tanya = JSON.parse(kartu.dataset.tanya || '[]'); } catch(err) { tanya = []; }
+      App.komunitas = {
+        nama: kartu.querySelector('h3').textContent.trim(),
+        kelas: [...kartu.querySelector('.logo-sq').classList].find(function(c){ return c.indexOf('l-') === 0; }),
+        jumlah: kartu.querySelector('.mem').textContent.trim(),
+        bentuk: kartu.dataset.bentuk,
+        tanya: tanya
+      };
+    }
+    gambarNav();
+    sesuaikanLengkapi();
+    /* baru masuk: profil dulu. Kalau sudah lengkap, langsung ke komunitas
+       yang tadi diklik — itu yang sebenarnya dia tuju. */
+    if(!App.lengkap){
+      ke('scrLengkapi');
+    } else if(niat === 'pengurus'){
+      /* pengurus tidak sedang mencari komunitas — dia mau bikin satu */
+      ke('scrBuat');
+    } else if(kartu && window.KolavoBukaKomunitas){
+      window.KolavoBukaKomunitas(kartu);
+      ke('scrKomunitas');
+    } else {
+      ke('scrProfil');
+    }
+  };
+
+  /* ---------- copy layar "lengkapi" mengikuti pemicunya ---------- */
+  function sesuaikanLengkapi(){
+    const lede = document.getElementById('lengkapiLede'),
+          kirim = document.getElementById('kirim');
+
+    if(App.niat === 'anggota' && App.komunitas){
+      if(lede) lede.innerHTML = 'Pengurus <b>' + App.komunitas.nama + '</b> perlu memastikan kamu orang asli sebelum menyetujui. Sisanya boleh dilewati — tapi justru itu yang bikin kamu dikenali.';
+      /* gabungnya terjadi di halaman komunitas, bukan di sini — labelnya
+         tidak boleh menjanjikan permintaan terkirim */
+      if(kirim) kirim.textContent = 'Simpan & lanjut';
+    } else if(App.niat === 'pengurus'){
+      if(lede) lede.innerHTML = 'Sebelum bikin halaman komunitas, Kolavo perlu memastikan kamu orang asli — supaya calon anggotamu percaya halamannya bukan akun kosong.';
+      if(kirim) kirim.textContent = 'Simpan & lanjut bikin halaman';
+    } else {
+      if(lede) lede.innerHTML = 'Isi sekali, berlaku di semua komunitas yang kamu ikuti. Sisanya boleh dilewati — tapi justru itu yang bikin kamu dikenali.';
+      if(kirim) kirim.textContent = 'Simpan profil';
+    }
+  }
+
+  /* ---------- pertanyaan yang disusun pengurus komunitas ----------
+     Bukan kolom platform: yang di ikatan alumni berbunyi "Tahun Lulus",
+     di organisasi bisa "Tahun Pengukuhan", di asosiasi lain lagi.
+     Karena itu jawabannya melekat ke keanggotaan, bukan ke profil orangnya. */
+  /* Pertanyaan pengurus hidup di langkah gabung, bukan di profil — sesuai
+     kolavo.app, tempat `/join-membership` terpisah dari `/profile/edit`.
+     Jawabannya melekat ke keanggotaan, jadi tempatnya memang di sana. */
+  function gambarTanya(){
+    const list = document.getElementById('gabungList');
+    if(!list) return;
+
+    const daftar = (App.komunitas && App.komunitas.tanya) || [];
+    if(!daftar.length){ list.innerHTML = ''; return; }
+    list.innerHTML = '';
+
+    daftar.forEach(function(t){
+      const f = document.createElement('div');
+      f.className = 'f';
+
+      const lbl = document.createElement('label');
+      lbl.className = 'f-lbl';
+      lbl.setAttribute('for', 'tanya-' + t.id);
+      lbl.textContent = t.judul;
+      lbl.insertAdjacentHTML('beforeend', t.wajib
+        ? '<span class="must" aria-hidden="true">*</span>'
+        : '<span class="opt">Opsional</span>');
+      f.appendChild(lbl);
+
+      let kolom;
+      if(t.tipe === 'tahun'){
+        kolom = document.createElement('select');
+        kolom.className = 'sel';
+        kolom.innerHTML = '<option value="">Pilih tahun</option>';
+        (window.KolavoTahun || []).forEach(function(y){
+          const o = document.createElement('option');
+          o.textContent = y;
+          kolom.appendChild(o);
+        });
+      } else {
+        kolom = document.createElement('input');
+        kolom.className = 'inp';
+        kolom.type = 'text';
+      }
+      kolom.id = 'tanya-' + t.id;
+      kolom.dataset.tanyaId = t.id;
+      kolom.dataset.judul = t.judul;
+      if(t.wajib) kolom.dataset.wajib = '';
+      f.appendChild(kolom);
+
+      const why = document.createElement('p');
+      why.className = 'f-why';
+      why.textContent = t.tanya;
+      f.appendChild(why);
+
+      const galat = document.createElement('p');
+      galat.className = 'f-galat';
+      galat.textContent = t.judul + ' perlu diisi.';
+      f.appendChild(galat);
+
+      list.appendChild(f);
+    });
+
+    /* pertanyaan wajib ikut menambah total langkah, jadi progres perlu dihitung ulang */
+    if(window.hitung) window.hitung();
+  }
+  window.KolavoGambarTanya = gambarTanya;
+
+  /* jawaban yang pantas jadi tag di daftar anggota — nama panggilan tidak,
+     karena itu cara menyapa, bukan cara mengenali */
+  window.KolavoJawaban = function(){
+    return [...document.querySelectorAll('#gabungList [data-tanya-id]')]
+      .filter(function(e){ return e.dataset.tanyaId !== 'nickname' && e.value.trim(); })
+      .map(function(e){
+        const v = e.value.trim();
+        return /^\d{4}$/.test(v) ? e.dataset.judul + ' ' + v : v;
+      });
+  };
+
+  /* ---------- validasi & simpan ---------- */
+  const WAJIB = [
+    { id: 'wa',       uji: function(e){ return e.value.replace(/\D/g,'').length >= 8; } },
+    { id: 'lahir',    uji: function(e){ return !!e.value; } },
+    { id: 'negara',   uji: function(e){ return !!e.value; }, grup: 'domisili' },
+    { id: 'provinsi', uji: function(e){ return !!e.value; }, grup: 'domisili' },
+    { id: 'kota',     uji: function(e){ return !!e.value; }, grup: 'domisili' }
+  ];
+
+  function periksa(){
+    let pertama = null;
+    document.querySelectorAll('#scrLengkapi .f.salah').forEach(function(f){ f.classList.remove('salah'); });
+
+    WAJIB.forEach(function(w){
+      const el = document.getElementById(w.id);
+      if(!el || w.uji(el)) return;
+      const f = el.closest('.f');
+      if(f) f.classList.add('salah');
+      if(!pertama) pertama = f || el;
+    });
+
+    if(!document.querySelector('#scrLengkapi input[name="jk"]:checked')){
+      const f = document.querySelector('#scrLengkapi input[name="jk"]').closest('.f');
+      if(f) f.classList.add('salah');
+      if(!pertama) pertama = f;
+    }
+
+    return pertama;
+  }
+
+  function isiProfil(){
+    const nilai = function(id){ const e = document.getElementById(id); return e ? e.value : ''; };
+    const nm = document.getElementById('pfNm'),
+          loc = document.getElementById('pfLoc'),
+          tags = document.getElementById('pfTags'),
+          list = document.getElementById('pfList');
+
+    if(loc) loc.textContent = [nilai('kota'), nilai('provinsi')].filter(Boolean).join(', ') || '—';
+
+    if(tags){
+      tags.innerHTML = '';
+      const pasang = function(teks, sorot){
+        if(!teks) return;
+        const s = document.createElement('span');
+        s.className = sorot ? 'tag hi' : 'tag';
+        s.textContent = teks;
+        tags.appendChild(s);
+      };
+      /* hanya yang melekat ke orangnya. Jawaban per komunitas tampil di
+         daftar komunitas di bawah, bukan di sini — itu inti pemisahannya. */
+      /* opsional, tapi biar kartu profil tidak terlihat kosong, pakai default
+         kalau belum diisi — sekaligus jadi tag pertama yang selalu ada */
+      pasang(nilai('kerja') || window.KolavoKerjaDefault || 'Anggota komunitas', true);
+      pasang(nilai('kota'), false);
+      if(!tags.children.length){
+        const s = document.createElement('span');
+        s.className = 'tag kosong';
+        s.textContent = 'Belum ada keahlian yang diisi';
+        tags.appendChild(s);
+      }
+    }
+
+    if(list){
+      list.innerHTML = '';
+      /* komunitas yang dia buat sendiri ikut di sini — halaman ini menjawab
+         "aku ada di mana saja", termasuk yang dia urus, bukan cuma yang dia ikuti */
+      const buat = window.KolavoDibuatItem ? window.KolavoDibuatItem() : '';
+      list.classList.toggle('pf-list', !!(App.komunitas || buat));
+      if(buat) list.insertAdjacentHTML('beforeend', buat);
+      if(App.komunitas){
+        list.insertAdjacentHTML('beforeend',
+          '<div class="pf-item"><span class="logo-sq ' + App.komunitas.kelas + '" role="img" aria-label="Logo komunitas"></span>' +
+          '<div class="t"><div class="n">' + App.komunitas.nama + '</div>' +
+          '<div class="s">' + [App.komunitas.jumlah].concat(window.KolavoJawaban()).join(' · ') + '</div></div>' +
+          ((App.diajukan || {})[App.komunitas.kelas] === 'anggota'
+            ? '<span class="status anggota">Anggota</span></div>'
+            : '<span class="status tunggu">Menunggu</span></div>'));
+      } else if(!buat){
+        /* keadaan kosong memakai komponen .empty yang sudah ada di kit —
+           satu kalimat dengan tautan teks terlalu mudah terlewat di sini */
+        list.insertAdjacentHTML('beforeend',
+          '<div class="empty">' +
+            '<div class="empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8.5 11h5"/></svg></div>' +
+            '<h3>Belum gabung ke komunitas mana pun</h3>' +
+            '<p>Profilmu sudah siap. Yang belum, komunitasnya — cari yang pengurusnya sudah bikin halaman, lalu minta gabung.</p>' +
+            '<div class="empty-cta">' +
+              '<button type="button" class="btn" data-ke="scrBeranda" data-anchor="direktori">Cari komunitasku</button>' +
+              '<button type="button" class="btn outline" data-ke="scrBuat">Bikin halaman komunitas</button>' +
+            '</div>' +
+            '<p class="empty-note">Kalau pengurusmu belum bikin halaman, kamu yang bisa mulai.</p>' +
+          '</div>');
+      }
+    }
+  }
+
+  /* Tanda merah hilang begitu kolomnya disentuh, bukan menunggu tombol simpan
+     ditekan lagi. Validasi ulang tetap jalan saat simpan. */
+  ['input', 'change'].forEach(function(ev){
+    document.addEventListener(ev, function(e){
+      const f = e.target.closest('#scrLengkapi .f.salah');
+      if(!f) return;
+      f.classList.remove('salah');
+      if(!document.querySelector('#scrLengkapi .f.salah')){
+        const g = document.getElementById('galat');
+        if(g) g.hidden = true;
+      }
+    });
+  });
+
+  /* ---------- pasang perilaku ---------- */
+  document.addEventListener('click', function(e){
+    const t = e.target.closest('[data-ke]');
+    if(t){ e.preventDefault(); ke(t.dataset.ke, t.dataset.anchor); return; }
+
+    if(e.target.closest('#kirim')){
+      const kurang = periksa();
+      const galat = document.getElementById('galat');
+      if(kurang){
+        if(galat) galat.hidden = false;
+        kurang.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      if(galat) galat.hidden = true;
+      App.lengkap = true;
+      gambarNav();
+      /* datang dari kartu komunitas: antar ke halaman komunitasnya, bukan
+         ke profil — gabungnya belum terjadi, baru profilnya yang beres */
+      if(App.niat === 'pengurus'){
+        ke('scrBuat');
+        toast('Profil kamu sudah lengkap. Sekarang halaman komunitasnya.');
+      } else if(App.niat === 'anggota' && App.kartu && window.KolavoBukaKomunitas){
+        window.KolavoBukaKomunitas(App.kartu);
+        ke('scrKomunitas');
+        toast('Profil kamu sudah lengkap. Tinggal minta gabung.');
+      } else {
+        ke('scrProfil');
+        toast('Profil kamu sudah lengkap.');
+      }
+      return;
+    }
+
+    if(e.target.closest('#keluar')){
+      e.preventDefault();
+      location.reload();
+    }
+  });
+
+  const reset = document.getElementById('demoReset');
+  if(reset) reset.addEventListener('click', function(){ location.reload(); });
+
+  /* dipanggil skrip komunitas begitu pendaftaran disetujui — chip di daftar
+     komunitas harus ikut berubah walau layarnya sedang tidak terbuka */
+  window.KolavoIsiProfil = isiProfil;
+
+  gambarNav();
+  sesuaikanLengkapi();
+  gambarTanya();
+  gambar();
+})();
+</script>
+
