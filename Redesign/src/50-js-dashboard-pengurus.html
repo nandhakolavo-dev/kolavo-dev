@@ -26,15 +26,17 @@
   /* pendaftar contoh. Sengaja bukan salah satu dari empat wajah ber-foto AI —
      pendaftar pakai inisial, jadi tidak ada foto orang yang dipakai tanpa izin */
   const SEED = [
-    { nama: 'Putri Maharani', panggil: 'Putri', kerja: 'Guru SD',          kota: 'Bekasi',        waktu: '2 hari lalu', tahun: 2014, teks: 'Diajak teman seangkatan' },
-    { nama: 'Andi Firmansyah', panggil: 'Andi', kerja: 'Karyawan swasta',  kota: 'Jakarta Timur', waktu: 'kemarin',     tahun: 2010, teks: 'Ketemu di grup WhatsApp' },
-    { nama: 'Sinta Dewi',      panggil: 'Sinta', kerja: 'Wiraswasta',      kota: 'Depok',         waktu: '3 jam lalu',  tahun: 2016, teks: 'Nemu halaman ini di Kolavo' }
+    { nama: 'Putri Maharani',  panggil: 'Putri', full: 'Putri Maharani Lestari', jk: 'Perempuan', kerja: 'Guru SD',         kota: 'Bekasi',        wa: '0812-••••-4417', email: 'putri••••@gmail.com', lengkap: true,  waktu: '2 hari lalu', tahun: 2014, teks: 'Diajak teman seangkatan' },
+    { nama: 'Andi Firmansyah', panggil: 'Andi',  full: 'Andi Firmansyah',        jk: 'Laki-laki', kerja: 'Karyawan swasta', kota: 'Jakarta Timur', wa: '0813-••••-2210', email: 'andi.f••••@gmail.com', lengkap: true,  waktu: 'kemarin',     tahun: 2010, teks: 'Ketemu di grup WhatsApp' },
+    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, waktu: '3 jam lalu',  tahun: 2016, teks: 'Nemu halaman ini di Kolavo' }
   ];
 
   const D = {
     built: false, kom: null, aku: 'Kamu', akuKerja: '', akuKota: '',
     mem: {}, minta: [], anggotaBiasa: [], pengurus: [], peninjau: 'Kamu',
-    tab: 'minta', angkatFor: null, ubahFor: null, riwayat: []
+    tab: 'minta', angkatFor: null, ubahFor: null, riwayat: [],
+    /* penomoran anggota */
+    nomorMode: 'auto', kode: 'KOMU', tahun: new Date().getFullYear(), urut: 0, idUbahFor: null
   };
   window.KolavoDashboard = D;
 
@@ -62,6 +64,7 @@
   const IKON_CEK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
   const IKON_X   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>';
   const IKON_MATA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>';
+  const IKON_CEK_KECIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
 
   /* ---------- membangun dari komunitas yang baru dibuat ---------- */
   function bangun(){
@@ -75,8 +78,17 @@
     D.aku = nilaiProfil('pfNm') || (el('pfNm') && el('pfNm').textContent.trim()) || 'Kamu';
     D.akuKerja = nilaiProfil('kerja') || 'Pengurus';
     D.akuKota = nilaiProfil('kota') || kom.kota || '';
+    /* penomoran anggota: mode + kode awalan ditetapkan saat halaman dibuat */
+    D.nomorMode = kom.nomorMode || 'auto';
+    D.kode = (kom.kode || (kom.slug || '').toUpperCase().replace(/[^0-9A-Z]/g, '') || 'KOMU');
+    D.tahun = new Date().getFullYear();
+    D.urut = 0;
+    D.idUbahFor = null;
+
     D.mem = {};
     D.mem[D.aku] = { nama: D.aku, kerja: D.akuKerja, kota: D.akuKota, panggil: 'Kamu', aku: true };
+    /* pembuat halaman anggota pertama — dapat nomor 001 kalau penomoran otomatis */
+    if(D.nomorMode === 'auto'){ D.urut = 1; D.mem[D.aku].id = fmtId(1); }
     /* pembuat halaman belum tentu ketua — defaultnya Community Builder
        sampai diberi jabatan sungguhan lewat tab Kepengurusan */
     D.pengurus = [{ nama: D.aku, jabatan: 'Community Builder', aku: true }];
@@ -85,7 +97,11 @@
     D.peninjau = [D.aku];
     D.anggotaBiasa = [];
     D.minta = SEED.map(function(s, i){
-      return { id: 'r' + i, nama: s.nama, panggil: s.panggil, kerja: s.kerja, kota: s.kota, waktu: s.waktu, tahun: s.tahun, teks: s.teks, tags: tagsFor(s) };
+      return {
+        id: 'r' + i, nama: s.nama, panggil: s.panggil, full: s.full, jk: s.jk,
+        kerja: s.kerja, kota: s.kota, wa: s.wa, email: s.email, lengkap: s.lengkap,
+        waktu: s.waktu, tahun: s.tahun, teks: s.teks, tags: tagsFor(s)
+      };
     });
     D.tab = 'minta';
     D.angkatFor = null;
@@ -94,6 +110,12 @@
     D.built = true;
     return true;
   }
+
+  /* nomor anggota: KODE-TAHUN MASUK-URUTAN (3 digit). urut = jumlah yang sudah
+     masuk tahun itu; di prototipe satu tahun berjalan saja. */
+  function fmtId(n){ return D.kode + '-' + D.tahun + '-' + String(n).padStart(3, '0'); }
+  function idBerikut(){ return fmtId(D.urut + 1); }   /* nomor untuk yang diterima berikutnya */
+  function pakaiNomor(){ return D.nomorMode !== 'off'; }
 
   function jumlahAnggota(){ return D.pengurus.length + D.anggotaBiasa.length; }
   function akuPeninjau(){ return D.peninjau.indexOf(D.aku) >= 0; }
@@ -161,25 +183,83 @@
     wadah.innerHTML = D.minta.map(function(r, i){
       const av = '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(r.nama) + '</div>';
       const tags = r.tags.map(function(v){ return '<span class="tag">' + lolos(v) + '</span>'; }).join('');
+
+      /* data yang bikin peninjau bisa memutuskan: kontak terverifikasi,
+         kelengkapan profil, alasan gabung, dan jawaban formulir pendaftaran */
+      const info =
+        '<div class="kl-req-info">' +
+          baris2('WhatsApp', lolos(r.wa) + ' <span class="kl-verif">' + IKON_CEK_KECIL + 'terverifikasi</span>') +
+          baris2('Email', lolos(r.email)) +
+          baris2('Jenis kelamin', lolos(r.jk)) +
+          baris2('Kelengkapan profil', r.lengkap
+            ? '<span class="kl-ok">Profil lengkap</span>'
+            : '<span class="kl-warn">Sebagian belum diisi</span>') +
+          baris2('Alasan gabung', lolos(r.teks)) +
+        '</div>';
+
+      /* nomor anggota: otomatis (pratinjau format) atau manual (isi/ubah saat menerima) */
+      let nomor = '';
+      if(pakaiNomor()){
+        nomor = '<div class="kl-req-nomor"><span class="kl-info-k">Nomor anggota</span>' +
+          (D.nomorMode === 'auto'
+            ? '<span class="kl-idbadge">' + lolos(D.kode + '-' + D.tahun + '-•••') + '</span><span class="kl-id-note">dibuat otomatis saat diterima</span>'
+            : '<input class="inp kl-idfield" type="text" data-idinput value="' + lolos(idBerikut()) + '" placeholder="Nomor anggota" ' + (bisa ? '' : 'disabled') + '>') +
+          '</div>';
+      }
+
+      const catatan = bisa
+        ? '<div class="kl-req-catatan"><label class="kl-info-k" for="kat-' + r.id + '">Catatan keputusan <span class="kl-opt">opsional</span></label>' +
+          '<input class="inp" id="kat-' + r.id + '" type="text" data-catatan maxlength="80" placeholder="Mis. alumni angkatan 2014, dikenal pengurus"></div>'
+        : '';
+
       const aksi = bisa
         ? '<div class="kl-req-aksi">' +
             '<button type="button" class="btn sm" data-setuju="' + r.id + '">' + IKON_CEK + 'Setujui</button>' +
             '<button type="button" class="btn sm tolak" data-tolak="' + r.id + '">' + IKON_X + 'Tolak</button>' +
           '</div>'
         : '<div class="kl-req-aksi"><span class="tag">Menunggu ditinjau ' + lolos(sebutNama(D.peninjau)) + '</span></div>';
+
       return '<div class="kl-req" data-req="' + r.id + '">' +
           '<div class="kl-req-top">' + av +
-            '<div class="t"><div class="kl-req-nm">' + lolos(r.nama) + '</div>' +
+            '<div class="t"><div class="kl-req-nm">' + lolos(r.full || r.nama) +
+              ' <span class="kl-req-panggil">“' + lolos(r.panggil) + '”</span></div>' +
             '<div class="kl-req-sub">' + lolos(r.kerja) + ' · ' + lolos(r.kota) + '</div></div>' +
             '<span class="kl-req-when">Minta gabung ' + lolos(r.waktu) + '</span>' +
           '</div>' +
-          (tags ? '<div class="kl-req-tags">' + tags + '</div>' : '') +
-          aksi +
+          (tags ? '<div class="kl-req-jawab"><span class="kl-info-k">Jawaban pendaftaran</span><div class="kl-req-tags">' + tags + '</div></div>' : '') +
+          info + nomor + catatan + aksi +
         '</div>';
     }).join('');
   }
 
-  /* ---------- panel: anggota (angkat kepengurusan) ---------- */
+  /* satu baris "label : nilai" di kartu permintaan */
+  function baris2(k, v){
+    return '<div class="kl-info-row"><span class="kl-info-k">' + k + '</span><span class="kl-info-v">' + v + '</span></div>';
+  }
+  function bacaCatatan(kartu){
+    const c = kartu && kartu.querySelector('[data-catatan]');
+    return c ? c.value.trim() : '';
+  }
+
+  /* ---------- panel: anggota (angkat kepengurusan + nomor anggota) ---------- */
+  function idBadge(m){
+    return (pakaiNomor() && m && m.id) ? '<span class="kl-idbadge sm">' + lolos(m.id) + '</span>' : '';
+  }
+  function editNomor(nama, m){
+    if(D.idUbahFor !== nama) return '';
+    const siapa = (m.panggil && m.panggil !== 'Kamu') ? lolos(m.panggil) : (m.aku ? 'kamu' : lolos(nama.split(' ')[0]));
+    return '<div class="kl-angkat">' +
+        '<span class="kl-angkat-lbl">Nomor anggota ' + siapa + ':</span>' +
+        '<input class="inp kl-idfield" id="klIdSel" type="text" value="' + lolos(m.id || idBerikut()) + '" placeholder="Nomor anggota">' +
+        '<button type="button" class="btn sm" data-idubah-ok="' + lolos(nama) + '">Simpan</button>' +
+        '<button type="button" class="btn outline sm" data-idubah-batal>Batal</button>' +
+      '</div>';
+  }
+  function tombolNomor(nama, m){
+    if(!pakaiNomor() || D.idUbahFor === nama) return '';
+    return '<button type="button" class="btn outline sm" data-idubah="' + lolos(nama) + '">' + (m && m.id ? 'Ubah nomor' : 'Beri nomor') + '</button>';
+  }
+
   function gambarAnggota(){
     el('klAnggotaN').textContent = jumlahAnggota();
     const wadah = el('klAnggotaList');
@@ -188,14 +268,19 @@
     /* pengurus dulu, dengan jabatannya — lalu anggota biasa yang bisa diangkat */
     D.pengurus.forEach(function(p){
       const m = D.mem[p.nama] || { nama: p.nama, kerja: '', kota: '' };
-      html += baris(m, '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' + (p.aku ? '<span class="tag hi">Kamu</span>' : ''), '');
+      const kanan = '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' + (p.aku ? '<span class="tag hi">Kamu</span>' : '') + idBadge(m);
+      const t = tombolNomor(p.nama, m);
+      html += baris(m, kanan, t ? '<div class="kl-row-aksi">' + t + '</div>' : '') + editNomor(p.nama, m);
     });
 
     D.anggotaBiasa.forEach(function(nama){
       const m = D.mem[nama];
-      const aksi = D.angkatFor === nama ? '' :
-        '<div class="kl-row-aksi"><button type="button" class="btn outline sm" data-angkat="' + lolos(nama) + '">Angkat jadi pengurus</button></div>';
-      html += baris(m, '', aksi);
+      let aksi = '';
+      if(D.angkatFor !== nama && D.idUbahFor !== nama){
+        aksi = '<div class="kl-row-aksi">' + tombolNomor(nama, m) +
+          '<button type="button" class="btn outline sm" data-angkat="' + lolos(nama) + '">Angkat jadi pengurus</button></div>';
+      }
+      html += baris(m, idBadge(m), aksi) + editNomor(nama, m);
       if(D.angkatFor === nama){
         html += '<div class="kl-angkat">' +
             '<span class="kl-angkat-lbl">Jadikan ' + lolos((m.panggil && m.panggil !== 'Kamu') ? m.panggil : nama.split(' ')[0]) + ':</span>' +
@@ -279,9 +364,14 @@
       const av = '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(r.nama) + '</div>';
       const diterima = r.status === 'diterima';
       const oleh = r.oleh === D.aku ? 'kamu' : lolos(r.oleh.split(' ')[0]);
+      /* nomor anggota dibaca dari data anggota (bukan snapshot) supaya kalau
+         diperbaiki di tab Anggota, riwayatnya ikut betul */
+      const mem = D.mem[r.nama];
+      const id = (diterima && pakaiNomor() && mem && mem.id) ? '<span class="kl-idbadge sm">' + lolos(mem.id) + '</span>' : '';
       return '<div class="kl-riwayat">' + av +
-          '<div class="t"><div class="kl-riwayat-nm">' + lolos(r.nama) + '</div>' +
-          '<div class="kl-riwayat-sub">' + lolos(r.kerja) + ' · ' + lolos(r.kota) + ' · oleh ' + oleh + ' · ' + lolos(r.waktu) + '</div></div>' +
+          '<div class="t"><div class="kl-riwayat-nm">' + lolos(r.nama) + id + '</div>' +
+          '<div class="kl-riwayat-sub">' + lolos(r.kerja) + ' · ' + lolos(r.kota) + ' · oleh ' + oleh + ' · ' + lolos(r.waktu) + '</div>' +
+          (r.catatan ? '<div class="kl-riwayat-catatan">“' + lolos(r.catatan) + '”</div>' : '') + '</div>' +
           '<span class="kl-hasil ' + (diterima ? 'diterima' : 'ditolak') + '">' + (diterima ? IKON_CEK : IKON_X) + (diterima ? 'Diterima' : 'Ditolak') + '</span>' +
         '</div>';
     }).join('');
@@ -349,29 +439,60 @@
     if(setuju){
       const r = D.minta.filter(function(x){ return x.id === setuju.dataset.setuju; })[0];
       if(!r) return;
+      const kartu = setuju.closest('.kl-req');
+      const catatan = bacaCatatan(kartu);
+      /* nomor anggota ditetapkan saat diterima: otomatis ikut urutan, atau
+         diambil dari kolom manual yang diisi peninjau */
+      let id = '';
+      if(pakaiNomor()){
+        D.urut++;
+        if(D.nomorMode === 'manual'){
+          const f = kartu && kartu.querySelector('[data-idinput]');
+          id = (f && f.value.trim()) || fmtId(D.urut);
+        } else {
+          id = fmtId(D.urut);
+        }
+      }
       D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
       /* tags jawaban ikut disimpan supaya muncul di daftar anggota halaman pemilik */
-      D.mem[r.nama] = { nama: r.nama, kerja: r.kerja, kota: r.kota, panggil: r.panggil, tags: (r.tags || []).slice() };
+      D.mem[r.nama] = { nama: r.nama, kerja: r.kerja, kota: r.kota, panggil: r.panggil, tags: (r.tags || []).slice(), id: id };
       D.anggotaBiasa.push(r.nama);
-      D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'diterima', oleh: D.aku, waktu: 'baru saja' });
+      D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'diterima', oleh: D.aku, waktu: 'baru saja', catatan: catatan });
       gambar();
-      toast(r.panggil + ' disetujui. Sekarang dia anggota — daftar anggota kebuka buat dia.');
+      toast(r.panggil + ' disetujui.' + (id ? ' Nomor anggota ' + id + '.' : ' Daftar anggota kebuka buat dia.'));
       return;
     }
     const tolak = e.target.closest('[data-tolak]');
     if(tolak){
       const r = D.minta.filter(function(x){ return x.id === tolak.dataset.tolak; })[0];
       if(!r) return;
+      const catatan = bacaCatatan(tolak.closest('.kl-req'));
       D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
-      D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'ditolak', oleh: D.aku, waktu: 'baru saja' });
+      D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'ditolak', oleh: D.aku, waktu: 'baru saja', catatan: catatan });
       gambar();
       toast('Permintaan ' + r.panggil + ' ditolak.');
       return;
     }
 
+    /* nomor anggota: buka / simpan / batal edit (auto maupun manual bisa diperbaiki) */
+    const idubah = e.target.closest('[data-idubah]');
+    if(idubah){ D.idUbahFor = idubah.dataset.idubah; D.angkatFor = null; gambarAnggota(); return; }
+    if(e.target.closest('[data-idubah-batal]')){ D.idUbahFor = null; gambarAnggota(); return; }
+    const idok = e.target.closest('[data-idubah-ok]');
+    if(idok){
+      const nama = idok.dataset.idubahOk;
+      const f = el('klIdSel');
+      const nilai = f ? f.value.trim() : '';
+      if(D.mem[nama]) D.mem[nama].id = nilai;
+      D.idUbahFor = null;
+      gambar();
+      toast('Nomor anggota ' + (nama === D.aku ? 'kamu' : nama.split(' ')[0]) + (nilai ? ' jadi ' + nilai : ' dikosongkan') + '.');
+      return;
+    }
+
     /* kepengurusan: buka pemilih jabatan */
     const angkat = e.target.closest('[data-angkat]');
-    if(angkat){ D.angkatFor = angkat.dataset.angkat; gambarAnggota(); return; }
+    if(angkat){ D.angkatFor = angkat.dataset.angkat; D.idUbahFor = null; gambarAnggota(); return; }
     if(e.target.closest('[data-angkat-batal]')){ D.angkatFor = null; gambarAnggota(); return; }
     const ok = e.target.closest('[data-angkat-ok]');
     if(ok){

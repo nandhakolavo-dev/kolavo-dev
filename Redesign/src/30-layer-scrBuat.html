@@ -107,6 +107,20 @@
         </div>
         <p class="f-why">Inilah link yang kamu sebar ke grup. Diisi otomatis dari nama komunitas, boleh diganti.</p>
       </div>
+
+      <div class="f">
+        <span class="f-lbl" id="bkLblNomor">Nomor anggota<span class="opt">Opsional</span></span>
+        <div class="pills" role="group" aria-labelledby="bkLblNomor">
+          <label class="pill-r"><input type="radio" name="bkNomor" value="auto" checked><span>Otomatis</span></label>
+          <label class="pill-r"><input type="radio" name="bkNomor" value="manual"><span>Manual saat menerima</span></label>
+          <label class="pill-r"><input type="radio" name="bkNomor" value="off"><span>Tidak pakai</span></label>
+        </div>
+        <div class="nomor-kode" id="bkKodeWrap">
+          <span class="nomor-kode-lbl" id="bkKodeLbl">Kode / singkatan komunitas</span>
+          <input class="inp" id="bkKode" type="text" spellcheck="false" autocomplete="off" maxlength="12" placeholder="IASMAN52">
+        </div>
+        <p class="f-why" id="bkNomorWhy">Kolavo memberi nomor otomatis tiap anggota diterima: <b>kode–tahun masuk–urutan</b>. Anggota ke berapa mengikuti urutan penerimaan tahun itu. Contoh: <b id="bkNomorContoh">IASMAN52-2026-001</b>.</p>
+      </div>
     </section>
 
     <!-- Blok 3 — formulir pendaftaran, milik komunitas -->

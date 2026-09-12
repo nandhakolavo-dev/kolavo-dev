@@ -41,6 +41,8 @@
   let logo   = '';
   let slugKetik = false;
   let dibuat = null;
+  let nomorMode = 'auto';   /* auto | manual | off */
+  let kodeKetik = false;    /* pengurus sudah mengetik kode sendiri? */
 
   /* ---------- warna tema ---------- */
   el('bkTema').innerHTML = WARNA.map(function(h, i){
@@ -90,6 +92,29 @@
       if(!bersih) return '';
       return (bersih.length <= 4 || /\d/.test(bersih)) ? bersih : bersih[0];
     }).join('').slice(0, 24);
+  }
+
+  /* ---------- nomor anggota ----------
+     Kode = awalan nomor. Diturunkan dari slug (huruf besar, tanpa tanda),
+     boleh diganti pengurus. Format nomor: KODE-TAHUN MASUK-URUTAN. */
+  function keKode(s){
+    return String(s || '').toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 12);
+  }
+  function gambarNomor(){
+    const wrap = el('bkKodeWrap'), why = el('bkNomorWhy');
+    const tahun = new Date().getFullYear();
+    const kode = el('bkKode').value.trim() || keKode(el('bkSlug').value || el('bkNama').value) || 'KOMU';
+    const contoh = lolos(kode + '-' + tahun + '-001');
+    if(nomorMode === 'off'){
+      wrap.hidden = true;
+      why.innerHTML = 'Anggota tidak diberi nomor. Bisa diaktifkan lagi nanti dari pengaturan komunitas.';
+    } else if(nomorMode === 'manual'){
+      wrap.hidden = false;
+      why.innerHTML = 'Pengurus mengisi nomor sendiri saat menerima pendaftaran, dan bisa diperbaiki lagi kalau salah. Awalan yang disarankan: <b>' + contoh + '</b>.';
+    } else {
+      wrap.hidden = false;
+      why.innerHTML = 'Kolavo memberi nomor otomatis tiap anggota diterima: <b>kode–tahun masuk–urutan</b>. Anggota ke berapa mengikuti urutan penerimaan tahun itu. Contoh: <b>' + contoh + '</b>.';
+    }
   }
 
   /* ---------- domisili bertingkat ---------- */
@@ -234,12 +259,19 @@
     if(e.target === el('bkNama')){
       gambarLogo();
       if(!slugKetik) el('bkSlug').value = keSlug(el('bkNama').value);
+      if(!kodeKetik) el('bkKode').value = keKode(el('bkSlug').value);
     }
     if(e.target === el('bkSlug')){
       slugKetik = true;
       e.target.value = e.target.value.replace(/[^0-9a-z-]/g, '');
+      if(!kodeKetik) el('bkKode').value = keKode(e.target.value);
+    }
+    if(e.target === el('bkKode')){
+      kodeKetik = true;
+      e.target.value = keKode(e.target.value);
     }
     if(e.target === el('bkAjak')) el('bkAjakN').textContent = e.target.value.length;
+    if(e.target === el('bkNama') || e.target === el('bkSlug') || e.target === el('bkKode')) gambarNomor();
     progres();
     /* tanda merah hilang begitu kolomnya disentuh, sama seperti layar profil */
     const f = e.target.closest('.f.salah, .qcard.salah');
@@ -253,6 +285,7 @@
       simpanTanya();
       gambarTanya();   /* kartu bawaan ikut ganti judul selama belum diketik */
     }
+    if(e.target.name === 'bkNomor'){ nomorMode = e.target.value; gambarNomor(); }
     progres();
     const f = e.target.closest('.f.salah, .qcard.salah');
     if(f) f.classList.remove('salah');
@@ -339,6 +372,9 @@
       logo: logo,
       inisial: inisial(nama),
       ajakan: el('bkAjak').value.trim(),
+      /* penomoran anggota: mode + awalan kode, dipakai dashboard saat menerima */
+      nomorMode: nomorMode,
+      kode: (el('bkKode').value.trim() || keKode(slug) || 'KOMU'),
       /* bentuk yang sama dengan data-tanya di kartu direktori — formulir
          pendaftaran yang barusan disusun memang benda yang sama */
       tanya: [{ id: 'nickname', judul: 'Nama Panggilan',
@@ -408,6 +444,7 @@
 
   gambarTanya();
   gambarLogo();
+  gambarNomor();
   progres();
 })();
 </script>
