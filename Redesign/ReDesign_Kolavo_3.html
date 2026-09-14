@@ -1248,9 +1248,16 @@ body.lgn-open{overflow:hidden}
 
 /* kartu permintaan yang diperkaya: kontak, kelengkapan, nomor, catatan */
 .kl-req-panggil{font-weight:500;color:var(--ink-3);font-size:13px}
-.kl-req-jawab{margin-top:14px}
+/* jawaban pertanyaan pendaftaran — sinyal utama, dibuat menonjol (kotak bertema) */
+.kl-req-jawab{margin-top:14px;padding:14px 16px;border-radius:12px;background:var(--blue-wash)}
+.kl-jawab-h{display:block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--blue-ink);margin-bottom:10px}
+.kl-jawab-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:5px 0}
+.kl-jawab-q{font-size:12.5px;color:var(--ink-2);flex:none;max-width:48%}
+.kl-jawab-a{font-size:13.5px;font-weight:600;color:var(--ink);text-align:right;word-break:break-word}
+.kl-info-h{display:block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
 .kl-info-k{display:block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
 .kl-req-info{margin-top:14px;display:grid;gap:11px 18px;grid-template-columns:1fr;padding:14px 16px;border-radius:12px;background:var(--bg-alt)}
+.kl-req-info .kl-info-h{grid-column:1/-1;margin-bottom:0}
 @media(min-width:560px){.kl-req-info{grid-template-columns:1fr 1fr}}
 .kl-info-row .kl-info-k{margin-bottom:2px}
 .kl-info-v{font-size:13.5px;color:var(--ink);line-height:1.45;word-break:break-word}
@@ -1264,6 +1271,9 @@ body.lgn-open{overflow:hidden}
   letter-spacing:.02em;padding:4px 10px;border-radius:8px;background:var(--blue-wash);color:var(--blue-ink)}
 .kl-idbadge.sm{font-size:11.5px;padding:3px 8px}
 .kl-id-note{font-size:11.5px;color:var(--ink-3)}
+/* nomor anggota kecil di atas nama — dipakai di dashboard, daftar & detail anggota */
+.mem-id{font-family:"SFMono-Regular",ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;
+  letter-spacing:.04em;color:var(--ink-3);line-height:1.2;margin-bottom:3px}
 .kl-idfield{max-width:220px;height:40px;font-family:"SFMono-Regular",ui-monospace,Menlo,monospace;font-size:13px}
 .kl-req-catatan{margin-top:14px}
 .kl-req-catatan .inp{height:44px}
@@ -1928,6 +1938,7 @@ body.lgn-open{overflow:hidden}
       <div class="ag-head">
         <span class="ag-foto" id="agFoto" role="img" aria-label="Foto profil"></span>
         <div class="ag-t">
+          <p class="mem-id" id="agId" hidden>—</p>
           <h1 class="ag-nm" id="agNm">—</h1>
           <p class="ag-full" id="agFull" hidden>—</p>
           <p class="ag-kerja" id="agKerja">—</p>
@@ -3650,7 +3661,7 @@ function hitung(){}
     const nama = D.pengurus.map(function(p){ return p.nama; }).concat(D.anggotaBiasa);
     const anggota = nama.map(function(n){
       const m = D.mem[n] || { nama: n };
-      return { n: n, k: m.kerja || '—', d: m.kota || '—', j: (m.tags || []).slice(), aku: !!m.aku };
+      return { n: n, k: m.kerja || '—', d: m.kota || '—', j: (m.tags || []).slice(), id: m.id || '', aku: !!m.aku };
     });
     const tally = function(key){
       const peta = {};
@@ -3849,7 +3860,8 @@ function hitung(){}
         ? '<div class="av photo ' + o.f + '" role="img" aria-label="Foto profil ' + o.n + ' — gambar AI"></div>'
         : '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(o.n) + '</div>';
       return '<div class="m" role="button" tabindex="0" data-nm="' + o.n + '">' + av +
-        '<div><div class="nm-baris"><div class="nm">' + o.n + '</div>' +
+        '<div>' + (o.id ? '<div class="mem-id">' + o.id + '</div>' : '') +
+        '<div class="nm-baris"><div class="nm">' + o.n + '</div>' +
         (o.aku ? '<span class="aku">Kamu</span>' : '') + '</div>' +
         '<div class="tags"><span class="tag hi">' + o.k + '</span>' +
         '<span class="tag">' + o.d + '</span>' +
@@ -3981,6 +3993,9 @@ function hitung(){}
     el('agNm').textContent = nama;
     el('agJalurNm').textContent = nama;
     el('agBalik').textContent = kini ? kini.nama : 'Komunitas';
+    /* nomor anggota kecil di atas nama — kelihatan sesama anggota kalau ada */
+    const agId = el('agId');
+    if(agId){ agId.textContent = o.id || ''; agId.hidden = !o.id; }
     /* baris teratas setelah nama: apa yang dia kerjakan sekarang. Di kolavo.app
        tempat ini diisi nomor WhatsApp dan nama lengkap — keduanya keterangan
        administratif, bukan alasan orang membuka profil sesama anggota. */
@@ -4995,9 +5010,9 @@ function hitung(){}
   /* pendaftar contoh. Sengaja bukan salah satu dari empat wajah ber-foto AI —
      pendaftar pakai inisial, jadi tidak ada foto orang yang dipakai tanpa izin */
   const SEED = [
-    { nama: 'Putri Maharani',  panggil: 'Putri', full: 'Putri Maharani Lestari', jk: 'Perempuan', kerja: 'Guru SD',         kota: 'Bekasi',        wa: '0812-••••-4417', email: 'putri••••@gmail.com', lengkap: true,  waktu: '2 hari lalu', tahun: 2014, teks: 'Diajak teman seangkatan' },
-    { nama: 'Andi Firmansyah', panggil: 'Andi',  full: 'Andi Firmansyah',        jk: 'Laki-laki', kerja: 'Karyawan swasta', kota: 'Jakarta Timur', wa: '0813-••••-2210', email: 'andi.f••••@gmail.com', lengkap: true,  waktu: 'kemarin',     tahun: 2010, teks: 'Ketemu di grup WhatsApp' },
-    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, waktu: '3 jam lalu',  tahun: 2016, teks: 'Nemu halaman ini di Kolavo' }
+    { nama: 'Putri Maharani',  panggil: 'Putri', full: 'Putri Maharani Lestari', jk: 'Perempuan', kerja: 'Guru SD',         kota: 'Bekasi',        wa: '0812-••••-4417', email: 'putri••••@gmail.com', lengkap: true,  waktu: '2 hari lalu', tahun: 2014, teks: ['Diajak teman seangkatan', 'Ingin ikut kegiatan alumni'] },
+    { nama: 'Andi Firmansyah', panggil: 'Andi',  full: 'Andi Firmansyah',        jk: 'Laki-laki', kerja: 'Karyawan swasta', kota: 'Jakarta Timur', wa: '0813-••••-2210', email: 'andi.f••••@gmail.com', lengkap: true,  waktu: 'kemarin',     tahun: 2010, teks: ['Ketemu di grup WhatsApp', 'Cari koneksi seprofesi'] },
+    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, waktu: '3 jam lalu',  tahun: 2016, teks: ['Nemu halaman ini di Kolavo', 'Mau kenal alumni lain'] }
   ];
 
   const D = {
@@ -5019,15 +5034,23 @@ function hitung(){}
 
   /* tag jawaban pendaftar, disusun dari pertanyaan yang tadi dirancang pengurus —
      nama panggilan tidak jadi tag (itu cara menyapa, bukan cara mengenali) */
-  function tagsFor(s){
+  /* jawaban pendaftar disusun dari pertanyaan yang dirancang pengurus saat buat
+     halaman (kom.tanya) — bukan field tetap. Nama panggilan tidak diulang di sini
+     karena sudah tampil di sebelah nama. */
+  function jawabanFor(s){
     const tanya = (D.kom && D.kom.tanya) || [];
-    const out = [];
-    tanya.forEach(function(t){
-      if(t.id === 'nickname') return;
-      if(t.tipe === 'tahun') out.push((t.judul || 'Tahun') + ' ' + s.tahun);
-      else out.push(s.teks);
+    const teks = Array.isArray(s.teks) ? s.teks : (s.teks ? [s.teks] : []);
+    let ti = 0;
+    return tanya.filter(function(t){ return t.id !== 'nickname'; }).map(function(t){
+      const nilai = t.tipe === 'tahun' ? String(s.tahun) : (teks[ti++] || '—');
+      return { judul: t.judul || 'Pertanyaan', nilai: nilai };
     });
-    return out;
+  }
+  /* versi ringkas (tag) untuk daftar anggota */
+  function tagsFor(s){
+    return jawabanFor(s).map(function(j){
+      return /^\d{4}$/.test(j.nilai) ? j.judul + ' ' + j.nilai : j.nilai;
+    });
   }
 
   const IKON_CEK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
@@ -5069,7 +5092,8 @@ function hitung(){}
       return {
         id: 'r' + i, nama: s.nama, panggil: s.panggil, full: s.full, jk: s.jk,
         kerja: s.kerja, kota: s.kota, wa: s.wa, email: s.email, lengkap: s.lengkap,
-        waktu: s.waktu, tahun: s.tahun, teks: s.teks, tags: tagsFor(s)
+        waktu: s.waktu, tahun: s.tahun,
+        jawaban: jawabanFor(s), tags: tagsFor(s)
       };
     });
     D.tab = 'minta';
@@ -5151,19 +5175,27 @@ function hitung(){}
     const bisa = akuPeninjau();
     wadah.innerHTML = D.minta.map(function(r, i){
       const av = '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(r.nama) + '</div>';
-      const tags = r.tags.map(function(v){ return '<span class="tag">' + lolos(v) + '</span>'; }).join('');
 
-      /* data yang bikin peninjau bisa memutuskan: kontak terverifikasi,
-         kelengkapan profil, alasan gabung, dan jawaban formulir pendaftaran */
+      /* Jawaban pertanyaan pendaftaran — pertanyaan yang disusun pengurus saat
+         buat halaman. Ini sinyal utama buat memutuskan, jadi ditaruh menonjol. */
+      const jawab = (r.jawaban && r.jawaban.length)
+        ? '<div class="kl-req-jawab"><span class="kl-jawab-h">Jawaban pertanyaan pendaftaran</span>' +
+            r.jawaban.map(function(j){
+              return '<div class="kl-jawab-row"><span class="kl-jawab-q">' + lolos(j.judul) + '</span>' +
+                     '<span class="kl-jawab-a">' + lolos(j.nilai) + '</span></div>';
+            }).join('') +
+          '</div>'
+        : '';
+
+      /* data profil dari Kolavo — melekat ke orangnya, sama di komunitas mana pun */
       const info =
-        '<div class="kl-req-info">' +
+        '<div class="kl-req-info"><span class="kl-info-h">Data profil</span>' +
           baris2('WhatsApp', lolos(r.wa) + ' <span class="kl-verif">' + IKON_CEK_KECIL + 'terverifikasi</span>') +
           baris2('Email', lolos(r.email)) +
           baris2('Jenis kelamin', lolos(r.jk)) +
           baris2('Kelengkapan profil', r.lengkap
             ? '<span class="kl-ok">Profil lengkap</span>'
             : '<span class="kl-warn">Sebagian belum diisi</span>') +
-          baris2('Alasan gabung', lolos(r.teks)) +
         '</div>';
 
       /* nomor anggota: otomatis (pratinjau format) atau manual (isi/ubah saat menerima) */
@@ -5195,8 +5227,7 @@ function hitung(){}
             '<div class="kl-req-sub">' + lolos(r.kerja) + ' · ' + lolos(r.kota) + '</div></div>' +
             '<span class="kl-req-when">Minta gabung ' + lolos(r.waktu) + '</span>' +
           '</div>' +
-          (tags ? '<div class="kl-req-jawab"><span class="kl-info-k">Jawaban pendaftaran</span><div class="kl-req-tags">' + tags + '</div></div>' : '') +
-          info + nomor + catatan + aksi +
+          info + jawab + nomor + catatan + aksi +
         '</div>';
     }).join('');
   }
@@ -5211,9 +5242,6 @@ function hitung(){}
   }
 
   /* ---------- panel: anggota (angkat kepengurusan + nomor anggota) ---------- */
-  function idBadge(m){
-    return (pakaiNomor() && m && m.id) ? '<span class="kl-idbadge sm">' + lolos(m.id) + '</span>' : '';
-  }
   function editNomor(nama, m){
     if(D.idUbahFor !== nama) return '';
     const siapa = (m.panggil && m.panggil !== 'Kamu') ? lolos(m.panggil) : (m.aku ? 'kamu' : lolos(nama.split(' ')[0]));
@@ -5237,7 +5265,7 @@ function hitung(){}
     /* pengurus dulu, dengan jabatannya — lalu anggota biasa yang bisa diangkat */
     D.pengurus.forEach(function(p){
       const m = D.mem[p.nama] || { nama: p.nama, kerja: '', kota: '' };
-      const kanan = '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' + (p.aku ? '<span class="tag hi">Kamu</span>' : '') + idBadge(m);
+      const kanan = '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' + (p.aku ? '<span class="tag hi">Kamu</span>' : '');
       const t = tombolNomor(p.nama, m);
       html += baris(m, kanan, t ? '<div class="kl-row-aksi">' + t + '</div>' : '') + editNomor(p.nama, m);
     });
@@ -5249,7 +5277,7 @@ function hitung(){}
         aksi = '<div class="kl-row-aksi">' + tombolNomor(nama, m) +
           '<button type="button" class="btn outline sm" data-angkat="' + lolos(nama) + '">Angkat jadi pengurus</button></div>';
       }
-      html += baris(m, idBadge(m), aksi) + editNomor(nama, m);
+      html += baris(m, '', aksi) + editNomor(nama, m);
       if(D.angkatFor === nama){
         html += '<div class="kl-angkat">' +
             '<span class="kl-angkat-lbl">Jadikan ' + lolos((m.panggil && m.panggil !== 'Kamu') ? m.panggil : nama.split(' ')[0]) + ':</span>' +
@@ -5268,8 +5296,11 @@ function hitung(){}
   function baris(m, kanan, aksi){
     const av = '<div class="av ' + 'abc'[(m.nama.length) % 3] + '" aria-hidden="true">' + inisial(m.nama) + '</div>';
     const sub = [m.kerja, m.kota].filter(Boolean).join(' · ');
+    /* nomor anggota ditaruh kecil di atas nama, bukan menyamping — baris jadi
+       rapi walau nomornya panjang */
+    const idAtas = (pakaiNomor() && m && m.id) ? '<div class="mem-id">' + lolos(m.id) + '</div>' : '';
     return '<div class="kl-row">' + av +
-      '<div class="t"><div class="kl-row-nm">' + lolos(m.nama) + (kanan || '') + '</div>' +
+      '<div class="t">' + idAtas + '<div class="kl-row-nm">' + lolos(m.nama) + (kanan || '') + '</div>' +
       (sub ? '<div class="kl-row-sub">' + lolos(sub) + '</div>' : '') + '</div>' +
       (aksi || '') + '</div>';
   }
@@ -5336,9 +5367,9 @@ function hitung(){}
       /* nomor anggota dibaca dari data anggota (bukan snapshot) supaya kalau
          diperbaiki di tab Anggota, riwayatnya ikut betul */
       const mem = D.mem[r.nama];
-      const id = (diterima && pakaiNomor() && mem && mem.id) ? '<span class="kl-idbadge sm">' + lolos(mem.id) + '</span>' : '';
+      const idAtas = (diterima && pakaiNomor() && mem && mem.id) ? '<div class="mem-id">' + lolos(mem.id) + '</div>' : '';
       return '<div class="kl-riwayat">' + av +
-          '<div class="t"><div class="kl-riwayat-nm">' + lolos(r.nama) + id + '</div>' +
+          '<div class="t">' + idAtas + '<div class="kl-riwayat-nm">' + lolos(r.nama) + '</div>' +
           '<div class="kl-riwayat-sub">' + lolos(r.kerja) + ' · ' + lolos(r.kota) + ' · oleh ' + oleh + ' · ' + lolos(r.waktu) + '</div>' +
           (r.catatan ? '<div class="kl-riwayat-catatan">“' + lolos(r.catatan) + '”</div>' : '') + '</div>' +
           '<span class="kl-hasil ' + (diterima ? 'diterima' : 'ditolak') + '">' + (diterima ? IKON_CEK : IKON_X) + (diterima ? 'Diterima' : 'Ditolak') + '</span>' +

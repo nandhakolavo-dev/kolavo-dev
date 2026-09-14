@@ -193,7 +193,7 @@
     const nama = D.pengurus.map(function(p){ return p.nama; }).concat(D.anggotaBiasa);
     const anggota = nama.map(function(n){
       const m = D.mem[n] || { nama: n };
-      return { n: n, k: m.kerja || '—', d: m.kota || '—', j: (m.tags || []).slice(), aku: !!m.aku };
+      return { n: n, k: m.kerja || '—', d: m.kota || '—', j: (m.tags || []).slice(), id: m.id || '', aku: !!m.aku };
     });
     const tally = function(key){
       const peta = {};
@@ -392,7 +392,8 @@
         ? '<div class="av photo ' + o.f + '" role="img" aria-label="Foto profil ' + o.n + ' — gambar AI"></div>'
         : '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(o.n) + '</div>';
       return '<div class="m" role="button" tabindex="0" data-nm="' + o.n + '">' + av +
-        '<div><div class="nm-baris"><div class="nm">' + o.n + '</div>' +
+        '<div>' + (o.id ? '<div class="mem-id">' + o.id + '</div>' : '') +
+        '<div class="nm-baris"><div class="nm">' + o.n + '</div>' +
         (o.aku ? '<span class="aku">Kamu</span>' : '') + '</div>' +
         '<div class="tags"><span class="tag hi">' + o.k + '</span>' +
         '<span class="tag">' + o.d + '</span>' +
@@ -524,6 +525,9 @@
     el('agNm').textContent = nama;
     el('agJalurNm').textContent = nama;
     el('agBalik').textContent = kini ? kini.nama : 'Komunitas';
+    /* nomor anggota kecil di atas nama — kelihatan sesama anggota kalau ada */
+    const agId = el('agId');
+    if(agId){ agId.textContent = o.id || ''; agId.hidden = !o.id; }
     /* baris teratas setelah nama: apa yang dia kerjakan sekarang. Di kolavo.app
        tempat ini diisi nomor WhatsApp dan nama lengkap — keduanya keterangan
        administratif, bukan alasan orang membuka profil sesama anggota. */
