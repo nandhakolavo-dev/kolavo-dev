@@ -25,10 +25,18 @@
 
   /* pendaftar contoh. Sengaja bukan salah satu dari empat wajah ber-foto AI —
      pendaftar pakai inisial, jadi tidak ada foto orang yang dipakai tanpa izin */
+  /* hari = umur permintaan (buat Meja kerja: "yang paling lama menunggu").
+     db = hasil pencocokan dengan database anggota lama di Sekretariat — cocok /
+     mirip (satu kolom beda) / tidak (tak ada di database). Tiga yang terakhir
+     ditambahkan supaya antreannya terasa menumpuk, seperti keluhan pengurus di
+     laporan feedback 7 Agustus 2026 ("kewalahan approve satu-satu"). */
   const SEED = [
-    { nama: 'Putri Maharani',  panggil: 'Putri', full: 'Putri Maharani Lestari', jk: 'Perempuan', kerja: 'Guru SD',         kota: 'Bekasi',        wa: '0812-••••-4417', email: 'putri••••@gmail.com', lengkap: true,  waktu: '2 hari lalu', tahun: 2014, teks: ['Diajak teman seangkatan', 'Ingin ikut kegiatan alumni'] },
-    { nama: 'Andi Firmansyah', panggil: 'Andi',  full: 'Andi Firmansyah',        jk: 'Laki-laki', kerja: 'Karyawan swasta', kota: 'Jakarta Timur', wa: '0813-••••-2210', email: 'andi.f••••@gmail.com', lengkap: true,  waktu: 'kemarin',     tahun: 2010, teks: ['Ketemu di grup WhatsApp', 'Cari koneksi seprofesi'] },
-    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, waktu: '3 jam lalu',  tahun: 2016, teks: ['Nemu halaman ini di Kolavo', 'Mau kenal alumni lain'] }
+    { nama: 'Putri Maharani',  panggil: 'Putri', full: 'Putri Maharani Lestari', jk: 'Perempuan', kerja: 'Guru SD',         kota: 'Bekasi',        wa: '0812-••••-4417', email: 'putri••••@gmail.com', lengkap: true,  waktu: '2 hari lalu', hari: 2, tahun: 2014, teks: ['Diajak teman seangkatan', 'Ingin ikut kegiatan alumni'], db: { status: 'cocok' } },
+    { nama: 'Andi Firmansyah', panggil: 'Andi',  full: 'Andi Firmansyah',        jk: 'Laki-laki', kerja: 'Karyawan swasta', kota: 'Jakarta Timur', wa: '0813-••••-2210', email: 'andi.f••••@gmail.com', lengkap: true,  waktu: 'kemarin',     hari: 1, tahun: 2010, teks: ['Ketemu di grup WhatsApp', 'Cari koneksi seprofesi'], db: { status: 'mirip', kolom: 'tahun', nilai: 2011 } },
+    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, waktu: '3 jam lalu',  hari: 0, tahun: 2016, teks: ['Nemu halaman ini di Kolavo', 'Mau kenal alumni lain'], db: { status: 'tidak' } },
+    { nama: 'Rina Kartika',    panggil: 'Rina',  full: 'Rina Kartika Sari',      jk: 'Perempuan', kerja: 'Perawat',         kota: 'Jakarta Utara', wa: '0821-••••-7702', email: 'rinaks••••@gmail.com', lengkap: true,  waktu: '5 hari lalu', hari: 5, tahun: 2012, teks: ['Diajak ketua angkatan', 'Mau bantu kegiatan sosial'], db: { status: 'cocok' } },
+    { nama: 'Bayu Setiawan',   panggil: 'Bayu',  full: 'Bayu Setiawan',          jk: 'Laki-laki', kerja: 'Teknisi jaringan', kota: 'Bekasi',       wa: '0838-••••-1185', email: 'bayu.s••••@gmail.com', lengkap: true,  waktu: '8 hari lalu', hari: 8, tahun: 2010, teks: ['Dari grup WhatsApp angkatan', 'Cari info lowongan'], db: { status: 'cocok' } },
+    { nama: 'Galih Pramudya',  panggil: 'Galih', full: 'Galih Pramudya',         jk: 'Laki-laki', kerja: 'Desainer grafis', kota: 'Tangerang',     wa: '0877-••••-5543', email: 'galihp••••@gmail.com', lengkap: false, waktu: '6 hari lalu', hari: 6, tahun: 2015, teks: ['Lihat unggahan di Instagram', 'Ingin ikut reuni'], db: { status: 'mirip', kolom: 'nama', nilai: 'Galih Pramudia' } }
   ];
 
   const D = {
@@ -39,6 +47,9 @@
     nomorMode: 'auto', kode: 'KOMU', tahun: new Date().getFullYear(), urut: 0, idUbahFor: null
   };
   window.KolavoDashboard = D;
+  /* kait buat modul yang menempel ke dashboard (50-js-sekretariat) */
+  D.onBangun = [];
+  D.onGambar = [];
 
   function inisial(n){
     return n.trim().split(/\s+/).slice(0, 2).map(function(k){ return k[0]; }).join('').toUpperCase();
@@ -108,7 +119,7 @@
       return {
         id: 'r' + i, nama: s.nama, panggil: s.panggil, full: s.full, jk: s.jk,
         kerja: s.kerja, kota: s.kota, wa: s.wa, email: s.email, lengkap: s.lengkap,
-        waktu: s.waktu, tahun: s.tahun,
+        waktu: s.waktu, hari: s.hari, tahun: s.tahun, db: s.db,
         jawaban: jawabanFor(s), tags: tagsFor(s)
       };
     });
@@ -117,6 +128,8 @@
     D.ubahFor = null;
     D.riwayat = [];
     D.built = true;
+    /* modul lain (Sekretariat) mengosongkan keadaannya sendiri di sini */
+    D.onBangun.forEach(function(f){ f(); });
     return true;
   }
 
@@ -379,14 +392,14 @@
     wadah.innerHTML = D.riwayat.map(function(r, i){
       const av = '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(r.nama) + '</div>';
       const diterima = r.status === 'diterima';
-      const oleh = r.oleh === D.aku ? 'kamu' : lolos(r.oleh.split(' ')[0]);
+      const oleh = r.otomatis ? 'diterima otomatis' : 'oleh ' + (r.oleh === D.aku ? 'kamu' : lolos(r.oleh.split(' ')[0]));
       /* nomor anggota dibaca dari data anggota (bukan snapshot) supaya kalau
          diperbaiki di tab Anggota, riwayatnya ikut betul */
       const mem = D.mem[r.nama];
       const idAtas = (diterima && pakaiNomor() && mem && mem.id) ? '<div class="mem-id">' + lolos(mem.id) + '</div>' : '';
       return '<div class="kl-riwayat">' + av +
           '<div class="t">' + idAtas + '<div class="kl-riwayat-nm">' + lolos(r.nama) + '</div>' +
-          '<div class="kl-riwayat-sub">' + lolos(r.kerja) + ' · ' + lolos(r.kota) + ' · oleh ' + oleh + ' · ' + lolos(r.waktu) + '</div>' +
+          '<div class="kl-riwayat-sub">' + lolos(r.kerja) + ' · ' + lolos(r.kota) + ' · ' + oleh + ' · ' + lolos(r.waktu) + '</div>' +
           (r.catatan ? '<div class="kl-riwayat-catatan">“' + lolos(r.catatan) + '”</div>' : '') + '</div>' +
           '<span class="kl-hasil ' + (diterima ? 'diterima' : 'ditolak') + '">' + (diterima ? IKON_CEK : IKON_X) + (diterima ? 'Diterima' : 'Ditolak') + '</span>' +
         '</div>';
@@ -394,13 +407,19 @@
   }
 
   /* ---------- ganti tab ---------- */
+  /* tab Advance (data-sek) hanya ada di tampilan Advance — di Esensial, yang
+     tersisa dari tab itu jatuh kembali ke Permintaan gabung */
   function pilihTab(nama){
+    const tombol = scr.querySelector('.kl-tab[data-tab="' + nama + '"]');
+    if(tombol && tombol.hasAttribute('data-sek') && D.mode !== 'advance') nama = 'minta';
     D.tab = nama;
-    scr.querySelectorAll('.kl-tab').forEach(function(b){ b.classList.toggle('on', b.dataset.tab === nama); });
-    el('klPanelMinta').hidden = nama !== 'minta';
-    el('klPanelAnggota').hidden = nama !== 'anggota';
-    el('klPanelPengurus').hidden = nama !== 'pengurus';
-    el('klPanelRiwayat').hidden = nama !== 'riwayat';
+    const tampil = nama;
+    scr.querySelectorAll('.kl-tab').forEach(function(b){
+      const on = b.dataset.tab === nama;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    scr.querySelectorAll('.kl-panel').forEach(function(p){ p.hidden = p.dataset.panel !== tampil; });
   }
 
   function gambar(){
@@ -409,8 +428,37 @@
     gambarAnggota();
     gambarPengurus();
     gambarRiwayat();
+    D.onGambar.forEach(function(f){ f(); });
     pilihTab(D.tab);
   }
+
+  /* ---------- menerima / menolak — satu jalur, dipakai kartu permintaan dan
+     penerimaan massal di Sekretariat ---------- */
+  function terima(r, o){
+    o = o || {};
+    let id = '';
+    if(pakaiNomor()){
+      D.urut++;
+      id = (D.nomorMode === 'manual' && o.id) ? o.id : fmtId(D.urut);
+    }
+    D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
+    /* tags jawaban ikut disimpan supaya muncul di daftar anggota halaman pemilik */
+    D.mem[r.nama] = { nama: r.nama, kerja: r.kerja, kota: r.kota, panggil: r.panggil, tags: (r.tags || []).slice(), id: id };
+    D.anggotaBiasa.push(r.nama);
+    D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'diterima', oleh: D.aku, otomatis: !!o.otomatis, waktu: 'baru saja', catatan: o.catatan || '' });
+    return id;
+  }
+  function tolakR(r, catatan){
+    D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
+    D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'ditolak', oleh: D.aku, waktu: 'baru saja', catatan: catatan || '' });
+  }
+  D.terima = terima;
+  D.gambar = function(){ gambar(); };
+  D.pilihTab = pilihTab;
+  D.jumlahAnggota = jumlahAnggota;
+  D.inisial = inisial;
+  D.lolos = lolos;
+  D.akuPeninjau = akuPeninjau;
 
   /* membangun keadaan tanpa berpindah layar — dipakai halaman komunitas versi
      pemilik supaya daftar anggota & pengurusnya sudah ada saat halaman dibuka */
@@ -456,24 +504,10 @@
       const r = D.minta.filter(function(x){ return x.id === setuju.dataset.setuju; })[0];
       if(!r) return;
       const kartu = setuju.closest('.kl-req');
-      const catatan = bacaCatatan(kartu);
       /* nomor anggota ditetapkan saat diterima: otomatis ikut urutan, atau
          diambil dari kolom manual yang diisi peninjau */
-      let id = '';
-      if(pakaiNomor()){
-        D.urut++;
-        if(D.nomorMode === 'manual'){
-          const f = kartu && kartu.querySelector('[data-idinput]');
-          id = (f && f.value.trim()) || fmtId(D.urut);
-        } else {
-          id = fmtId(D.urut);
-        }
-      }
-      D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
-      /* tags jawaban ikut disimpan supaya muncul di daftar anggota halaman pemilik */
-      D.mem[r.nama] = { nama: r.nama, kerja: r.kerja, kota: r.kota, panggil: r.panggil, tags: (r.tags || []).slice(), id: id };
-      D.anggotaBiasa.push(r.nama);
-      D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'diterima', oleh: D.aku, waktu: 'baru saja', catatan: catatan });
+      const f = kartu && kartu.querySelector('[data-idinput]');
+      const id = terima(r, { catatan: bacaCatatan(kartu), id: f ? f.value.trim() : '' });
       gambar();
       toast(r.panggil + ' disetujui.' + (id ? ' Nomor anggota ' + id + '.' : ' Daftar anggota kebuka buat dia.'));
       return;
@@ -482,9 +516,7 @@
     if(tolak){
       const r = D.minta.filter(function(x){ return x.id === tolak.dataset.tolak; })[0];
       if(!r) return;
-      const catatan = bacaCatatan(tolak.closest('.kl-req'));
-      D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
-      D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'ditolak', oleh: D.aku, waktu: 'baru saja', catatan: catatan });
+      tolakR(r, bacaCatatan(tolak.closest('.kl-req')));
       gambar();
       toast('Permintaan ' + r.panggil + ' ditolak.');
       return;
