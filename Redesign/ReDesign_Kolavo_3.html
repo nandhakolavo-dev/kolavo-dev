@@ -332,6 +332,10 @@ h2{font-size:clamp(24px,3.3vw,34px)}
 .ccard .logo-sq{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;
   font-weight:600;font-size:16px;border:none}
 .ccard h3{font-size:16px;font-weight:600;line-height:1.35}
+.verif{display:inline-flex;flex:none;vertical-align:-2px}
+.verif svg{width:100%;height:100%;display:block}
+.ccard h3 .verif{width:15px;height:15px;margin-left:3px}
+.kom-nm .verif{width:20px;height:20px;margin-left:6px}
 .ccard .desc{font-size:13px;color:var(--ink-3);line-height:1.5;flex:1}
 .ccard .row{display:flex;align-items:flex-end;gap:10px;padding-top:12px}
 .ccard .mem{font-size:12px;color:var(--ink-3)}
@@ -1256,6 +1260,13 @@ body.lgn-open{overflow:hidden}
 .kl-angkat{margin-top:0;display:flex;gap:10px;flex-wrap:wrap;align-items:center;
   padding:14px 16px;border-radius:14px;border:1px dashed var(--blue);background:var(--blue-tint);margin-bottom:10px}
 .kl-angkat[hidden]{display:none}
+.kl-tier{background:var(--blue-wash);border:1px solid var(--blue);border-radius:13px;padding:12px 14px;margin-bottom:16px;font-size:13px;line-height:1.5;color:var(--ink)}
+.kl-tier b{color:var(--blue-ink)}
+.kl-seksi-h{font-size:13px;font-weight:600;color:var(--ink);margin:2px 0 6px}
+.kl-cb-hint{font-size:12.5px;color:var(--ink-3);line-height:1.5;margin:0 0 10px}
+.kl-upsell{margin-top:18px;border:1px dashed var(--line);border-radius:13px;padding:14px 16px;background:var(--bg-alt)}
+.kl-upsell-h{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.kl-upsell p{font-size:12.5px;color:var(--ink-3);line-height:1.55;margin:0 0 12px}
 .kl-angkat .sel{max-width:200px;height:40px}
 .kl-angkat-lbl{font-size:13px;font-weight:600;color:var(--ink-2)}
 /* riwayat keputusan pendaftaran — dilihat semua pengurus */
@@ -1649,10 +1660,10 @@ body.lgn-open{overflow:hidden}
 
 
     <div class="grid">
-      <article class="ccard c-forpastara" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Angkatan Paskibra", "tanya": "Tahun berapa kamu jadi Paskibra?", "tipe": "tahun", "wajib": false}]' data-bentuk="Himpunan" data-negara="Indonesia" data-provinsi="Jawa Barat" data-kota="Kabupaten Bekasi">
+      <article data-premium="1" class="ccard c-forpastara" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Angkatan Paskibra", "tanya": "Tahun berapa kamu jadi Paskibra?", "tipe": "tahun", "wajib": false}]' data-bentuk="Himpunan" data-negara="Indonesia" data-provinsi="Jawa Barat" data-kota="Kabupaten Bekasi">
         <div class="loc">Kabupaten Bekasi, Jawa Barat</div>
         <div class="logo-sq l-forpastara" role="img" aria-label="Logo komunitas"></div>
-        <h3>Forum Paskibra Tarumajaya</h3>
+        <h3>Forum Paskibra Tarumajaya <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></h3>
         <p class="desc">Yukk Kakak, Akang, Teteh semua, kita gabung di Komunitas Forpastara</p>
         <div class="row">
           <div><div class="mem">22 anggota</div>
@@ -1673,10 +1684,10 @@ body.lgn-open{overflow:hidden}
         </div>
       </article>
 
-      <article class="ccard c-iasman52" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Lulus", "tanya": "Kamu lulus tahun berapa?", "tipe": "tahun", "wajib": true}]' data-bentuk="Ikatan Alumni" data-negara="Indonesia" data-provinsi="DKI Jakarta" data-kota="Jakarta Utara">
+      <article data-premium="1" class="ccard c-iasman52" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Lulus", "tanya": "Kamu lulus tahun berapa?", "tipe": "tahun", "wajib": true}]' data-bentuk="Ikatan Alumni" data-negara="Indonesia" data-provinsi="DKI Jakarta" data-kota="Jakarta Utara">
         <div class="loc">Jakarta Utara, DKI Jakarta</div>
         <div class="logo-sq l-iasman52" role="img" aria-label="Logo komunitas"></div>
-        <h3>Ikatan Alumni SMAN 52</h3>
+        <h3>Ikatan Alumni SMAN 52 <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></h3>
         <p class="desc">Alumni SMAN 52 Jakarta, yuk gabung. 🏫</p>
         <div class="row">
           <div><div class="mem">17 anggota</div>
@@ -2406,7 +2417,6 @@ body.lgn-open{overflow:hidden}
       </section>
 
       <section class="kl-panel" id="klPanelPengurus" data-panel="pengurus" role="tabpanel" hidden>
-        <p class="kl-sub">Pengurus bisa saling berbagi tugas. Hak menyetujui pendaftaran dipegang <b>peninjau pendaftaran</b> — boleh beberapa orang sekaligus, dan bisa kamu tambah atau lepas kapan saja. Selalu ada minimal satu peninjau.</p>
         <div id="klPengurusList"></div>
       </section>
 
@@ -3830,7 +3840,8 @@ function hitung(){}
       jumlah: kartu.querySelector('.mem').textContent.trim(),
       angka: parseInt(kartu.querySelector('.mem').textContent, 10) || 0,
       tanya: tanya,
-      agg: DATA[kelas] || null
+      agg: DATA[kelas] || null,
+      premium: kartu.dataset.premium === '1'
     };
   }
 
@@ -4374,6 +4385,7 @@ function hitung(){}
     if(!kini) return;
     el('komJalurNm').textContent = kini.nama;
     el('komNm').textContent = kini.nama;
+    if(kini.premium) el('komNm').insertAdjacentHTML('beforeend', ' <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span>');
     el('komDesc').textContent = kini.desc;
     const logo = el('komLogo');
     if(founder || pratinjau){
@@ -5341,6 +5353,7 @@ function hitung(){}
   function pakaiNomor(){ return D.nomorMode !== 'off'; }
 
   function jumlahAnggota(){ return D.pengurus.length + D.anggotaBiasa.length; }
+  function modeAdvance(){ return D.mode === 'advance'; }
   function akuPeninjau(){ return D.peninjau.indexOf(D.aku) >= 0; }
   function adaPeninjau(nama){ return D.peninjau.indexOf(nama) >= 0; }
   function jabatanDari(nama){
@@ -5505,7 +5518,7 @@ function hitung(){}
       let aksi = '';
       if(D.angkatFor !== nama && D.idUbahFor !== nama){
         aksi = '<div class="kl-row-aksi">' + tombolNomor(nama, m) +
-          '<button type="button" class="btn outline sm" data-angkat="' + lolos(nama) + '">Angkat jadi pengurus</button></div>';
+          (modeAdvance() ? '<button type="button" class="btn outline sm" data-angkat="' + lolos(nama) + '">Angkat jadi pengurus</button>' : '') + '</div>';
       }
       html += baris(m, '', aksi) + editNomor(nama, m);
       if(D.angkatFor === nama){
@@ -5535,11 +5548,17 @@ function hitung(){}
       (aksi || '') + '</div>';
   }
 
-  /* ---------- panel: kepengurusan (pindah hak setuju) ---------- */
+  /* ---------- panel: kepengurusan ---------- */
   function gambarPengurus(){
+    if(modeAdvance()) gambarPengurusAdvance();
+    else gambarPengurusEsensial();
+  }
+
+  /* Advance: susunan pengurus penuh — angkat, ubah jabatan, atur peninjau */
+  function gambarPengurusAdvance(){
     const wadah = el('klPengurusList');
     const satuPeninjau = D.peninjau.length <= 1;
-    wadah.innerHTML = D.pengurus.map(function(p){
+    wadah.innerHTML = '<p class="kl-sub">Pengurus bisa saling berbagi tugas. Hak menyetujui pendaftaran dipegang <b>peninjau pendaftaran</b> — boleh beberapa orang sekaligus, dan bisa kamu tambah atau lepas kapan saja. Selalu ada minimal satu peninjau.</p>' + D.pengurus.map(function(p){
       const m = D.mem[p.nama] || { nama: p.nama, kerja: '', kota: '' };
       const ini = adaPeninjau(p.nama);
       const nm = lolos(p.nama) + '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' +
@@ -5575,6 +5594,50 @@ function hitung(){}
       }
       return html;
     }).join('');
+  }
+
+  /* Esensial: tanpa susunan jabatan — cuma atur siapa peninjau + ajakan Advance */
+  function gambarPengurusEsensial(){
+    const wadah = el('klPengurusList');
+    const satuPeninjau = D.peninjau.length <= 1;
+
+    const list = D.peninjau.map(function(nama){
+      const m = D.mem[nama] || { nama: nama, kerja: '', kota: '' };
+      const sub = [m.kerja, m.kota].filter(Boolean).join(' · ');
+      const av = '<div class="av ' + 'abc'[(nama.length) % 3] + '" aria-hidden="true">' + inisial(nama) + '</div>';
+      const tag = (nama === D.aku) ? '<span class="tag hi">Kamu</span>' : '';
+      const lepas = satuPeninjau ? '' : '<button type="button" class="btn outline sm" data-peninjau-off="' + lolos(nama) + '">Lepas</button>';
+      return '<div class="kl-row">' + av +
+        '<div class="t"><div class="kl-row-nm">' + lolos(nama) + tag +
+          '<span class="kl-peninjau">' + IKON_MATA + 'Peninjau</span></div>' +
+        (sub ? '<div class="kl-row-sub">' + lolos(sub) + '</div>' : '') + '</div>' +
+        (lepas ? '<div class="kl-row-aksi">' + lepas + '</div>' : '') + '</div>';
+    }).join('');
+
+    const bisa = [D.aku].concat(D.anggotaBiasa).filter(function(n){ return !adaPeninjau(n); });
+    let tambah;
+    if(bisa.length){
+      tambah = '<div class="kl-angkat">' +
+          '<span class="kl-angkat-lbl">Tunjuk peninjau:</span>' +
+          '<select class="sel" id="klPeninjauSel" aria-label="Pilih anggota jadi peninjau">' +
+            bisa.map(function(n){ return '<option value="' + lolos(n) + '">' + lolos(n === D.aku ? 'Kamu' : n) + '</option>'; }).join('') +
+          '</select>' +
+          '<button type="button" class="btn sm" data-peninjau-add>Jadikan peninjau</button>' +
+        '</div>';
+    } else {
+      tambah = '<p class="kl-cb-hint">Terima anggota dulu lewat tab Permintaan gabung untuk bisa menunjuk peninjau lain.</p>';
+    }
+
+    wadah.innerHTML =
+      '<div class="kl-tier"><b>Paket Esensial · Community Builder.</b> Kamu satu-satunya pengurus. Yang bisa diatur di sini: siapa yang meninjau pendaftaran yang masuk.</div>' +
+      '<div class="kl-seksi-h">Peninjau pendaftaran</div>' +
+      '<p class="kl-cb-hint">Merekalah yang menerima atau menolak pendaftaran. Selalu ada minimal satu.</p>' +
+      list + tambah +
+      '<div class="kl-upsell">' +
+        '<div class="kl-upsell-h">Butuh susunan pengurus?</div>' +
+        '<p>Ketua, wakil ketua, sekretaris, bendahara — dengan menu kepengurusan sendiri untuk mengangkat anggota jadi pengurus dan mengatur jabatan. Ada di paket <b>Advance</b>.</p>' +
+        '<button type="button" class="btn outline sm" data-mode="advance">' + (D.sekAktif ? 'Buka Advance' : 'Lihat Advance') + '</button>' +
+      '</div>';
   }
 
   /* ---------- panel: riwayat keputusan ---------- */
@@ -5763,6 +5826,17 @@ function hitung(){}
       if(!adaPeninjau(nama)) D.peninjau.push(nama);
       gambar();
       toast((nama === D.aku ? 'Kamu' : nama.split(' ')[0]) + ' sekarang ikut meninjau pendaftaran.');
+      return;
+    }
+
+    /* Esensial: tunjuk anggota jadi peninjau lewat dropdown */
+    const padd = e.target.closest('[data-peninjau-add]');
+    if(padd){
+      const sel = el('klPeninjauSel');
+      const nama = sel ? sel.value : '';
+      if(nama && !adaPeninjau(nama)) D.peninjau.push(nama);
+      gambar();
+      if(nama) toast((nama === D.aku ? 'Kamu' : nama.split(' ')[0]) + ' sekarang ikut meninjau pendaftaran.');
       return;
     }
 

@@ -140,6 +140,7 @@
   function pakaiNomor(){ return D.nomorMode !== 'off'; }
 
   function jumlahAnggota(){ return D.pengurus.length + D.anggotaBiasa.length; }
+  function modeAdvance(){ return D.mode === 'advance'; }
   function akuPeninjau(){ return D.peninjau.indexOf(D.aku) >= 0; }
   function adaPeninjau(nama){ return D.peninjau.indexOf(nama) >= 0; }
   function jabatanDari(nama){
@@ -304,7 +305,7 @@
       let aksi = '';
       if(D.angkatFor !== nama && D.idUbahFor !== nama){
         aksi = '<div class="kl-row-aksi">' + tombolNomor(nama, m) +
-          '<button type="button" class="btn outline sm" data-angkat="' + lolos(nama) + '">Angkat jadi pengurus</button></div>';
+          (modeAdvance() ? '<button type="button" class="btn outline sm" data-angkat="' + lolos(nama) + '">Angkat jadi pengurus</button>' : '') + '</div>';
       }
       html += baris(m, '', aksi) + editNomor(nama, m);
       if(D.angkatFor === nama){
@@ -334,11 +335,17 @@
       (aksi || '') + '</div>';
   }
 
-  /* ---------- panel: kepengurusan (pindah hak setuju) ---------- */
+  /* ---------- panel: kepengurusan ---------- */
   function gambarPengurus(){
+    if(modeAdvance()) gambarPengurusAdvance();
+    else gambarPengurusEsensial();
+  }
+
+  /* Advance: susunan pengurus penuh — angkat, ubah jabatan, atur peninjau */
+  function gambarPengurusAdvance(){
     const wadah = el('klPengurusList');
     const satuPeninjau = D.peninjau.length <= 1;
-    wadah.innerHTML = D.pengurus.map(function(p){
+    wadah.innerHTML = '<p class="kl-sub">Pengurus bisa saling berbagi tugas. Hak menyetujui pendaftaran dipegang <b>peninjau pendaftaran</b> — boleh beberapa orang sekaligus, dan bisa kamu tambah atau lepas kapan saja. Selalu ada minimal satu peninjau.</p>' + D.pengurus.map(function(p){
       const m = D.mem[p.nama] || { nama: p.nama, kerja: '', kota: '' };
       const ini = adaPeninjau(p.nama);
       const nm = lolos(p.nama) + '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' +
@@ -374,6 +381,50 @@
       }
       return html;
     }).join('');
+  }
+
+  /* Esensial: tanpa susunan jabatan — cuma atur siapa peninjau + ajakan Advance */
+  function gambarPengurusEsensial(){
+    const wadah = el('klPengurusList');
+    const satuPeninjau = D.peninjau.length <= 1;
+
+    const list = D.peninjau.map(function(nama){
+      const m = D.mem[nama] || { nama: nama, kerja: '', kota: '' };
+      const sub = [m.kerja, m.kota].filter(Boolean).join(' · ');
+      const av = '<div class="av ' + 'abc'[(nama.length) % 3] + '" aria-hidden="true">' + inisial(nama) + '</div>';
+      const tag = (nama === D.aku) ? '<span class="tag hi">Kamu</span>' : '';
+      const lepas = satuPeninjau ? '' : '<button type="button" class="btn outline sm" data-peninjau-off="' + lolos(nama) + '">Lepas</button>';
+      return '<div class="kl-row">' + av +
+        '<div class="t"><div class="kl-row-nm">' + lolos(nama) + tag +
+          '<span class="kl-peninjau">' + IKON_MATA + 'Peninjau</span></div>' +
+        (sub ? '<div class="kl-row-sub">' + lolos(sub) + '</div>' : '') + '</div>' +
+        (lepas ? '<div class="kl-row-aksi">' + lepas + '</div>' : '') + '</div>';
+    }).join('');
+
+    const bisa = [D.aku].concat(D.anggotaBiasa).filter(function(n){ return !adaPeninjau(n); });
+    let tambah;
+    if(bisa.length){
+      tambah = '<div class="kl-angkat">' +
+          '<span class="kl-angkat-lbl">Tunjuk peninjau:</span>' +
+          '<select class="sel" id="klPeninjauSel" aria-label="Pilih anggota jadi peninjau">' +
+            bisa.map(function(n){ return '<option value="' + lolos(n) + '">' + lolos(n === D.aku ? 'Kamu' : n) + '</option>'; }).join('') +
+          '</select>' +
+          '<button type="button" class="btn sm" data-peninjau-add>Jadikan peninjau</button>' +
+        '</div>';
+    } else {
+      tambah = '<p class="kl-cb-hint">Terima anggota dulu lewat tab Permintaan gabung untuk bisa menunjuk peninjau lain.</p>';
+    }
+
+    wadah.innerHTML =
+      '<div class="kl-tier"><b>Paket Esensial · Community Builder.</b> Kamu satu-satunya pengurus. Yang bisa diatur di sini: siapa yang meninjau pendaftaran yang masuk.</div>' +
+      '<div class="kl-seksi-h">Peninjau pendaftaran</div>' +
+      '<p class="kl-cb-hint">Merekalah yang menerima atau menolak pendaftaran. Selalu ada minimal satu.</p>' +
+      list + tambah +
+      '<div class="kl-upsell">' +
+        '<div class="kl-upsell-h">Butuh susunan pengurus?</div>' +
+        '<p>Ketua, wakil ketua, sekretaris, bendahara — dengan menu kepengurusan sendiri untuk mengangkat anggota jadi pengurus dan mengatur jabatan. Ada di paket <b>Advance</b>.</p>' +
+        '<button type="button" class="btn outline sm" data-mode="advance">' + (D.sekAktif ? 'Buka Advance' : 'Lihat Advance') + '</button>' +
+      '</div>';
   }
 
   /* ---------- panel: riwayat keputusan ---------- */
@@ -562,6 +613,17 @@
       if(!adaPeninjau(nama)) D.peninjau.push(nama);
       gambar();
       toast((nama === D.aku ? 'Kamu' : nama.split(' ')[0]) + ' sekarang ikut meninjau pendaftaran.');
+      return;
+    }
+
+    /* Esensial: tunjuk anggota jadi peninjau lewat dropdown */
+    const padd = e.target.closest('[data-peninjau-add]');
+    if(padd){
+      const sel = el('klPeninjauSel');
+      const nama = sel ? sel.value : '';
+      if(nama && !adaPeninjau(nama)) D.peninjau.push(nama);
+      gambar();
+      if(nama) toast((nama === D.aku ? 'Kamu' : nama.split(' ')[0]) + ' sekarang ikut meninjau pendaftaran.');
       return;
     }
 
