@@ -18,14 +18,26 @@
         </div>
       </div>
 
-      <div class="kl-tabs" id="klTabs" role="tablist">
+      <!-- toggle tampilan Esensial | Advance (digambar 50-js-sekretariat) -->
+      <div class="kl-mode-bar" id="klPaket"></div>
+
+      <div class="kl-body">
+      <nav class="kl-nav" id="klTabs" role="tablist" aria-label="Menu dashboard pengurus">
+        <span class="kl-nav-h">Kelola</span>
         <button type="button" class="kl-tab on" data-tab="minta" role="tab">Permintaan gabung<span class="kl-badge" id="klMintaN">0</span></button>
         <button type="button" class="kl-tab" data-tab="anggota" role="tab">Anggota<span class="kl-badge" id="klAnggotaN">0</span></button>
         <button type="button" class="kl-tab" data-tab="pengurus" role="tab">Kepengurusan</button>
         <button type="button" class="kl-tab" data-tab="riwayat" role="tab">Riwayat<span class="kl-badge" id="klRiwayatN">0</span></button>
-      </div>
+        <span class="kl-nav-h sek">Advance</span>
+        <button type="button" class="kl-tab" data-tab="meja" data-sek role="tab">Meja kerja<span class="kl-badge" id="klMejaN">0</span></button>
+        <button type="button" class="kl-tab" data-tab="cocok" data-sek role="tab">Cocokkan data</button>
+        <button type="button" class="kl-tab" data-tab="rapi" data-sek role="tab">Rapikan jawaban</button>
+        <button type="button" class="kl-tab" data-tab="akses" data-sek role="tab">Akses pengurus</button>
+        <button type="button" class="kl-tab" data-tab="serah" data-sek role="tab">Serah terima</button>
+      </nav>
 
-      <section class="kl-panel" id="klPanelMinta" role="tabpanel">
+      <div class="kl-main">
+      <section class="kl-panel" id="klPanelMinta" data-panel="minta" role="tabpanel">
         <div class="kl-lock" id="klLock" hidden>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
           <span id="klLockTeks"></span>
@@ -33,20 +45,39 @@
         <div id="klMintaList"></div>
       </section>
 
-      <section class="kl-panel" id="klPanelAnggota" role="tabpanel" hidden>
+      <section class="kl-panel" id="klPanelAnggota" data-panel="anggota" role="tabpanel" hidden>
         <p class="kl-sub">Semua yang sudah kamu setujui. Angkat siapa pun jadi pengurus untuk berbagi tugas mengurus komunitas.</p>
         <div id="klAnggotaList"></div>
       </section>
 
-      <section class="kl-panel" id="klPanelPengurus" role="tabpanel" hidden>
-        <p class="kl-sub">Pengurus bisa saling berbagi tugas. Hak menyetujui pendaftaran dipegang <b>peninjau pendaftaran</b> — boleh beberapa orang sekaligus, dan bisa kamu tambah atau lepas kapan saja. Selalu ada minimal satu peninjau.</p>
+      <section class="kl-panel" id="klPanelPengurus" data-panel="pengurus" role="tabpanel" hidden>
         <div id="klPengurusList"></div>
       </section>
 
-      <section class="kl-panel" id="klPanelRiwayat" role="tabpanel" hidden>
+      <section class="kl-panel" id="klPanelRiwayat" data-panel="riwayat" role="tabpanel" hidden>
         <p class="kl-sub">Catatan siapa yang sudah ditinjau — diterima atau ditolak — dan oleh pengurus mana. Semua pengurus melihat catatan yang sama.</p>
         <div id="klRiwayatList"></div>
       </section>
+
+      <!-- ===== Advance: panel berlangganan. Isinya digambar 50-js-sekretariat. ===== -->
+      <section class="kl-panel" id="klPanelMeja" data-panel="meja" role="tabpanel" hidden></section>
+      <section class="kl-panel" id="klPanelCocok" data-panel="cocok" role="tabpanel" hidden></section>
+      <section class="kl-panel" id="klPanelRapi" data-panel="rapi" role="tabpanel" hidden></section>
+      <section class="kl-panel" id="klPanelAkses" data-panel="akses" role="tabpanel" hidden></section>
+      <section class="kl-panel" id="klPanelSerah" data-panel="serah" role="tabpanel" hidden></section>
+      </div><!-- /kl-main -->
+      </div><!-- /kl-body -->
     </div>
   </div>
 </div><!-- /scrKelola -->
+
+<!-- POP UP LANGGANAN ADVANCE — memakai kerangka modal masuk (.lgn), isi sendiri -->
+<div class="lgn" id="sekModal" hidden>
+  <div class="lgn-scrim" data-sek-tutup></div>
+  <div class="lgn-box sek-box" role="dialog" aria-modal="true" aria-labelledby="sekHead">
+    <button class="lgn-x" type="button" aria-label="Tutup" data-sek-tutup>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div id="sekIsi"></div>
+  </div>
+</div>

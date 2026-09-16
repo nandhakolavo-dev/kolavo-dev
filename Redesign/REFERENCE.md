@@ -586,6 +586,60 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   layar lengkapi profil. Dua daftar terpisah berarti "Kota Depok" di satu layar dan
   "Depok" di layar lain, dan `samakan()` sudah pernah dibuat gara-gara masalah itu.
 
+- **Dashboard Advance (awalnya bernama Sekretariat), dibuka lewat toggle Esensial | Advance**
+  (label kiri semula "Simpel", diganti "Esensial" supaya tampilan bawaan tidak terdengar seperti versi potongan)
+  (dibuat 14 September 2026, direvisi hari yang sama). Toggle ada di atas navigasi
+  `scrKelola`. **Esensial** = dashboard yang sudah ada, tampil persis seperti sebelumnya
+  (baris tab horizontal, empat tab). **Advance** = lima panel tambahan di kolom samping,
+  menjawab satu kendala administratif yang *tercatat*, bukan dikarang:
+
+  | panel | kendala | sumber |
+  |---|---|---|
+  | Meja kerja | pengurus sukarela telat meninjau, tak ada pengingat | protokol riset (contoh kasus "admin sering terlambat memeriksa formulir") |
+  | Cocokkan data | pendaftar menumpuk, disetujui satu-satu; database lama sudah ada di spreadsheet | BP Membership Intelligence (auto-approve CSV) · feedback 7 Agustus 2026 |
+  | Rapikan jawaban | jawaban sama beda tulisan → tag ganda, sebaran anggota salah | User Testing 18 Juli 2026 no. 4, 6, 7 |
+  | Akses pengurus | data di akun pribadi satu orang; siapa boleh lihat data sensitif | BP kepengurusan berjenjang · protokol riset |
+  | Serah terima | data & akses hilang tiap ganti pengurus | BP fitur Pergantian Kepengurusan · riset (regenerasi) |
+
+  Catatan jujur: `Riset Memahami Kebutuhan Community Builder.docx` masih berupa
+  *protokol* — kalimat yang dikutip adalah contoh pengisian, belum temuan wawancara.
+  Validasikan dulu sebelum dianggap bukti.
+
+  **Langganan melekat ke komunitas, bukan ke akun.** Ini jawaban atas "bisa dibagi ke
+  pengurus lain": semua pengurus yang diundang memakai langganan yang sama dengan akun
+  Google-nya sendiri, dan langganan tidak ikut pergi saat kepengurusan berganti —
+  sehingga Serah terima dan Akses pengurus saling mengunci. Harga di modal `Rp XXXX /
+  anggota / bulan, minimal 50 anggota` mengikuti Pricing Strategy di BP apa adanya.
+
+  **Jabatan ≠ akses dashboard.** Diangkat jadi pengurus (tab Kepengurusan) membuat
+  orang tampil di halaman komunitas; memegang dashboard diberikan terpisah di Akses
+  pengurus, dengan tiga hak (Penuh / Data anggota / Lihat saja). Hak menyetujui
+  pendaftaran tetap mengikuti *peninjau pendaftaran* — tidak digandakan ke matriks hak.
+
+  **Toggle, bukan tab terkunci** (revisi atas permintaan). Versi pertama menaruh tab
+  berbayar bergembok di samping tab dasar; diganti toggle supaya dashboard simpel tetap
+  bersih. Memilih Advance tanpa langganan memunculkan pop up langganan dan toggle
+  *tidak* pindah sampai Berlangganan ditekan ("Tetap di Esensial" menutupnya). Sesudah
+  berlangganan toggle bebas dipindah; kembali ke Esensial tidak mematikan langganan, dan
+  tab Advance yang sedang terbuka jatuh ke Permintaan gabung. Nama di UI mengikuti
+  sebutan user ("advance"), bukan "Sekretariat" — modulnya tetap `50-js-sekretariat`.
+  Ajakan juga muncul di panel Permintaan saat antrean ≥ 4 (`#sekNudge`, tombolnya
+  memilih Advance). Seed pendaftar ditambah tiga (Rina, Bayu, Galih — inisial, tanpa
+  foto) dengan umur 5–8 hari supaya antreannya terasa menumpuk.
+
+  **Teknis.** Modul baru `src/50-js-sekretariat.html` menempel ke
+  `KolavoDashboard` lewat dua kait: `D.onBangun` (reset keadaan per komunitas) dan
+  `D.onGambar` (gambar ulang). Menerima dipusatkan jadi `D.terima(r, {catatan, id,
+  otomatis})` — dipakai kartu permintaan dan penerimaan massal, jadi nomor anggota dan
+  riwayat tidak punya dua jalur. `pilihTab` sekarang generik lewat `data-panel`;
+  tampilan dipegang `D.mode` ('simple' | 'advance') dan kelas `#scrKelola.mode-adv`.
+  Hanya di Advance navigasi jadi kolom samping di ≥900px (dua kelompok: Kelola /
+  Advance); di Esensial dan layar sempit tetap baris tab. `.kl-row` sekarang boleh turun baris supaya tombol
+  aksi tidak meremas nama di 375px.
+
+  Data di Rapikan jawaban (kolom Jurusan untuk alumni/himpunan, Cabang untuk bentuk
+  lain) dan database 214 baris adalah contoh — ditulis begitu di layarnya.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi
@@ -595,3 +649,6 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
 - Radius kartu komunitas 13 (Design System) sementara kolavo.app memakai 20.
 - Harga langganan di business plan masih `XXXX`, jadi kata "Gratis" di halaman
   belum punya dasar jangka panjang.
+- Advance: apakah pengurus mau membayar untuk lima panel ini, dan panel mana yang
+  paling dicari — belum pernah ditanyakan ke 5–10 komunitas kurasi. BP sendiri
+  memisahkan pergantian kepengurusan sebagai biaya per penggunaan, bukan langganan.
