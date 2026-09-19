@@ -1050,6 +1050,19 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   - Item "Peraturan komunitas" di panel info halaman komunitas sementara tidak tampil
     (tak ada URL); digantikan pop up baca-saja di R6b.
 
+- **Revisi R6b — pop up peraturan di halaman komunitas** (2026-09-19):
+  - Panel info: item "Peraturan komunitas" (ikon perisai) → "Baca peraturan", tampil
+    kalau teks peraturan ada, terbuka untuk siapa pun (termasuk pengunjung). Panel info
+    kini dianggap berisi juga kalau hanya ada teks peraturan.
+  - Klik → `window.KolavoBukaPeraturan()`: modal onboarding yang sama dalam mode
+    `ctx.mode = 'peraturan'` — judul, nama komunitas, isi (renderer `isiAturan()`
+    yang juga dipakai langkah Peraturan), tombol Tutup/×/Esc. Tanpa stepper, titik,
+    Lewati/Kembali/Lanjut, dan centang setuju. Tidak menandai onboarding dilihat dan
+    tidak mengubah `aturanSetuju`.
+  - Sumber teks: `window.KolavoTeksPeraturan()` → konfigurasi onboarding komunitas itu
+    (`l-dibuat` → editor dashboard; direktori Advance → `kom.onboarding` atau teks
+    contoh), tetap dibaca walau langkah Peraturan onboarding dimatikan.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi
