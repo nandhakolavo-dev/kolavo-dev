@@ -640,6 +640,25 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   Data di Rapikan jawaban (kolom Jurusan untuk alumni/himpunan, Cabang untuk bentuk
   lain) dan database 214 baris adalah contoh — ditulis begitu di layarnya.
 
+  **Revisi P1 (19 Sep 2026, `PROMPT-REVISI.md`) — kerangka menu dirombak.** Tabel di
+  atas sebagian sudah usang:
+  - Urutan grup: **Advance di atas Kelola**.
+  - "Meja kerja" → **Dashboard** (`data-tab="dasbor"`). Blok "Perlu diurus"/"Sudah
+    beres" dihapus; yang tersisa angka ringkas, rangkuman mingguan, rekap. Statistik
+    pertumbuhan menyusul di P2.
+  - **Cocokkan data dihapus seluruhnya**: tab, panel, simulasi terima otomatis, kolom
+    `db` di seed pendaftar, CSS `.sek-unggah/.sek-file/.sek-map/.sek-grup/.sek-cek`,
+    dan ajakannya di nudge. Nudge kini hanya muncul di Esensial.
+  - Menu bersub-menu: **Setting** (Advance) = Akun · Notifikasi · Tagihan (kerangka,
+    isi di P3) · Akses pengurus. **Kepengurusan** (Kelola) = Struktur Kepengurusan ·
+    Serah terima (Advance saja). "Kelola langganan" di bilah paket membuka Tagihan.
+  - Pola sub-menu: tombol induk `.kl-induk[data-induk]` + `.kl-subnav[data-grup]`. Di
+    kolom samping induk membuka-tutup grupnya; grup yang memuat tab aktif selalu
+    terbuka. Di baris tab (layar sempit) induk disembunyikan dan sub-menunya jadi tab
+    biasa; di Esensial kebalikannya — induk Kepengurusan yang tampil, sub-menunya
+    tersembunyi. Induk disembunyikan lewat selektor atribut `[data-induk]`, bukan
+    kelas, supaya audit tidak menandai `.kl-tab` vs `.kl-induk` berebut `display`.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

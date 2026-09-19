@@ -23,17 +23,28 @@
 
       <div class="kl-body">
       <nav class="kl-nav" id="klTabs" role="tablist" aria-label="Menu dashboard pengurus">
+        <!-- Advance di atas Kelola. Menu bersub-menu: tombol induk (.kl-induk) membuka
+             .kl-subnav di kolom samping; di baris tab (Esensial / layar sempit) induknya
+             disembunyikan dan sub-menunya tampil sebagai tab biasa. -->
+        <span class="kl-nav-h sek">Advance</span>
+        <button type="button" class="kl-tab" data-tab="dasbor" data-sek role="tab">Dashboard</button>
+        <button type="button" class="kl-tab" data-tab="rapi" data-sek role="tab">Rapikan jawaban</button>
+        <button type="button" class="kl-tab kl-induk" data-induk="setting" data-sek aria-expanded="false">Setting<svg class="kl-induk-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="kl-subnav" data-grup="setting">
+          <button type="button" class="kl-tab sub" data-tab="akun" data-sek role="tab">Akun</button>
+          <button type="button" class="kl-tab sub" data-tab="notif" data-sek role="tab">Notifikasi</button>
+          <button type="button" class="kl-tab sub" data-tab="tagihan" data-sek role="tab">Tagihan</button>
+          <button type="button" class="kl-tab sub" data-tab="akses" data-sek role="tab">Akses pengurus</button>
+        </div>
         <span class="kl-nav-h">Kelola</span>
         <button type="button" class="kl-tab on" data-tab="minta" role="tab">Permintaan gabung<span class="kl-badge" id="klMintaN">0</span></button>
         <button type="button" class="kl-tab" data-tab="anggota" role="tab">Anggota<span class="kl-badge" id="klAnggotaN">0</span></button>
-        <button type="button" class="kl-tab" data-tab="pengurus" role="tab">Kepengurusan</button>
+        <button type="button" class="kl-tab kl-induk" data-induk="pengurus" aria-expanded="false">Kepengurusan<svg class="kl-induk-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="kl-subnav" data-grup="pengurus">
+          <button type="button" class="kl-tab sub" data-tab="pengurus" role="tab">Struktur Kepengurusan</button>
+          <button type="button" class="kl-tab sub" data-tab="serah" data-sek role="tab">Serah terima</button>
+        </div>
         <button type="button" class="kl-tab" data-tab="riwayat" role="tab">Riwayat<span class="kl-badge" id="klRiwayatN">0</span></button>
-        <span class="kl-nav-h sek">Advance</span>
-        <button type="button" class="kl-tab" data-tab="meja" data-sek role="tab">Meja kerja<span class="kl-badge" id="klMejaN">0</span></button>
-        <button type="button" class="kl-tab" data-tab="cocok" data-sek role="tab">Cocokkan data</button>
-        <button type="button" class="kl-tab" data-tab="rapi" data-sek role="tab">Rapikan jawaban</button>
-        <button type="button" class="kl-tab" data-tab="akses" data-sek role="tab">Akses pengurus</button>
-        <button type="button" class="kl-tab" data-tab="serah" data-sek role="tab">Serah terima</button>
       </nav>
 
       <div class="kl-main">
@@ -60,9 +71,11 @@
       </section>
 
       <!-- ===== Advance: panel berlangganan. Isinya digambar 50-js-sekretariat. ===== -->
-      <section class="kl-panel" id="klPanelMeja" data-panel="meja" role="tabpanel" hidden></section>
-      <section class="kl-panel" id="klPanelCocok" data-panel="cocok" role="tabpanel" hidden></section>
+      <section class="kl-panel" id="klPanelDasbor" data-panel="dasbor" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelRapi" data-panel="rapi" role="tabpanel" hidden></section>
+      <section class="kl-panel" id="klPanelAkun" data-panel="akun" role="tabpanel" hidden></section>
+      <section class="kl-panel" id="klPanelNotif" data-panel="notif" role="tabpanel" hidden></section>
+      <section class="kl-panel" id="klPanelTagihan" data-panel="tagihan" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelAkses" data-panel="akses" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelSerah" data-panel="serah" role="tabpanel" hidden></section>
       </div><!-- /kl-main -->
