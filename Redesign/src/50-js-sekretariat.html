@@ -1208,13 +1208,13 @@
     el('sekIsi').innerHTML = '<span class="sek-eb">' + IK.kantor + 'Dashboard Advance</span>' +
       '<h2 id="sekHead">Berlangganan Advance untuk ' + lolos(D.kom.nama) + '</h2>' +
       '<p class="lgn-sub">Alat administrasi tambahan di dashboard pengurus. Satu langganan untuk komunitas — setiap pengurus yang kamu undang ikut memakainya dengan akunnya sendiri.</p>' +
-      '<ul class="sek-poin">' + URUT.map(function(k){
+      '<div class="sek-modal-grid"><ul class="sek-poin">' + URUT.map(function(k){
         return '<li>' + IK.cek + '<span><b>' + FITUR[k].judul + '</b> — ' + FITUR[k].ringkas + '</span></li>';
       }).join('') + '</ul>' +
-      '<div class="sek-harga"><b>Rp XXXX</b> <span>/ anggota / bulan</span>' +
+      '<div class="sek-modal-samping"><div class="sek-harga"><b>Rp XXXX</b> <span>/ anggota / bulan</span>' +
         '<p>Minimal 50 anggota. Ditagihkan ke komunitas, jadi langganan tidak ikut pergi saat kepengurusan berganti. Bisa kembali ke tampilan Esensial kapan saja.</p></div>' +
       '<div class="sek-cta"><button type="button" class="btn md" data-sek-aktifkan>Berlangganan</button>' +
-        '<button type="button" class="btn outline md" data-sek-tutup>Tetap di Esensial</button></div>';
+        '<button type="button" class="btn outline md" data-sek-tutup>Tetap di Esensial</button></div></div></div>';
     modal.hidden = false;
     void modal.offsetWidth;
     modal.classList.add('on');

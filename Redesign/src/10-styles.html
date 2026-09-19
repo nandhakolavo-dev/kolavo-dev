@@ -1846,7 +1846,12 @@ body.lgn-open{overflow:hidden}
 .sek-periode .sek-kecil{margin:-4px 0 12px 19px}
 
 /* modal aktifkan */
-.lgn-box.sek-box{max-width:520px;text-align:left;padding:28px 26px 24px}
+.lgn-box.sek-box{max-width:880px;text-align:left;padding:30px 34px 28px}
+.sek-modal-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:start;margin-top:4px}
+.sek-modal-samping .sek-harga{margin-top:16px}
+.sek-modal-samping .sek-cta{flex-direction:column}
+.sek-box .sek-modal-samping .sek-cta .btn{flex:none;width:100%}
+@media(max-width:768px){.lgn-box.sek-box{max-width:520px;padding:28px 26px 24px}.sek-modal-grid{grid-template-columns:1fr;gap:0}.sek-modal-samping .sek-cta{flex-direction:row}.sek-box .sek-modal-samping .sek-cta .btn{flex:1;width:auto}}
 .sek-box h2{font-size:22px;line-height:1.25;margin:8px 34px 8px 0}
 .sek-box .sek-poin li{font-size:13.5px}
 .sek-harga{margin-top:18px;padding:14px 16px;border-radius:13px;background:var(--bg-alt);border:1px solid var(--line)}

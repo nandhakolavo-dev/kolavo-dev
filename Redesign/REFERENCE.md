@@ -988,6 +988,11 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   - **Pintu masuk** `KolavoBukaBroadcast()`: kartu ajakan feed pemilik Esensial ("Lihat
     Advance" → pop up langganan → langsung ke tab Broadcast setelah aktif) dan tombol
     *Tulis broadcast* di feed kosong milik pemilik Advance.
+- **Revisi P13 — pop up langganan Advance dilebarkan** (2026-09-19). `.sek-box` 520 → 880px,
+  isi jadi grid `.sek-modal-grid`: daftar fitur (kiri) · harga + tombol bertumpuk (kanan,
+  `.sek-modal-samping`). Di 1280×800 muat tanpa scroll. ≤768px kembali satu kolom 520px.
+  Tombol di kolom kanan wajib `flex:none`, karena `flex:1` bawaan membuat tingginya kolaps
+  saat arah flex kolom.
 
 ## Yang belum terverifikasi
 
