@@ -856,6 +856,9 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     `/gabung|alasan|kenapa|mengapa|motivasi/i`; pertanyaan lain tetap memakai `teks`.
     Jadi sampel ini hanya muncul kalau komunitas memang menanyakan alasan bergabung.
     Pendaftar contoh bertambah dari 6 jadi 8 (Dimas, Yoga).
+  - Formulir Buat komunitas kini punya pertanyaan kedua bawaan: **Alasan Bergabung —
+    "Kenapa kamu ingin bergabung di komunitas ini?"** (teks, tidak wajib, bisa diubah/
+    dihapus). Jadi sampel alasan di atas langsung muncul di komunitas baru.
 
 ## Yang belum terverifikasi
 

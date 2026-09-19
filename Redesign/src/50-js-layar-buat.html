@@ -35,8 +35,12 @@
   };
   const MAKS = 5;
 
-  let tanya  = [{ id: 'q1', judul: '', tanya: '', tipe: 'tahun', wajib: false, bawaan: true }];
-  let urut   = 1;
+  /* pertanyaan kedua bawaan: alasan bergabung — paling sering dipakai pengurus
+     untuk menyaring, dan jadi bahan Tinjau jawaban / Kelompokkan. Tetap bisa
+     diubah atau dihapus seperti pertanyaan biasa. */
+  let tanya  = [{ id: 'q1', judul: '', tanya: '', tipe: 'tahun', wajib: false, bawaan: true },
+                { id: 'q2', judul: 'Alasan Bergabung', tanya: 'Kenapa kamu ingin bergabung di komunitas ini?', tipe: 'teks', wajib: false, bawaan: false }];
+  let urut   = 2;
   let warna  = WARNA[0];
   let logo   = '';
   let slugKetik = false;
