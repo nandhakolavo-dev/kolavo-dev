@@ -143,6 +143,7 @@
     return {
       kelas: kelas,
       nama: kartu.querySelector('h3').textContent.trim(),
+      alias: kartu.dataset.alias || '',
       desc: kartu.querySelector('.desc').textContent.trim(),
       lokasi: kartu.querySelector('.loc').textContent.trim(),
       bentuk: kartu.dataset.bentuk,
@@ -223,7 +224,7 @@
 
   function dibuatKeKini(kom){
     return {
-      kelas: 'l-dibuat', nama: kom.nama, desc: kom.ajakan || '',
+      kelas: 'l-dibuat', nama: kom.nama, alias: kom.alias || '', desc: kom.ajakan || '',
       lokasi: kom.kota || '', bentuk: kom.bentuk || 'Komunitas',
       jumlah: '', angka: 0, tanya: kom.tanya || [], agg: aggDibuat(),
       warna: kom.warna, logo: kom.logo, inisial: kom.inisial,
@@ -263,7 +264,7 @@
   /* contoh komunitas siap-pakai untuk tombol "Lihat contoh halaman" di beranda,
      tempat belum ada form yang diisi */
   const CONTOH_KOM = {
-    nama: 'Ikatan Alumni SMAN 3 Bandung', slug: 'iasman3bdg', bentuk: 'Ikatan Alumni',
+    nama: 'Ikatan Alumni SMAN 3 Bandung', alias: 'IA Smanti', slug: 'iasman3bdg', bentuk: 'Ikatan Alumni',
     kota: 'Bandung', warna: '#0D7FFD', logo: '', inisial: 'IA',
     ajakan: 'Tempat alumni SMAN 3 saling kenal lagi, bukan cuma saling simpan nomor.',
     pengurusNama: 'Dewi Anggraini',
@@ -283,7 +284,7 @@
       pengurus: [{ n: nm, j: 'Ketua', aku: !kom.pengurusNama }]
     });
     return {
-      kelas: 'l-pratinjau', nama: kom.nama, desc: kom.ajakan || '',
+      kelas: 'l-pratinjau', nama: kom.nama, alias: kom.alias || '', desc: kom.ajakan || '',
       lokasi: kom.kota || '', bentuk: kom.bentuk || 'Komunitas',
       jumlah: '', angka: 18, tanya: kom.tanya || [], agg: agg,
       warna: kom.warna, logo: kom.logo, inisial: kom.inisial
@@ -928,6 +929,8 @@
     el('komJalurNm').textContent = kini.nama;
     el('komNm').textContent = kini.nama;
     if(kini.premium) el('komNm').insertAdjacentHTML('beforeend', ' <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span>');
+    el('komAlias').textContent = kini.alias || '';
+    el('komAlias').hidden = !kini.alias;
     el('komDesc').textContent = kini.desc;
     const logo = el('komLogo');
     if(founder || pratinjau){

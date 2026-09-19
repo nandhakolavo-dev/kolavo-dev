@@ -336,6 +336,7 @@
       }));
     const kom = {
       nama: nama,
+      alias: el('bkAlias').value.trim(),
       slug: el('bkSlug').value.trim() || keSlug(nama) || 'komunitasmu',
       bentuk: bentuk,
       kota: el('bkKota').value || 'Indonesia',
@@ -369,6 +370,7 @@
     const slug = el('bkSlug').value.trim() || keSlug(nama);
     const data = {
       nama: nama,
+      alias: el('bkAlias').value.trim(),
       slug: slug,
       bentuk: pilihBentuk(),
       kota: el('bkKota').value,
@@ -473,6 +475,7 @@
     if(!dibuat) return;
     modeSunting = true;
     el('bkNama').value = dibuat.nama || '';
+    el('bkAlias').value = dibuat.alias || '';
     el('bkSlug').value = dibuat.slug || ''; slugKetik = true;
     el('bkAjak').value = dibuat.ajakan || '';
     const rb = scr.querySelector('input[name="bkBentuk"][value="' + (dibuat.bentuk || '') + '"]');

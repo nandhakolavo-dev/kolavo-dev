@@ -993,6 +993,12 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   `.sek-modal-samping`). Di 1280×800 muat tanpa scroll. ≤768px kembali satu kolom 520px.
   Tombol di kolom kanan wajib `flex:none`, karena `flex:1` bawaan membuat tingginya kolaps
   saat arah flex kolom.
+- **Revisi P14 — nama panggilan komunitas** (2026-09-19). Kolom opsional `#bkAlias` (maks. 30)
+  di layar Buat tepat di bawah nama resmi → disimpan sebagai `alias` di data komunitas
+  (buat, pratinjau, sunting). Tampil sebagai `#komAlias` (`.kom-alias`, 15px `--ink-2`) di
+  bawah `#komNm`; kosong → `hidden`, tanpa sisa jarak. Kartu direktori memakai `data-alias`;
+  IA SMAN 52 sengaja dibiarkan tanpa alias sebagai contoh kondisi kosong. Ini berbeda dari
+  "Nama Panggilan" anggota (pertanyaan `nickname`).
 
 ## Yang belum terverifikasi
 
