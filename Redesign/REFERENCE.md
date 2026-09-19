@@ -876,10 +876,11 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     Tanda tangan sambutan (`.ob-ttd`, "— Nama, Jabatan") rata kanan.
   - Stepper: tiap langkah punya ikon `KolavoIkon` (tangan, bendera, akses, jawaban,
     orang) dalam lingkaran 44px, label di bawahnya; garis progres `.ob-step-isi` di
-    belakang ikon terisi sampai langkah kini. Di kaki modal ada titik `.ob-titik`
-    (titik aktif memanjang jadi pil). Keduanya digambar di posisi langkah lama
+    belakang ikon terisi sampai langkah kini. Garis digambar di posisi langkah lama
     (`iLalu`) lalu digeser dengan `setTimeout` 30 ms — bukan rAF, supaya tetap jalan
     di tab tersembunyi — sehingga terlihat berjalan saat Lanjut/Kembali.
+    Titik berjalan `.ob-titik` di kaki modal (sejajar Kembali/Lanjut) **dihapus**
+    atas permintaan — dobel dengan stepper di atas; kaki kini: Lewati · spasi · tombol.
   - Teks contoh panjang (sambutan 2 paragraf, sejarah, visi, 3 misi, 5 aturan,
     keterangan alat 2 paragraf) satu sumber: `window.KolavoObTeksContoh(nama, desc)`
     di modul onboarding; dipakai komunitas direktori dan isi awal editor dashboard.

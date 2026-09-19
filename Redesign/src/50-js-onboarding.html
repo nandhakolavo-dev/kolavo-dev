@@ -191,8 +191,6 @@
       '<div class="ob-badan">' + isi + '</div>' +
       '<div class="ob-kaki">' + (bolehLewati ? '<button type="button" class="ob-lewati" data-ob-lewati>Lewati</button>' : '') +
         '<span class="ob-sp"></span>' +
-        '<span class="ob-titik" aria-hidden="true">' + aktif.map(function(x, j){ return '<i class="' + (j === iLalu ? 'on' : j < iLalu ? 'lewat' : '') + '"></i>'; }).join('') + '</span>' +
-        '<span class="ob-sp"></span>' +
         (i ? '<button type="button" class="btn outline sm" data-ob-kembali>Kembali</button>' : '') +
         '<button type="button" class="btn sm" data-ob-lanjut' + (kunciLanjut ? ' disabled' : '') + '>' + (akhir ? 'Selesai' : 'Lanjut') + '</button></div>';
     cekGulir();
@@ -201,7 +199,6 @@
     const dari = iLalu; iLalu = i;
     if(dari !== i) setTimeout(function(){
       const f = el('obIsi').querySelector('.ob-step-isi'); if(f) f.style.width = persen(i) + '%';
-      el('obIsi').querySelectorAll('.ob-titik i').forEach(function(t, j){ t.className = j === i ? 'on' : j < i ? 'lewat' : ''; });
     }, 30);
   }
 
