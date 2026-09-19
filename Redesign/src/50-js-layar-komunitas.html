@@ -413,6 +413,8 @@
   function svgKenal(st){
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + KN_IKON[st] + '</svg>';
   }
+  /* ikon yang sama dengan notifikasi "… menerima ajakan kenalanmu" (50-js-notifikasi) */
+  const IKON_TERIMA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>';
   function ikonKenal(o){
     if(o.aku) return '';
     const st = window.KolavoStatusKenal(o.n);
@@ -432,7 +434,7 @@
       '<div class="kn-ring" role="img" aria-label="Sudah kenal ' + kenal + ' dari ' + lain.length + ' anggota">' +
         '<svg viewBox="0 0 60 60" aria-hidden="true"><circle class="jalur" cx="30" cy="30" r="26"/>' +
         '<circle class="isi" cx="30" cy="30" r="26" stroke-dasharray="' + kel + '" stroke-dashoffset="' + (kel * (1 - kenal / lain.length)).toFixed(1) + '"/></svg>' +
-        '<span class="kn-ring-in">' + svgKenal('terhubung') + '<b>' + kenal + '/' + lain.length + '</b></span></div>' +
+        '<span class="kn-ring-in">' + IKON_TERIMA + '<b>' + kenal + '/' + lain.length + '</b></span></div>' +
       '<div class="kn-prog-t"><b>Sudah kenal ' + kenal + ' dari ' + lain.length + ' anggota</b>' +
         '<span>' + (belum ? 'Ajak kenalan supaya nomornya saling kebuka.' : 'Semua anggota di sini sudah kamu ajak kenalan.') + '</span></div>' +
       (belum ? '<button type="button" class="chip' + (hanyaBelum ? ' on' : '') + '" id="bukaBelum" aria-pressed="' + hanyaBelum + '">' + svgKenal('belum') + 'Belum kenalan · ' + belum + '</button>' : '');

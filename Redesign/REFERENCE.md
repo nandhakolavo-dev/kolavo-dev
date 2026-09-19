@@ -902,7 +902,7 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     Baris sendiri (`o.aku`) tanpa ikon. Hijau, bukan primary, supaya sama dengan blok
     "Kalian sudah kenalan" di detail anggota.
   - `#bukaKenal` di atas sumbu: **cincin progres** SVG 64px (r=26, dashoffset) mengelilingi
-    ikon (garis 1.5, lebih tipis dari ikon kartu) + "X/Y", di sampingnya "Sudah kenal X dari Y anggota" + ajakan, lalu chip saring.
+    ikon (sama dengan notifikasi "menerima ajakan kenalanmu", garis 1.5) + "X/Y", di sampingnya "Sudah kenal X dari Y anggota" + ajakan, lalu chip saring.
     Y = baris lain di daftar. Menggantikan bar garis (permintaan user).
   - Chip saring **Belum kenalan · n** (`#bukaBelum`) bisa digabung dengan chip nilai sumbu
     (`hanyaBelum` + `bidangKini`); hilang saat semua sudah diajak.
