@@ -12,6 +12,7 @@
    Tiap panel menjawab satu kendala administratif yang tercatat:
      dasbor  Dashboard        pertumbuhan anggota & akses vs minggu lalu, grafik, rekap CSV
      info    Info komunitas   pengumuman + tautan grup/peraturan/dokumen di halaman komunitas
+     broadcast Broadcast      kirim kabar ke feed halaman komunitas (API 50-js-feed), riwayat, sematkan
      onboard Onboarding       sakelar utama + 5 langkah (D.kom.onboarding), dibaca modal anggota
      Jawaban pendaftar (sub-menu)
        jawab    Tinjau jawaban   jawaban tiap pendaftar/anggota + label kelompoknya
@@ -53,6 +54,7 @@
   const FITUR = {
     dasbor: { judul: 'Dashboard',      ringkas: 'pertumbuhan anggota dan akses dokumen minggu demi minggu, dengan rekap yang bisa diunduh.' },
     info:  { judul: 'Info komunitas',  ringkas: 'pengumuman pengurus dan tautan grup WhatsApp, peraturan, dan dokumen di halaman komunitas.' },
+    broadcast: { judul: 'Broadcast', ringkas: 'kirim kabar ke feed halaman komunitas; anggota baru disambut otomatis di feed yang sama.' },
     onboard: { judul: 'Onboarding', ringkas: 'sambut anggota baru dengan perkenalan bertahap: sambutan, sejarah, peraturan, alat, dan kenalan.' },
     jawab: { judul: 'Jawaban pendaftar', ringkas: 'tinjau ulang jawaban pendaftar, kelompokkan jadi identitas anggota, dan rapikan tulisan yang beda-beda.' },
     kelompok: { judul: 'Kelompokkan jawaban' },
@@ -65,7 +67,7 @@
     serah: { judul: 'Serah terima',    ringkas: 'ganti kepengurusan tanpa kehilangan data dan akses.' }
   };
   /* yang ditawarkan di pop up langganan */
-  const URUT = ['dasbor', 'info', 'onboard', 'jawab', 'email', 'akses', 'serah'];
+  const URUT = ['dasbor', 'info', 'broadcast', 'onboard', 'jawab', 'email', 'akses', 'serah'];
 
   /* contoh kelompok jawaban. Alumni/himpunan punya kolom jurusan; bentuk lain
      punya cabang. Satu kelompok sengaja meragukan — mesin boleh mengusulkan,
@@ -101,6 +103,7 @@
     S.rentang = 12; S.grafik = 'tumbuh';
     S.akses = {}; S.undangan = []; S.email = ''; S.emailJabatan = 'Pengurus';
     S.hak = {}; S.hakDraf = {}; S.infoDraf = null;
+    S.bc = { isi: '', tautan: '', pin: false, notif: true, hapus: null };
     S.jawabSaring = 'semua'; S.kelompokKolom = 'kerja'; S.kelompokTeks = ''; D.kelompok = {};
     /* template diisi saat panelnya pertama digambar (TMPL_AWAL didefinisikan di bawah) */
     S.tmpl = null; S.tmplDraf = null; S.tmplJenis = 'terima'; S.tmplAktif = { terima: true, tolak: true }; S.tmplFokus = 'sekTmplIsi';
@@ -463,6 +466,84 @@
     if(window.KolavoBukaDashboard) window.KolavoBukaDashboard();
     if(!D.sekAktif){ D.tabSesudah = 'info'; bukaModal(); return; }
     D.mode = 'advance'; D.tab = 'info'; D.gambar();
+  };
+
+  /* ---------- broadcast: kirim kabar ke feed halaman komunitas ----------
+     Draf (isi, tautan, sakelar) di S.bc sampai dikirim. Kiriman masuk ke
+     KolavoApp.feed['l-dibuat'] lewat API 50-js-feed; yang disematkan cuma satu.
+     Notifikasi anggota belum tersambung — di prototipe cukup toast, supaya
+     lonceng milik pengirim sendiri tidak terisi kabar yang ia tulis. */
+  function fotoAku(){
+    const f = document.querySelector('#scrProfil .av.photo') || document.querySelector('#idKartu .av.photo');
+    return f ? [].filter.call(f.classList, function(c){ return c.indexOf('p-') === 0; })[0] : undefined;
+  }
+  function bcSalah(){ const t = S.bc.tautan.trim(); return !!t && !URL_OK.test(t); }
+  function bcBoleh(){ return !!S.bc.isi.trim() && !bcSalah(); }
+  function bcPost(){
+    return { jenis: 'broadcast', penulis: { n: D.aku, j: D.jabatanAku(), f: fotoAku() },
+      isi: S.bc.isi.trim(), tautan: bcSalah() ? '' : S.bc.tautan.trim(), sematkan: S.bc.pin };
+  }
+  function bcPrat(){
+    const p = bcPost();
+    if(!p.isi) p.isi = 'Tulisan kabarmu tampil di sini.';
+    return window.KolavoFeedPratinjau ? window.KolavoFeedPratinjau(p) : '';
+  }
+  function segarkanBc(){
+    const n = el('sekBcN'); if(n) n.textContent = S.bc.isi.length;
+    const p = el('sekBcPrat'); if(p) p.innerHTML = bcPrat();
+    const s = el('sekBcSalah'); if(s) s.hidden = !bcSalah();
+    const k = scr.querySelector('[data-sek-bc-kirim]'); if(k) k.disabled = !bcBoleh();
+  }
+  function gambarBroadcast(){
+    const w = el('klPanelBroadcast'); if(!w) return;
+    const b = S.bc;
+    const lain = Math.max(D.jumlahAnggota() - 1, 0);
+    const kapan = window.KolavoFeedKapan || function(){ return ''; };
+    const kirim = (window.KolavoFeed ? window.KolavoFeed('l-dibuat') : [])
+      .filter(function(p){ return p.jenis === 'broadcast'; })
+      .sort(function(a, c){ return (c.sematkan ? 1 : 0) - (a.sematkan ? 1 : 0) || c.waktu - a.waktu; });
+    const sampah = window.KolavoIkon ? window.KolavoIkon('sampah') : '';
+    w.innerHTML =
+      kepala('broadcast', 'Kabar yang kamu kirim tampil di kotak <b>Kabar komunitas</b> di halaman ' + lolos(D.kom.nama) + '. Hanya anggota yang bisa membacanya.') +
+      '<div class="sek-bc">' +
+        '<div class="sek-blok sek-bc-f">' +
+          '<div class="sek-f"><label class="sek-lbl" for="sekBcIsi">Isi kabar</label>' +
+            '<textarea class="ta" id="sekBcIsi" data-sek-bc="isi" maxlength="500" rows="5" placeholder="Misalnya: Kumpul angkatan bulan depan — isi polling tanggalnya di grup WhatsApp, ya.">' + lolos(b.isi) + '</textarea>' +
+            '<p class="sek-kecil"><span id="sekBcN">' + b.isi.length + '</span>/500</p></div>' +
+          '<div class="sek-f"><label class="sek-lbl" for="sekBcTautan">Tautan (opsional)</label>' +
+            '<input class="inp" type="url" id="sekBcTautan" data-sek-bc="tautan" placeholder="https://…" value="' + lolos(b.tautan) + '">' +
+            '<p class="sek-kecil sek-bc-salah" id="sekBcSalah"' + (bcSalah() ? '' : ' hidden') + '>Tautan harus alamat lengkap, diawali https://</p></div>' +
+          '<div class="sek-baris atas"><div><b class="sek-bc-h">Sematkan di atas feed</b><p class="sek-kecil">Cuma satu kabar yang bisa disematkan — yang lama otomatis dilepas.</p></div>' +
+            sw('data-sek-bc-sw="pin"', b.pin, 'Sematkan di atas feed') + '</div>' +
+          '<div class="sek-baris atas"><div><b class="sek-bc-h">Kirim juga ke notifikasi anggota</b><p class="sek-kecil">' + lain + ' anggota lain dapat kabar di lonceng notifikasinya.</p></div>' +
+            sw('data-sek-bc-sw="notif"', b.notif, 'Kirim juga ke notifikasi anggota') + '</div>' +
+          '<div class="sek-baris"><button type="button" class="btn sm" data-sek-bc-kirim' + (bcBoleh() ? '' : ' disabled') + '>Kirim ke feed</button>' +
+            '<button type="button" class="btn outline sm" data-komunitas-dibuat>Lihat halaman komunitas</button></div>' +
+        '</div>' +
+        '<div class="sek-bc-prat"><p class="sek-lbl">Pratinjau di feed</p><div class="sek-bc-prat-w" id="sekBcPrat">' + bcPrat() + '</div></div>' +
+      '</div>' +
+      '<div class="sek-blok"><div class="sek-blok-h">Riwayat broadcast</div>' +
+        (kirim.length ? '<ul class="sek-bc-list">' + kirim.map(function(p){
+          const id = lolos(p.id);
+          return '<li class="sek-bc-i' + (p.sematkan ? ' pin' : '') + '"><div class="t">' +
+            '<p class="sek-bc-isi">' + lolos(p.isi) + '</p>' +
+            '<p class="sek-kecil">' + lolos(p.penulis.n) + ' · ' + kapan(p.waktu) + (p.sematkan ? ' · <b class="sek-bc-pin">Disematkan</b>' : '') + '</p></div>' +
+            (b.hapus === p.id
+              ? '<div class="sek-bc-aksi"><span class="sek-kecil">Hapus dari feed?</span>' +
+                  '<button type="button" class="btn xs hapus" data-sek-bc-hapus-ok="' + id + '">Hapus</button>' +
+                  '<button type="button" class="btn outline xs" data-sek-bc-batal>Batal</button></div>'
+              : '<div class="sek-bc-aksi"><button type="button" class="btn outline xs" data-sek-bc-pin="' + id + '">' + (p.sematkan ? 'Lepas sematan' : 'Sematkan') + '</button>' +
+                  '<button type="button" class="btn outline xs" data-sek-bc-hapus="' + id + '">' + sampah + 'Hapus</button></div>') +
+            '</li>';
+        }).join('') + '</ul>'
+        : '<p class="sek-kecil jarak">Belum ada broadcast. Kabar yang kamu kirim tercatat di sini.</p>') +
+      '</div>';
+  }
+  /* pintu dari halaman komunitas (kartu ajakan feed / "Tulis broadcast") */
+  window.KolavoBukaBroadcast = function(){
+    if(window.KolavoBukaDashboard) window.KolavoBukaDashboard();
+    if(!D.sekAktif){ D.tabSesudah = 'broadcast'; bukaModal(); return; }
+    D.mode = 'advance'; D.tab = 'broadcast'; D.gambar();
   };
 
   /* ---------- onboarding anggota baru (Advance) ----------
@@ -931,15 +1012,16 @@
     ['dasbor', 'Lihat Dashboard & daftar anggota'],
     ['kontak', 'Lihat WhatsApp & email anggota'],
     ['rapi',   'Kelola jawaban pendaftar & template email'],
+    ['broadcast', 'Kirim broadcast ke feed'],
     ['notif',  'Ubah notifikasi'],
     ['undang', 'Undang pengurus & atur hak']
   ];
   const HAK_AWAL = {
-    'Ketua':       ['dasbor', 'kontak', 'rapi', 'notif', 'undang'],
-    'Wakil Ketua': ['dasbor', 'kontak', 'rapi', 'notif'],
-    'Sekretaris':  ['dasbor', 'kontak', 'rapi'],
+    'Ketua':       ['dasbor', 'kontak', 'rapi', 'broadcast', 'notif', 'undang'],
+    'Wakil Ketua': ['dasbor', 'kontak', 'rapi', 'broadcast', 'notif'],
+    'Sekretaris':  ['dasbor', 'kontak', 'rapi', 'broadcast'],
     'Bendahara':   ['dasbor'],
-    'Humas':       ['dasbor', 'kontak'],
+    'Humas':       ['dasbor', 'kontak', 'broadcast'],
     'Pengurus':    ['dasbor']
   };
   function hakJabatan(peta, j){
@@ -1162,7 +1244,7 @@
   function gambarSemua(){
     gambarMode();
     gambarNudge();
-    if(D.sekAktif){ gambarDasbor(); gambarInfoKom(); gambarOnboard(); gambarJawab(); gambarKelompok(); gambarRapi(); gambarEmail(); gambarSetting(); gambarAkses(); gambarSerah(); }
+    if(D.sekAktif){ gambarDasbor(); gambarInfoKom(); gambarBroadcast(); gambarOnboard(); gambarJawab(); gambarKelompok(); gambarRapi(); gambarEmail(); gambarSetting(); gambarAkses(); gambarSerah(); }
   }
   D.onGambar.push(gambarSemua);
   function ulang(){ D.gambar(); }
@@ -1366,6 +1448,40 @@
     }
     if(e.target.closest('[data-sek-info-urung]')){ S.infoDraf = infoTersimpan(); gambarInfoKom(); return; }
 
+    /* broadcast */
+    if(e.target.closest('[data-sek-bc-kirim]')){
+      if(!bcBoleh()) return;
+      const p = bcPost();
+      if(!window.KolavoFeedTambah || !window.KolavoFeedTambah('l-dibuat', p)){ toast('Broadcast butuh paket Advance.'); return; }
+      const notif = S.bc.notif;
+      catat('Kamu mengirim broadcast' + (p.sematkan ? ' dan menyematkannya' : ''));
+      S.bc = { isi: '', tautan: '', pin: false, notif: true, hapus: null };
+      gambarBroadcast();
+      toast('Terkirim ke feed' + (notif ? ' dan notifikasi ' + Math.max(D.jumlahAnggota() - 1, 0) + ' anggota' : '') + '. Mode demo — notifikasinya belum sungguhan.');
+      return;
+    }
+    const bcPin = e.target.closest('[data-sek-bc-pin]');
+    if(bcPin){
+      const id = bcPin.dataset.sekBcPin;
+      const on = !(window.KolavoFeed('l-dibuat').filter(function(p){ return p.id === id; })[0] || {}).sematkan;
+      window.KolavoFeedSemat('l-dibuat', id, on);
+      catat(on ? 'Kamu menyematkan broadcast' : 'Kamu melepas sematan broadcast');
+      gambarBroadcast();
+      return;
+    }
+    const bcHapus = e.target.closest('[data-sek-bc-hapus]');
+    if(bcHapus){ S.bc.hapus = bcHapus.dataset.sekBcHapus; gambarBroadcast(); return; }
+    if(e.target.closest('[data-sek-bc-batal]')){ S.bc.hapus = null; gambarBroadcast(); return; }
+    const bcOk = e.target.closest('[data-sek-bc-hapus-ok]');
+    if(bcOk){
+      window.KolavoFeedHapus('l-dibuat', bcOk.dataset.sekBcHapusOk);
+      S.bc.hapus = null;
+      catat('Kamu menghapus broadcast');
+      gambarBroadcast();
+      toast('Broadcast dihapus dari feed.');
+      return;
+    }
+
     /* setting: akun */
     const akun = e.target.closest('[data-sek-akun]');
     if(akun){
@@ -1464,6 +1580,7 @@
     const t = e.target;
     if(t.matches('[data-sek-pilihan]')){ S.pilihan = t.checked; gambarRapi(); return; }
     if(t.matches('[data-sek-rangkuman]')){ S.rangkuman = t.checked; gambarDasbor(); return; }
+    if(t.matches('[data-sek-bc-sw]')){ S.bc[t.dataset.sekBcSw] = t.checked; gambarBroadcast(); return; }
     if(t.id === 'sekEmailJabatan'){ S.emailJabatan = t.value; return; }
     if(t.matches('[data-sek-ob-utama]')){
       ob().aktif = t.checked;
@@ -1522,6 +1639,7 @@
     if(t.matches('[data-sek-ob]')){ const p = t.dataset.sekOb.split('.'); ob().langkah[p[0]][p[1]] = t.value; return; }
     if(t.matches('[data-sek-tmpl]')){ S.tmplDraf[S.tmplJenis][t.dataset.sekTmpl] = t.value; segarkanEmail(); return; }
     if(t.matches('[data-sek-info]')){ S.infoDraf[t.dataset.sekInfo] = t.value; segarkanTombolInfo(); return; }
+    if(t.matches('[data-sek-bc]')){ S.bc[t.dataset.sekBc] = t.value; segarkanBc(); return; }
     if(t.id === 'sekAkunBaru'){ S.akun.baru = t.value; return; }
     if(t.id === 'sekAkunKode'){ S.akun.kode = t.value.replace(/\D/g, '').slice(0, 6); if(t.value !== S.akun.kode) t.value = S.akun.kode; return; }
     if(t.id === 'sekNotifEmail'){ S.notif.email = t.value; return; }

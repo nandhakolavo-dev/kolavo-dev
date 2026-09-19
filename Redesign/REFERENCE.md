@@ -947,6 +947,26 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   - Sambungan baru di `50-js-layar-komunitas`: `KolavoKomKini()`, `KolavoAjakKenal(nama)`,
     `KolavoIkonKenal(st)`, dan `segarKenal()` — ajakan dari feed, dari detail anggota,
     atau terima demo sama-sama menyegarkan cincin, ikon daftar, dan feed.
+- **Revisi P11 — menu Broadcast** (grup Advance, di bawah Info komunitas; 2026-09-19).
+  Panel `#klPanelBroadcast` di `50-js-sekretariat` (`gambarBroadcast`), ikon baru `toa`.
+  - **Form**: isi ≤500 karakter + penghitung, tautan opsional (`URL_OK`, pesan merah kalau
+    tidak diawali https://, tombol Kirim nonaktif), sakelar *Sematkan di atas feed* dan
+    *Kirim juga ke notifikasi anggota*. Draf di `S.bc`, tidak digambar ulang saat mengetik
+    (fokus aman) — `segarkanBc()` cuma memperbarui penghitung, pratinjau, dan tombol.
+  - **Pratinjau** memakai komponen timeline feed yang sama (`KolavoFeedPratinjau`), kolom
+    kanan ≥900px, bertumpuk di layar sempit. Penulis = pemilik + `D.jabatanAku()` + fotonya.
+  - **Kirim** → `KolavoFeedTambah('l-dibuat', …)`, jejak, toast. Notifikasi anggota **belum
+    tersambung**: sengaja tidak memanggil `KolavoNotifTambah`, karena lonceng di prototipe
+    milik pengirim sendiri — cukup toast "Mode demo".
+  - **Riwayat broadcast**: disematkan dulu lalu terbaru; aksi Sematkan/Lepas sematan dan
+    Hapus (konfirmasi sebaris, `btn xs hapus`). Hanya satu yang disematkan — API baru di
+    `50-js-feed`: `KolavoFeedSemat`, `KolavoFeedHapus`, `KolavoFeedKapan`; kiriman bersemat
+    melepas sematan lama.
+  - **Hak**: baris *Kirim broadcast ke feed* di Siapa boleh apa; bawaan Ketua, Wakil Ketua,
+    Sekretaris, Humas. Masuk daftar fitur pop up langganan (`URUT`).
+  - **Pintu masuk** `KolavoBukaBroadcast()`: kartu ajakan feed pemilik Esensial ("Lihat
+    Advance" → pop up langganan → langsung ke tab Broadcast setelah aktif) dan tombol
+    *Tulis broadcast* di feed kosong milik pemilik Advance.
 
 ## Yang belum terverifikasi
 

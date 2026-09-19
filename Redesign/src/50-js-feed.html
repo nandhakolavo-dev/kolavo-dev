@@ -83,10 +83,25 @@
     seed(kelas, k && k.kelas === kelas ? k.agg : null);
     post.id = 'fd' + (++urut);
     post.waktu = post.waktu || Date.now();
+    /* yang disematkan cuma satu — kiriman baru bersemat melepas yang lama */
+    if(post.sematkan) App().feed[kelas].forEach(function(p){ p.sematkan = false; });
     App().feed[kelas].unshift(post);
     if(k && k.kelas === kelas) gambarFeed();
     return true;
   };
+
+  window.KolavoFeedSemat = function(kelas, id, on){
+    (App().feed[kelas] || []).forEach(function(p){ p.sematkan = on ? p.id === id : (p.id === id ? false : p.sematkan); });
+    segarJika(kelas);
+  };
+  window.KolavoFeedHapus = function(kelas, id){
+    App().feed[kelas] = (App().feed[kelas] || []).filter(function(p){ return p.id !== id; });
+    segarJika(kelas);
+  };
+  function segarJika(kelas){
+    const k = window.KolavoKomKini && window.KolavoKomKini();
+    if(k && k.kelas === kelas) gambarFeed();
+  }
 
   /* ---------- tampilan ---------- */
   function kapan(t){
@@ -193,7 +208,7 @@
       wadah.innerHTML = '<div class="kom-info-ajak">' + IK.advance +
         '<div class="t"><strong>Kabarkan info &amp; sambut anggota baru lewat feed dengan paket Advance</strong>' +
         '<p>Cuma kamu yang melihat kartu ini — pengunjung dan anggota tidak.</p></div>' +
-        '<button type="button" class="btn outline xs" data-info-advance>Lihat Advance</button></div>';
+        '<button type="button" class="btn outline xs" data-feed-advance>Lihat Advance</button></div>';
       return;
     }
     seed(k.kelas, k.agg);
@@ -205,7 +220,8 @@
     }
     const unit = susun(App().feed[k.kelas] || []);
     if(!unit.length){
-      wadah.innerHTML = kotak('0 kabar', '<p class="fd-kosong">Belum ada kabar. Info dari pengurus dan sambutan anggota baru akan muncul di sini.</p>');
+      wadah.innerHTML = kotak('0 kabar', '<div class="fd-kosong"><p>Belum ada kabar. Info dari pengurus dan sambutan anggota baru akan muncul di sini.</p>' +
+        (k.founder ? '<button type="button" class="btn outline xs" data-feed-advance>Tulis broadcast</button>' : '') + '</div>');
       return;
     }
     const n = (App().feed[k.kelas] || []).length;
@@ -214,6 +230,11 @@
       (semua ? '' : '<button type="button" class="fd-lagi" data-feed-lagi>Lihat kabar sebelumnya (' + (unit.length - BATAS) + ')</button>'));
   }
   window.KolavoGambarFeed = gambarFeed;
+  /* pratinjau satu broadcast, dipakai form Broadcast di dashboard (P11) */
+  window.KolavoFeedPratinjau = function(post){
+    return '<ol class="fd-tl">' + momenKabar(Object.assign({ waktu: Date.now() }, post)) + '</ol>';
+  };
+  window.KolavoFeedKapan = kapan;
 
   wadah.addEventListener('click', function(e){
     const kenal = e.target.closest('[data-feed-kenal]');
@@ -228,6 +249,10 @@
     if(e.target.closest('[data-feed-lagi]')){
       const k = window.KolavoKomKini && window.KolavoKomKini();
       if(k){ terbuka[k.kelas] = true; gambarFeed(); }
+      return;
+    }
+    if(e.target.closest('[data-feed-advance]')){
+      if(window.KolavoBukaBroadcast) window.KolavoBukaBroadcast();
       return;
     }
     if(e.target.closest('[data-feed-tautan]')){

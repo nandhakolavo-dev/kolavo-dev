@@ -1371,6 +1371,27 @@ body.lgn-open{overflow:hidden}
 .fd-kunci svg{width:20px;height:20px;flex:none;color:var(--ink-2)}
 .fd-kunci b{display:block;font-size:13.5px;font-weight:600}
 .fd-kunci p{font-size:12px;color:var(--ink-2);line-height:1.5}
+.fd-kosong .btn{margin-top:10px}
+
+/* ---------- dashboard Advance › Broadcast ----------
+   Form di kiri, pratinjau (komponen timeline feed yang sama) di kanan pada
+   >=900px; bertumpuk di layar sempit. */
+.sek-bc{display:grid;grid-template-columns:minmax(0,1fr);gap:0 16px;align-items:start}
+@media(min-width:900px){.sek-bc{grid-template-columns:minmax(0,1fr) minmax(0,360px)}}
+.sek-bc-f .sek-f + .sek-f{margin-top:14px}
+.sek-bc-f .sek-baris.atas{margin-top:14px}
+.sek-bc-h{display:block;font-size:13.5px;font-weight:600;line-height:1.4}
+.sek-bc-salah{color:var(--red)}
+.sek-bc-prat{margin-top:16px}
+.sek-bc-prat-w{margin-top:8px;padding:16px 14px 0;border-radius:13px;border:1px solid var(--line);background:var(--bg-alt)}
+.sek-bc-list{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.sek-bc-i{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;padding:12px 14px;border:1px solid var(--line);border-radius:13px}
+.sek-bc-i.pin{border-color:var(--orange)}
+.sek-bc-i .t{flex:1 1 240px;min-width:0}
+.sek-bc-isi{font-size:14px;line-height:1.55;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sek-bc-pin{font-weight:600;color:var(--orange-ink)}
+.sek-bc-aksi{display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex:none}
+.sek-bc-aksi .btn svg{width:14px;height:14px}
 .nm-full{font-size:12px;color:var(--ink-3)}
 
 /* akun media sosial di Lengkapi profil */
