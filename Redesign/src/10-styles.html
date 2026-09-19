@@ -988,6 +988,18 @@ body.lgn-open{overflow:hidden}
 @media(max-width:640px){.kom-aksi{width:100%}}
 .kom-aksi .btn{width:100%}
 .kom-aksi .catat{font-size:12px;color:var(--ink-3);line-height:1.5;text-align:center}
+/* aksi utama + tombol ikon (edit data pendaftaran, bagikan) dalam satu baris */
+.kom-aksi-baris{display:flex;align-items:center;gap:8px}
+.kom-aksi-baris>:first-child{flex:1;min-width:0}
+.btn-ikon{position:relative;flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border-radius:100px;
+  border:1px solid var(--blue);background:var(--bg);color:var(--blue-ink);cursor:pointer;transition:background .15s ease}
+.btn-ikon:hover{background:var(--blue-wash)}
+.btn-ikon:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.btn-ikon svg{width:19px;height:19px}
+.btn-ikon::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  padding:5px 10px;border-radius:8px;background:var(--ink);color:var(--bg);font-size:12px;font-weight:500;white-space:nowrap;
+  pointer-events:none;opacity:0;transition:opacity .12s ease;z-index:5}
+.btn-ikon:hover::after,.btn-ikon:focus-visible::after{opacity:1}
 
 /* status keanggotaan */
 .kom-status{display:flex;align-items:center;gap:9px;padding:12px 16px;border-radius:100px;

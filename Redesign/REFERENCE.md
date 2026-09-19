@@ -862,6 +862,15 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   - Kartu Permintaan gabung: jawaban > 40 karakter (`.kl-jawab-row.panjang`) ditaruh di
     bawah pertanyaannya dan rata kiri; jawaban pendek (tahun dsb.) tetap sejajar kanan.
 
+- **Revisi lanjutan R4 — tombol ikon di halaman komunitas** (2026-09-19):
+  - "Bagikan tautan" dan "Edit Data Pendaftaran" (anggota) kini tombol ikon bulat
+    44px `.btn-ikon` (garis `--blue`, jadi ikut warna tema komunitas) dengan
+    `aria-label` + tooltip CSS dari `data-tip`. Keduanya satu baris dengan aksi utama
+    (`.kom-aksi-baris`: status/tombol utama melebar, ikon di kanan), jadi tetap
+    terlihat di header. `gambarAksi()` = `isiAksi()` + baris ikon, sehingga panggilan
+    ulang setelah menyimpan data pendaftaran tidak lagi menghilangkan tombol bagikan.
+    Pratinjau pengurus tidak menampilkan baris ikon. `#komEdit` tetap id yang sama.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi
