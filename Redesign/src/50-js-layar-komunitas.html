@@ -178,6 +178,11 @@
     const e = document.getElementById(id);
     return e ? (e.value || '').trim() : '';
   }
+  /* profil pengguna untuk pencocokan kenalan di onboarding */
+  window.KolavoProfilKu = function(){
+    const k = nilaiProfil('kerja');
+    return { kerja: k === '__lain__' ? nilaiProfil('kerjaLain') : (k || window.KolavoKerjaDefault || ''), kota: nilaiProfil('kota') };
+  };
 
   function akuAnggota(){
     if(founder) return true;   /* pemilik selalu di dalam komunitasnya sendiri */
@@ -509,7 +514,8 @@
     if(!nama) return;
     kn[nama] = 'terhubung';
     tandaiDemo();
-    if(el('agNm').textContent === nama) gambarAnggota(nama);
+    if(window.KolavoNotifTambah) window.KolavoNotifTambah({ jenis: 'kenalan', judul: nama.split(' ')[0] + ' menerima ajakan kenalanmu', teks: 'Nomor WhatsApp kalian sekarang saling terbuka.', anggota: nama });
+    if(el('agNm').dataset.nm === nama) gambarAnggota(nama);
     if(window.KolavoToast) window.KolavoToast(nama.split(' ')[0] + ' menerima ajakan kenalanmu. Nomornya kebuka.');
   };
 
@@ -537,6 +543,8 @@
 
     /* sesama anggota melihat nama panggilan; nama lengkap cuma untuk pengurus */
     el('agNm').textContent = panggilan(o);
+    /* judul berisi panggilan; kunci orangnya (nama di data) disimpan di sini untuk tombol kenalan */
+    el('agNm').dataset.nm = nama;
     el('agJalurNm').textContent = panggilan(o);
     el('agBalik').textContent = kini ? kini.nama : 'Komunitas';
     /* nomor anggota kecil di atas nama — kelihatan sesama anggota kalau ada */
@@ -656,6 +664,12 @@
     if(kini && kini.kelas === kelas) gambar();
     if(window.KolavoIsiProfil) window.KolavoIsiProfil();
     if(window.KolavoToast) window.KolavoToast('Pengurus ' + nama + ' menyetujui pendaftaranmu.');
+    if(window.KolavoNotifTambah){
+      const logo = document.querySelector('#direktori .ccard .logo-sq.' + kelas);
+      const premium = !!(logo && logo.closest('.ccard').dataset.premium === '1');
+      window.KolavoNotifTambah({ jenis: 'diterima', kelas: kelas, judul: 'Pendaftaranmu diterima di ' + nama,
+        teks: premium ? 'Buka halamannya untuk perkenalan singkat dari pengurus.' : 'Sekarang kamu bisa melihat daftar anggota dan berkenalan.' });
+    }
     if(kini && kini.kelas === kelas && !document.getElementById('scrKomunitas').hidden){
       el('komBuka').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
@@ -730,6 +744,8 @@
     w.innerHTML =
       (info.pengumuman ? '<div class="kom-umum" role="note"><span class="kom-umum-ic">' + IK_INFO.toa + '</span>' +
         '<div><p class="kom-umum-h">Pengumuman pengurus</p><p class="kom-umum-t">' + esc(info.pengumuman) + '</p></div></div>' : '') +
+      (boleh && !founder && window.KolavoAdaOnboarding && window.KolavoAdaOnboarding()
+        ? '<button type="button" class="kom-ob-lagi" data-ob-lagi>Buka lagi perkenalan komunitas</button>' : '') +
       (tautan.length ? '<div class="kom-tautan">' + tautan.map(function(t){
         const kunci = t[3] && !boleh;
         return '<button type="button" class="kom-tautan-i" data-info-buka="' + t[0] + '"' + (kunci ? ' data-kunci' : '') + '>' +
@@ -870,6 +886,8 @@
     gambarDaftar(founder || (window.KolavoApp.diajukan || {})[kini.kelas] === 'anggota');
     el('komGabung').hidden = true;
     el('komGabungBtn') && (el('komGabung').hidden = true);
+    /* anggota baru komunitas Advance: perkenalan bertahap, sekali per komunitas */
+    if(!founder && !pratinjau && window.KolavoCekOnboarding) window.KolavoCekOnboarding();
   }
 
   /* ---------- notifikasi pemilik: siapa yang menunggu disetujui ----------
@@ -929,6 +947,7 @@
   /* ---------- gabung ---------- */
   document.addEventListener('click', function(e){
     if(e.target.closest('[data-kom-bagikan]')){ bagikan(); return; }
+    if(e.target.closest('[data-ob-lagi]')){ if(window.KolavoBukaOnboarding) window.KolavoBukaOnboarding(); return; }
     if(e.target.closest('[data-info-advance]')){ if(window.KolavoBukaInfoKomunitas) window.KolavoBukaInfoKomunitas(); return; }
     const infoBuka = e.target.closest('[data-info-buka]');
     if(infoBuka && kini){
@@ -995,7 +1014,7 @@
       return;
     }
     if(e.target.closest('#agKenalMinta') || e.target.closest('#agKenalBatal')){
-      const nama = el('agNm').textContent;
+      const nama = el('agNm').dataset.nm;
       const App = window.KolavoApp || {};
       App.kenalan = App.kenalan || {};
       const minta = !!e.target.closest('#agKenalMinta');
@@ -1063,6 +1082,7 @@
 
       window.KolavoApp.diajukan = window.KolavoApp.diajukan || {};
       window.KolavoApp.diajukan[kini.kelas] = 'menunggu';
+      if(window.KolavoNotifTambah) window.KolavoNotifTambah({ jenis: 'terkirim', judul: 'Permintaan gabung terkirim', teks: 'Pengurus ' + kini.nama + ' akan meninjau pendaftaranmu.', kelas: kini.kelas });
       el('komGabung').hidden = true;
       gambarAksi();
       tandaiDemo();

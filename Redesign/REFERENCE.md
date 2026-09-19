@@ -786,6 +786,35 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     `window.KolavoOnboarding()`. Tombol Pratinjau memanggil `KolavoBukaOnboarding`
     (dibuat di P8); sebelum ada, toast.
 
+  **Revisi P8 — Notifikasi & modal onboarding (sisi anggota).** Dua modul baru:
+  `50-js-notifikasi` dan `50-js-onboarding` (manifest setelah `50-js-layar-komunitas`;
+  sengaja dipisah supaya modul komunitas tidak makin besar).
+  - **Lonceng notifikasi** di nav, tampil bersama menu akun saat sudah masuk
+    (`gambarNav` di router). Badge oranye = belum dibaca; panel berisi daftar +
+    "Tandai semua dibaca"; di ≤600px panelnya `fixed` selebar layar. Kabar yang masuk:
+    permintaan gabung terkirim, pendaftaran diterima (untuk Advance: "Buka halamannya
+    untuk perkenalan singkat dari pengurus"), ajakan kenalan diterima. Klik membuka
+    komunitas / profil anggotanya. Disimpan di `KolavoApp.notif`, ditambah lewat
+    `KolavoNotifTambah()`. Notifikasi berlaku di dua paket.
+  - **Modal onboarding** (kerangka `.lgn`, radius 32, `#obModal` di layer
+    `scrKomunitas`): muncul ~350 ms setelah halaman komunitas digambar, hanya jika
+    komunitasnya Advance, penggunanya sudah anggota, onboarding aktif, dan belum pernah
+    dilihat (`KolavoApp.onboardDilihat[kelas]`). Langkah mati dilewati; penanda langkah
+    di atas, Lewati / Kembali / Lanjut → Selesai di bawah. Lewati, ×, Esc, dan Selesai
+    sama-sama menandai "sudah dilihat". Anggota bisa membukanya lagi lewat tautan
+    "Buka lagi perkenalan komunitas" di panel info.
+  - Komunitas direktori memakai konfigurasi contoh (`cfgContoh`, pengirim = pengurus
+    pertamanya) + tautan dari `INFO`. Komunitas sendiri memakai konfigurasi P7 — tapi
+    pemiliknya tidak pernah mendapat onboarding; ia melihatnya lewat **Pratinjau**
+    (lencana "Pratinjau pengurus", tidak menandai dilihat, profil tidak dibuka).
+  - **Langkah kenalan**: chip saring "Sama pekerjaan · X" / "Sama domisili · Y" /
+    "Sama kelompok · Z" (kelompok hanya untuk komunitas yang punya `D.kelompok`),
+    masing-masing dengan jumlah; hanya chip yang ada hasilnya yang tampil. Maks. 6
+    kartu + "Lihat profil". Tanpa kecocokan → kartu pengurus. Profil pengguna dibaca
+    lewat `KolavoProfilKu()` (pekerjaan termasuk "Lainnya — tulis sendiri").
+  - **Regresi P5 dibetulkan**: judul detail anggota kini nama panggilan, jadi tombol
+    kenalan membaca kunci orangnya dari `#agNm[data-nm]`, bukan dari teks judul.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

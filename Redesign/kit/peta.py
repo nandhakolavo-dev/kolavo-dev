@@ -36,6 +36,8 @@ if '--src' in sys.argv:
         '50-js-pemilih-lokasi': 'JS pemilih lokasi bertingkat',
         '50-js-modal-masuk': 'JS modal masuk Google + copy per-niat',
         '50-js-lengkapi-profil': 'JS perilaku layar lengkapi profil',
+        '50-js-notifikasi': 'JS lonceng notifikasi pengguna di nav',
+        '50-js-onboarding': 'JS modal stepper onboarding anggota baru (Advance)',
         '50-js-runtime-router': 'JS keadaan + router + sambungan antar layar',
         '50-js-pemilih-tanggal': 'JS kalender tanggal lahir',
         '50-js-sunting-identitas': 'JS sunting identitas Google',
