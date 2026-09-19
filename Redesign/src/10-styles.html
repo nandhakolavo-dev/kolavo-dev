@@ -1319,31 +1319,39 @@ body.lgn-open{overflow:hidden}
 .kom-info-ajak p{font-size:12px;color:var(--ink-2);line-height:1.5}
 
 /* ---------- feed "Kabar komunitas" (Advance) ----------
-   Broadcast = kartu putih berkepala pengurus; sambutan = kartu hijau lembut,
-   supaya dua jenis kabar terbaca beda sekilas tanpa perlu label panjang. */
+   Kotak khusus ber-panel (kepala + kaki seperti Daftar Anggota) yang isinya
+   bergulir sendiri, bentuk timeline ala Path: satu garis vertikal, simpul
+   bulat di garis (foto pengurus / ikon anggota baru), gelembung chat di kanan. */
 .kom-feed .kom-info-ajak{margin-top:0}
-.fd-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
-.fd-post{padding:14px 16px;border:1px solid var(--line);border-radius:13px;background:var(--card)}
-.fd-kepala{display:flex;align-items:center;gap:10px}
-.fd-kepala .av{width:40px;height:40px;font-size:14px;flex:none}
-.fd-kepala .t{flex:1;min-width:0}
-.fd-nm{font-size:14px;font-weight:600;line-height:1.35}
-.fd-jab{margin-left:8px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink);vertical-align:1px}
-.fd-waktu{font-size:12px;font-weight:500;color:var(--ink-3);letter-spacing:0;text-transform:none}
-.fd-pin{display:inline-flex;align-items:center;gap:4px;flex:none;font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px;background:var(--orange-wash);color:var(--orange-ink)}
+.fd-box .panel-bar{border-bottom:1px solid var(--line)}
+.fd-box-ic{display:grid;place-items:center;width:28px;height:28px;border-radius:100px;background:var(--orange-wash);color:var(--orange-ink);flex:none}
+.fd-box-ic svg{width:15px;height:15px}
+.fd-gulir{max-height:440px;overflow-y:auto;overscroll-behavior:contain;padding:16px 18px 8px;background:var(--bg-alt)}
+.fd-tl{position:relative;list-style:none;margin:0;padding:0}
+.fd-tl::before{content:"";position:absolute;left:19px;top:8px;bottom:8px;width:2px;border-radius:2px;background:var(--line)}
+.fd-i{position:relative;display:grid;grid-template-columns:40px 1fr;gap:12px;padding-bottom:18px}
+.fd-node{position:relative;z-index:1;width:40px;height:40px;border-radius:100px;box-shadow:0 0 0 3px var(--bg-alt)}
+.fd-node .av{width:40px;height:40px;font-size:14px}
+.fd-node.ic{display:grid;place-items:center;background:var(--green);color:var(--btn-ink)}
+.fd-node.ic svg{width:19px;height:19px}
+.fd-isi-w{min-width:0}
+.fd-meta{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;min-height:22px;font-size:13px;color:var(--ink-2);line-height:1.4}
+.fd-meta b{font-weight:600;color:var(--ink)}
+.fd-jab{font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink)}
+.fd-waktu{font-size:12px;color:var(--ink-3)}
+.fd-pin{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px;background:var(--orange-wash);color:var(--orange-ink)}
 .fd-pin svg{width:12px;height:12px}
-.fd-isi{margin-top:10px;font-size:14.5px;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere}
+.fd-bubble{margin-top:6px;padding:12px 14px;border-radius:4px 16px 16px 16px;border:1px solid var(--line);background:var(--card)}
+.fd-bubble.pin{border-color:var(--orange)}
+.fd-isi{font-size:14.5px;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere}
 .fd-tautan{margin-top:10px;display:inline-flex;align-items:center;gap:6px;max-width:100%;font:inherit;font-size:13px;font-weight:500;padding:6px 12px;border-radius:100px;border:1px solid var(--line);background:var(--blue-tint);color:var(--blue-ink);cursor:pointer}
 .fd-tautan span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fd-tautan svg{width:14px;height:14px;flex:none}
-.fd-sambut{background:var(--green-wash);border-color:transparent}
-.fd-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green)}
-.fd-label svg{width:15px;height:15px;flex:none}
-.fd-sambut-isi{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px}
-.fd-sambut-isi .av{width:48px;height:48px;font-size:15px;flex:none}
-.fd-sambut-isi .t{flex:1 1 160px;min-width:0}
-.fd-sambut-isi b{display:block;font-size:15px;font-weight:600;line-height:1.35}
-.fd-sambut-isi small{display:block;margin-top:2px;font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.fd-bubble.sambut{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--green-wash);border-color:transparent}
+.fd-bubble.sambut .av{width:44px;height:44px;font-size:14px;flex:none}
+.fd-bubble.sambut .t{flex:1 1 140px;min-width:0}
+.fd-bubble.sambut b{display:block;font-size:14.5px;font-weight:600;line-height:1.35}
+.fd-bubble.sambut small{display:block;margin-top:2px;font-size:12.5px;color:var(--ink-2);line-height:1.45}
 [data-feed-orang]{cursor:pointer}
 [data-feed-orang]:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:8px}
 .fd-orang{flex:none}
@@ -1354,11 +1362,12 @@ body.lgn-open{overflow:hidden}
 .fd-kenal-st.menunggu{color:var(--ink-2)}
 .fd-kenal-st.terhubung{color:var(--green)}
 .fd-tumpuk{display:flex;flex:none}
-.fd-tumpuk .av{width:40px;height:40px;font-size:13px;margin-left:-12px;box-shadow:0 0 0 2px var(--green-wash)}
-.fd-tumpuk .av:first-child{margin-left:0}
-.fd-lagi{margin-top:10px;width:100%}
-.fd-kosong{margin-top:12px;padding:22px 16px;border:1px dashed var(--line);border-radius:13px;text-align:center;font-size:13px;color:var(--ink-3)}
-.fd-kunci{display:flex;align-items:center;gap:12px;margin-top:12px;padding:14px 16px;border-radius:13px;border:1px dashed var(--ink-3);background:var(--bg-alt)}
+.fd-bubble.sambut .fd-tumpuk .av{width:36px;height:36px;font-size:12px;margin-left:-10px;box-shadow:0 0 0 2px var(--green-wash)}
+.fd-bubble.sambut .fd-tumpuk .av:first-child{margin-left:0}
+.fd-lagi{display:block;width:100%;margin:0 0 10px;padding:8px;font:inherit;font-size:13px;font-weight:500;color:var(--blue-ink);background:none;border:0;cursor:pointer}
+.fd-lagi:hover{text-decoration:underline}
+.fd-kosong{margin:4px 0 10px;padding:22px 16px;border:1px dashed var(--line);border-radius:13px;text-align:center;font-size:13px;color:var(--ink-3);background:var(--card)}
+.fd-kunci{display:flex;align-items:center;gap:12px;margin:4px 0 10px;padding:14px 16px;border-radius:13px;border:1px dashed var(--ink-3);background:var(--card)}
 .fd-kunci svg{width:20px;height:20px;flex:none;color:var(--ink-2)}
 .fd-kunci b{display:block;font-size:13.5px;font-weight:600}
 .fd-kunci p{font-size:12px;color:var(--ink-2);line-height:1.5}

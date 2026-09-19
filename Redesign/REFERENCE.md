@@ -924,13 +924,20 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   - **Data**: `KolavoApp.feed[kelas]`, API `KolavoFeedTambah(kelas, post)` /
     `KolavoFeed(kelas)`. Seed malas (`feedSeed`) hanya dua komunitas Advance: 2 sambutan
     (anggota yang paling akhir bergabung, waktunya dari bulan `s`) + 1 broadcast Ketua.
-  - **Tampilan**: disematkan di atas, lalu terbaru; 5 unit lalu "Lihat kabar lainnya (n)".
-    Broadcast = kartu putih berkepala pengurus + pil jabatan + waktu relatif + tautan
-    (toast demo). Sambutan = kartu `--green-wash`, "Selamat datang, {panggilan}!" +
-    pekerjaan · domisili + tombol **Ajak kenalan** (ikon `KolavoIkonKenal` dari P9) atau
-    status Menunggu/Sudah kenal. Sambutan sehari yang berurutan digabung jadi "N anggota
-    baru bergabung" (avatar bertumpuk, tombol ke daftar). Sambutan diri sendiri: "kamu",
-    tanpa tombol.
+  - **Tampilan — kotak khusus, timeline ala Path** (revisi atas permintaan user: "box
+    khusus… layaknya chat / model feed Path"). `.panel.fd-box`: kepala (ikon toa + "Kabar
+    komunitas" + "N kabar"), isi `.fd-gulir` bergulir sendiri (maks 440px), kaki "Kabar ini
+    cuma kelihatan sama sesama anggota". Di dalamnya `ol.fd-tl`: satu garis vertikal, tiap
+    momen = simpul bulat 40px di garis + baris meta + **gelembung chat** (sudut kiri atas
+    lancip). Broadcast: simpul = foto pengurus, meta = nama · pil jabatan · waktu
+    (· Disematkan), gelembung putih (bergaris oranye kalau disematkan). Sambutan: simpul =
+    ikon hijau, meta "{panggilan} bergabung ke komunitas", gelembung hijau lembut berisi
+    foto + "Selamat datang, …!" + pekerjaan · domisili + tombol **Ajak kenalan** (ikon
+    `KolavoIkonKenal` dari P9) atau status Menunggu/Sudah kenal. Sambutan sehari berurutan
+    digabung ("N anggota baru bergabung", foto bertumpuk, tombol ke daftar). Sambutan diri
+    sendiri: "Kamu"/"kamu", tanpa tombol. Terbaru di atas (bukan di bawah seperti chat),
+    disematkan paling atas; 8 unit lalu "Lihat kabar sebelumnya (n)". Terkunci & kosong
+    tampil di dalam kotak yang sama.
   - **Pemicu**: `terima()` di dashboard (`l-dibuat`, termasuk terima massal) dan
     `KolavoSetujui` (demo, diri sendiri).
   - **Akses**: anggota & pemilik melihat isi; pengunjung komunitas Advance melihat kartu

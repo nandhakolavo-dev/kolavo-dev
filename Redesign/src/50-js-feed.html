@@ -14,7 +14,7 @@
   const App = function(){ const a = window.KolavoApp || (window.KolavoApp = {}); a.feed = a.feed || {}; a.feedSeed = a.feedSeed || {}; return a; };
   const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
   const HARI = 86400000;
-  const BATAS = 5;
+  const BATAS = 8;
   let urut = 0;
   let terbuka = {};   /* "Lihat kabar lainnya" per komunitas */
 
@@ -114,38 +114,46 @@
     return '<span class="fd-kenal-st ' + st + '">' + ik + (st === 'menunggu' ? 'Menunggu' : 'Sudah kenal') + '</span>';
   }
 
-  function kartuKabar(p){
-    return '<article class="fd-post">' +
-      '<div class="fd-kepala">' + avatar(p.penulis, 0) +
-        '<div class="t"><p class="fd-nm">' + esc(p.penulis.n) + '<span class="fd-jab">' + esc(p.penulis.j) + '</span></p>' +
-        '<p class="fd-waktu">' + kapan(p.waktu) + '</p></div>' +
-        (p.sematkan ? '<span class="fd-pin">' + IK.pin + 'Disematkan</span>' : '') +
-      '</div>' +
-      '<p class="fd-isi">' + esc(p.isi) + '</p>' +
-      (p.tautan ? '<button type="button" class="fd-tautan" data-feed-tautan>' + IK.tautan + '<span>' + esc(p.tautan.replace(/^https:\/\//, '')) + '</span></button>' : '') +
-      '</article>';
+  /* ---------- timeline ala Path ----------
+     Satu garis vertikal; tiap momen punya simpul bulat di garis (foto pengurus
+     untuk broadcast, ikon hijau untuk anggota baru) dan gelembung di kanannya
+     seperti chat. Semua di dalam satu kotak yang bisa digulir sendiri. */
+  function momenKabar(p){
+    return '<li class="fd-i">' +
+      '<span class="fd-node">' + avatar(p.penulis, 0) + '</span>' +
+      '<div class="fd-isi-w">' +
+        '<p class="fd-meta"><b>' + esc(p.penulis.n) + '</b><span class="fd-jab">' + esc(p.penulis.j) + '</span>' +
+          '<span class="fd-waktu">' + kapan(p.waktu) + '</span>' +
+          (p.sematkan ? '<span class="fd-pin">' + IK.pin + 'Disematkan</span>' : '') + '</p>' +
+        '<div class="fd-bubble' + (p.sematkan ? ' pin' : '') + '"><p class="fd-isi">' + esc(p.isi) + '</p>' +
+          (p.tautan ? '<button type="button" class="fd-tautan" data-feed-tautan>' + IK.tautan + '<span>' + esc(p.tautan.replace(/^https:\/\//, '')) + '</span></button>' : '') +
+        '</div></div></li>';
   }
-  function kartuSambut(p){
+  function momenSambut(p){
     const orang = { n: p.anggota, f: p.f };
     const sub = [p.kerja, p.kota].filter(function(v){ return v && v !== '—'; }).map(esc).join(' · ');
     const klik = p.aku ? '' : ' data-feed-orang="' + esc(p.anggota) + '" role="button" tabindex="0"';
-    return '<article class="fd-post fd-sambut">' +
-      '<p class="fd-label">' + IK.sambut + 'Anggota baru<span class="fd-waktu">· ' + kapan(p.waktu) + '</span></p>' +
-      '<div class="fd-sambut-isi"><span class="fd-orang"' + klik + '>' + avatar(orang, 1) + '</span>' +
-        '<div class="t"><b' + klik + ' class="fd-orang">Selamat datang, ' + (p.aku ? 'kamu' : esc(panggil(p))) + '!</b>' +
-        (sub ? '<small>' + sub + '</small>' : '') + '</div>' +
-        (p.aku ? '' : tombolKenal(p.anggota)) +
-      '</div></article>';
+    return '<li class="fd-i sambut">' +
+      '<span class="fd-node ic">' + IK.sambut + '</span>' +
+      '<div class="fd-isi-w">' +
+        '<p class="fd-meta"><b>' + (p.aku ? 'Kamu' : esc(panggil(p))) + '</b> bergabung ke komunitas<span class="fd-waktu">' + kapan(p.waktu) + '</span></p>' +
+        '<div class="fd-bubble sambut"><span class="fd-orang"' + klik + '>' + avatar(orang, 1) + '</span>' +
+          '<div class="t"><b' + klik + '>Selamat datang, ' + (p.aku ? 'kamu' : esc(panggil(p))) + '!</b>' +
+          (sub ? '<small>' + sub + '</small>' : '') + '</div>' +
+          (p.aku ? '' : tombolKenal(p.anggota)) +
+        '</div></div></li>';
   }
-  function kartuRombongan(g){
+  function momenRombongan(g){
     const nama = g.map(function(p){ return p.aku ? 'kamu' : esc(panggil(p)); });
     const daftar = nama.length > 1 ? nama.slice(0, -1).join(', ') + ', dan ' + nama[nama.length - 1] : nama[0];
-    return '<article class="fd-post fd-sambut">' +
-      '<p class="fd-label">' + IK.sambut + 'Anggota baru<span class="fd-waktu">· ' + kapan(g[0].waktu) + '</span></p>' +
-      '<div class="fd-sambut-isi"><span class="fd-tumpuk">' + g.slice(0, 4).map(function(p, i){ return avatar({ n: p.anggota, f: p.f }, i); }).join('') + '</span>' +
-        '<div class="t"><b>' + g.length + ' anggota baru bergabung</b><small>Selamat datang, ' + daftar + '!</small></div>' +
-        '<button type="button" class="btn outline xs" data-feed-daftar>Lihat &amp; ajak kenalan</button>' +
-      '</div></article>';
+    return '<li class="fd-i sambut">' +
+      '<span class="fd-node ic">' + IK.sambut + '</span>' +
+      '<div class="fd-isi-w">' +
+        '<p class="fd-meta"><b>' + g.length + ' anggota baru</b> bergabung<span class="fd-waktu">' + kapan(g[0].waktu) + '</span></p>' +
+        '<div class="fd-bubble sambut"><span class="fd-tumpuk">' + g.slice(0, 4).map(function(p, i){ return avatar({ n: p.anggota, f: p.f }, i); }).join('') + '</span>' +
+          '<div class="t"><b>Selamat datang!</b><small>' + daftar + '</small></div>' +
+          '<button type="button" class="btn outline xs fd-kenal" data-feed-daftar>Lihat &amp; ajak kenalan</button>' +
+        '</div></div></li>';
   }
 
   /* disematkan di atas, sisanya terbaru dulu; sambutan di hari yang sama digabung */
@@ -162,12 +170,18 @@
     return unit;
   }
   function gambarUnit(u){
-    if(u.length > 1) return kartuRombongan(u);
-    return u[0].jenis === 'broadcast' ? kartuKabar(u[0]) : kartuSambut(u[0]);
+    if(u.length > 1) return momenRombongan(u);
+    return u[0].jenis === 'broadcast' ? momenKabar(u[0]) : momenSambut(u[0]);
   }
 
-  const KEPALA = '<h2 class="kom-h">Kabar komunitas</h2>' +
-    '<p class="kom-sub">Info dari pengurus dan sambutan untuk anggota yang baru bergabung.</p>';
+  /* kotak khusus: kepala seperti panel Daftar Anggota, isi bergulir sendiri */
+  function kotak(jumlah, isi){
+    return '<div class="panel fd-box">' +
+      '<div class="panel-bar"><span class="fd-box-ic">' + IK.toa + '</span><span class="t">Kabar komunitas</span>' +
+        '<span class="c">' + jumlah + '</span></div>' +
+      '<div class="fd-gulir">' + isi + '</div>' +
+      '<div class="panel-foot">' + IK.gembok + 'Kabar ini cuma kelihatan sama sesama anggota</div></div>';
+  }
 
   function gambarFeed(){
     const k = window.KolavoKomKini && window.KolavoKomKini();
@@ -185,18 +199,19 @@
     seed(k.kelas, k.agg);
     wadah.hidden = false;
     if(!k.anggota){
-      wadah.innerHTML = KEPALA + '<div class="fd-kunci" data-kunci>' + IK.gembok +
-        '<div><b>Kebuka setelah kamu jadi anggota</b><p>Pengurus membagikan info dan menyambut anggota baru di sini.</p></div></div>';
+      wadah.innerHTML = kotak('Terkunci', '<div class="fd-kunci" data-kunci>' + IK.gembok +
+        '<div><b>Kebuka setelah kamu jadi anggota</b><p>Pengurus membagikan info dan menyambut anggota baru di sini.</p></div></div>');
       return;
     }
     const unit = susun(App().feed[k.kelas] || []);
     if(!unit.length){
-      wadah.innerHTML = KEPALA + '<p class="fd-kosong">Belum ada kabar. Info dari pengurus dan sambutan anggota baru akan muncul di sini.</p>';
+      wadah.innerHTML = kotak('0 kabar', '<p class="fd-kosong">Belum ada kabar. Info dari pengurus dan sambutan anggota baru akan muncul di sini.</p>');
       return;
     }
+    const n = (App().feed[k.kelas] || []).length;
     const semua = terbuka[k.kelas] || unit.length <= BATAS;
-    wadah.innerHTML = KEPALA + '<div class="fd-list">' + (semua ? unit : unit.slice(0, BATAS)).map(gambarUnit).join('') + '</div>' +
-      (semua ? '' : '<button type="button" class="btn outline sm fd-lagi" data-feed-lagi>Lihat kabar lainnya (' + (unit.length - BATAS) + ')</button>');
+    wadah.innerHTML = kotak(n + ' kabar', '<ol class="fd-tl">' + (semua ? unit : unit.slice(0, BATAS)).map(gambarUnit).join('') + '</ol>' +
+      (semua ? '' : '<button type="button" class="fd-lagi" data-feed-lagi>Lihat kabar sebelumnya (' + (unit.length - BATAS) + ')</button>'));
   }
   window.KolavoGambarFeed = gambarFeed;
 
