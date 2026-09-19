@@ -964,7 +964,7 @@ body.lgn-open{overflow:hidden}
 .pf-h{margin:34px 0 16px;font-size:17px;font-weight:600;letter-spacing:-.01em}
 .pf-list{display:grid;gap:12px}
 @media(min-width:760px){.pf-list{grid-template-columns:1fr 1fr}}
-.pf-item{display:flex;align-items:center;gap:13px;padding:16px;border-radius:14px;
+.pf-item{display:flex;flex-wrap:wrap;align-items:center;gap:13px;padding:16px;border-radius:14px;
   background:var(--card);border:1px solid var(--line);box-shadow:var(--sh-sm)}
 .pf-item .logo-sq{width:46px;height:46px;border-radius:13px;border:none;flex:none}
 .pf-item .t{min-width:0;flex:1}
@@ -974,6 +974,24 @@ body.lgn-open{overflow:hidden}
   padding:5px 11px;border-radius:100px}
 .status.tunggu{background:var(--orange-wash);color:var(--orange-ink)}
 .status.anggota{background:var(--green-wash);color:var(--green)}
+.status.arsip{background:var(--bg-alt);color:var(--ink-3)}
+.pf-open{display:flex;align-items:center;gap:13px;flex:1 1 auto;min-width:0;cursor:pointer}
+.pf-open:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:12px}
+.pf-item-aksi{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-left:auto}
+.pf-aksi-btn{display:flex;gap:6px;flex-wrap:wrap}
+.pf-mini{font-family:inherit;font-size:12px;font-weight:600;height:30px;padding:0 12px;border-radius:100px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);cursor:pointer;transition:background .15s ease,color .15s ease}
+.pf-mini:hover{background:var(--bg-alt);color:var(--ink)}
+.pf-mini.danger{color:var(--red);border-color:var(--red-line)}
+.pf-mini.danger:hover{background:var(--red-wash)}
+.pf-item--arsip{opacity:.72}
+.pf-konf-t{font-size:12px;font-weight:600;color:var(--red)}
+.pf-menu{display:flex;gap:6px;flex-wrap:wrap}
+.pf-ic{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink-2);cursor:pointer;transition:background .15s ease,color .15s ease,border-color .15s ease}
+.pf-ic:hover{background:var(--bg-alt);color:var(--ink)}
+.pf-ic:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.pf-ic svg{width:17px;height:17px}
+.pf-ic.danger{color:var(--red);border-color:var(--red-line)}
+.pf-ic.danger:hover{background:var(--red-wash);color:var(--red)}
 
 /* ============================================================
    Halaman komunitas.
@@ -1176,18 +1194,18 @@ body.lgn-open{overflow:hidden}
 
 /* ---------- bar founder di halaman komunitas ---------- */
 .kom-founder{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between;
-  margin-top:18px;padding:16px 18px;border-radius:14px;border:1px solid var(--line);background:var(--card)}
+  margin-top:14px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card)}
 .kom-founder.ada{border-color:var(--blue);background:var(--blue-wash)}
 .kom-founder[hidden]{display:none}
 .kom-founder-t{display:flex;align-items:center;gap:13px;min-width:0}
-.kom-founder-badge{flex:none;min-width:30px;height:30px;padding:0 9px;border-radius:100px;background:var(--blue);
+.kom-founder-badge{flex:none;min-width:24px;height:24px;padding:0 8px;border-radius:100px;background:var(--blue);
   color:var(--btn-ink);font-size:14px;font-weight:700;display:inline-grid;place-items:center}
 .kom-founder-badge svg{width:16px;height:16px}
 .kom-founder-ic{flex:none;width:34px;height:34px;border-radius:100px;background:var(--green-wash);color:var(--green);
   display:grid;place-items:center}
 .kom-founder-ic svg{width:18px;height:18px}
-.kom-founder-t strong{font-size:14.5px;font-weight:600;line-height:1.3;display:block}
-.kom-founder-t p{font-size:12.5px;color:var(--ink-2);line-height:1.4;margin-top:2px}
+.kom-founder-t strong{font-size:13px;font-weight:600;line-height:1.3;display:block}
+.kom-founder-t p{font-size:11.5px;color:var(--ink-2);line-height:1.4;margin-top:2px}
 .kom-founder.ada .kom-founder-t p{color:var(--blue-ink)}
 .kom-founder-aksi{flex:none;display:flex;gap:8px}
 
@@ -4476,7 +4494,7 @@ function hitung(){}
         '<div class="kom-founder-t"><span class="kom-founder-badge">' + pend + '</span>' +
           '<div><strong>' + pend + ' orang menunggu persetujuanmu</strong>' +
           '<p>Tinjau dan setujui di dashboard pengurus.</p></div></div>' +
-        '<div class="kom-founder-aksi"><button type="button" class="btn sm" data-dashboard="minta">Tinjau permintaan</button></div>';
+        '<div class="kom-founder-aksi"><button type="button" class="btn xs" data-dashboard="minta">Tinjau permintaan</button></div>';
     } else {
       fb.innerHTML =
         '<div class="kom-founder-t"><span class="kom-founder-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>' +
@@ -5127,7 +5145,7 @@ function hitung(){}
 
     const nama = el('bkNama').value.trim();
     const slug = el('bkSlug').value.trim() || keSlug(nama);
-    dibuat = {
+    const data = {
       nama: nama,
       slug: slug,
       bentuk: pilihBentuk(),
@@ -5148,6 +5166,18 @@ function hitung(){}
                          tipe: t.tipe, wajib: t.wajib };
               }))
     };
+    if(modeSunting && dibuat){
+      Object.assign(dibuat, data);
+      if(window.KolavoApp) window.KolavoApp.dibuat = dibuat;
+      modeSunting = false;
+      el('bkKirim').textContent = 'Buat halaman komunitas';
+      const hh = scr.querySelector('.ph-h1'); if(hh) hh.textContent = 'Bikin basecamp komunitasmu.';
+      if(window.KolavoIsiProfil) window.KolavoIsiProfil();
+      if(window.KolavoToast) window.KolavoToast('Pengaturan komunitas tersimpan.');
+      if(window.KolavoKe) window.KolavoKe('scrProfil');
+      return;
+    }
+    dibuat = data;
     if(window.KolavoApp) window.KolavoApp.dibuat = dibuat;
 
     el('bkDoneH').textContent = 'Halaman ' + nama + ' sudah jadi.';
@@ -5194,17 +5224,127 @@ function hitung(){}
   });
 
   /* dipakai layar profil: komunitas yang dia buat sendiri ikut di daftar
-     "Komunitas saya", dengan peran pengurus */
+     "Komunitas saya", dengan peran pengurus + kontrol arsip/hapus */
+  let konfHapus = false;
+  let menuBuka = false;
+  let modeSunting = false;
+  const IC_KEBAB = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg>';
+  const IC_ARSIP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></svg>';
+  const IC_PULIH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M12 17v-5"/><path d="m9.5 14 2.5-2.5 2.5 2.5"/></svg>';
+  const IC_HAPUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M6 6v14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6"/><path d="M10 11v6M14 11v6"/></svg>';
+  const IC_TUTUP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+  const rerenderP = function(){ if(window.KolavoIsiProfil) window.KolavoIsiProfil(); };
+  const toastP = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
+
+  window.KolavoArsipkanDibuat = function(flag){
+    if(!dibuat) return;
+    dibuat.arsip = (flag === undefined) ? !dibuat.arsip : !!flag;
+    if(window.KolavoApp) window.KolavoApp.dibuat = dibuat;
+  };
+  window.KolavoHapusDibuat = function(){
+    dibuat = null; konfHapus = false; menuBuka = false;
+    if(window.KolavoApp) window.KolavoApp.dibuat = null;
+  };
+  const IC_SETTING = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+  /* buka layar Buat dalam mode sunting: isi ulang nilai, Simpan meng-update yang sama */
+  function suntingDibuat(){
+    if(!dibuat) return;
+    modeSunting = true;
+    el('bkNama').value = dibuat.nama || '';
+    el('bkSlug').value = dibuat.slug || ''; slugKetik = true;
+    el('bkAjak').value = dibuat.ajakan || '';
+    const rb = scr.querySelector('input[name="bkBentuk"][value="' + (dibuat.bentuk || '') + '"]');
+    if(rb) rb.checked = true;
+    const kotaSel = el('bkKota');
+    if(dibuat.kota){
+      if(![].some.call(kotaSel.options, function(o){ return o.value === dibuat.kota; })){
+        const o = document.createElement('option'); o.value = dibuat.kota; o.textContent = dibuat.kota; kotaSel.appendChild(o);
+      }
+      kotaSel.disabled = false; kotaSel.value = dibuat.kota;
+    }
+    warna = dibuat.warna || warna;
+    const wr = scr.querySelector('input[name="bkWarna"][value="' + warna + '"]');
+    if(wr) wr.checked = true;
+    pakaiWarna();
+    logo = dibuat.logo || '';
+    nomorMode = dibuat.nomorMode || 'auto';
+    el('bkKode').value = dibuat.kode || ''; kodeKetik = true;
+    tanya = (dibuat.tanya || []).filter(function(t){ return t.id !== 'nickname'; }).map(function(t){
+      return { id: t.id, judul: t.judul || '', tanya: t.tanya || '', tipe: t.tipe || 'teks', wajib: !!t.wajib, bawaan: false };
+    });
+    if(!tanya.length) tanya = [{ id: 'q' + (++urut), judul: '', tanya: '', tipe: 'tahun', wajib: false, bawaan: true }];
+    const h1 = scr.querySelector('.ph-h1'); if(h1) h1.textContent = 'Pengaturan komunitas';
+    el('bkKirim').textContent = 'Simpan perubahan';
+    el('buatForm').hidden = false; el('buatDone').hidden = true;
+    gambarLogo(); gambarNomor(); gambarTanya(); progres();
+    if(window.KolavoKe) window.KolavoKe('scrBuat');
+    window.scrollTo(0, 0);
+  }
+  window.KolavoSuntingDibuat = suntingDibuat;
   window.KolavoDibuatItem = function(){
     if(!dibuat) return '';
     const gaya = dibuat.logo ? ' style="background-image:url(' + dibuat.logo + ')"' : '';
-    return '<div class="pf-item" data-komunitas-dibuat role="button" tabindex="0" title="Buka halaman komunitas" style="cursor:pointer">' +
-           '<span class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' +
-           (dibuat.logo ? '' : dibuat.inisial) + '</span>' +
-           '<div class="t"><div class="n">' + lolos(dibuat.nama) + '</div>' +
-           '<div class="s">' + lolos([dibuat.bentuk, dibuat.kota].filter(Boolean).join(' · ')) + '</div></div>' +
-           '<span class="status pengurus">Pengurus</span></div>';
+    const arsip = !!dibuat.arsip;
+    const status = '<span class="status ' + (arsip ? 'arsip' : 'pengurus') + '">' + (arsip ? 'Diarsipkan' : 'Pengurus') + '</span>';
+    const open = '<div class="pf-open" data-komunitas-dibuat role="button" tabindex="0" title="Buka halaman komunitas">' +
+        '<span class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' + (dibuat.logo ? '' : dibuat.inisial) + '</span>' +
+        '<div class="t"><div class="n">' + lolos(dibuat.nama) + '</div>' +
+        '<div class="s">' + lolos([dibuat.bentuk, dibuat.kota].filter(Boolean).join(' · ')) + '</div></div>' +
+      '</div>';
+    let aksi;
+    if(konfHapus){
+      aksi = '<div class="pf-item-aksi"><span class="pf-konf-t">Hapus permanen?</span>' +
+          '<div class="pf-aksi-btn"><button type="button" class="pf-mini danger" data-dibuat-hapus-ok>Ya, hapus</button>' +
+          '<button type="button" class="pf-mini" data-dibuat-hapus-batal>Batal</button></div></div>';
+    } else if(menuBuka){
+      aksi = '<div class="pf-item-aksi">' + status + '<div class="pf-menu">' +
+            '<button type="button" class="pf-ic" data-dibuat-setting aria-label="Pengaturan warna & pertanyaan" title="Pengaturan">' + IC_SETTING + '</button>' +
+            '<button type="button" class="pf-ic" data-dibuat-arsip aria-label="' + (arsip ? 'Pulihkan' : 'Arsipkan') + '" title="' + (arsip ? 'Pulihkan' : 'Arsipkan') + '">' + (arsip ? IC_PULIH : IC_ARSIP) + '</button>' +
+            '<button type="button" class="pf-ic danger" data-dibuat-hapus aria-label="Hapus" title="Hapus">' + IC_HAPUS + '</button>' +
+            '<button type="button" class="pf-ic" data-dibuat-menu-tutup aria-label="Tutup" title="Tutup">' + IC_TUTUP + '</button>' +
+          '</div></div>';
+    } else {
+      aksi = '<div class="pf-item-aksi">' + status +
+          '<button type="button" class="pf-ic" data-dibuat-menu aria-label="Kelola komunitas" title="Kelola komunitas">' + IC_KEBAB + '</button></div>';
+    }
+    return '<div class="pf-item' + (arsip ? ' pf-item--arsip' : '') + '">' + open + aksi + '</div>';
   };
+
+  /* aksi arsip/hapus di kartu "Komunitas saya" — elemennya dirender router,
+     jadi listenernya di document. Kebab membuka menu ikon; hapus dua langkah. */
+  document.addEventListener('click', function(e){
+    if(e.target.closest('[data-ke="scrBuat"]')){ modeSunting = false; const h1r = scr.querySelector('.ph-h1'); if(h1r) h1r.textContent = 'Bikin basecamp komunitasmu.'; el('bkKirim').textContent = 'Buat halaman komunitas'; }
+    if(e.target.closest('[data-dibuat-setting]')){ e.preventDefault(); menuBuka = false; rerenderP(); suntingDibuat(); return; }
+    if(e.target.closest('[data-dibuat-menu]')){
+      e.preventDefault(); menuBuka = !menuBuka; konfHapus = false; rerenderP(); return;
+    }
+    if(e.target.closest('[data-dibuat-menu-tutup]')){
+      e.preventDefault(); menuBuka = false; rerenderP(); return;
+    }
+    if(e.target.closest('[data-dibuat-hapus-ok]')){
+      e.preventDefault();
+      const nm = dibuat ? dibuat.nama : 'Komunitas';
+      window.KolavoHapusDibuat();
+      rerenderP();
+      toastP('“' + nm + '” dihapus permanen.');
+      return;
+    }
+    if(e.target.closest('[data-dibuat-hapus-batal]')){
+      e.preventDefault(); konfHapus = false; rerenderP(); return;
+    }
+    if(e.target.closest('[data-dibuat-hapus]')){
+      e.preventDefault(); konfHapus = true; menuBuka = false; rerenderP(); return;
+    }
+    if(e.target.closest('[data-dibuat-arsip]')){
+      e.preventDefault(); if(!dibuat) return;
+      window.KolavoArsipkanDibuat(); menuBuka = false; konfHapus = false;
+      rerenderP();
+      toastP(dibuat.arsip ? 'Komunitas diarsipkan — tidak tampil di direktori publik. Bisa dipulihkan kapan saja.' : 'Komunitas dipulihkan.');
+      return;
+    }
+    /* klik di luar area aksi menutup menu yang sedang terbuka */
+    if(menuBuka && !e.target.closest('.pf-item-aksi')){ menuBuka = false; rerenderP(); }
+  });
 
   gambarTanya();
   gambarLogo();
