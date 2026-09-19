@@ -60,8 +60,19 @@
     x.baca = true; tutup(); gambar();
     if(x.anggota && window.KolavoBukaAnggota) window.KolavoBukaAnggota(x.anggota);
     else if(x.kelas){
+      /* buka DAN pindah ke halaman komunitasnya (KolavoLihatKomunitas, bukan
+         KolavoBukaKomunitas yang cuma menggambar). "Pendaftaranmu diterima" di
+         komunitas Advance langsung masuk ke onboarding — juga kalau sudah pernah
+         dilihat, karena notifikasinya memang mengajak ke sana. */
       const logo = document.querySelector('#direktori .ccard .logo-sq.' + x.kelas);
-      if(logo && window.KolavoBukaKomunitas) window.KolavoBukaKomunitas(logo.closest('.ccard'));
+      if(logo && window.KolavoLihatKomunitas){
+        window.KolavoLihatKomunitas(logo.closest('.ccard'));
+        if(x.jenis === 'diterima' && window.KolavoAdaOnboarding && window.KolavoAdaOnboarding()){
+          setTimeout(function(){
+            if(!window.KolavoOnboardingTerbuka() && window.KolavoBukaOnboarding) window.KolavoBukaOnboarding();
+          }, 450);
+        }
+      }
     }
   });
   gambar();

@@ -507,6 +507,16 @@
       '<button type="button" class="btn sm" id="agKenalMinta">Ajak kenalan</button>';
   }
 
+  /* dipakai langkah Kenalan di onboarding: ajak tanpa membuka profil dulu */
+  window.KolavoAjakKenalan = function(nama){
+    const App = window.KolavoApp || {};
+    App.kenalan = App.kenalan || {};
+    if(App.kenalan[nama]) return;
+    App.kenalan[nama] = 'menunggu';
+    tandaiDemo();
+    if(window.KolavoToast) window.KolavoToast('Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + '.');
+  };
+
   window.KolavoTerimaKenalan = function(){
     const App = window.KolavoApp || {};
     const kn = App.kenalan || {};

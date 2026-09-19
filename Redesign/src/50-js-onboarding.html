@@ -23,29 +23,54 @@
     dok:   svg('<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>'),
     cek:   svg('<path d="m5 13 4 4L19 7"/>')
   };
+  /* [kunci, label, ikon KolavoIkon] */
   const LANGKAH = [
-    ['sambutan', 'Sambutan'], ['kenal', 'Tentang kami'], ['aturan', 'Peraturan'], ['alat', 'Alat & dokumen'], ['kenalan', 'Kenalan']
+    ['sambutan', 'Sambutan', 'tangan'], ['kenal', 'Tentang kami', 'bendera'], ['aturan', 'Peraturan', 'akses'],
+    ['alat', 'Alat & dokumen', 'jawaban'], ['kenalan', 'Kenalan', 'orang']
   ];
+
+  /* Teks contoh onboarding — sengaja panjang supaya jadi inspirasi pengurus saat
+     menulis versinya sendiri. Dipakai komunitas direktori (cfgContoh) dan jadi
+     isi awal editor Onboarding di dashboard (Sekretariat › obAwal). */
+  function teksContoh(nama, desc){
+    return {
+      judul: 'Selamat datang di ' + nama + '!',
+      pesan: 'Senang sekali kamu resmi bergabung! Di ' + nama + ', kami percaya hubungan yang baik dimulai dari saling kenal — bukan sekadar saling simpan nomor di grup.\n\n' +
+        'Lewat perkenalan singkat ini kamu akan tahu cerita di balik komunitas ini, aturan main yang kami jaga bersama, tempat ngobrol sehari-hari, dan siapa saja anggota yang punya kesamaan denganmu. Cuma dua menit, setelah itu kamu bisa langsung ikut nimbrung.',
+      sejarah: (desc ? desc + '\n\n' : '') + nama + ' berawal dari obrolan kecil beberapa orang yang ingin tetap terhubung setelah jalan masing-masing. Dari kumpul-kumpul sederhana, komunitas ini tumbuh lewat kegiatan rutin, saling bantu saat ada yang butuh, dan acara tahunan yang selalu ditunggu.',
+      visi: 'Menjadi rumah yang menyambung silaturahmi lintas angkatan dan daerah, sekaligus membuka peluang — belajar, bekerja, dan berkarya — bagi setiap anggotanya.',
+      misi: 'Mengadakan kegiatan rutin yang bisa diikuti siapa saja, dari diskusi daring sampai kumpul akbar.\nMembantu anggota yang sedang butuh, lewat dana sosial dan jejaring.\nMenghubungkan anggota dengan sesama bidang, supaya kolaborasi tumbuh dari saling kenal.',
+      ringkas: 'Saling menghormati — tanpa SARA, ujaran kebencian, dan politik praktis.\nPakai nama asli dan foto yang jelas supaya sesama anggota mudah mengenalimu.\nPromosi usaha boleh, khusus hari Jumat lewat kanal yang disediakan.\nData dan nomor anggota tidak dibagikan ke luar komunitas tanpa izin.\nBeda pendapat diselesaikan lewat pesan pribadi atau pengurus, bukan di grup besar.',
+      ket: 'Obrolan sehari-hari, info kegiatan, dan kabar duka maupun bahagia ada di grup WhatsApp — perkenalkan dirimu di sana setelah bergabung, ya.\n\nNotulen rapat, foto kegiatan, dan dokumen bersama tersimpan rapi di folder dokumen. Kalau ada yang tidak bisa dibuka, kabari pengurus.'
+    };
+  }
+  window.KolavoObTeksContoh = teksContoh;
 
   /* konfigurasi contoh untuk komunitas di direktori (pengurusnya bukan pengguna demo) */
   function cfgContoh(kom){
-    const p = ((kom.agg && kom.agg.pengurus) || [])[0];
+    const p = ((kom.agg && kom.agg.pengurus) || [])[0], t = teksContoh(kom.nama, kom.desc);
     return {
       aktif: true,
       langkah: {
-        sambutan: { aktif: true, judul: 'Selamat datang di ' + kom.nama + '!',
-          pesan: 'Senang kamu bergabung. Sebelum ketemu di kegiatan, kenalan dulu dengan komunitas ini dan orang-orang di dalamnya — cuma dua menit.',
-          pengirim: p ? p.n + ', ' + p.j : 'Pengurus ' + kom.nama },
-        kenal: { aktif: true, sejarah: kom.desc || '', visi: 'Jadi rumah yang menyambung silaturahmi dan membuka peluang bagi setiap anggota.',
-          misi: 'Mengadakan kegiatan rutin, saling membantu, dan menghubungkan anggota dengan sesama bidang.' },
-        aturan: { aktif: true, ringkas: 'Saling menghormati, tanpa SARA dan politik praktis.\nPromosi dagangan hanya di hari yang ditentukan.\nData anggota tidak dibagikan ke luar komunitas.' },
-        alat: { aktif: true, ket: 'Obrolan sehari-hari dan info kegiatan ada di grup WhatsApp. Dokumen bersama disimpan di folder dokumen.' },
+        sambutan: { aktif: true, judul: t.judul, pesan: t.pesan, pengirim: p ? p.n + ', ' + p.j : 'Pengurus ' + kom.nama },
+        kenal: { aktif: true, sejarah: t.sejarah, visi: t.visi, misi: t.misi },
+        aturan: { aktif: true, ringkas: t.ringkas },
+        alat: { aktif: true, ket: t.ket },
         kenalan: { aktif: true, cocok: { kerja: true, kota: true, kelompok: true } }
       }
     };
   }
 
-  let ctx = null, i = 0, saring = null, fokusAsal = null;
+  /* iLalu: langkah sebelum digambar ulang — penanda progres digambar di posisi
+     lama dulu lalu digeser, supaya garis dan titiknya terlihat berjalan */
+  let ctx = null, i = 0, iLalu = 0, saring = null, fokusAsal = null;
+  function statusKenal(nama){ return ((App().kenalan || {})[nama]) || ''; }
+  function tombolAjak(nama){
+    const st = statusKenal(nama);
+    if(st === 'terhubung') return '<span class="ob-kenal-st ok">' + IK.cek + 'Terhubung</span>';
+    if(st === 'menunggu') return '<span class="ob-kenal-st">' + IK.cek + 'Ajakan terkirim</span>';
+    return '<button type="button" class="btn xs" data-ob-ajak="' + lolos(nama) + '">' + window.KolavoIkon('tambahOrang') + 'Ajak kenalan</button>';
+  }
 
   function langkahAktif(){ return LANGKAH.filter(function(l){ return ctx.cfg.langkah[l[0]] && ctx.cfg.langkah[l[0]].aktif; }); }
   function tombolTautan(k, label, url, ik){
@@ -68,13 +93,13 @@
                      : '<span class="av ' + 'abc'[j % 3] + '" aria-hidden="true">' + lolos(o.n.split(' ').map(function(w){ return w[0]; }).join('').slice(0, 2)) + '</span>';
       return '<div class="ob-orang">' + av + '<div class="t"><b>' + lolos(o.pg || o.n.split(' ')[0]) + '</b><span>' +
         lolos(jabatan || [o.k, o.d].filter(function(x){ return x && x !== '—'; }).join(' · ')) + '</span></div>' +
-        (jabatan ? '' : '<button type="button" class="btn outline xs" data-ob-profil="' + lolos(o.n) + '">Lihat profil</button>') + '</div>';
+        (o.n === ctx.akuNama ? '' : tombolAjak(o.n)) + '</div>';
     };
     if(!kini){
       return '<p class="ob-teks">Belum ada anggota yang sama pekerjaan atau domisilinya denganmu. Mulai dari pengurus — mereka yang paling kenal isi komunitas ini.</p>' +
         '<div class="ob-orang-list">' + ctx.pengurus.map(function(p, j){ return kartu({ n: p.n, f: p.f }, j, p.j); }).join('') + '</div>';
     }
-    return '<p class="ob-teks">Orang-orang yang punya kesamaan denganmu. Buka profilnya dan ajak kenalan.</p>' +
+    return '<p class="ob-teks">Mulai dari orang-orang yang punya kesamaan denganmu. Ajak kenalan — kalau mereka setuju, nomor WhatsApp kalian saling terbuka dan obrolan pertama jadi lebih mudah.</p>' +
       '<div class="ob-chips" role="radiogroup" aria-label="Saring kesamaan">' + ada.map(function(s){
         return '<button type="button" role="radio" class="chip' + (s.id === saring ? ' on' : '') + '" aria-checked="' + (s.id === saring) + '" data-ob-saring="' + s.id + '">' + lolos(s.label) + ' <i>' + s.hasil.length + '</i></button>';
       }).join('') + '</div>' +
@@ -105,22 +130,33 @@
     } else {
       isi = '<h2 class="ob-judul" id="obJudul">Kenalan dengan anggota lain</h2>' + isiKenalan();
     }
-    const akhir = i === aktif.length - 1;
+    const akhir = i === aktif.length - 1, n = aktif.length;
+    const persen = function(k){ return n > 1 ? Math.round(k / (n - 1) * 100) : 100; };
     el('obIsi').innerHTML =
       (ctx.pratinjau ? '<span class="ob-pratinjau">Pratinjau pengurus</span>' : '') +
+      '<div class="ob-step-w" style="--n:' + n + '"><div class="ob-step-rel" aria-hidden="true"><i class="ob-step-isi" style="width:' + persen(iLalu) + '%"></i></div>' +
       '<ol class="ob-step" aria-label="Langkah perkenalan">' + aktif.map(function(x, j){
-        return '<li class="' + (j < i ? 'lewat' : j === i ? 'kini' : '') + '"' + (j === i ? ' aria-current="step"' : '') + '><span>' + (j < i ? IK.cek : j + 1) + '</span><em>' + x[1] + '</em></li>';
-      }).join('') + '</ol>' +
-      '<p class="ob-kecil">Langkah ' + (i + 1) + ' dari ' + aktif.length + '</p>' +
+        return '<li class="' + (j < i ? 'lewat' : j === i ? 'kini' : '') + '"' + (j === i ? ' aria-current="step"' : '') + '><span>' + window.KolavoIkon(x[2]) + '</span><em>' + x[1] + '</em></li>';
+      }).join('') + '</ol></div>' +
+      '<p class="ob-kecil ob-hitung">Langkah ' + (i + 1) + ' dari ' + n + '</p>' +
       '<div class="ob-badan">' + isi + '</div>' +
       '<div class="ob-kaki"><button type="button" class="ob-lewati" data-ob-lewati>Lewati</button>' +
         '<span class="ob-sp"></span>' +
+        '<span class="ob-titik" aria-hidden="true">' + aktif.map(function(x, j){ return '<i class="' + (j === iLalu ? 'on' : j < iLalu ? 'lewat' : '') + '"></i>'; }).join('') + '</span>' +
+        '<span class="ob-sp"></span>' +
         (i ? '<button type="button" class="btn outline sm" data-ob-kembali>Kembali</button>' : '') +
         '<button type="button" class="btn sm" data-ob-lanjut>' + (akhir ? 'Selesai' : 'Lanjut') + '</button></div>';
+    /* geser penanda dari posisi lama ke langkah sekarang (setTimeout, bukan rAF:
+       tetap jalan walau tab tersembunyi) */
+    const dari = iLalu; iLalu = i;
+    if(dari !== i) setTimeout(function(){
+      const f = el('obIsi').querySelector('.ob-step-isi'); if(f) f.style.width = persen(i) + '%';
+      el('obIsi').querySelectorAll('.ob-titik i').forEach(function(t, j){ t.className = j === i ? 'on' : j < i ? 'lewat' : ''; });
+    }, 30);
   }
 
   function buka(c){
-    ctx = c; i = 0; saring = null;
+    ctx = c; i = 0; iLalu = 0; saring = null;
     if(!langkahAktif().length) return false;
     fokusAsal = document.activeElement;
     gambar();
@@ -187,6 +223,7 @@
     const c = ctxKini(!!o.pratinjau);
     if(!c || (!o.pratinjau && !c.cfg.aktif) || !buka(c)) toast('Belum ada perkenalan yang bisa ditampilkan.');
   };
+  window.KolavoOnboardingTerbuka = function(){ return !!ctx; };
   window.KolavoAdaOnboarding = function(){
     const c = ctxKini(false);
     return !!(c && c.cfg.aktif && LANGKAH.some(function(l){ return c.cfg.langkah[l[0]] && c.cfg.langkah[l[0]].aktif; }));
@@ -208,12 +245,14 @@
       toast((t.dataset.obTautan === 'peraturan' ? 'Di produk, berkas peraturan diunduh dari ' : 'Di produk, ini membuka ') + url.replace(/^https?:\/\//, ''));
       return;
     }
-    const p = e.target.closest('[data-ob-profil]');
-    if(p){
-      const nama = p.dataset.obProfil, prat = ctx.pratinjau;
-      tutup(false);
-      if(!prat && window.KolavoBukaAnggota) window.KolavoBukaAnggota(nama);
-      else toast('Di pratinjau, profil anggota tidak dibuka.');
+    /* ajak kenalan langsung dari modal — tidak perlu membuka profil dulu */
+    const a = e.target.closest('[data-ob-ajak]');
+    if(a){
+      const nama = a.dataset.obAjak;
+      if(ctx.pratinjau){ toast('Di pratinjau, ajakan kenalan tidak dikirim.'); return; }
+      if(window.KolavoAjakKenalan) window.KolavoAjakKenalan(nama);
+      gambar();
+      const b = modal.querySelector('[data-ob-lanjut]'); if(b) b.focus();
     }
   });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && ctx) tutup(false); });

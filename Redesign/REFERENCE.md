@@ -871,6 +871,28 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     ulang setelah menyimpan data pendaftaran tidak lagi menghilangkan tombol bagikan.
     Pratinjau pengurus tidak menampilkan baris ikon. `#komEdit` tetap id yang sama.
 
+- **Revisi lanjutan R5 — onboarding lebih lega, stepper berikon, alur notifikasi** (2026-09-19):
+  - Modal onboarding 760px (padding 34/40), badan min. 280px, judul 26px, teks 15.5px.
+  - Stepper: tiap langkah punya ikon `KolavoIkon` (tangan, bendera, akses, jawaban,
+    orang) dalam lingkaran 44px, label di bawahnya; garis progres `.ob-step-isi` di
+    belakang ikon terisi sampai langkah kini. Di kaki modal ada titik `.ob-titik`
+    (titik aktif memanjang jadi pil). Keduanya digambar di posisi langkah lama
+    (`iLalu`) lalu digeser dengan `setTimeout` 30 ms — bukan rAF, supaya tetap jalan
+    di tab tersembunyi — sehingga terlihat berjalan saat Lanjut/Kembali.
+  - Teks contoh panjang (sambutan 2 paragraf, sejarah, visi, 3 misi, 5 aturan,
+    keterangan alat 2 paragraf) satu sumber: `window.KolavoObTeksContoh(nama, desc)`
+    di modul onboarding; dipakai komunitas direktori dan isi awal editor dashboard.
+    Batas editor dinaikkan (pengantar 800, sejarah 800, visi 400, misi 800, alat 600),
+    textarea 5 baris.
+  - Langkah Kenalan: "Lihat profil" diganti **Ajak kenalan** langsung di kartu
+    (`window.KolavoAjakKenalan(nama)` di modul komunitas); modal tetap terbuka dan
+    kartunya berubah jadi "Ajakan terkirim" / "Terhubung". Kartu pengurus (saat tak
+    ada kecocokan) juga bisa diajak. Di pratinjau pengurus tidak mengirim ajakan.
+  - Notifikasi: klik kini benar-benar pindah ke halaman komunitas
+    (`KolavoLihatKomunitas`, sebelumnya `KolavoBukaKomunitas` hanya menggambar).
+    "Pendaftaranmu diterima" di komunitas Advance langsung membuka onboarding, juga
+    kalau sudah pernah dilihat (`KolavoOnboardingTerbuka()` mencegah dobel buka).
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

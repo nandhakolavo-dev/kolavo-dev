@@ -477,20 +477,16 @@
     { k: 'alat',     h: 'Dokumen & alat komunikasi', sub: 'Tempat ngobrol dan dokumen bersama, dari Info komunitas.' },
     { k: 'kenalan',  h: 'Kenalan dengan anggota lain', sub: 'Anggota yang mirip dengannya; kalau belum ada, pengurus.' }
   ];
+  /* isi awal = teks contoh panjang dari modul onboarding, jadi inspirasi pengurus */
   function obAwal(){
-    const nm = D.kom.nama;
+    const t = window.KolavoObTeksContoh(D.kom.nama, '');
     return {
       aktif: true,
       langkah: {
-        sambutan: { aktif: true, judul: 'Selamat datang di ' + nm + '!',
-          pesan: 'Senang kamu bergabung. Di sini kita saling kenal dulu sebelum ketemu di kegiatan. Luangkan dua menit untuk mengenal komunitas ini, ya.',
-          pengirim: D.aku + ', ' + D.jabatanAku() },
-        kenal: { aktif: true,
-          sejarah: nm + ' berawal dari kumpul-kumpul kecil beberapa alumni, lalu tumbuh jadi wadah resmi untuk saling membantu.',
-          visi: 'Jadi rumah yang menyambung silaturahmi dan membuka peluang bagi setiap anggota.',
-          misi: 'Mengadakan kegiatan rutin, membantu anggota yang butuh, dan menghubungkan anggota dengan sesama bidang.' },
-        aturan: { aktif: true, ringkas: 'Saling menghormati, tanpa SARA dan politik praktis.\nPromosi dagangan hanya di hari yang ditentukan.\nData anggota tidak dibagikan ke luar komunitas.' },
-        alat: { aktif: true, ket: 'Obrolan sehari-hari dan info kegiatan ada di grup WhatsApp. Notulen dan dokumen bersama disimpan di folder dokumen.' },
+        sambutan: { aktif: true, judul: t.judul, pesan: t.pesan, pengirim: D.aku + ', ' + D.jabatanAku() },
+        kenal: { aktif: true, sejarah: t.sejarah, visi: t.visi, misi: t.misi },
+        aturan: { aktif: true, ringkas: t.ringkas },
+        alat: { aktif: true, ket: t.ket },
         kenalan: { aktif: true, cocok: { kerja: true, kota: true, kelompok: true } }
       }
     };
@@ -503,7 +499,7 @@
     const v = ob().langkah[k][f] || '', id = 'sekOb-' + k + '-' + f;
     return '<div class="sek-f"><label class="sek-lbl" for="' + id + '">' + label + '</label>' +
       (jenis === 'ta'
-        ? '<textarea class="ta" id="' + id + '" data-sek-ob="' + k + '.' + f + '" rows="3" maxlength="' + (maks || 400) + '">' + lolos(v) + '</textarea>'
+        ? '<textarea class="ta" id="' + id + '" data-sek-ob="' + k + '.' + f + '" rows="5" maxlength="' + (maks || 400) + '">' + lolos(v) + '</textarea>'
         : '<input class="inp" id="' + id + '" data-sek-ob="' + k + '.' + f + '" maxlength="' + (maks || 80) + '" value="' + lolos(v) + '">') +
       '</div>';
   }
@@ -518,10 +514,10 @@
     const o = ob(), info = Object.assign({}, INFO_KOSONG, D.kom.info || {});
     const nAktif = OB_LANGKAH.filter(function(l){ return o.langkah[l.k].aktif; }).length;
     const isi = {
-      sambutan: function(){ return obField('sambutan', 'judul', 'Judul sapaan', 'inp', 80) + obField('sambutan', 'pesan', 'Kata pengantar', 'ta', 400) + obField('sambutan', 'pengirim', 'Ditandatangani', 'inp', 80); },
-      kenal: function(){ return obField('kenal', 'sejarah', 'Sejarah singkat', 'ta', 500) + obField('kenal', 'visi', 'Visi', 'ta', 300) + obField('kenal', 'misi', 'Misi / tujuan', 'ta', 500); },
+      sambutan: function(){ return obField('sambutan', 'judul', 'Judul sapaan', 'inp', 80) + obField('sambutan', 'pesan', 'Kata pengantar', 'ta', 800) + obField('sambutan', 'pengirim', 'Ditandatangani', 'inp', 80); },
+      kenal: function(){ return obField('kenal', 'sejarah', 'Sejarah singkat', 'ta', 800) + obField('kenal', 'visi', 'Visi', 'ta', 400) + obField('kenal', 'misi', 'Misi / tujuan (satu baris satu poin)', 'ta', 800); },
       aturan: function(){ return obField('aturan', 'ringkas', 'Ringkasan aturan (satu baris satu poin)', 'ta', 600) + obTautan('Berkas peraturan', info.peraturan); },
-      alat: function(){ return obField('alat', 'ket', 'Keterangan', 'ta', 400) + obTautan('Grup komunikasi', info.wa) + obTautan('Dokumen komunitas', info.dokumen); },
+      alat: function(){ return obField('alat', 'ket', 'Keterangan', 'ta', 600) + obTautan('Grup komunikasi', info.wa) + obTautan('Dokumen komunitas', info.dokumen); },
       kenalan: function(){
         const c = o.langkah.kenalan.cocok;
         return '<div class="sek-f"><span class="sek-lbl">Cocokkan berdasarkan</span><div class="sek-cek-grup">' +

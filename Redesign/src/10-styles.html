@@ -1201,24 +1201,40 @@ body.lgn-open{overflow:hidden}
 .notif-kosong{padding:14px 10px 16px;font-size:13px;color:var(--ink-2);line-height:1.5}
 
 /* ---------- modal onboarding anggota baru ---------- */
-.lgn-box.ob-box{max-width:600px;text-align:left;padding:26px 28px 22px}
+.lgn-box.ob-box{max-width:760px;text-align:left;padding:34px 40px 28px}
+@media(max-width:640px){.lgn-box.ob-box{padding:26px 20px 20px}}
 .ob-pratinjau{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--orange-ink);
   background:var(--orange-wash);padding:3px 9px;border-radius:100px;margin-bottom:10px}
-.ob-step{display:flex;flex-wrap:wrap;gap:6px;margin:0 40px 6px 0;padding:0;list-style:none}
-.ob-step li{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3)}
-.ob-step li + li::before{content:"";width:14px;height:1px;background:var(--line)}
-.ob-step span{flex:none;width:22px;height:22px;border-radius:100px;display:grid;place-items:center;font-size:11.5px;font-weight:700;
-  border:1.5px solid var(--line);color:var(--ink-3)}
-.ob-step span svg{width:12px;height:12px}
+/* stepper berikon: garis progres di belakang ikon, terisi sampai langkah kini */
+.ob-step-w{position:relative;margin:4px 36px 0 0}
+.ob-step-rel{position:absolute;top:21px;left:calc(50% / var(--n));right:calc(50% / var(--n));height:3px;border-radius:3px;background:var(--line)}
+.ob-step-isi{display:block;height:100%;border-radius:3px;background:var(--blue);transition:width .4s cubic-bezier(.4,0,.2,1)}
+.ob-step{position:relative;display:grid;grid-template-columns:repeat(var(--n),1fr);margin:0;padding:0;list-style:none}
+.ob-step li{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;font-size:12px;line-height:1.3;color:var(--ink-3)}
+.ob-step span{flex:none;width:44px;height:44px;border-radius:100px;display:grid;place-items:center;background:var(--card);
+  border:1.5px solid var(--line);color:var(--ink-3);transition:background .3s ease,border-color .3s ease,color .3s ease,box-shadow .3s ease}
+.ob-step span svg{width:20px;height:20px}
 .ob-step em{font-style:normal;display:none}
-.ob-step li.kini span{border-color:var(--blue);background:var(--blue);color:var(--btn-ink)}
-.ob-step li.kini em{display:inline;color:var(--ink);font-weight:600}
-.ob-step li.lewat span{border-color:var(--blue);color:var(--blue-ink)}
-@media(min-width:620px){.ob-step em{display:inline}}
+.ob-step li.lewat span{border-color:var(--blue);background:var(--blue-wash);color:var(--blue-ink)}
+.ob-step li.lewat em{color:var(--ink-2)}
+.ob-step li.kini span{border-color:var(--blue);background:var(--blue);color:var(--btn-ink);box-shadow:0 0 0 5px var(--blue-wash)}
+.ob-step li.kini em{display:block;color:var(--ink);font-weight:600}
+@media(min-width:620px){.ob-step em{display:block}}
+.ob-hitung{margin-top:14px}
+/* titik berjalan di kaki modal */
+.ob-titik{display:flex;align-items:center;gap:6px}
+.ob-titik i{display:block;width:8px;height:8px;border-radius:100px;background:var(--line);transition:width .35s cubic-bezier(.4,0,.2,1),background .35s ease}
+.ob-titik i.lewat{background:var(--blue-ink);opacity:.45}
+.ob-titik i.on{width:26px;background:var(--blue)}
+/* status ajakan kenalan di kartu orang */
+.ob-orang .btn.xs svg{width:14px;height:14px}
+.ob-kenal-st{display:inline-flex;align-items:center;gap:5px;flex:none;font-size:12px;font-weight:600;color:var(--ink-2)}
+.ob-kenal-st svg{width:14px;height:14px;color:var(--green)}
+.ob-kenal-st.ok{color:var(--green)}
 .ob-kecil{font-size:12px;color:var(--ink-3);margin-top:4px}
-.ob-badan{margin-top:16px;min-height:170px}
-.ob-judul{font-size:22px;line-height:1.25;margin-bottom:10px}
-.ob-teks{font-size:14.5px;line-height:1.65;color:var(--ink-2);white-space:pre-line}
+.ob-badan{margin-top:18px;min-height:280px}
+.ob-judul{font-size:26px;line-height:1.25;margin-bottom:12px}
+.ob-teks{font-size:15.5px;line-height:1.7;color:var(--ink-2);white-space:pre-line}
 .ob-ttd{margin-top:14px;font-size:13.5px;font-weight:600;color:var(--ink)}
 .ob-bagian + .ob-bagian{margin-top:14px}
 .ob-lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
