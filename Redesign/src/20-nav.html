@@ -13,6 +13,15 @@
       Masuk
     </a>
 
+    <!-- notifikasi pengguna: tampil bersama menu akun (router), isinya digambar 50-js-notifikasi -->
+    <div class="notif" id="notif" hidden>
+      <button type="button" class="notif-btn" id="notifBtn" aria-expanded="false" aria-haspopup="true" aria-controls="notifPanel" aria-label="Notifikasi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <span class="notif-n" id="notifN" hidden>0</span>
+      </button>
+      <div class="notif-panel" id="notifPanel" hidden></div>
+    </div>
+
     <!-- keadaan sudah masuk lewat Google. Akun contoh, bukan orang sungguhan. -->
     <div class="acct" id="acct" hidden>
       <button type="button" class="acct-btn" id="acctBtn" aria-expanded="false" aria-haspopup="true" aria-controls="acctMenu">

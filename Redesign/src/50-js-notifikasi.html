@@ -1,0 +1,80 @@
+<script>
+/* ============================================================
+   Notifikasi pengguna (lonceng di nav, hanya saat sudah masuk).
+   Isinya kabar yang menyangkut pengguna: permintaan gabung terkirim,
+   pendaftaran diterima, ajakan kenalan diterima. Disimpan di
+   KolavoApp.notif; modul lain menambah lewat KolavoNotifTambah().
+   Tanpa penyimpanan — hilang saat halaman dimuat ulang.
+   ============================================================ */
+(function(){
+  const el = function(id){ return document.getElementById(id); };
+  const wadah = el('notif'), btn = el('notifBtn'), panel = el('notifPanel');
+  if(!wadah || !btn || !panel) return;
+  const App = function(){ const a = window.KolavoApp || {}; a.notif = a.notif || []; return a; };
+  function svg(isi){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + isi + '</svg>'; }
+  const IK = {
+    diterima: svg('<circle cx="12" cy="12" r="9"/><path d="m8.5 12.4 2.4 2.4 4.6-5"/>'),
+    terkirim: svg('<path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z"/>'),
+    kenalan:  svg('<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>')
+  };
+  function lolos(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  let urut = 0;
+
+  function gambar(){
+    const n = App().notif, belum = n.filter(function(x){ return !x.baca; }).length;
+    const badge = el('notifN');
+    badge.textContent = belum > 9 ? '9+' : belum;
+    badge.hidden = !belum;
+    btn.setAttribute('aria-label', 'Notifikasi' + (belum ? ', ' + belum + ' belum dibaca' : ''));
+    panel.innerHTML =
+      '<div class="notif-h"><b>Notifikasi</b>' +
+        (belum ? '<button type="button" class="notif-semua" data-notif-semua>Tandai semua dibaca</button>' : '') + '</div>' +
+      (n.length ? '<ul class="notif-list">' + n.map(function(x){
+        return '<li><button type="button" class="notif-i' + (x.baca ? '' : ' baru') + '" data-notif-id="' + x.id + '">' +
+          '<span class="notif-ic ' + x.jenis + '">' + (IK[x.jenis] || IK.diterima) + '</span>' +
+          '<span class="t"><b>' + lolos(x.judul) + '</b><span>' + lolos(x.teks) + '</span><small>' + lolos(x.waktu) + '</small></span></button></li>';
+      }).join('') + '</ul>'
+      : '<p class="notif-kosong">Belum ada notifikasi. Kabar soal pendaftaran dan kenalanmu muncul di sini.</p>');
+  }
+  function tutup(){ panel.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+  function buka(){
+    const m = el('acctMenu'); if(m && !m.hidden){ m.hidden = true; const b = el('acctBtn'); if(b) b.setAttribute('aria-expanded', 'false'); }
+    gambar(); panel.hidden = false; btn.setAttribute('aria-expanded', 'true');
+  }
+
+  /* x: { jenis, judul, teks, kelas?, anggota? } */
+  window.KolavoNotifTambah = function(x){
+    App().notif.unshift(Object.assign({ id: 'n' + (++urut), waktu: 'baru saja', baca: false }, x));
+    gambar();
+  };
+
+  btn.addEventListener('click', function(e){ e.stopPropagation(); if(panel.hidden) buka(); else tutup(); });
+  document.addEventListener('click', function(e){ if(!panel.hidden && !wadah.contains(e.target)) tutup(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !panel.hidden){ tutup(); btn.focus(); } });
+  panel.addEventListener('click', function(e){
+    if(e.target.closest('[data-notif-semua]')){ App().notif.forEach(function(x){ x.baca = true; }); gambar(); return; }
+    const i = e.target.closest('[data-notif-id]');
+    if(!i) return;
+    const x = App().notif.filter(function(n){ return n.id === i.dataset.notifId; })[0];
+    if(!x) return;
+    x.baca = true; tutup(); gambar();
+    if(x.anggota && window.KolavoBukaAnggota) window.KolavoBukaAnggota(x.anggota);
+    else if(x.kelas){
+      /* buka DAN pindah ke halaman komunitasnya (KolavoLihatKomunitas, bukan
+         KolavoBukaKomunitas yang cuma menggambar). "Pendaftaranmu diterima" di
+         komunitas Advance langsung masuk ke onboarding — juga kalau sudah pernah
+         dilihat, karena notifikasinya memang mengajak ke sana. */
+      const logo = document.querySelector('#direktori .ccard .logo-sq.' + x.kelas);
+      if(logo && window.KolavoLihatKomunitas){
+        window.KolavoLihatKomunitas(logo.closest('.ccard'));
+        if(x.jenis === 'diterima' && window.KolavoAdaOnboarding && window.KolavoAdaOnboarding()){
+          setTimeout(function(){
+            if(!window.KolavoOnboardingTerbuka() && window.KolavoBukaOnboarding) window.KolavoBukaOnboarding();
+          }, 450);
+        }
+      }
+    }
+  });
+  gambar();
+})();
+</script>

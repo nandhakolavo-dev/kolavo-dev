@@ -64,6 +64,8 @@
           pill  = document.getElementById('acctPill');
     if(masuk) masuk.hidden = App.masuk;
     if(acct)  acct.hidden  = !App.masuk;
+    const notif = document.getElementById('notif');
+    if(notif) notif.hidden = !App.masuk;
     if(warn)  warn.hidden  = App.lengkap;
     if(pill)  pill.hidden  = App.lengkap;
   }

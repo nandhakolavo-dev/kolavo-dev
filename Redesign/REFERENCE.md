@@ -640,6 +640,355 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   Data di Rapikan jawaban (kolom Jurusan untuk alumni/himpunan, Cabang untuk bentuk
   lain) dan database 214 baris adalah contoh — ditulis begitu di layarnya.
 
+  **Revisi P1 (19 Sep 2026, `PROMPT-REVISI.md`) — kerangka menu dirombak.** Tabel di
+  atas sebagian sudah usang:
+  - Urutan grup: **Advance di atas Kelola**.
+  - "Meja kerja" → **Dashboard** (`data-tab="dasbor"`). Blok "Perlu diurus"/"Sudah
+    beres" dihapus; yang tersisa angka ringkas, rangkuman mingguan, rekap. Statistik
+    pertumbuhan menyusul di P2.
+  - **Cocokkan data dihapus seluruhnya**: tab, panel, simulasi terima otomatis, kolom
+    `db` di seed pendaftar, CSS `.sek-unggah/.sek-file/.sek-map/.sek-grup/.sek-cek`,
+    dan ajakannya di nudge. Nudge kini hanya muncul di Esensial.
+  - Menu bersub-menu: **Setting** (Advance) = Akun · Notifikasi · Tagihan (kerangka,
+    isi di P3) · Akses pengurus. **Kepengurusan** (Kelola) = Struktur Kepengurusan ·
+    Serah terima (Advance saja). "Kelola langganan" di bilah paket membuka Tagihan.
+  - Pola sub-menu: tombol induk `.kl-induk[data-induk]` + `.kl-subnav[data-grup]`. Di
+    kolom samping induk membuka-tutup grupnya; grup yang memuat tab aktif selalu
+    terbuka. Di baris tab (layar sempit) induk disembunyikan dan sub-menunya jadi tab
+    biasa; di Esensial kebalikannya — induk Kepengurusan yang tampil, sub-menunya
+    tersembunyi. Induk disembunyikan lewat selektor atribut `[data-induk]`, bukan
+    kelas, supaya audit tidak menandai `.kl-tab` vs `.kl-induk` berebut `display`.
+
+  **Revisi P2 — isi Dashboard.** Empat angka pertumbuhan minggu ini (pengunjung profil,
+  pendaftar, diterima, ditolak) + dua angka akses (dokumen komunitas, alat komunikasi),
+  masing-masing dengan ▲/▼ % dari minggu lalu. Satu grafik garis dengan dua pilihan
+  data — *Anggota* (pendaftar/diterima/ditolak) dan *Kunjungan & akses* — bukan satu
+  grafik dua sumbu. Rentang 4/12 minggu, crosshair + tooltip, nilai terakhir di ujung
+  garis, tabel di `<details>`. Unduh rekap = CSV 12 minggu (Blob, sisi klien).
+  - Data 12 minggu adalah contoh (`SERI` di `50-js-sekretariat`); diterima/ditolak
+    minggu ini ikut bertambah dari keputusan di Riwayat prototipe.
+  - Token baru `--viz-1/2/3` (biru, oranye, hijau) di ketiga blok tema, divalidasi
+    `dataviz/validate_palette.js`: lolos terang & gelap. Pasangan hijau–oranye mepet
+    untuk protan (ΔE 6,4), jadi seri oranye digambar putus-putus.
+  - Grafik digambar ulang sesuai lebar wadah (teks tetap 11px di layar sempit).
+    Panel tersembunyi lebarnya 0, jadi ada tiga jalur gambar ulang: ResizeObserver,
+    `setTimeout` sesudah `gambarSemua`, dan klik tab Dashboard. ResizeObserver saja
+    tidak cukup di tab browser yang `hidden`.
+  - Viewer Artifact memblokir tautan Blob/`download`. Artifact dipublish dengan
+    kapabilitas `downloads`; tombol memakai `claude.use('downloads').save()` (viewer
+    mengonfirmasi), dan jatuh ke tautan Blob biasa kalau berkas dibuka langsung.
+    Republish berikutnya **jangan** mengirim `capabilities` kosong — itu mencabutnya.
+  - Kelas tabel rincian di Dashboard bernama `.sek-rinci*`, bukan `.sek-tabel*` —
+    nama itu sudah dipakai tabel Siapa boleh apa (P2 sempat bentrok, dibetulkan di P3).
+  - Blok "Rekap untuk rapat (PDF)" dan empat angka lama (anggota, menunggu, terlama,
+    pemegang dashboard) diganti; rangkuman mingguan ke WhatsApp dipertahankan.
+
+  **Revisi P3 — Setting.**
+  - **Akun**: ganti email pemilik dua langkah (email baru → kode 6 angka; prototipe
+    menerima kode apa pun). Email lama di penerima notifikasi dan email tagihan ikut
+    diganti. Pindah kepemilikan tetap lewat Serah terima (ada tautannya).
+  - **Notifikasi**: empat jenis aktivitas dengan sakelar + penerima maksimal 3 email.
+    Di 3, kolom dan tombol tambah dinonaktifkan; penerima terakhir tak bisa dihapus.
+  - **Tagihan**: paket (harga tetap `XXXX`), alamat penagihan (lihat/ubah), metode
+    pembayaran VA / QRIS / kartu — **tanpa kolom nomor kartu**; data kartu diisi di
+    halaman penyedia pembayaran. Riwayat tagihan contoh.
+  - **Akses pengurus — model hak berubah: dari per orang (Penuh / Data anggota /
+    Lihat saja) ke per JABATAN.** Tabel Siapa boleh apa = baris hak × kolom jabatan,
+    berisi centang; perubahan ditandai (sel oranye) dan baru berlaku setelah Simpan.
+    Tiap orang tinggal Beri akses / Cabut; baris menampilkan "Boleh: …" dari jabatannya.
+    Undangan memilih jabatan, bukan level. Daftar jabatan satu sumber: `D.jabatan`
+    (`50-js-dashboard-pengurus`), dipakai P4 untuk jabatan kustom; jabatan tanpa hak
+    awal di `HAK_AWAL` mendapat "Lihat Dashboard" saja.
+
+  **Revisi P4 — Kepengurusan.**
+  - **Struktur Kepengurusan** (Advance) diberi bagian *Jabatan di komunitas ini*:
+    chip semua jabatan (kustom berwarna biru) + kolom "+ Jabatan kustom" (Enter juga
+    menambah). Jabatan kustom ditolak kalau namanya sudah ada (tak peka huruf besar,
+    termasuk "Community Builder"), dan hanya bisa dihapus selama belum dipegang
+    siapa pun. Jabatan baru langsung muncul di pemilih jabatan dan sebagai kolom di
+    tabel Siapa boleh apa (hak awal: Lihat Dashboard). Daftar dikembalikan ke enam
+    jabatan bawaan (`JABATAN_AWAL`) saat komunitas lain dibangun.
+  - **Serah terima → Sejarah kepengurusan**: tiap periode satu `<details>` (tahun,
+    ketua, jumlah pengurus) yang dibuka untuk melihat pemegang tiap jabatan. Periode
+    sekarang dibaca langsung dari susunan pengurus dan terbuka secara bawaan; periode
+    terjadwal muncul setelah serah terima dijadwalkan; dua periode lama adalah contoh
+    (`SEJARAH_LAMA`, nama rekaan).
+  - Kelas pilihan metode pembayaran P3 diganti jadi `.sek-bayar*` — `.sek-pilih`
+    sudah dipakai radio "Pengurus lama setelahnya" di Serah terima dan aturannya
+    saling menimpa. Audit tidak menangkap ini karena kelasnya sama, bukan dua kelas
+    berbeda: sebelum menamai kelas baru, `grep` dulu di `10-styles`.
+
+  **Revisi P5 — Info komunitas & pembeda paket di halaman komunitas.**
+  - **Konten premium hanya diisi di dashboard, grup Advance → menu *Info komunitas***
+    (pengumuman ≤200 karakter, tautan grup komunikasi, peraturan, dokumen; semua
+    opsional, tautan wajib `https://`). Disimpan di `KolavoApp.dibuat.info`. Form Buat
+    halaman tidak disentuh.
+  - **Pembeda paket** di `#komInfo` (satu fungsi `gambarInfo`, cabang per paket):
+    Advance = pengumuman + tombol tautan yang terisi saja; Esensial = tidak ada panel.
+    Pemilik Esensial melihat kartu ajakan "Tambahkan pengumuman… dengan paket
+    Advance" (pengunjung/anggota tidak); pemilik Advance dengan info kosong melihat
+    "Info komunitas masih kosong". Komunitas sendiri jadi premium saat `sekAktif`.
+    Direktori: Forpastara & IA SMAN 52 = Advance (data `INFO`), IA PNJ & PPI JU = Esensial.
+  - **Keputusan akses tautan**: Grup WhatsApp dan dokumen *terkunci* untuk non-anggota
+    ("Kebuka setelah kamu jadi anggota"), sejalan dengan daftar anggota yang tertutup;
+    peraturan terbuka untuk semua karena calon anggota perlu membacanya dulu. Status
+    terkunci ditandai atribut `data-kunci` (bukan kelas `.kunci` — itu sudah dipakai
+    panel daftar anggota yang terkunci).
+  - **Bagikan tautan** di `#komAksi` untuk semua paket dan semua peran (kecuali mode
+    contoh): `navigator.share`, cadangan salin ke clipboard + toast, cadangan terakhir
+    toast berisi alamatnya. Alamat `kolavo.app/k/<slug>`.
+  - **Nama panggilan**: daftar anggota dan halaman detail menampilkan panggilan
+    (`pg`, atau kata pertama nama). Nama lengkap hanya di tampilan pengurus (halaman
+    pemilik): di baris daftar (`.nm-full`) dan "Nama lengkap: …" di detail.
+    Sebelumnya `agFull` tampil ke semua anggota. Dashboard kini menyimpan `full`.
+  - **Lengkapi profil**: *Akun media sosial* opsional — baris platform + nama akun,
+    maksimal 5, baris kosong tidak disimpan. Dibaca lewat `KolavoSosmed()`; belum
+    ditampilkan di mana pun.
+
+  **Revisi P6 — Jawaban pendaftar & Template email.**
+  - Grup Advance kini: Dashboard · Info komunitas · **Jawaban pendaftar ▾** (Tinjau
+    jawaban · Kelompokkan · Rapikan tulisan) · **Template email** · Setting ▾.
+    "Rapikan jawaban" lama dipindah jadi sub-menu *Rapikan tulisan* (isi tak berubah);
+    hak `rapi` di Siapa boleh apa kini berlabel "Kelola jawaban pendaftar & template email".
+  - **Tinjau jawaban**: kartu per orang (menunggu + sudah anggota, saring 3 segmen)
+    berisi Pekerjaan, Domisili, dan pertanyaan teks pengurus; label kelompok tampil di
+    samping jawaban. Dashboard kini menyimpan `jawaban` anggota saat diterima.
+  - **Kelompokkan**: pilih kolom → buat kelompok → petakan tiap jawaban unik lewat
+    dropdown (langsung berlaku, tercatat di jejak). "Isi usulan" (khusus Pekerjaan)
+    mengisi dari aturan kata kunci `USUL_KERJA`, hanya saat ditekan. Kelompok yang
+    masih dipakai tak bisa dihapus. Disimpan di `D.kelompok`; `D.kelompokOrang(nama)`
+    dan `D.kelompokSumbu()` dipakai halaman komunitas: di halaman pemilik muncul sumbu
+    saring baru "Kelompok pekerjaan" dst. P8 memakai hal yang sama untuk kenalan.
+  - **Template email**: Diterima | Ditolak, subjek + isi, chip variabel `{nama}`
+    (panggilan) `{nama_lengkap}` `{komunitas}` `{tautan}` dan `{alasan}` (khusus
+    ditolak, dari catatan penolakan) disisipkan di posisi kursor kolom terakhir yang
+    difokus. Pratinjau langsung memakai pendaftar pertama di antrean; variabel yang
+    terisi ditandai. Sakelar kirim otomatis per jenis, Simpan/Batalkan/Kembalikan ke
+    bawaan, "Kirim uji" (toast). **Belum tersambung ke API email** — tertulis di layar.
+  - `TMPL_AWAL` didefinisikan setelah `reset()` dipanggil saat modul dimuat, jadi
+    template diisi malas di `gambarEmail` (menghindari TDZ `const`).
+
+  **Revisi P7 — Pengaturan onboarding** (grup Advance, di bawah Info komunitas).
+  - Sakelar utama + lima langkah, tiap langkah punya sakelar dan isi: (1) Sambutan —
+    judul, kata pengantar, penanda tangan (bawaan: nama + jabatan pemilik); (2) Kenalan
+    dengan komunitas — sejarah, visi, misi; (3) Peraturan — ringkasan per baris;
+    (4) Dokumen & alat komunikasi — keterangan; (5) Kenalan dengan anggota lain —
+    cocokkan berdasarkan pekerjaan / domisili / kelompok jawaban, pengurus sebagai
+    cadangan. Isi bawaan contoh supaya pratinjau tidak kosong.
+  - **Tersimpan otomatis** tiap ketikan (beda dari Info komunitas yang pakai Simpan) —
+    banyak kolom, dan langkah yang tak lengkap tetap sah. Tercatat di jejak hanya
+    untuk sakelar.
+  - Tautan peraturan, grup, dan dokumen **tidak diketik ulang**: langkah 3–4 membaca
+    `D.kom.info`; kalau kosong tampil "Belum diisi" + tombol ke Info komunitas.
+  - Semua langkah mati → peringatan + Pratinjau nonaktif. Sakelar utama mati → daftar
+    langkah redup dan tak bisa disunting.
+  - Konfigurasi di `D.kom.onboarding` (= `KolavoApp.dibuat.onboarding`), dibaca lewat
+    `window.KolavoOnboarding()`. Tombol Pratinjau memanggil `KolavoBukaOnboarding`
+    (dibuat di P8); sebelum ada, toast.
+
+  **Revisi P8 — Notifikasi & modal onboarding (sisi anggota).** Dua modul baru:
+  `50-js-notifikasi` dan `50-js-onboarding` (manifest setelah `50-js-layar-komunitas`;
+  sengaja dipisah supaya modul komunitas tidak makin besar).
+  - **Lonceng notifikasi** di nav, tampil bersama menu akun saat sudah masuk
+    (`gambarNav` di router). Badge oranye = belum dibaca; panel berisi daftar +
+    "Tandai semua dibaca"; di ≤600px panelnya `fixed` selebar layar. Kabar yang masuk:
+    permintaan gabung terkirim, pendaftaran diterima (untuk Advance: "Buka halamannya
+    untuk perkenalan singkat dari pengurus"), ajakan kenalan diterima. Klik membuka
+    komunitas / profil anggotanya. Disimpan di `KolavoApp.notif`, ditambah lewat
+    `KolavoNotifTambah()`. Notifikasi berlaku di dua paket.
+  - **Modal onboarding** (kerangka `.lgn`, radius 32, `#obModal` di layer
+    `scrKomunitas`): muncul ~350 ms setelah halaman komunitas digambar, hanya jika
+    komunitasnya Advance, penggunanya sudah anggota, onboarding aktif, dan belum pernah
+    dilihat (`KolavoApp.onboardDilihat[kelas]`). Langkah mati dilewati; penanda langkah
+    di atas, Lewati / Kembali / Lanjut → Selesai di bawah. Lewati, ×, Esc, dan Selesai
+    sama-sama menandai "sudah dilihat". Anggota bisa membukanya lagi lewat tautan
+    "Buka lagi perkenalan komunitas" di panel info.
+  - Komunitas direktori memakai konfigurasi contoh (`cfgContoh`, pengirim = pengurus
+    pertamanya) + tautan dari `INFO`. Komunitas sendiri memakai konfigurasi P7 — tapi
+    pemiliknya tidak pernah mendapat onboarding; ia melihatnya lewat **Pratinjau**
+    (lencana "Pratinjau pengurus", tidak menandai dilihat, profil tidak dibuka).
+  - **Langkah kenalan**: chip saring "Sama pekerjaan · X" / "Sama domisili · Y" /
+    "Sama kelompok · Z" (kelompok hanya untuk komunitas yang punya `D.kelompok`),
+    masing-masing dengan jumlah; hanya chip yang ada hasilnya yang tampil. Maks. 6
+    kartu + "Lihat profil". Tanpa kecocokan → kartu pengurus. Profil pengguna dibaca
+    lewat `KolavoProfilKu()` (pekerjaan termasuk "Lainnya — tulis sendiri").
+  - **Regresi P5 dibetulkan**: judul detail anggota kini nama panggilan, jadi tombol
+    kenalan membaca kunci orangnya dari `#agNm[data-nm]`, bukan dari teks judul.
+
+- **Revisi lanjutan R1 — ikon dashboard & arah angka** (2026-09-19):
+  - Satu set ikon bersama di modul baru `src/50-js-ikon.html` (dirakit tepat setelah
+    footer, sebelum skrip lain): `window.KolavoIkon(nama, kelas)` → `<svg>` stroke 1.75
+    currentColor; markup `<i data-ic="nama"></i>` diisi otomatis (`KolavoIkonIsi(akar)`
+    untuk HTML yang digambar belakangan). Modul lain jangan menyalin path — tambah
+    nama baru di sini. Catatan: daftar `JS` di `kit/split.py` sudah tertinggal sejak
+    modul notifikasi/onboarding; jangan andalkan split.py tanpa memperbaruinya.
+  - Menu dashboard pengurus: tiap `.kl-tab` diberi `.kl-tab-ic` 18px (sub 16px).
+  - Kartu angka Dashboard Advance: ikon 32px di kanan angka (`.sek-stat-ic`), selisih
+    mingguan jadi pil `.sek-delta.naik` (hijau `--green`) / `.turun` (merah `--red`)
+    dengan panah ikon. Warna mengikuti arah angka apa adanya, termasuk "ditolak" naik
+    = hijau (sesuai permintaan). Data contoh: pengunjung 88→81 dan dokumen 31→28
+    supaya keadaan turun terlihat.
+
+- **Revisi lanjutan R2 — jabatan bebas & catatan keputusan wajib** (2026-09-19):
+  - "Jabatan di komunitas ini": SEMUA jabatan (termasuk Ketua/Wakil Ketua bawaan)
+    punya tombol ganti nama (pensil, sunting di tempat, Enter/Esc) dan hapus (sampah).
+    Hapus jabatan berpemegang → konfirmasi di chip; pemegangnya pindah ke jabatan
+    pertama yang tersisa. Minimal satu jabatan tersisa (tombol hapus hilang).
+    Ganti nama/hapus memanggil `D.onJabatanGanti(lama, baru|null)`; Sekretariat
+    memindahkan kunci hak akses (`S.hak`/`S.hakDraf`) supaya centang tidak hilang.
+    `JABATAN_AWAL` kini hanya dipakai untuk reset saat komunitas lain dibangun.
+    Periode lama di Serah terima tetap memakai nama jabatan saat itu (catatan sejarah).
+  - Permintaan gabung: catatan keputusan **wajib** (tanda bintang merah `*`, maks. 140
+    karakter); Setujui/Tolak `disabled` sampai catatan terisi, handler juga menjaga.
+  - Riwayat: tiap entri punya kotak "Catatan keputusan" (garis kiri hijau/merah
+    sesuai hasil). Riwayat diisi 2 keputusan contoh saat dashboard dibangun.
+
+- **Revisi lanjutan R3 — pengingat mingguan & sampel alasan bergabung** (2026-09-19):
+  - Setting › Notifikasi: "Pendaftar menunggu 3 hari" diganti **Pengingat pendaftar**.
+    Saat aktif, muncul chip hari Sen–Min (boleh lebih dari satu, minimal satu,
+    bawaan Senin) + pilihan jam (bawaan 09.00) + ringkasan ("Tiap Senin & Kamis,
+    pukul 09.00 WIB"; 5 hari kerja → "Tiap hari kerja", 7 → "Setiap hari").
+    Keadaan: `S.notif.hari` (angka `getDay`, 0 = Minggu) dan `S.notif.jam`.
+  - Tinjau jawaban: tiap pendaftar contoh punya `alasan` panjang yang sengaja
+    beragam (mengajar sukarela, karier, usaha katering, balas budi beasiswa, reuni,
+    riset UMKM, plus dua jawaban asal "Info lowongan." / "ikut aja"). `jawabanFor`
+    memakainya untuk pertanyaan teks yang judul/isinya cocok
+    `/gabung|alasan|kenapa|mengapa|motivasi/i`; pertanyaan lain tetap memakai `teks`.
+    Jadi sampel ini hanya muncul kalau komunitas memang menanyakan alasan bergabung.
+    Pendaftar contoh bertambah dari 6 jadi 8 (Dimas, Yoga).
+  - Formulir Buat komunitas kini punya pertanyaan kedua bawaan: **Alasan Bergabung —
+    "Kenapa kamu ingin bergabung di komunitas ini?"** (teks, tidak wajib, bisa diubah/
+    dihapus). Jadi sampel alasan di atas langsung muncul di komunitas baru.
+  - Kartu Permintaan gabung: jawaban > 40 karakter (`.kl-jawab-row.panjang`) ditaruh di
+    bawah pertanyaannya dan rata kiri; jawaban pendek (tahun dsb.) tetap sejajar kanan.
+
+- **Revisi lanjutan R4 — tombol ikon di halaman komunitas** (2026-09-19):
+  - "Bagikan tautan" dan "Edit Data Pendaftaran" (anggota) kini tombol ikon bulat
+    44px `.btn-ikon` (garis `--blue`, jadi ikut warna tema komunitas) dengan
+    `aria-label` + tooltip CSS dari `data-tip`. Keduanya satu baris dengan aksi utama
+    (`.kom-aksi-baris`: status/tombol utama melebar, ikon di kanan), jadi tetap
+    terlihat di header. `gambarAksi()` = `isiAksi()` + baris ikon, sehingga panggilan
+    ulang setelah menyimpan data pendaftaran tidak lagi menghilangkan tombol bagikan.
+    Pratinjau pengurus tidak menampilkan baris ikon. `#komEdit` tetap id yang sama.
+
+- **Revisi lanjutan R5 — onboarding lebih lega, stepper berikon, alur notifikasi** (2026-09-19):
+  - Modal onboarding 760px (padding 34/40), badan min. 280px, judul 26px, teks 15.5px.
+    Tanda tangan sambutan (`.ob-ttd`, "— Nama, Jabatan") rata kanan.
+  - Stepper: tiap langkah punya ikon `KolavoIkon` (tangan, bendera, akses, jawaban,
+    orang) dalam lingkaran 44px, label di bawahnya; garis progres `.ob-step-isi` di
+    belakang ikon terisi sampai langkah kini. Garis digambar di posisi langkah lama
+    (`iLalu`) lalu digeser dengan `setTimeout` 30 ms — bukan rAF, supaya tetap jalan
+    di tab tersembunyi — sehingga terlihat berjalan saat Lanjut/Kembali.
+    Titik berjalan `.ob-titik` di kaki modal (sejajar Kembali/Lanjut) **dihapus**
+    atas permintaan — dobel dengan stepper di atas; kaki kini: Lewati · spasi · tombol.
+  - Teks contoh panjang (sambutan 2 paragraf, sejarah, visi, 3 misi, 5 aturan,
+    keterangan alat 2 paragraf) satu sumber: `window.KolavoObTeksContoh(nama, desc)`
+    di modul onboarding; dipakai komunitas direktori dan isi awal editor dashboard.
+    Batas editor dinaikkan (pengantar 800, sejarah 800, visi 400, misi 800, alat 600),
+    textarea 5 baris.
+  - P12/P1: Peraturan jadi ala TnC — 9 bagian bernomor (tentang, identitas, etika,
+    informasi, promosi, privasi, kegiatan & iuran, sanksi, perubahan), 23 poin.
+    Format isian: baris diawali `# ` = judul bagian (`.ob-lbl`), baris lain = poin
+    (`.ob-poin`) milik bagian di atasnya. Batas editor aturan 600 → 3000.
+  - P12/P2: gerbang persetujuan di langkah Peraturan. Isi dibungkus `.ob-gulir`
+    (max-height 46vh; di layar 800px ≈ 367px dari isi ±1200px). Centang
+    `[data-ob-setuju]` disabled sampai digulir ke bawah (toleransi 8px; isi yang
+    tidak meluap langsung boleh), petunjuk `[data-ob-petunjuk]` hilang saat itu.
+    Lanjut disabled sampai dicentang. Lewati TIDAK dirender sebelum/di langkah
+    Peraturan — baru muncul di langkah sesudahnya setelah setuju; kalau langkah
+    Peraturan dimatikan pengurus, Lewati tampil seperti biasa. Status disimpan di
+    `ctx.bacaSampai`/`ctx.setuju` (bertahan saat Kembali/Lanjut). Deteksi gulir lewat
+    listener `scroll` capture di modal + `cekGulir()` sesudah render dan sesudah
+    modal tampil (clientHeight 0 saat modal masih hidden → dilewati).
+  - P12/P3: peraturan wajib disetujui. `App().aturanSetuju[kelas]` diisi saat centang
+    (bukan di pratinjau). `tutup()` hanya mengisi `onboardDilihat` kalau sudah setuju
+    atau langkah Peraturan mati; kalau belum, toast "Perkenalan akan muncul lagi…".
+    `KolavoCekOnboarding` membuka lagi selama peraturan wajib tapi belum disetujui.
+    ✕/Esc tetap bisa menutup (sengaja — mengunci modal terasa memaksa). Buka ulang
+    setelah setuju: centang sudah terisi, gulir tidak perlu diulang.
+  - Langkah Kenalan: "Lihat profil" diganti **Ajak kenalan** langsung di kartu
+    (`window.KolavoAjakKenalan(nama)` di modul komunitas); modal tetap terbuka dan
+    kartunya berubah jadi "Ajakan terkirim" / "Terhubung". Kartu pengurus (saat tak
+    ada kecocokan) juga bisa diajak. Di pratinjau pengurus tidak mengirim ajakan.
+  - Notifikasi: klik kini benar-benar pindah ke halaman komunitas
+    (`KolavoLihatKomunitas`, sebelumnya `KolavoBukaKomunitas` hanya menggambar).
+    "Pendaftaranmu diterima" di komunitas Advance langsung membuka onboarding, juga
+    kalau sudah pernah dilihat (`KolavoOnboardingTerbuka()` mencegah dobel buka).
+
+- **Revisi P9 — tanda status kenalan di daftar anggota** (2026-09-19, direvisi):
+  - Tiap kartu di `#bukaList` diberi **ikon bulat** `.kn-ic` di kolom kanan (kartu jadi
+    grid 3 kolom lewat `:has(> .kn-ic)`): orang+plus garis putus oranye = *belum*,
+    orang+jam netral = *menunggu*, orang+centang hijau = *sudah kenal*. Labelnya lewat
+    `title` + `aria-label`, bukan teks — permintaan user (awalnya chip berteks).
+    Baris sendiri (`o.aku`) tanpa ikon. Hijau, bukan primary, supaya sama dengan blok
+    "Kalian sudah kenalan" di detail anggota.
+  - `#bukaKenal` di atas sumbu: **cincin progres** SVG 64px (r=26, dashoffset) mengelilingi
+    ikon (sama dengan notifikasi "menerima ajakan kenalanmu", garis 1.5) + "X/Y", di sampingnya "Sudah kenal X dari Y anggota" + ajakan, lalu chip saring.
+    Y = baris lain di daftar. Menggantikan bar garis (permintaan user).
+  - Chip saring **Belum kenalan · n** (`#bukaBelum`) bisa digabung dengan chip nilai sumbu
+    (`hanyaBelum` + `bidangKini`); hilang saat semua sudah diajak.
+  - Helper `window.KolavoStatusKenal(nama)` → `'belum'|'menunggu'|'terhubung'`, dipakai P10.
+  - Hanya tampil saat daftar terbuka (anggota/pemilik).
+  - **Jumlah anggota = isi daftar.** Kartu direktori dulu menulis 22/9/17/20 anggota padahal
+    seed tiap komunitas 6 orang, dan agregat profesi/domisili ditulis tangan untuk angka itu.
+    Sekarang keempat kartu "6 anggota", dan `profesi`, `kota`, `angkatan` di `DATA`
+    **diturunkan dari `anggota`** saat modul dimuat (`hitung()`); literalnya dihapus.
+    Setelah diterima, kepala halaman jadi 7 (6 + kamu). Hero WAG ("22 anggota") tidak
+    disentuh — itu ilustrasi, bukan komunitas di direktori.
+- **Revisi P10 — feed "Kabar komunitas" (premium Advance)** (2026-09-19). Modul baru
+  `50-js-feed` (manifest sesudah `50-js-onboarding`). Urutan halaman: `#komInfo` (pengumuman +
+  tautan) → `#komStat` (anggota · kota · bidang · angkatan, dipindah ke sini atas permintaan)
+  → "Siapa saja yang ada di dalam" (agregat) → `#komFeed` → Daftar anggota.
+  - **Paket**: `KolavoFeedBoleh(kelas)` — direktori ber-`data-premium="1"` (Forpastara,
+    IA SMAN 52) atau `l-dibuat` saat `D.sekAktif`. Esensial: tidak ada feed dan tidak ada
+    sambutan (`KolavoFeedTambah` mengembalikan `false`); pemilik Esensial melihat satu
+    kartu ajakan `.kom-info-ajak` (tombol `data-info-advance`, pintu yang sama dengan Info
+    komunitas). Advance yang baru aktif mulai dengan feed kosong — tidak ada sambutan mundur.
+  - **Data**: `KolavoApp.feed[kelas]`, API `KolavoFeedTambah(kelas, post)` /
+    `KolavoFeed(kelas)`. Seed malas (`feedSeed`) hanya dua komunitas Advance: 2 sambutan
+    (anggota yang paling akhir bergabung, waktunya dari bulan `s`) + 1 broadcast Ketua.
+  - **Tampilan — kotak khusus, timeline ala Path** (revisi atas permintaan user: "box
+    khusus… layaknya chat / model feed Path"). `.panel.fd-box`: kepala (ikon toa + "Kabar
+    komunitas" + "N kabar"), isi `.fd-gulir` bergulir sendiri (maks 440px), kaki "Kabar ini
+    cuma kelihatan sama sesama anggota". Di dalamnya `ol.fd-tl`: satu garis vertikal, tiap
+    momen = simpul bulat 40px di garis + baris meta + **gelembung chat** (sudut kiri atas
+    lancip). Broadcast: simpul = foto pengurus, meta = nama · pil jabatan · waktu
+    (· Disematkan), gelembung putih (bergaris oranye kalau disematkan). Sambutan: simpul =
+    ikon hijau, meta "{panggilan} bergabung ke komunitas", gelembung hijau lembut berisi
+    foto + "Selamat datang, …!" + pekerjaan · domisili + tombol **Ajak kenalan** (ikon
+    `KolavoIkonKenal` dari P9) atau status Menunggu/Sudah kenal. Sambutan sehari berurutan
+    digabung ("N anggota baru bergabung", foto bertumpuk, tombol ke daftar). Sambutan diri
+    sendiri: "Kamu"/"kamu", tanpa tombol. Terbaru di atas (bukan di bawah seperti chat),
+    disematkan paling atas; 8 unit lalu "Lihat kabar sebelumnya (n)". Terkunci & kosong
+    tampil di dalam kotak yang sama.
+  - **Pemicu**: `terima()` di dashboard (`l-dibuat`, termasuk terima massal) dan
+    `KolavoSetujui` (demo, diri sendiri).
+  - **Akses**: anggota & pemilik melihat isi; pengunjung komunitas Advance melihat kartu
+    terkunci `data-kunci`.
+  - Sambungan baru di `50-js-layar-komunitas`: `KolavoKomKini()`, `KolavoAjakKenal(nama)`,
+    `KolavoIkonKenal(st)`, dan `segarKenal()` — ajakan dari feed, dari detail anggota,
+    atau terima demo sama-sama menyegarkan cincin, ikon daftar, dan feed.
+- **Revisi P11 — menu Broadcast** (grup Advance, di bawah Info komunitas; 2026-09-19).
+  Panel `#klPanelBroadcast` di `50-js-sekretariat` (`gambarBroadcast`), ikon baru `toa`.
+  - **Form**: isi ≤500 karakter + penghitung, tautan opsional (`URL_OK`, pesan merah kalau
+    tidak diawali https://, tombol Kirim nonaktif), sakelar *Sematkan di atas feed* dan
+    *Kirim juga ke notifikasi anggota*. Draf di `S.bc`, tidak digambar ulang saat mengetik
+    (fokus aman) — `segarkanBc()` cuma memperbarui penghitung, pratinjau, dan tombol.
+  - **Pratinjau** memakai komponen timeline feed yang sama (`KolavoFeedPratinjau`), kolom
+    kanan ≥900px, bertumpuk di layar sempit. Penulis = pemilik + `D.jabatanAku()` + fotonya.
+  - **Kirim** → `KolavoFeedTambah('l-dibuat', …)`, jejak, toast. Notifikasi anggota **belum
+    tersambung**: sengaja tidak memanggil `KolavoNotifTambah`, karena lonceng di prototipe
+    milik pengirim sendiri — cukup toast "Mode demo".
+  - **Riwayat broadcast**: disematkan dulu lalu terbaru; aksi Sematkan/Lepas sematan dan
+    Hapus (konfirmasi sebaris, `btn xs hapus`). Hanya satu yang disematkan — API baru di
+    `50-js-feed`: `KolavoFeedSemat`, `KolavoFeedHapus`, `KolavoFeedKapan`; kiriman bersemat
+    melepas sematan lama.
+  - **Hak**: baris *Kirim broadcast ke feed* di Siapa boleh apa; bawaan Ketua, Wakil Ketua,
+    Sekretaris, Humas. Masuk daftar fitur pop up langganan (`URUT`).
+  - **Pintu masuk** `KolavoBukaBroadcast()`: kartu ajakan feed pemilik Esensial ("Lihat
+    Advance" → pop up langganan → langsung ke tab Broadcast setelah aktif) dan tombol
+    *Tulis broadcast* di feed kosong milik pemilik Advance.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

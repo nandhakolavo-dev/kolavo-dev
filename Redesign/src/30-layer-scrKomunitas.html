@@ -19,6 +19,10 @@
 
       <div class="kom-founder" id="komFounder" hidden></div>
 
+      <!-- info komunitas (paket Advance): pengumuman + tautan grup, peraturan, dokumen.
+           Digambar 50-js-layar-komunitas; kosong dan tersembunyi di Esensial. -->
+      <div class="kom-info" id="komInfo" hidden></div>
+
       <div class="kom-stat" id="komStat"></div>
 
       <section class="kom-sec">
@@ -35,6 +39,10 @@
           </div>
         </div>
       </section>
+
+      <!-- feed "Kabar komunitas" (paket Advance): broadcast pengurus + sambutan anggota baru.
+           Digambar 50-js-feed; tidak ada sama sekali di Esensial. -->
+      <section class="kom-sec kom-feed" id="komFeed" hidden></section>
 
       <section class="kom-sec">
         <h2 class="kom-h">Daftar anggota</h2>
@@ -57,6 +65,7 @@
              Baru muncul setelah pengurus menyetujui pendaftaran. -->
         <div class="panel buka" id="komBuka" hidden>
           <div class="panel-bar"><span class="t">Daftar Anggota</span><span class="c" id="bukaJml">—</span></div>
+          <div class="kn-prog" id="bukaKenal" hidden></div>
           <div class="panel-filters buka-sumbu" id="bukaSumbu"></div>
           <div class="panel-filters" id="bukaFilter"></div>
           <div id="bukaList"></div>
@@ -98,4 +107,15 @@
     </div>
   </div>
 </div><!-- /scrKomunitas -->
+
+<!-- MODAL ONBOARDING ANGGOTA BARU — kerangka modal masuk (.lgn), isinya digambar 50-js-onboarding -->
+<div class="lgn" id="obModal" hidden>
+  <div class="lgn-scrim" data-ob-tutup></div>
+  <div class="lgn-box ob-box" role="dialog" aria-modal="true" aria-labelledby="obJudul">
+    <button class="lgn-x" type="button" aria-label="Tutup perkenalan" data-ob-tutup>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div id="obIsi"></div>
+  </div>
+</div>
 

@@ -179,5 +179,65 @@ function hitung(){}
 
   hitung();
 })();
+
+/* ---------- akun media sosial (opsional) ----------
+   Baris pilih-platform + nama akun, bisa ditambah sampai lima dan dihapus.
+   Baris kosong tidak ikut tersimpan. Hasilnya dibaca lewat KolavoSosmed(). */
+(function(){
+  var list = document.getElementById('sosmedList'),
+      tambah = document.getElementById('sosmedTambah');
+  if(!list || !tambah) return;
+  var PLATFORM = [
+    ['instagram', 'Instagram', '@namaakun'], ['linkedin', 'LinkedIn', 'linkedin.com/in/…'],
+    ['tiktok', 'TikTok', '@namaakun'], ['x', 'X (Twitter)', '@namaakun'],
+    ['facebook', 'Facebook', 'facebook.com/…'], ['youtube', 'YouTube', '@kanal'], ['web', 'Situs web', 'namamu.com']
+  ];
+  var MAKS = 5, baris = [{ p: 'instagram', h: '' }];
+  function lolos(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function gambar(){
+    list.innerHTML = baris.map(function(b, i){
+      var pl = PLATFORM.filter(function(p){ return p[0] === b.p; })[0] || PLATFORM[0];
+      return '<div class="sosmed-i">' +
+        '<select class="sel" data-sosmed-p="' + i + '" aria-label="Platform akun ' + (i + 1) + '">' +
+          PLATFORM.map(function(p){ return '<option value="' + p[0] + '"' + (p[0] === b.p ? ' selected' : '') + '>' + p[1] + '</option>'; }).join('') +
+        '</select>' +
+        '<input class="inp" type="text" maxlength="60" data-sosmed-h="' + i + '" value="' + lolos(b.h) + '" placeholder="' + pl[2] + '" aria-label="Nama akun ' + pl[1] + '">' +
+        '<button type="button" class="sosmed-x" data-sosmed-x="' + i + '" aria-label="Hapus akun ' + (i + 1) + '">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
+      '</div>';
+    }).join('');
+    tambah.hidden = baris.length >= MAKS;
+  }
+  list.addEventListener('input', function(e){
+    var i = e.target.getAttribute('data-sosmed-h');
+    if(i !== null) baris[+i].h = e.target.value;
+  });
+  list.addEventListener('change', function(e){
+    var i = e.target.getAttribute('data-sosmed-p');
+    if(i !== null){ baris[+i].p = e.target.value; gambar(); }
+  });
+  list.addEventListener('click', function(e){
+    var x = e.target.closest('[data-sosmed-x]');
+    if(!x) return;
+    baris.splice(+x.getAttribute('data-sosmed-x'), 1);
+    if(!baris.length) baris.push({ p: 'instagram', h: '' });
+    gambar();
+  });
+  tambah.addEventListener('click', function(){
+    if(baris.length >= MAKS) return;
+    var dipakai = baris.map(function(b){ return b.p; });
+    var sisa = PLATFORM.filter(function(p){ return dipakai.indexOf(p[0]) < 0; })[0];
+    baris.push({ p: sisa ? sisa[0] : 'web', h: '' });
+    gambar();
+    var f = list.querySelector('[data-sosmed-h="' + (baris.length - 1) + '"]'); if(f) f.focus();
+  });
+  window.KolavoSosmed = function(){
+    return baris.filter(function(b){ return b.h.trim(); }).map(function(b){
+      var pl = PLATFORM.filter(function(p){ return p[0] === b.p; })[0];
+      return { platform: pl ? pl[1] : b.p, akun: b.h.trim() };
+    });
+  };
+  gambar();
+})();
 </script>
 
