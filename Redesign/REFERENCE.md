@@ -745,6 +745,29 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     maksimal 5, baris kosong tidak disimpan. Dibaca lewat `KolavoSosmed()`; belum
     ditampilkan di mana pun.
 
+  **Revisi P6 — Jawaban pendaftar & Template email.**
+  - Grup Advance kini: Dashboard · Info komunitas · **Jawaban pendaftar ▾** (Tinjau
+    jawaban · Kelompokkan · Rapikan tulisan) · **Template email** · Setting ▾.
+    "Rapikan jawaban" lama dipindah jadi sub-menu *Rapikan tulisan* (isi tak berubah);
+    hak `rapi` di Siapa boleh apa kini berlabel "Kelola jawaban pendaftar & template email".
+  - **Tinjau jawaban**: kartu per orang (menunggu + sudah anggota, saring 3 segmen)
+    berisi Pekerjaan, Domisili, dan pertanyaan teks pengurus; label kelompok tampil di
+    samping jawaban. Dashboard kini menyimpan `jawaban` anggota saat diterima.
+  - **Kelompokkan**: pilih kolom → buat kelompok → petakan tiap jawaban unik lewat
+    dropdown (langsung berlaku, tercatat di jejak). "Isi usulan" (khusus Pekerjaan)
+    mengisi dari aturan kata kunci `USUL_KERJA`, hanya saat ditekan. Kelompok yang
+    masih dipakai tak bisa dihapus. Disimpan di `D.kelompok`; `D.kelompokOrang(nama)`
+    dan `D.kelompokSumbu()` dipakai halaman komunitas: di halaman pemilik muncul sumbu
+    saring baru "Kelompok pekerjaan" dst. P8 memakai hal yang sama untuk kenalan.
+  - **Template email**: Diterima | Ditolak, subjek + isi, chip variabel `{nama}`
+    (panggilan) `{nama_lengkap}` `{komunitas}` `{tautan}` dan `{alasan}` (khusus
+    ditolak, dari catatan penolakan) disisipkan di posisi kursor kolom terakhir yang
+    difokus. Pratinjau langsung memakai pendaftar pertama di antrean; variabel yang
+    terisi ditandai. Sakelar kirim otomatis per jenis, Simpan/Batalkan/Kembalikan ke
+    bawaan, "Kirim uji" (toast). **Belum tersambung ke API email** — tertulis di layar.
+  - `TMPL_AWAL` didefinisikan setelah `reset()` dipanggil saat modul dimuat, jadi
+    template diisi malas di `gambarEmail` (menghindari TDZ `const`).
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

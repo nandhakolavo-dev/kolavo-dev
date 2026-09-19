@@ -12,7 +12,11 @@
    Tiap panel menjawab satu kendala administratif yang tercatat:
      dasbor  Dashboard        pertumbuhan anggota & akses vs minggu lalu, grafik, rekap CSV
      info    Info komunitas   pengumuman + tautan grup/peraturan/dokumen di halaman komunitas
-     rapi    Rapikan jawaban  jawaban beda tulisan -> tag ganda (user testing 18 Juli 2026)
+     Jawaban pendaftar (sub-menu)
+       jawab    Tinjau jawaban   jawaban tiap pendaftar/anggota + label kelompoknya
+       kelompok Kelompokkan      jawaban bebas -> kelompok (D.kelompok), dipakai filter & kenalan
+       rapi     Rapikan tulisan  jawaban beda tulisan -> tag ganda (user testing 18 Juli 2026)
+     email   Template email   subjek & isi email diterima/ditolak, variabel, pratinjau
      Setting (sub-menu)
        akun    Akun           ganti email pemilik, dengan kode konfirmasi
        notif   Notifikasi     jenis aktivitas + maks. 3 email pengurus penerima
@@ -48,7 +52,10 @@
   const FITUR = {
     dasbor: { judul: 'Dashboard',      ringkas: 'pertumbuhan anggota dan akses dokumen minggu demi minggu, dengan rekap yang bisa diunduh.' },
     info:  { judul: 'Info komunitas',  ringkas: 'pengumuman pengurus dan tautan grup WhatsApp, peraturan, dan dokumen di halaman komunitas.' },
-    rapi:  { judul: 'Rapikan jawaban', ringkas: 'satukan jawaban yang sama tapi ditulis berbeda, supaya tag tidak ganda.' },
+    jawab: { judul: 'Jawaban pendaftar', ringkas: 'tinjau ulang jawaban pendaftar, kelompokkan jadi identitas anggota, dan rapikan tulisan yang beda-beda.' },
+    kelompok: { judul: 'Kelompokkan jawaban' },
+    email: { judul: 'Template email', ringkas: 'atur isi email saat pendaftar diterima atau ditolak.' },
+    rapi:  { judul: 'Rapikan tulisan jawaban', ringkas: 'satukan jawaban yang sama tapi ditulis berbeda, supaya tag tidak ganda.' },
     akun:  { judul: 'Akun' },
     notif: { judul: 'Notifikasi' },
     tagihan: { judul: 'Tagihan' },
@@ -56,7 +63,7 @@
     serah: { judul: 'Serah terima',    ringkas: 'ganti kepengurusan tanpa kehilangan data dan akses.' }
   };
   /* yang ditawarkan di pop up langganan */
-  const URUT = ['dasbor', 'info', 'rapi', 'akses', 'serah'];
+  const URUT = ['dasbor', 'info', 'jawab', 'email', 'akses', 'serah'];
 
   /* contoh kelompok jawaban. Alumni/himpunan punya kolom jurusan; bentuk lain
      punya cabang. Satu kelompok sengaja meragukan — mesin boleh mengusulkan,
@@ -92,6 +99,9 @@
     S.rentang = 12; S.grafik = 'tumbuh';
     S.akses = {}; S.undangan = []; S.email = ''; S.emailJabatan = 'Pengurus';
     S.hak = {}; S.hakDraf = {}; S.infoDraf = null;
+    S.jawabSaring = 'semua'; S.kelompokKolom = 'kerja'; S.kelompokTeks = ''; D.kelompok = {};
+    /* template diisi saat panelnya pertama digambar (TMPL_AWAL didefinisikan di bawah) */
+    S.tmpl = null; S.tmplDraf = null; S.tmplJenis = 'terima'; S.tmplAktif = { terima: true, tolak: true }; S.tmplFokus = 'sekTmplIsi';
     S.akun = { email: emailAku(), langkah: 0, baru: '', kode: '' };
     S.notif = { jenis: { baru: true, lama: true, putus: false, keluar: false }, ke: [emailAku()], email: '' };
     S.tagihan = { alamat: { nama: (D.kom && D.kom.nama) || '', email: emailAku(), jalan: '', kota: (D.kom && D.kom.kota) || '', pos: '', npwp: '' },
@@ -565,6 +575,186 @@
   }
   function gambarSetting(){ gambarAkun(); gambarNotif(); gambarTagihan(); }
 
+  /* ---------- jawaban pendaftar: tinjau + kelompokkan ----------
+     Sumbernya jawaban saat mendaftar: pekerjaan & domisili dari profil, plus
+     pertanyaan teks dari pengurus. Kelompok disimpan di D.kelompok supaya
+     halaman komunitas (filter daftar anggota) dan pencocokan kenalan bisa
+     membacanya: { kolom: { label: [..], peta: { jawaban: label } } }. */
+  function kolomJawab(){
+    const q = ((D.kom && D.kom.tanya) || []).filter(function(t){ return t.id !== 'nickname' && t.tipe !== 'tahun'; });
+    return [{ id: 'kerja', judul: 'Pekerjaan' }, { id: 'kota', judul: 'Domisili' }].concat(q.map(function(t){
+      return { id: 'q:' + t.id, judul: t.judul || 'Pertanyaan' };
+    }));
+  }
+  function nilaiKolom(o, k){
+    if(k.id === 'kerja') return o.kerja || '';
+    if(k.id === 'kota') return o.kota || '';
+    const j = (o.jawaban || []).filter(function(x){ return x.judul === k.judul; })[0];
+    return j && j.nilai !== '—' ? j.nilai : '';
+  }
+  function labelKelompok(o, k){
+    const g = D.kelompok[k.id];
+    return g ? (g.peta[nilaiKolom(o, k)] || '') : '';
+  }
+  function orangJawab(){
+    const menunggu = D.minta.map(function(r){
+      return { nama: r.nama, panggil: r.panggil, full: r.full, kerja: r.kerja, kota: r.kota, jawaban: r.jawaban || [], status: 'menunggu', waktu: r.waktu };
+    });
+    const anggota = Object.keys(D.mem).filter(function(n){ return n !== D.aku; }).map(function(n){
+      const m = D.mem[n];
+      return { nama: n, panggil: m.panggil, full: m.full || n, kerja: m.kerja, kota: m.kota, jawaban: m.jawaban || [], status: 'anggota', waktu: '' };
+    });
+    return menunggu.concat(anggota);
+  }
+  /* dipakai halaman komunitas: sumbu filter per kolom yang sudah punya kelompok,
+     dan label kelompok seseorang per kolom */
+  D.kelompokSumbu = function(){
+    return kolomJawab().filter(function(k){ const g = D.kelompok[k.id]; return g && Object.keys(g.peta).length; })
+      .map(function(k){ return { id: 'g:' + k.id, nama: 'Kelompok ' + k.judul.toLowerCase() }; });
+  };
+  D.kelompokOrang = function(nama){
+    const m = D.mem[nama] || D.minta.filter(function(r){ return r.nama === nama; })[0];
+    if(!m) return {};
+    const o = { kerja: m.kerja, kota: m.kota, jawaban: m.jawaban || [] };
+    const out = {};
+    kolomJawab().forEach(function(k){ const l = labelKelompok(o, k); if(l) out['g:' + k.id] = l; });
+    return out;
+  };
+
+  function gambarJawab(){
+    const semua = orangJawab();
+    const saring = S.jawabSaring;
+    const orang = semua.filter(function(o){ return saring === 'semua' || o.status === saring; });
+    const kolom = kolomJawab();
+    const n = function(st){ return semua.filter(function(o){ return st === 'semua' || o.status === st; }).length; };
+    el('klPanelJawab').innerHTML =
+      kepala('jawab', 'Jawaban tiap pendaftar waktu pertama kali mendaftar — yang masih menunggu maupun yang sudah jadi anggota. Label kelompok muncul setelah jawabannya dikelompokkan.') +
+      '<div class="sek-alat">' +
+        segmen('Saring pendaftar', 'data-sek-jawab-saring', [['semua', 'Semua · ' + n('semua')], ['menunggu', 'Menunggu · ' + n('menunggu')], ['anggota', 'Anggota · ' + n('anggota')]], saring) +
+        '<button type="button" class="btn outline sm" data-sek-ke="kelompok">Kelompokkan jawaban</button>' +
+      '</div>' +
+      (orang.length ? '<div class="sek-jawab">' + orang.map(function(o){
+        return '<div class="sek-jawab-i">' +
+          '<div class="sek-jawab-h">' + av(o.nama) + '<div class="t"><div class="kl-row-nm">' + lolos(o.panggil || o.nama.split(' ')[0]) +
+            '<span class="sek-status' + (o.status === 'menunggu' ? ' undang' : '') + '">' + (o.status === 'menunggu' ? 'Menunggu' : 'Anggota') + '</span></div>' +
+            '<div class="kl-row-sub">' + lolos(o.full || o.nama) + (o.waktu ? ' · mendaftar ' + lolos(o.waktu) : '') + '</div></div></div>' +
+          '<dl class="sek-dl">' + kolom.map(function(k){
+            const v = nilaiKolom(o, k), l = labelKelompok(o, k);
+            return '<dt>' + lolos(k.judul) + '</dt><dd>' + (v ? lolos(v) : '<span class="sek-kecil">tidak diisi</span>') +
+              (l ? ' <span class="sek-label">' + lolos(l) + '</span>' : '') + '</dd>';
+          }).join('') + '</dl>' +
+        '</div>';
+      }).join('') + '</div>' : '<div class="sek-blok"><div class="sek-blok-sub">Belum ada pendaftar di sini.</div></div>');
+  }
+
+  /* usulan awal untuk kolom Pekerjaan — hanya dipakai saat pengurus menekan
+     "Isi usulan"; tidak ada yang dikelompokkan diam-diam */
+  const USUL_KERJA = [
+    [/guru|dosen|pengajar/i, 'Pendidikan'], [/perawat|dokter|bidan|apoteker/i, 'Kesehatan'],
+    [/wiras|wirau|usaha|pedagang/i, 'Wirausaha'], [/karyawan|staf|pegawai swasta/i, 'Karyawan swasta'],
+    [/teknisi|engineer|desain|developer|programmer/i, 'Teknologi & kreatif'], [/pns|asn|tni|polri/i, 'Aparatur negara'],
+    [/mahasiswa|pelajar/i, 'Pelajar & mahasiswa']
+  ];
+  function gambarKelompok(){
+    const kolom = kolomJawab();
+    const k = kolom.filter(function(x){ return x.id === S.kelompokKolom; })[0] || kolom[0];
+    S.kelompokKolom = k.id;
+    const g = D.kelompok[k.id] || { label: [], peta: {} };
+    const hitung = {};
+    orangJawab().forEach(function(o){ const v = nilaiKolom(o, k); if(v) hitung[v] = (hitung[v] || 0) + 1; });
+    const jawaban = Object.keys(hitung).sort(function(a, b){ return hitung[b] - hitung[a] || a.localeCompare(b); });
+    const sudah = jawaban.filter(function(v){ return g.peta[v]; }).length;
+    el('klPanelKelompok').innerHTML =
+      kepala('kelompok', 'Satukan jawaban bebas ke dalam kelompok, misalnya “Guru SD” dan “Dosen” ke Pendidikan. Kelompoknya jadi identitas anggota: dipakai saat menyaring daftar anggota dan mencari kenalan yang cocok.') +
+      '<div class="sek-blok"><div class="sek-baris atas"><div><label class="sek-lbl" for="sekKolom">Kelompokkan jawaban</label>' +
+          '<select class="sel sek-kolom" id="sekKolom">' + kolom.map(function(x){
+            return '<option value="' + lolos(x.id) + '"' + (x.id === k.id ? ' selected' : '') + '>' + lolos(x.judul) + '</option>';
+          }).join('') + '</select></div>' +
+          '<span class="sek-kuota">' + sudah + ' / ' + jawaban.length + ' dikelompokkan</span></div>' +
+        '<div class="sek-blok-h sek-jarak">Kelompok</div>' +
+        '<div class="sek-chips">' + (g.label.length ? g.label.map(function(l){
+          const pakai = Object.keys(g.peta).filter(function(v){ return g.peta[v] === l; }).length;
+          return '<span class="sek-chip">' + lolos(l) + '<i>' + pakai + '</i>' +
+            (pakai ? '' : '<button type="button" class="sek-chip-x" data-sek-klp-hapus="' + lolos(l) + '" aria-label="Hapus kelompok ' + lolos(l) + '">×</button>') + '</span>';
+        }).join('') : '<span class="sek-kecil">Belum ada kelompok.</span>') + '</div>' +
+        '<div class="sek-undang"><input class="inp" id="sekKlpBaru" maxlength="40" placeholder="Nama kelompok baru, mis. Wirausaha" value="' + lolos(S.kelompokTeks) + '" aria-label="Nama kelompok baru">' +
+          '<button type="button" class="btn sm" data-sek-klp-tambah>Tambah kelompok</button>' +
+          (k.id === 'kerja' ? '<button type="button" class="btn outline sm" data-sek-klp-usul>Isi usulan</button>' : '') + '</div>' +
+      '</div>' +
+      '<div class="sek-blok"><div class="sek-blok-h">Jawaban “' + lolos(k.judul) + '”</div>' +
+        (jawaban.length ? '<div class="sek-tabel-w"><table class="sek-tabel sek-klp"><thead><tr><th>Jawaban</th><th>Orang</th><th>Kelompok</th></tr></thead><tbody>' +
+          jawaban.map(function(v){
+            return '<tr><td>' + lolos(v) + '</td><td>' + hitung[v] + '</td><td><select class="sel" data-sek-klp="' + lolos(v) + '" aria-label="Kelompok untuk ' + lolos(v) + '">' +
+              '<option value="">Belum dikelompokkan</option>' + g.label.map(function(l){
+                return '<option' + (g.peta[v] === l ? ' selected' : '') + '>' + lolos(l) + '</option>';
+              }).join('') + '</select></td></tr>';
+          }).join('') + '</tbody></table></div>'
+          : '<div class="sek-blok-sub">Belum ada jawaban di kolom ini.</div>') +
+        '<p class="sek-kecil jarak">Perubahan langsung berlaku. Jawaban aslinya tidak diubah — kelompok hanya label tambahan.</p>' +
+      '</div>';
+  }
+
+  /* ---------- template email keputusan pendaftaran ---------- */
+  const TMPL_AWAL = {
+    terima: {
+      subjek: 'Selamat, kamu diterima di {komunitas}',
+      isi: 'Halo {nama},\n\nPendaftaranmu di {komunitas} sudah disetujui pengurus. Mulai sekarang kamu bisa melihat daftar anggota dan berkenalan dengan anggota lain.\n\nBuka halaman komunitas: {tautan}\n\nSalam,\nPengurus {komunitas}'
+    },
+    tolak: {
+      subjek: 'Tentang pendaftaranmu di {komunitas}',
+      isi: 'Halo {nama},\n\nTerima kasih sudah mendaftar ke {komunitas}. Untuk saat ini pendaftaranmu belum bisa kami terima.\n\n{alasan}\n\nSalam,\nPengurus {komunitas}'
+    }
+  };
+  const VAR = [
+    ['nama', 'nama panggilan'], ['nama_lengkap', 'nama lengkap'], ['komunitas', 'nama komunitas'],
+    ['tautan', 'tautan halaman komunitas'], ['alasan', 'catatan penolakan']
+  ];
+  function isiVar(teks, jenis){
+    const r = D.minta[0] || { panggil: 'Putri', full: 'Putri Maharani Lestari' };
+    const nilai = {
+      nama: r.panggil || 'Putri', nama_lengkap: r.full || r.nama || '', komunitas: D.kom.nama,
+      tautan: 'kolavo.app/k/' + (D.kom.slug || 'komunitas'),
+      alasan: jenis === 'tolak' ? 'Catatan dari pengurus: komunitas ini khusus alumni angkatan 2010–2016.' : ''
+    };
+    return lolos(teks).replace(/\{(\w+)\}/g, function(m, k){ return nilai[k] != null ? '<mark>' + lolos(nilai[k]) + '</mark>' : m; });
+  }
+  function tmplBerubah(j){ return JSON.stringify(S.tmpl[j]) !== JSON.stringify(S.tmplDraf[j]); }
+  function segarkanEmail(){
+    const j = S.tmplJenis, d = S.tmplDraf[j];
+    const p = el('sekEmailPrev');
+    if(p) p.innerHTML = '<div class="sek-surat-h"><span>Subjek</span><b>' + isiVar(d.subjek, j) + '</b></div>' +
+      '<div class="sek-surat-isi">' + isiVar(d.isi, j) + '</div>';
+    const u = tmplBerubah(j);
+    scr.querySelectorAll('[data-sek-tmpl-simpan],[data-sek-tmpl-urung]').forEach(function(b){ b.disabled = !u; });
+  }
+  function gambarEmail(){
+    if(!S.tmpl){ S.tmpl = JSON.parse(JSON.stringify(TMPL_AWAL)); S.tmplDraf = JSON.parse(JSON.stringify(TMPL_AWAL)); }
+    const j = S.tmplJenis, d = S.tmplDraf[j];
+    el('klPanelEmail').innerHTML =
+      kepala('email', 'Isi email yang dikirim ke pendaftar saat pendaftarannya diterima atau ditolak. Nanti dikirim otomatis lewat layanan email; di prototipe tidak ada email yang terkirim.') +
+      '<div class="sek-alat">' + segmen('Jenis email', 'data-sek-tmpl-jenis', [['terima', 'Diterima'], ['tolak', 'Ditolak']], j) +
+        sw('data-sek-tmpl-aktif="' + j + '"', S.tmplAktif[j], 'Kirim email ' + (j === 'terima' ? 'diterima' : 'ditolak') + ' otomatis') + '</div>' +
+      '<div class="sek-email">' +
+        '<div class="sek-blok"><div class="sek-f"><label class="sek-lbl" for="sekTmplSubjek">Subjek</label>' +
+          '<input class="inp" id="sekTmplSubjek" data-sek-tmpl="subjek" maxlength="120" value="' + lolos(d.subjek) + '"></div>' +
+          '<div class="sek-f sek-jarak"><label class="sek-lbl" for="sekTmplIsi">Isi email</label>' +
+          '<textarea class="ta sek-tmpl-isi" id="sekTmplIsi" data-sek-tmpl="isi" rows="11">' + lolos(d.isi) + '</textarea></div>' +
+          '<p class="sek-lbl sek-jarak">Sisipkan data pendaftar</p>' +
+          '<div class="sek-chips">' + VAR.filter(function(v){ return j === 'tolak' || v[0] !== 'alasan'; }).map(function(v){
+            return '<button type="button" class="sek-sisip" data-sek-var="' + v[0] + '" title="' + v[1] + '">{' + v[0] + '}</button>';
+          }).join('') + '</div>' +
+          '<div class="sek-baris"><button type="button" class="btn sm" data-sek-tmpl-simpan>Simpan</button>' +
+            '<button type="button" class="btn outline sm" data-sek-tmpl-urung>Batalkan</button>' +
+            '<button type="button" class="btn outline sm" data-sek-tmpl-bawaan>Kembalikan ke bawaan</button></div>' +
+        '</div>' +
+        '<div class="sek-blok"><div class="sek-baris atas"><div class="sek-blok-h">Pratinjau</div>' +
+          '<button type="button" class="btn outline xs" data-sek-tmpl-uji>Kirim uji ke ' + lolos(S.akun.email) + '</button></div>' +
+          '<div class="sek-blok-sub">Diisi dengan data pendaftar pertama di antrean.</div>' +
+          '<div class="sek-surat" id="sekEmailPrev"></div></div>' +
+      '</div>';
+    segarkanEmail();
+  }
+
   /* ---------- rapikan jawaban ---------- */
   function gambarRapi(){
     const g = grup();
@@ -624,7 +814,7 @@
   const HAK = [
     ['dasbor', 'Lihat Dashboard & daftar anggota'],
     ['kontak', 'Lihat WhatsApp & email anggota'],
-    ['rapi',   'Rapikan jawaban'],
+    ['rapi',   'Kelola jawaban pendaftar & template email'],
     ['notif',  'Ubah notifikasi'],
     ['undang', 'Undang pengurus & atur hak']
   ];
@@ -856,7 +1046,7 @@
   function gambarSemua(){
     gambarMode();
     gambarNudge();
-    if(D.sekAktif){ gambarDasbor(); gambarInfoKom(); gambarRapi(); gambarSetting(); gambarAkses(); gambarSerah(); }
+    if(D.sekAktif){ gambarDasbor(); gambarInfoKom(); gambarJawab(); gambarKelompok(); gambarRapi(); gambarEmail(); gambarSetting(); gambarAkses(); gambarSerah(); }
   }
   D.onGambar.push(gambarSemua);
   function ulang(){ D.gambar(); }
@@ -965,6 +1155,69 @@
       toast('Link undangan pengurus disalin.');
       return;
     }
+
+    /* jawaban pendaftar */
+    const js = e.target.closest('[data-sek-jawab-saring]');
+    if(js){ S.jawabSaring = js.dataset.sekJawabSaring; gambarJawab(); return; }
+    if(e.target.closest('[data-sek-klp-tambah]')){
+      const nama = S.kelompokTeks.trim().replace(/\s+/g, ' ');
+      if(!nama){ toast('Tulis nama kelompoknya dulu.'); return; }
+      const g = D.kelompok[S.kelompokKolom] = D.kelompok[S.kelompokKolom] || { label: [], peta: {} };
+      if(g.label.some(function(l){ return l.toLowerCase() === nama.toLowerCase(); })){ toast('Kelompok “' + nama + '” sudah ada.'); return; }
+      g.label.push(nama); S.kelompokTeks = '';
+      gambarKelompok();
+      const f = el('sekKlpBaru'); if(f) f.focus();
+      return;
+    }
+    const klpX = e.target.closest('[data-sek-klp-hapus]');
+    if(klpX){
+      const g = D.kelompok[S.kelompokKolom];
+      if(g) g.label = g.label.filter(function(l){ return l !== klpX.dataset.sekKlpHapus; });
+      gambarKelompok();
+      return;
+    }
+    if(e.target.closest('[data-sek-klp-usul]')){
+      const k = kolomJawab()[0];
+      const g = D.kelompok.kerja = D.kelompok.kerja || { label: [], peta: {} };
+      let n = 0;
+      orangJawab().forEach(function(o){
+        const v = nilaiKolom(o, k);
+        if(!v || g.peta[v]) return;
+        const u = USUL_KERJA.filter(function(x){ return x[0].test(v); })[0];
+        if(!u) return;
+        if(g.label.indexOf(u[1]) < 0) g.label.push(u[1]);
+        g.peta[v] = u[1]; n++;
+      });
+      if(n) catat('Kamu mengisi usulan kelompok untuk ' + n + ' jawaban pekerjaan');
+      gambarKelompok(); gambarJawab();
+      toast(n ? n + ' jawaban diisi usulan. Periksa dan ubah kalau kurang pas.' : 'Tidak ada jawaban baru yang bisa diusulkan.');
+      return;
+    }
+    /* template email */
+    const tj = e.target.closest('[data-sek-tmpl-jenis]');
+    if(tj){ S.tmplJenis = tj.dataset.sekTmplJenis; gambarEmail(); return; }
+    const sisip = e.target.closest('[data-sek-var]');
+    if(sisip){
+      const f = el(S.tmplFokus) || el('sekTmplIsi');
+      const v = '{' + sisip.dataset.sekVar + '}';
+      const a = f.selectionStart == null ? f.value.length : f.selectionStart, b = f.selectionEnd == null ? a : f.selectionEnd;
+      f.value = f.value.slice(0, a) + v + f.value.slice(b);
+      f.focus(); f.setSelectionRange(a + v.length, a + v.length);
+      f.dispatchEvent(new Event('input', { bubbles: true }));
+      return;
+    }
+    if(e.target.closest('[data-sek-tmpl-simpan]')){
+      const j = S.tmplJenis;
+      if(!S.tmplDraf[j].subjek.trim() || !S.tmplDraf[j].isi.trim()){ toast('Subjek dan isi email tidak boleh kosong.'); return; }
+      S.tmpl[j] = JSON.parse(JSON.stringify(S.tmplDraf[j]));
+      catat('Kamu mengubah template email ' + (j === 'terima' ? 'diterima' : 'ditolak'));
+      segarkanEmail();
+      toast('Template email ' + (j === 'terima' ? 'diterima' : 'ditolak') + ' tersimpan.');
+      return;
+    }
+    if(e.target.closest('[data-sek-tmpl-urung]')){ S.tmplDraf[S.tmplJenis] = JSON.parse(JSON.stringify(S.tmpl[S.tmplJenis])); gambarEmail(); return; }
+    if(e.target.closest('[data-sek-tmpl-bawaan]')){ S.tmplDraf[S.tmplJenis] = JSON.parse(JSON.stringify(TMPL_AWAL[S.tmplJenis])); gambarEmail(); return; }
+    if(e.target.closest('[data-sek-tmpl-uji]')){ toast('Di produk, email uji dikirim ke ' + S.akun.email + ' lewat layanan email.'); return; }
 
     /* info komunitas */
     if(e.target.closest('[data-sek-info-simpan]')){
@@ -1079,6 +1332,17 @@
     if(t.matches('[data-sek-pilihan]')){ S.pilihan = t.checked; gambarRapi(); return; }
     if(t.matches('[data-sek-rangkuman]')){ S.rangkuman = t.checked; gambarDasbor(); return; }
     if(t.id === 'sekEmailJabatan'){ S.emailJabatan = t.value; return; }
+    if(t.id === 'sekKolom'){ S.kelompokKolom = t.value; gambarKelompok(); return; }
+    if(t.matches('[data-sek-klp]')){
+      const g = D.kelompok[S.kelompokKolom] = D.kelompok[S.kelompokKolom] || { label: [], peta: {} };
+      const v = t.dataset.sekKlp;
+      if(t.value) g.peta[v] = t.value; else delete g.peta[v];
+      catat('Kamu mengelompokkan “' + v + '” ' + (t.value ? 'ke ' + t.value : 'jadi belum dikelompokkan'));
+      gambarKelompok(); gambarJawab();
+      const f = [].filter.call(scr.querySelectorAll('[data-sek-klp]'), function(x){ return x.dataset.sekKlp === v; })[0]; if(f) f.focus();
+      return;
+    }
+    if(t.matches('[data-sek-tmpl-aktif]')){ S.tmplAktif[t.dataset.sekTmplAktif] = t.checked; gambarEmail(); return; }
     if(t.matches('[data-sek-notif]')){
       S.notif.jenis[t.dataset.sekNotif] = t.checked;
       catat('Kamu ' + (t.checked ? 'menyalakan' : 'mematikan') + ' email notifikasi “' + NOTIF.filter(function(x){ return x.k === t.dataset.sekNotif; })[0].h + '”');
@@ -1097,9 +1361,16 @@
     }
     if(t.matches('[data-sek-serah]')){ S.serah[t.dataset.sekSerah] = t.value; gambarSerah(); return; }
   });
+  /* sisipan variabel masuk ke kolom template yang terakhir difokus */
+  scr.addEventListener('focusin', function(e){ if(e.target.id === 'sekTmplSubjek' || e.target.id === 'sekTmplIsi') S.tmplFokus = e.target.id; });
+  scr.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && e.target.id === 'sekKlpBaru'){ e.preventDefault(); const b = scr.querySelector('[data-sek-klp-tambah]'); if(b) b.click(); }
+  });
   scr.addEventListener('input', function(e){
     const t = e.target;
     if(t.id === 'sekEmail'){ S.email = t.value; return; }
+    if(t.id === 'sekKlpBaru'){ S.kelompokTeks = t.value; return; }
+    if(t.matches('[data-sek-tmpl]')){ S.tmplDraf[S.tmplJenis][t.dataset.sekTmpl] = t.value; segarkanEmail(); return; }
     if(t.matches('[data-sek-info]')){ S.infoDraf[t.dataset.sekInfo] = t.value; segarkanTombolInfo(); return; }
     if(t.id === 'sekAkunBaru'){ S.akun.baru = t.value; return; }
     if(t.id === 'sekAkunKode'){ S.akun.kode = t.value.replace(/\D/g, '').slice(0, 6); if(t.value !== S.akun.kode) t.value = S.akun.kode; return; }

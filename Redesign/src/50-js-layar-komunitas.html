@@ -196,7 +196,9 @@
     const anggota = nama.map(function(n){
       const m = D.mem[n] || { nama: n };
       /* panggilan pemilik diambil dari namanya (dashboard mengisinya "Kamu") */
-      return { n: n, pg: n === D.aku ? '' : (m.panggil || ''), full: m.full || '', k: m.kerja || '—', d: m.kota || '—', j: (m.tags || []).slice(), id: m.id || '', aku: !!m.aku };
+      const o = { n: n, pg: n === D.aku ? '' : (m.panggil || ''), full: m.full || '', k: m.kerja || '—', d: m.kota || '—', j: (m.tags || []).slice(), id: m.id || '', aku: !!m.aku };
+      /* label kelompok jawaban (dashboard › Kelompokkan) jadi sumbu saring tambahan */
+      return D.kelompokOrang ? Object.assign(o, D.kelompokOrang(n)) : o;
     });
     const tally = function(key){
       const peta = {};
@@ -364,6 +366,11 @@
     { id: 'd', nama: 'Domisili' }
   ];
   let sumbuKini = 'k';
+  /* di halaman pemilik, kelompok jawaban yang dibuat pengurus ikut jadi sumbu */
+  function sumbuDaftar(){
+    const D = window.KolavoDashboard;
+    return SUMBU.concat(founder && D && D.kelompokSumbu ? D.kelompokSumbu() : []);
+  }
 
   /* Anggota di kolavo.app tetap bisa membetulkan jawabannya lewat
      "Edit Data Pendaftaran" — formulirnya sama, cuma sudah terisi. */
@@ -605,8 +612,10 @@
     const orang = daftarOrang();
     el('bukaJml').textContent = angkaKini() + ' anggota';
 
+    const sumbu = sumbuDaftar();
+    if(!sumbu.some(function(s){ return s.id === sumbuKini; })) sumbuKini = 'k';
     el('bukaSumbu').innerHTML = '<span class="buka-lbl">Lihat berdasarkan</span>' +
-      SUMBU.map(function(s){
+      sumbu.map(function(s){
         return '<span class="chip' + (s.id === sumbuKini ? ' on' : '') + '" data-sumbu="' + s.id + '">' + s.nama + '</span>';
       }).join('');
 

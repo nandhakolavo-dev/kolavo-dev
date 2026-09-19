@@ -1195,6 +1195,34 @@ body.lgn-open{overflow:hidden}
 .sosmed-x:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .sosmed-x svg{width:16px;height:16px}
 
+/* dashboard: jawaban pendaftar, kelompok, template email */
+.sek-jarak{margin-top:14px}
+.sek-jawab{display:grid;gap:10px;margin-top:16px}
+@media(min-width:900px){.sek-jawab{grid-template-columns:1fr 1fr}}
+.sek-jawab-i{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 16px;min-width:0}
+.sek-jawab-h{display:flex;gap:12px;align-items:center}
+.sek-jawab-h .t{min-width:0}
+.sek-label{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink);margin-left:4px;vertical-align:1px}
+.sek-kolom{max-width:260px;height:44px;margin-top:6px}
+.sek-chip-x{font:inherit;font-size:14px;line-height:1;margin-left:6px;padding:0 2px;border:0;background:none;color:var(--ink-3);cursor:pointer}
+.sek-chip-x:hover{color:var(--red)}
+.sek-chip-x:focus-visible{outline:2px solid var(--ring);border-radius:4px}
+.sek-klp td{text-align:left}
+.sek-klp td:nth-child(2){text-align:center;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.sek-klp .sel{height:38px;min-width:180px}
+.sek-email{display:grid;gap:0 16px}
+@media(min-width:1100px){.sek-email{grid-template-columns:1fr 1fr;align-items:start}}
+.sek-tmpl-isi{min-height:220px;font-size:14px;line-height:1.6}
+.sek-sisip{font-family:"SFMono-Regular",ui-monospace,Menlo,monospace;font-size:12px;padding:5px 10px;border-radius:100px;border:1px dashed var(--blue);
+  background:var(--blue-tint);color:var(--blue-ink);cursor:pointer}
+.sek-sisip:hover{background:var(--blue-wash)}
+.sek-sisip:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.sek-surat{margin-top:12px;border:1px solid var(--line);border-radius:11px;background:var(--bg-alt);overflow:hidden}
+.sek-surat-h{display:flex;gap:10px;align-items:baseline;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--card);font-size:13.5px}
+.sek-surat-h span{flex:none;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.sek-surat-isi{padding:14px;font-size:13.5px;line-height:1.65;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}
+.sek-surat mark{background:var(--orange-wash);color:var(--orange-ink);border-radius:4px;padding:0 2px}
+
 /* dashboard: form Info komunitas */
 .sek-info-f{display:grid;gap:16px;max-width:560px}
 .sek-f{display:grid;gap:6px}
