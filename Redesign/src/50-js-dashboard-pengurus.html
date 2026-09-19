@@ -232,7 +232,8 @@
       const jawab = (r.jawaban && r.jawaban.length)
         ? '<div class="kl-req-jawab"><span class="kl-jawab-h">Jawaban pertanyaan pendaftaran</span>' +
             r.jawaban.map(function(j){
-              return '<div class="kl-jawab-row"><span class="kl-jawab-q">' + lolos(j.judul) + '</span>' +
+              /* jawaban panjang (mis. alasan bergabung) ditaruh di bawah pertanyaannya, rata kiri */
+              return '<div class="kl-jawab-row' + (j.nilai.length > 40 ? ' panjang' : '') + '"><span class="kl-jawab-q">' + lolos(j.judul) + '</span>' +
                      '<span class="kl-jawab-a">' + lolos(j.nilai) + '</span></div>';
             }).join('') +
           '</div>'

@@ -859,6 +859,8 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   - Formulir Buat komunitas kini punya pertanyaan kedua bawaan: **Alasan Bergabung —
     "Kenapa kamu ingin bergabung di komunitas ini?"** (teks, tidak wajib, bisa diubah/
     dihapus). Jadi sampel alasan di atas langsung muncul di komunitas baru.
+  - Kartu Permintaan gabung: jawaban > 40 karakter (`.kl-jawab-row.panjang`) ditaruh di
+    bawah pertanyaannya dan rata kiri; jawaban pendek (tahun dsb.) tetap sejajar kanan.
 
 ## Yang belum terverifikasi
 
