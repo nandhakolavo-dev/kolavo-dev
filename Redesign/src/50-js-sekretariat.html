@@ -105,7 +105,7 @@
     /* template diisi saat panelnya pertama digambar (TMPL_AWAL didefinisikan di bawah) */
     S.tmpl = null; S.tmplDraf = null; S.tmplJenis = 'terima'; S.tmplAktif = { terima: true, tolak: true }; S.tmplFokus = 'sekTmplIsi';
     S.akun = { email: emailAku(), langkah: 0, baru: '', kode: '' };
-    S.notif = { jenis: { baru: true, lama: true, putus: false, keluar: false }, ke: [emailAku()], email: '' };
+    S.notif = { jenis: { baru: true, lama: true, putus: false, keluar: false }, ke: [emailAku()], email: '', hari: [1], jam: '09.00' };
     S.tagihan = { alamat: { nama: (D.kom && D.kom.nama) || '', email: emailAku(), jalan: '', kota: (D.kom && D.kom.kota) || '', pos: '', npwp: '' },
       ubahAlamat: false, draf: {}, metode: 'va', draftMetode: 'va' };
     S.jejak = [];
@@ -555,7 +555,7 @@
   const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const NOTIF = [
     { k: 'baru',   h: 'Pendaftaran baru',             sub: 'Tiap ada yang minta gabung.' },
-    { k: 'lama',   h: 'Pendaftar menunggu 3 hari',    sub: 'Pengingat kalau belum ada pengurus yang meninjau.' },
+    { k: 'lama',   h: 'Pengingat pendaftar',          sub: 'Dikirim di hari dan jam yang kamu pilih, selama masih ada pendaftar yang belum ditinjau.' },
     { k: 'putus',  h: 'Keputusan pengurus lain',      sub: 'Saat pendaftar diterima atau ditolak oleh pengurus lain.' },
     { k: 'keluar', h: 'Anggota keluar',               sub: 'Saat anggota meninggalkan komunitas.' }
   ];
@@ -606,14 +606,37 @@
       '</div>';
   }
 
+  /* pengingat pendaftar: hari bebas dipilih (boleh lebih dari satu), urutan Senin dulu */
+  const HARI = [[1, 'Sen', 'Senin'], [2, 'Sel', 'Selasa'], [3, 'Rab', 'Rabu'], [4, 'Kam', 'Kamis'], [5, 'Jum', 'Jumat'], [6, 'Sab', 'Sabtu'], [0, 'Min', 'Minggu']];
+  const JAM = ['07.00', '08.00', '09.00', '10.00', '12.00', '13.00', '15.00', '17.00', '19.00', '20.00'];
+  function ringkasHari(h){
+    const nama = HARI.filter(function(x){ return h.indexOf(x[0]) >= 0; }).map(function(x){ return x[2]; });
+    if(nama.length === 7) return 'Setiap hari';
+    if(nama.length === 5 && h.indexOf(0) < 0 && h.indexOf(6) < 0) return 'Tiap hari kerja (Senin–Jumat)';
+    return 'Tiap ' + (nama.length > 1 ? nama.slice(0, -1).join(', ') + ' & ' + nama[nama.length - 1] : nama[0]);
+  }
+  function pengingat(n){
+    return '<div class="sek-ingat">' +
+      '<div><div class="sek-lbl" id="sekIngatHariL">Hari pengingat</div>' +
+      '<div class="sek-ingat-hari" role="group" aria-labelledby="sekIngatHariL">' + HARI.map(function(h){
+        const on = n.hari.indexOf(h[0]) >= 0;
+        return '<button type="button" class="chip' + (on ? ' on' : '') + '" data-sek-hari="' + h[0] + '" aria-pressed="' + on + '" aria-label="' + h[2] + '">' + h[1] + '</button>';
+      }).join('') + '</div></div>' +
+      '<div class="sek-ingat-jam"><label class="sek-lbl" for="sekIngatJam">Jam</label>' +
+        '<select class="sel" id="sekIngatJam">' + JAM.map(function(j){ return '<option' + (j === n.jam ? ' selected' : '') + '>' + j + '</option>'; }).join('') + '</select></div>' +
+      '<p class="sek-ingat-ringkas">' + window.KolavoIkon('kalender') + '<span>' + ringkasHari(n.hari) + ', pukul ' + n.jam + ' WIB</span></p>' +
+    '</div>';
+  }
+
   function gambarNotif(){
     const n = S.notif, penuh = n.ke.length >= 3;
     el('klPanelNotif').innerHTML =
       kepala('notif', 'Kabar aktivitas anggota dikirim lewat email ke pengurus yang kamu pilih.') +
       '<div class="sek-blok"><div class="sek-blok-h">Kirim email saat…</div>' +
         '<div class="sek-daftar">' + NOTIF.map(function(x){
-          return '<div class="sek-baris atas sek-garis-b"><div><div class="sek-opsi-h">' + x.h + '</div><div class="sek-blok-sub">' + x.sub + '</div></div>' +
+          const baris = '<div class="sek-baris atas"><div><div class="sek-opsi-h">' + x.h + '</div><div class="sek-blok-sub">' + x.sub + '</div></div>' +
             sw('data-sek-notif="' + x.k + '"', n.jenis[x.k], x.h) + '</div>';
+          return '<div class="sek-garis-b">' + baris + (x.k === 'lama' && n.jenis.lama ? pengingat(n) : '') + '</div>';
         }).join('') + '</div>' +
       '</div>' +
       '<div class="sek-blok"><div class="sek-baris atas"><div class="sek-blok-h">Penerima</div><span class="sek-kuota">' + n.ke.length + ' / 3</span></div>' +
@@ -1153,6 +1176,16 @@
     const mode = e.target.closest('[data-mode]');
     if(mode){ pilihMode(mode.dataset.mode); return; }
 
+    const hari = e.target.closest('[data-sek-hari]');
+    if(hari){
+      const h = +hari.dataset.sekHari, daftar = S.notif.hari, i = daftar.indexOf(h);
+      if(i >= 0 && daftar.length === 1){ toast('Pilih minimal satu hari.'); return; }
+      if(i >= 0) daftar.splice(i, 1); else daftar.push(h);
+      gambarNotif();
+      const b = scr.querySelector('[data-sek-hari="' + h + '"]'); if(b) b.focus();
+      return;
+    }
+
     if(e.target.closest('.kl-tab[data-tab="dasbor"]')) setTimeout(gambarGrafik, 0);
     const ke = e.target.closest('[data-sek-ke]');
     if(ke){
@@ -1462,6 +1495,7 @@
       return;
     }
     if(t.matches('[data-sek-tmpl-aktif]')){ S.tmplAktif[t.dataset.sekTmplAktif] = t.checked; gambarEmail(); return; }
+    if(t.id === 'sekIngatJam'){ S.notif.jam = t.value; gambarNotif(); const f = el('sekIngatJam'); if(f) f.focus(); return; }
     if(t.matches('[data-sek-notif]')){
       S.notif.jenis[t.dataset.sekNotif] = t.checked;
       catat('Kamu ' + (t.checked ? 'menyalakan' : 'mematikan') + ' email notifikasi “' + NOTIF.filter(function(x){ return x.k === t.dataset.sekNotif; })[0].h + '”');

@@ -843,6 +843,20 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   - Riwayat: tiap entri punya kotak "Catatan keputusan" (garis kiri hijau/merah
     sesuai hasil). Riwayat diisi 2 keputusan contoh saat dashboard dibangun.
 
+- **Revisi lanjutan R3 — pengingat mingguan & sampel alasan bergabung** (2026-09-19):
+  - Setting › Notifikasi: "Pendaftar menunggu 3 hari" diganti **Pengingat pendaftar**.
+    Saat aktif, muncul chip hari Sen–Min (boleh lebih dari satu, minimal satu,
+    bawaan Senin) + pilihan jam (bawaan 09.00) + ringkasan ("Tiap Senin & Kamis,
+    pukul 09.00 WIB"; 5 hari kerja → "Tiap hari kerja", 7 → "Setiap hari").
+    Keadaan: `S.notif.hari` (angka `getDay`, 0 = Minggu) dan `S.notif.jam`.
+  - Tinjau jawaban: tiap pendaftar contoh punya `alasan` panjang yang sengaja
+    beragam (mengajar sukarela, karier, usaha katering, balas budi beasiswa, reuni,
+    riset UMKM, plus dua jawaban asal "Info lowongan." / "ikut aja"). `jawabanFor`
+    memakainya untuk pertanyaan teks yang judul/isinya cocok
+    `/gabung|alasan|kenapa|mengapa|motivasi/i`; pertanyaan lain tetap memakai `teks`.
+    Jadi sampel ini hanya muncul kalau komunitas memang menanyakan alasan bergabung.
+    Pendaftar contoh bertambah dari 6 jadi 8 (Dimas, Yoga).
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

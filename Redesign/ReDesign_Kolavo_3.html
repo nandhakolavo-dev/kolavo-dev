@@ -1702,6 +1702,13 @@ body.lgn-open{overflow:hidden}
 .sek-opsi-h{font-size:14px;font-weight:600;line-height:1.4}
 .sek-garis-b{padding:12px 0;border-bottom:1px solid var(--line)}
 .sek-garis-b:last-child{border-bottom:0;padding-bottom:0}
+.sek-ingat{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 20px;margin-top:12px;padding:14px;border-radius:13px;background:var(--bg-alt);border:1px solid var(--line)}
+.sek-ingat-hari{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.sek-ingat-hari .chip{min-width:46px;height:34px;padding:0 12px;font-size:13px}
+.sek-ingat-jam{display:grid;gap:6px}
+.sek-ingat-jam .sel{height:40px;min-width:110px}
+.sek-ingat-ringkas{flex-basis:100%;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--blue-ink)}
+.sek-ingat-ringkas svg{width:16px;height:16px;flex:none}
 .sek-kuota{flex:none;font-size:12px;font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums}
 .sek-grid2{display:grid;gap:12px;margin-top:12px}
 @media(min-width:640px){.sek-grid2{grid-template-columns:1fr 1fr}}
@@ -6264,12 +6271,14 @@ function hitung(){}
      ditambahkan supaya antreannya terasa menumpuk, seperti keluhan pengurus di
      laporan feedback 7 Agustus 2026 ("kewalahan approve satu-satu"). */
   const SEED = [
-    { nama: 'Putri Maharani',  panggil: 'Putri', full: 'Putri Maharani Lestari', jk: 'Perempuan', kerja: 'Guru SD',         kota: 'Bekasi',        wa: '0812-••••-4417', email: 'putri••••@gmail.com', lengkap: true,  waktu: '2 hari lalu', hari: 2, tahun: 2014, teks: ['Diajak teman seangkatan', 'Ingin ikut kegiatan alumni'] },
-    { nama: 'Andi Firmansyah', panggil: 'Andi',  full: 'Andi Firmansyah',        jk: 'Laki-laki', kerja: 'Karyawan swasta', kota: 'Jakarta Timur', wa: '0813-••••-2210', email: 'andi.f••••@gmail.com', lengkap: true,  waktu: 'kemarin',     hari: 1, tahun: 2010, teks: ['Ketemu di grup WhatsApp', 'Cari koneksi seprofesi'] },
-    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, waktu: '3 jam lalu',  hari: 0, tahun: 2016, teks: ['Nemu halaman ini di Kolavo', 'Mau kenal alumni lain'] },
-    { nama: 'Rina Kartika',    panggil: 'Rina',  full: 'Rina Kartika Sari',      jk: 'Perempuan', kerja: 'Perawat',         kota: 'Jakarta Utara', wa: '0821-••••-7702', email: 'rinaks••••@gmail.com', lengkap: true,  waktu: '5 hari lalu', hari: 5, tahun: 2012, teks: ['Diajak ketua angkatan', 'Mau bantu kegiatan sosial'] },
-    { nama: 'Bayu Setiawan',   panggil: 'Bayu',  full: 'Bayu Setiawan',          jk: 'Laki-laki', kerja: 'Teknisi jaringan', kota: 'Bekasi',       wa: '0838-••••-1185', email: 'bayu.s••••@gmail.com', lengkap: true,  waktu: '8 hari lalu', hari: 8, tahun: 2010, teks: ['Dari grup WhatsApp angkatan', 'Cari info lowongan'] },
-    { nama: 'Galih Pramudya',  panggil: 'Galih', full: 'Galih Pramudya',         jk: 'Laki-laki', kerja: 'Desainer grafis', kota: 'Tangerang',     wa: '0877-••••-5543', email: 'galihp••••@gmail.com', lengkap: false, waktu: '6 hari lalu', hari: 6, tahun: 2015, teks: ['Lihat unggahan di Instagram', 'Ingin ikut reuni'] }
+    { nama: 'Putri Maharani',  panggil: 'Putri', full: 'Putri Maharani Lestari', jk: 'Perempuan', kerja: 'Guru SD',         kota: 'Bekasi',        wa: '0812-••••-4417', email: 'putri••••@gmail.com', lengkap: true,  waktu: '2 hari lalu', hari: 2, tahun: 2014, teks: ['Diajak teman seangkatan', 'Ingin ikut kegiatan alumni'], alasan: 'Saya ingin ikut kegiatan mengajar sukarela yang sering diadakan alumni. Sebagai guru, rasanya pas kalau bisa berbagi ke adik-adik tingkat.' },
+    { nama: 'Andi Firmansyah', panggil: 'Andi',  full: 'Andi Firmansyah',        jk: 'Laki-laki', kerja: 'Karyawan swasta', kota: 'Jakarta Timur', wa: '0813-••••-2210', email: 'andi.f••••@gmail.com', lengkap: true,  waktu: 'kemarin',     hari: 1, tahun: 2010, teks: ['Ketemu di grup WhatsApp', 'Cari koneksi seprofesi'], alasan: 'Cari koneksi seprofesi. Saya lagi menimbang pindah kerja ke bidang logistik, siapa tahu ada alumni yang bisa kasih gambaran dunia kerjanya.' },
+    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, waktu: '3 jam lalu',  hari: 0, tahun: 2016, teks: ['Nemu halaman ini di Kolavo', 'Mau kenal alumni lain'], alasan: 'Mau kenal alumni lain, sekalian mengenalkan usaha katering saya. Kalau ada acara komunitas, saya siap bantu urusan konsumsi.' },
+    { nama: 'Rina Kartika',    panggil: 'Rina',  full: 'Rina Kartika Sari',      jk: 'Perempuan', kerja: 'Perawat',         kota: 'Jakarta Utara', wa: '0821-••••-7702', email: 'rinaks••••@gmail.com', lengkap: true,  waktu: '5 hari lalu', hari: 5, tahun: 2012, teks: ['Diajak ketua angkatan', 'Mau bantu kegiatan sosial'], alasan: 'Diajak ketua angkatan untuk bantu penggalangan dana beasiswa. Dulu saya sendiri terbantu beasiswa alumni, sekarang giliran saya membalas.' },
+    { nama: 'Bayu Setiawan',   panggil: 'Bayu',  full: 'Bayu Setiawan',          jk: 'Laki-laki', kerja: 'Teknisi jaringan', kota: 'Bekasi',       wa: '0838-••••-1185', email: 'bayu.s••••@gmail.com', lengkap: true,  waktu: '8 hari lalu', hari: 8, tahun: 2010, teks: ['Dari grup WhatsApp angkatan', 'Cari info lowongan'], alasan: 'Info lowongan.' },
+    { nama: 'Galih Pramudya',  panggil: 'Galih', full: 'Galih Pramudya',         jk: 'Laki-laki', kerja: 'Desainer grafis', kota: 'Tangerang',     wa: '0877-••••-5543', email: 'galihp••••@gmail.com', lengkap: false, waktu: '6 hari lalu', hari: 6, tahun: 2015, teks: ['Lihat unggahan di Instagram', 'Ingin ikut reuni'], alasan: 'Kangen teman-teman lama. Lihat foto reuni tahun lalu di Instagram dan menyesal tidak ikut, jadi tahun ini tidak mau ketinggalan lagi.' },
+    { nama: 'Dimas Aryo',      panggil: 'Dimas', full: 'Dimas Aryo Nugroho',     jk: 'Laki-laki', kerja: 'Mahasiswa S2',    kota: 'Bandung',       wa: '0896-••••-2051', email: 'dimasa••••@gmail.com', lengkap: true,  waktu: '4 hari lalu', hari: 4, tahun: 2016, teks: ['Disarankan dosen pembimbing', 'Cari narasumber riset'], alasan: 'Saya sedang riset tentang UMKM di Jawa Barat dan butuh narasumber. Berharap bisa belajar langsung dari alumni yang sudah menjalankan usaha.' },
+    { nama: 'Yoga Saputra',    panggil: 'Yoga',  full: 'Yoga Saputra',           jk: 'Laki-laki', kerja: 'PNS',             kota: 'Bogor',         wa: '0819-••••-6634', email: 'yogas••••@gmail.com',  lengkap: false, waktu: '7 hari lalu', hari: 7, tahun: 2011, teks: ['Dari teman', 'Ikut saja'], alasan: 'ikut aja' }
   ];
 
   const D = {
@@ -6305,8 +6314,14 @@ function hitung(){}
     const tanya = (D.kom && D.kom.tanya) || [];
     const teks = Array.isArray(s.teks) ? s.teks : (s.teks ? [s.teks] : []);
     let ti = 0;
+    /* pertanyaan soal alasan bergabung dapat jawaban panjang yang sengaja beragam
+       (kontribusi, karier, usaha, nostalgia, riset, jawaban asal) supaya bedanya
+       terlihat di Tinjau jawaban dan Kelompokkan */
+    const soalAlasan = /gabung|alasan|kenapa|mengapa|motivasi/i;
     return tanya.filter(function(t){ return t.id !== 'nickname'; }).map(function(t){
-      const nilai = t.tipe === 'tahun' ? String(s.tahun) : (teks[ti++] || '—');
+      const nilai = t.tipe === 'tahun' ? String(s.tahun)
+        : (s.alasan && soalAlasan.test((t.judul || '') + ' ' + (t.tanya || ''))) ? s.alasan
+        : (teks[ti++] || '—');
       return { judul: t.judul || 'Pertanyaan', nilai: nilai };
     });
   }
@@ -7162,7 +7177,7 @@ function hitung(){}
     /* template diisi saat panelnya pertama digambar (TMPL_AWAL didefinisikan di bawah) */
     S.tmpl = null; S.tmplDraf = null; S.tmplJenis = 'terima'; S.tmplAktif = { terima: true, tolak: true }; S.tmplFokus = 'sekTmplIsi';
     S.akun = { email: emailAku(), langkah: 0, baru: '', kode: '' };
-    S.notif = { jenis: { baru: true, lama: true, putus: false, keluar: false }, ke: [emailAku()], email: '' };
+    S.notif = { jenis: { baru: true, lama: true, putus: false, keluar: false }, ke: [emailAku()], email: '', hari: [1], jam: '09.00' };
     S.tagihan = { alamat: { nama: (D.kom && D.kom.nama) || '', email: emailAku(), jalan: '', kota: (D.kom && D.kom.kota) || '', pos: '', npwp: '' },
       ubahAlamat: false, draf: {}, metode: 'va', draftMetode: 'va' };
     S.jejak = [];
@@ -7612,7 +7627,7 @@ function hitung(){}
   const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const NOTIF = [
     { k: 'baru',   h: 'Pendaftaran baru',             sub: 'Tiap ada yang minta gabung.' },
-    { k: 'lama',   h: 'Pendaftar menunggu 3 hari',    sub: 'Pengingat kalau belum ada pengurus yang meninjau.' },
+    { k: 'lama',   h: 'Pengingat pendaftar',          sub: 'Dikirim di hari dan jam yang kamu pilih, selama masih ada pendaftar yang belum ditinjau.' },
     { k: 'putus',  h: 'Keputusan pengurus lain',      sub: 'Saat pendaftar diterima atau ditolak oleh pengurus lain.' },
     { k: 'keluar', h: 'Anggota keluar',               sub: 'Saat anggota meninggalkan komunitas.' }
   ];
@@ -7663,14 +7678,37 @@ function hitung(){}
       '</div>';
   }
 
+  /* pengingat pendaftar: hari bebas dipilih (boleh lebih dari satu), urutan Senin dulu */
+  const HARI = [[1, 'Sen', 'Senin'], [2, 'Sel', 'Selasa'], [3, 'Rab', 'Rabu'], [4, 'Kam', 'Kamis'], [5, 'Jum', 'Jumat'], [6, 'Sab', 'Sabtu'], [0, 'Min', 'Minggu']];
+  const JAM = ['07.00', '08.00', '09.00', '10.00', '12.00', '13.00', '15.00', '17.00', '19.00', '20.00'];
+  function ringkasHari(h){
+    const nama = HARI.filter(function(x){ return h.indexOf(x[0]) >= 0; }).map(function(x){ return x[2]; });
+    if(nama.length === 7) return 'Setiap hari';
+    if(nama.length === 5 && h.indexOf(0) < 0 && h.indexOf(6) < 0) return 'Tiap hari kerja (Senin–Jumat)';
+    return 'Tiap ' + (nama.length > 1 ? nama.slice(0, -1).join(', ') + ' & ' + nama[nama.length - 1] : nama[0]);
+  }
+  function pengingat(n){
+    return '<div class="sek-ingat">' +
+      '<div><div class="sek-lbl" id="sekIngatHariL">Hari pengingat</div>' +
+      '<div class="sek-ingat-hari" role="group" aria-labelledby="sekIngatHariL">' + HARI.map(function(h){
+        const on = n.hari.indexOf(h[0]) >= 0;
+        return '<button type="button" class="chip' + (on ? ' on' : '') + '" data-sek-hari="' + h[0] + '" aria-pressed="' + on + '" aria-label="' + h[2] + '">' + h[1] + '</button>';
+      }).join('') + '</div></div>' +
+      '<div class="sek-ingat-jam"><label class="sek-lbl" for="sekIngatJam">Jam</label>' +
+        '<select class="sel" id="sekIngatJam">' + JAM.map(function(j){ return '<option' + (j === n.jam ? ' selected' : '') + '>' + j + '</option>'; }).join('') + '</select></div>' +
+      '<p class="sek-ingat-ringkas">' + window.KolavoIkon('kalender') + '<span>' + ringkasHari(n.hari) + ', pukul ' + n.jam + ' WIB</span></p>' +
+    '</div>';
+  }
+
   function gambarNotif(){
     const n = S.notif, penuh = n.ke.length >= 3;
     el('klPanelNotif').innerHTML =
       kepala('notif', 'Kabar aktivitas anggota dikirim lewat email ke pengurus yang kamu pilih.') +
       '<div class="sek-blok"><div class="sek-blok-h">Kirim email saat…</div>' +
         '<div class="sek-daftar">' + NOTIF.map(function(x){
-          return '<div class="sek-baris atas sek-garis-b"><div><div class="sek-opsi-h">' + x.h + '</div><div class="sek-blok-sub">' + x.sub + '</div></div>' +
+          const baris = '<div class="sek-baris atas"><div><div class="sek-opsi-h">' + x.h + '</div><div class="sek-blok-sub">' + x.sub + '</div></div>' +
             sw('data-sek-notif="' + x.k + '"', n.jenis[x.k], x.h) + '</div>';
+          return '<div class="sek-garis-b">' + baris + (x.k === 'lama' && n.jenis.lama ? pengingat(n) : '') + '</div>';
         }).join('') + '</div>' +
       '</div>' +
       '<div class="sek-blok"><div class="sek-baris atas"><div class="sek-blok-h">Penerima</div><span class="sek-kuota">' + n.ke.length + ' / 3</span></div>' +
@@ -8210,6 +8248,16 @@ function hitung(){}
     const mode = e.target.closest('[data-mode]');
     if(mode){ pilihMode(mode.dataset.mode); return; }
 
+    const hari = e.target.closest('[data-sek-hari]');
+    if(hari){
+      const h = +hari.dataset.sekHari, daftar = S.notif.hari, i = daftar.indexOf(h);
+      if(i >= 0 && daftar.length === 1){ toast('Pilih minimal satu hari.'); return; }
+      if(i >= 0) daftar.splice(i, 1); else daftar.push(h);
+      gambarNotif();
+      const b = scr.querySelector('[data-sek-hari="' + h + '"]'); if(b) b.focus();
+      return;
+    }
+
     if(e.target.closest('.kl-tab[data-tab="dasbor"]')) setTimeout(gambarGrafik, 0);
     const ke = e.target.closest('[data-sek-ke]');
     if(ke){
@@ -8519,6 +8567,7 @@ function hitung(){}
       return;
     }
     if(t.matches('[data-sek-tmpl-aktif]')){ S.tmplAktif[t.dataset.sekTmplAktif] = t.checked; gambarEmail(); return; }
+    if(t.id === 'sekIngatJam'){ S.notif.jam = t.value; gambarNotif(); const f = el('sekIngatJam'); if(f) f.focus(); return; }
     if(t.matches('[data-sek-notif]')){
       S.notif.jenis[t.dataset.sekNotif] = t.checked;
       catat('Kamu ' + (t.checked ? 'menyalakan' : 'mematikan') + ' email notifikasi “' + NOTIF.filter(function(x){ return x.k === t.dataset.sekNotif; })[0].h + '”');

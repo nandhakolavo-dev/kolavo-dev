@@ -32,12 +32,14 @@
      ditambahkan supaya antreannya terasa menumpuk, seperti keluhan pengurus di
      laporan feedback 7 Agustus 2026 ("kewalahan approve satu-satu"). */
   const SEED = [
-    { nama: 'Putri Maharani',  panggil: 'Putri', full: 'Putri Maharani Lestari', jk: 'Perempuan', kerja: 'Guru SD',         kota: 'Bekasi',        wa: '0812-••••-4417', email: 'putri••••@gmail.com', lengkap: true,  waktu: '2 hari lalu', hari: 2, tahun: 2014, teks: ['Diajak teman seangkatan', 'Ingin ikut kegiatan alumni'] },
-    { nama: 'Andi Firmansyah', panggil: 'Andi',  full: 'Andi Firmansyah',        jk: 'Laki-laki', kerja: 'Karyawan swasta', kota: 'Jakarta Timur', wa: '0813-••••-2210', email: 'andi.f••••@gmail.com', lengkap: true,  waktu: 'kemarin',     hari: 1, tahun: 2010, teks: ['Ketemu di grup WhatsApp', 'Cari koneksi seprofesi'] },
-    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, waktu: '3 jam lalu',  hari: 0, tahun: 2016, teks: ['Nemu halaman ini di Kolavo', 'Mau kenal alumni lain'] },
-    { nama: 'Rina Kartika',    panggil: 'Rina',  full: 'Rina Kartika Sari',      jk: 'Perempuan', kerja: 'Perawat',         kota: 'Jakarta Utara', wa: '0821-••••-7702', email: 'rinaks••••@gmail.com', lengkap: true,  waktu: '5 hari lalu', hari: 5, tahun: 2012, teks: ['Diajak ketua angkatan', 'Mau bantu kegiatan sosial'] },
-    { nama: 'Bayu Setiawan',   panggil: 'Bayu',  full: 'Bayu Setiawan',          jk: 'Laki-laki', kerja: 'Teknisi jaringan', kota: 'Bekasi',       wa: '0838-••••-1185', email: 'bayu.s••••@gmail.com', lengkap: true,  waktu: '8 hari lalu', hari: 8, tahun: 2010, teks: ['Dari grup WhatsApp angkatan', 'Cari info lowongan'] },
-    { nama: 'Galih Pramudya',  panggil: 'Galih', full: 'Galih Pramudya',         jk: 'Laki-laki', kerja: 'Desainer grafis', kota: 'Tangerang',     wa: '0877-••••-5543', email: 'galihp••••@gmail.com', lengkap: false, waktu: '6 hari lalu', hari: 6, tahun: 2015, teks: ['Lihat unggahan di Instagram', 'Ingin ikut reuni'] }
+    { nama: 'Putri Maharani',  panggil: 'Putri', full: 'Putri Maharani Lestari', jk: 'Perempuan', kerja: 'Guru SD',         kota: 'Bekasi',        wa: '0812-••••-4417', email: 'putri••••@gmail.com', lengkap: true,  waktu: '2 hari lalu', hari: 2, tahun: 2014, teks: ['Diajak teman seangkatan', 'Ingin ikut kegiatan alumni'], alasan: 'Saya ingin ikut kegiatan mengajar sukarela yang sering diadakan alumni. Sebagai guru, rasanya pas kalau bisa berbagi ke adik-adik tingkat.' },
+    { nama: 'Andi Firmansyah', panggil: 'Andi',  full: 'Andi Firmansyah',        jk: 'Laki-laki', kerja: 'Karyawan swasta', kota: 'Jakarta Timur', wa: '0813-••••-2210', email: 'andi.f••••@gmail.com', lengkap: true,  waktu: 'kemarin',     hari: 1, tahun: 2010, teks: ['Ketemu di grup WhatsApp', 'Cari koneksi seprofesi'], alasan: 'Cari koneksi seprofesi. Saya lagi menimbang pindah kerja ke bidang logistik, siapa tahu ada alumni yang bisa kasih gambaran dunia kerjanya.' },
+    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, waktu: '3 jam lalu',  hari: 0, tahun: 2016, teks: ['Nemu halaman ini di Kolavo', 'Mau kenal alumni lain'], alasan: 'Mau kenal alumni lain, sekalian mengenalkan usaha katering saya. Kalau ada acara komunitas, saya siap bantu urusan konsumsi.' },
+    { nama: 'Rina Kartika',    panggil: 'Rina',  full: 'Rina Kartika Sari',      jk: 'Perempuan', kerja: 'Perawat',         kota: 'Jakarta Utara', wa: '0821-••••-7702', email: 'rinaks••••@gmail.com', lengkap: true,  waktu: '5 hari lalu', hari: 5, tahun: 2012, teks: ['Diajak ketua angkatan', 'Mau bantu kegiatan sosial'], alasan: 'Diajak ketua angkatan untuk bantu penggalangan dana beasiswa. Dulu saya sendiri terbantu beasiswa alumni, sekarang giliran saya membalas.' },
+    { nama: 'Bayu Setiawan',   panggil: 'Bayu',  full: 'Bayu Setiawan',          jk: 'Laki-laki', kerja: 'Teknisi jaringan', kota: 'Bekasi',       wa: '0838-••••-1185', email: 'bayu.s••••@gmail.com', lengkap: true,  waktu: '8 hari lalu', hari: 8, tahun: 2010, teks: ['Dari grup WhatsApp angkatan', 'Cari info lowongan'], alasan: 'Info lowongan.' },
+    { nama: 'Galih Pramudya',  panggil: 'Galih', full: 'Galih Pramudya',         jk: 'Laki-laki', kerja: 'Desainer grafis', kota: 'Tangerang',     wa: '0877-••••-5543', email: 'galihp••••@gmail.com', lengkap: false, waktu: '6 hari lalu', hari: 6, tahun: 2015, teks: ['Lihat unggahan di Instagram', 'Ingin ikut reuni'], alasan: 'Kangen teman-teman lama. Lihat foto reuni tahun lalu di Instagram dan menyesal tidak ikut, jadi tahun ini tidak mau ketinggalan lagi.' },
+    { nama: 'Dimas Aryo',      panggil: 'Dimas', full: 'Dimas Aryo Nugroho',     jk: 'Laki-laki', kerja: 'Mahasiswa S2',    kota: 'Bandung',       wa: '0896-••••-2051', email: 'dimasa••••@gmail.com', lengkap: true,  waktu: '4 hari lalu', hari: 4, tahun: 2016, teks: ['Disarankan dosen pembimbing', 'Cari narasumber riset'], alasan: 'Saya sedang riset tentang UMKM di Jawa Barat dan butuh narasumber. Berharap bisa belajar langsung dari alumni yang sudah menjalankan usaha.' },
+    { nama: 'Yoga Saputra',    panggil: 'Yoga',  full: 'Yoga Saputra',           jk: 'Laki-laki', kerja: 'PNS',             kota: 'Bogor',         wa: '0819-••••-6634', email: 'yogas••••@gmail.com',  lengkap: false, waktu: '7 hari lalu', hari: 7, tahun: 2011, teks: ['Dari teman', 'Ikut saja'], alasan: 'ikut aja' }
   ];
 
   const D = {
@@ -73,8 +75,14 @@
     const tanya = (D.kom && D.kom.tanya) || [];
     const teks = Array.isArray(s.teks) ? s.teks : (s.teks ? [s.teks] : []);
     let ti = 0;
+    /* pertanyaan soal alasan bergabung dapat jawaban panjang yang sengaja beragam
+       (kontribusi, karier, usaha, nostalgia, riset, jawaban asal) supaya bedanya
+       terlihat di Tinjau jawaban dan Kelompokkan */
+    const soalAlasan = /gabung|alasan|kenapa|mengapa|motivasi/i;
     return tanya.filter(function(t){ return t.id !== 'nickname'; }).map(function(t){
-      const nilai = t.tipe === 'tahun' ? String(s.tahun) : (teks[ti++] || '—');
+      const nilai = t.tipe === 'tahun' ? String(s.tahun)
+        : (s.alasan && soalAlasan.test((t.judul || '') + ' ' + (t.tanya || ''))) ? s.alasan
+        : (teks[ti++] || '—');
       return { judul: t.judul || 'Pertanyaan', nilai: nilai };
     });
   }
