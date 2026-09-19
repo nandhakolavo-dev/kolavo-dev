@@ -1134,17 +1134,27 @@ body.lgn-open{overflow:hidden}
 .buka-sumbu .chip{font-size:11.5px;padding:5px 11px}
 /* status kenalan per kartu + progres di atas daftar — mendorong mengajak kenalan.
    Hijau untuk "sudah kenal" menyamai blok kenalan di detail anggota. */
-.kn-prog{padding:4px 4px 12px}
-.kn-prog-t{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
-.kn-prog-t b{color:var(--ink);font-weight:600}
-.kn-prog .chip{font-size:11.5px;padding:5px 11px}
-.kn-prog-bar{margin-top:8px;height:6px;border-radius:100px;background:var(--line);overflow:hidden}
-.kn-prog-bar i{display:block;height:100%;border-radius:inherit;background:var(--green);transition:width .4s ease}
-.kn-st{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:2px 8px 2px 6px;border-radius:100px;border:1px solid transparent;white-space:nowrap}
-.kn-st svg{width:11px;height:11px;flex:none}
-.kn-st.belum{border:1px dashed var(--orange);color:var(--orange-ink);background:var(--orange-wash)}
-.kn-st.menunggu{border-color:var(--line);color:var(--ink-2);background:var(--bg-alt)}
-.kn-st.terhubung{color:var(--green);background:var(--green-wash)}
+.kn-prog{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:6px 4px 14px}
+.kn-prog[hidden]{display:none}
+.kn-ring{position:relative;width:64px;height:64px;flex:none}
+.kn-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.kn-ring circle{fill:none;stroke-width:5}
+.kn-ring .jalur{stroke:var(--line)}
+.kn-ring .isi{stroke:var(--green);stroke-linecap:round;transition:stroke-dashoffset .5s ease}
+.kn-ring-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:var(--green)}
+.kn-ring-in svg{width:15px;height:15px;transform:none}
+.kn-ring-in b{font-size:13px;font-weight:600;line-height:1;color:var(--ink)}
+.kn-prog-t{display:flex;flex-direction:column;gap:2px;flex:1 1 180px;min-width:0;font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.kn-prog-t b{font-size:14px;font-weight:600;color:var(--ink)}
+.kn-prog .chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:5px 11px}
+.kn-prog .chip svg{width:14px;height:14px;flex:none}
+/* ikon status di ujung kanan kartu anggota; labelnya lewat title + aria-label */
+.buka .m:has(> .kn-ic){grid-template-columns:auto 1fr auto}
+.kn-ic{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:100px;flex:none;border:1px solid transparent}
+.kn-ic svg{width:18px;height:18px}
+.kn-ic.belum{border:1.5px dashed var(--orange);color:var(--orange-ink);background:var(--orange-wash)}
+.kn-ic.menunggu{border-color:var(--line);color:var(--ink-2);background:var(--bg-alt)}
+.kn-ic.terhubung{color:var(--green);background:var(--green-wash)}
 
 /* ---------- pengurus ----------
    Section-nya dilepas dari halaman komunitas atas permintaan ("untuk sekarang").
@@ -2008,7 +2018,7 @@ body.lgn-open{overflow:hidden}
         <h3>Forum Paskibra Tarumajaya <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></h3>
         <p class="desc">Yukk Kakak, Akang, Teteh semua, kita gabung di Komunitas Forpastara</p>
         <div class="row">
-          <div><div class="mem">22 anggota</div>
+          <div><div class="mem">6 anggota</div>
             <div class="stack"><span style="background:var(--blue-wash);color:var(--blue-ink)">RS</span><span style="background:var(--orange-wash);color:var(--orange-ink)">BP</span><span style="background:var(--green-wash);color:var(--green)">AL</span><span>19+</span></div></div>
           <button type="button" class="btn sm" data-login="anggota">Lihat</button>
         </div>
@@ -2020,7 +2030,7 @@ body.lgn-open{overflow:hidden}
         <h3>Ikatan Alumni PNJ (UI) Teknik Informatika dan Komputer</h3>
         <p class="desc">Alumni PNJ(UI) TIK, silakan gabung 👩🏻‍💻🧑🏻‍💻</p>
         <div class="row">
-          <div><div class="mem">9 anggota</div>
+          <div><div class="mem">6 anggota</div>
             <div class="stack"><span style="background:var(--green-wash);color:var(--green)">DW</span><span style="background:var(--blue-wash);color:var(--blue-ink)">HP</span><span style="background:var(--orange-wash);color:var(--orange-ink)">SN</span><span>6+</span></div></div>
           <button type="button" class="btn sm" data-login="anggota">Lihat</button>
         </div>
@@ -2032,7 +2042,7 @@ body.lgn-open{overflow:hidden}
         <h3>Ikatan Alumni SMAN 52 <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></h3>
         <p class="desc">Alumni SMAN 52 Jakarta, yuk gabung. 🏫</p>
         <div class="row">
-          <div><div class="mem">17 anggota</div>
+          <div><div class="mem">6 anggota</div>
             <div class="stack"><span style="background:var(--orange-wash);color:var(--orange-ink)">FN</span><span style="background:var(--blue-wash);color:var(--blue-ink)">TA</span><span style="background:var(--green-wash);color:var(--green)">RM</span><span>14+</span></div></div>
           <button type="button" class="btn sm" data-login="anggota">Lihat</button>
         </div>
@@ -2044,7 +2054,7 @@ body.lgn-open{overflow:hidden}
         <h3>Purna Paskibraka Indonesia Jakarta Utara</h3>
         <p class="desc">Ayo gabung ke PPIJU, Kakak-Kakak.. 🫡</p>
         <div class="row">
-          <div><div class="mem">20 anggota</div>
+          <div><div class="mem">6 anggota</div>
             <div class="stack"><span style="background:var(--blue-wash);color:var(--blue-ink)">YA</span><span style="background:var(--green-wash);color:var(--green)">NK</span><span style="background:var(--orange-wash);color:var(--orange-ink)">BS</span><span>17+</span></div></div>
           <button type="button" class="btn sm" data-login="anggota">Lihat</button>
         </div>
@@ -4207,16 +4217,14 @@ function hitung(){}
 <script>
 /* ============================================================
    Layar komunitas.
-   Komposisi anggota disimpan sebagai angka agregat, bukan daftar orang —
+   Komposisi anggota ditampilkan sebagai agregat, bukan daftar orang —
    itu satu-satunya cara menjual isi komunitas tanpa melanggar janji
-   "daftar anggota cuma buat sesama anggota".
+   "daftar anggota cuma buat sesama anggota". Agregatnya dihitung dari
+   daftar seed di bawah, supaya jumlah di kepala halaman = isi daftar.
    ============================================================ */
 (function(){
   const DATA = {
     'l-forpastara': {
-      profesi:[['Pelajar & mahasiswa',7],['Wiraswasta',4],['Guru',3],['Karyawan swasta',3],['PNS',2],['Lainnya',3]],
-      kota:[['Kab. Bekasi',12],['Kota Bekasi',5],['Jakarta Timur',3],['Lainnya',2]],
-      angkatan:'2008–2023',
       anggota:[
         {n:'Ayu Lestari',k:'Apoteker',d:'Depok',a:2016,f:'p-ayu',s:'Mei 2024'},
         {n:'Wahyu Firmansyah',k:'Karyawan swasta',d:'Kota Bekasi',a:2013,s:'Agustus 2024'},
@@ -4228,9 +4236,6 @@ function hitung(){}
       pengurus:[{n:'Ayu Lestari',j:'Ketua',f:'p-ayu'},{n:'Rizal Hakim',j:'Sekretaris'}]
     },
     'l-iapnj': {
-      profesi:[['Software engineer',3],['Data analyst',2],['Dosen',1],['Wiraswasta',1],['Lainnya',2]],
-      kota:[['Depok',3],['Jakarta Selatan',2],['Bandung',2],['Lainnya',2]],
-      angkatan:'2011–2021',
       anggota:[
         {n:'Rani Setiawati',k:'Desainer produk',d:'Jakarta Selatan',a:2015,f:'p-rani',s:'April 2024'},
         {n:'Adit Kurniawan',k:'Software engineer',d:'Depok',a:2013,s:'September 2024'},
@@ -4242,9 +4247,6 @@ function hitung(){}
       pengurus:[{n:'Rani Setiawati',j:'Ketua',f:'p-rani'}]
     },
     'l-iasman52': {
-      profesi:[['Karyawan swasta',4],['Guru',3],['Kontraktor',2],['Apoteker',2],['Desainer produk',2],['Lainnya',4]],
-      kota:[['Jakarta Utara',6],['Bekasi',3],['Depok',3],['Jakarta Selatan',2],['Lainnya',3]],
-      angkatan:'1998–2019',
       anggota:[
         {n:'Fajar Nugroho',k:'Kontraktor',d:'Jakarta Utara',a:2009,f:'p-fajar',s:'Maret 2024'},
         {n:'Rani Setiawati',k:'Desainer produk',d:'Jakarta Selatan',a:2014,f:'p-rani',s:'Juli 2024'},
@@ -4256,9 +4258,6 @@ function hitung(){}
       pengurus:[{n:'Fajar Nugroho',j:'Ketua',f:'p-fajar'},{n:'Rani Setiawati',j:'Bendahara',f:'p-rani'}]
     },
     'l-ppiju': {
-      profesi:[['Mahasiswa',6],['Karyawan swasta',5],['PNS',3],['TNI/Polri',2],['Wiraswasta',2],['Lainnya',2]],
-      kota:[['Jakarta Utara',14],['Jakarta Pusat',3],['Bekasi',3]],
-      angkatan:'2015–2024',
       anggota:[
         {n:'Rendra Aditya',k:'Karyawan swasta',d:'Jakarta Utara',a:2018,s:'Juni 2024'},
         {n:'Yoga Anggara',k:'Mahasiswa',d:'Jakarta Utara',a:2022,s:'Oktober 2024'},
@@ -4270,6 +4269,21 @@ function hitung(){}
       pengurus:[{n:'Dedi Kurniawan',j:'Ketua'},{n:'Ayu Lestari',j:'Humas',f:'p-ayu'}]
     }
   };
+  /* profesi, domisili, dan rentang angkatan diturunkan dari daftar —
+     dulu ditulis tangan (22 anggota) sementara daftarnya cuma 6 */
+  function hitung(daftar, kunci){
+    const peta = {};
+    daftar.forEach(function(o){ peta[o[kunci]] = (peta[o[kunci]] || 0) + 1; });
+    return Object.keys(peta).map(function(k){ return [k, peta[k]]; })
+      .sort(function(a, b){ return b[1] - a[1]; });
+  }
+  Object.keys(DATA).forEach(function(kelas){
+    const d = DATA[kelas];
+    const th = d.anggota.map(function(o){ return o.a; }).filter(Boolean);
+    d.profesi = hitung(d.anggota, 'k');
+    d.kota = hitung(d.anggota, 'd');
+    d.angkatan = th.length ? Math.min.apply(null, th) + '–' + Math.max.apply(null, th) : '—';
+  });
 
   /* Bekal "orang ini siapa", dipisah dari keanggotaan karena melekat ke orangnya
      dan sama di komunitas mana pun dia muncul. kolavo.app tidak punya data ini
@@ -4605,16 +4619,20 @@ function hitung(){}
   let bidangKini = '';
   let hanyaBelum = false;
   const KN_LABEL = { belum: 'Belum kenalan', menunggu: 'Menunggu', terhubung: 'Sudah kenal' };
+  /* ikon orang: + (belum), jam (menunggu), centang (sudah kenal) */
+  const ORG = '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/>';
   const KN_IKON = {
-    belum: '<path d="M12 5v14M5 12h14"/>',
-    menunggu: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
-    terhubung: '<path d="m5 12.5 4.5 4.5L19 7"/>'
+    belum: ORG + '<path d="M19 8v6M16 11h6"/>',
+    menunggu: ORG + '<circle cx="19" cy="11" r="3.2"/><path d="M19 9.6V11l.9.7"/>',
+    terhubung: ORG + '<path d="m16 11 2 2 4-4"/>'
   };
-  function chipKenal(o){
+  function svgKenal(st){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + KN_IKON[st] + '</svg>';
+  }
+  function ikonKenal(o){
     if(o.aku) return '';
     const st = window.KolavoStatusKenal(o.n);
-    return '<span class="kn-st ' + st + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-      KN_IKON[st] + '</svg>' + KN_LABEL[st] + '</span>';
+    return '<span class="kn-ic ' + st + '" role="img" aria-label="' + KN_LABEL[st] + '" title="' + KN_LABEL[st] + '">' + svgKenal(st) + '</span>';
   }
   function gambarProgres(){
     const lain = daftarOrang().filter(function(o){ return !o.aku; });
@@ -4624,10 +4642,16 @@ function hitung(){}
     w.hidden = !lain.length;
     if(!lain.length) return;
     if(!belum) hanyaBelum = false;
+    /* cincin: keliling r=26 ≈ 163.4; bagian hijau = porsi yang sudah kenal */
+    const kel = 163.4;
     w.innerHTML =
-      '<div class="kn-prog-t"><span>Kamu sudah kenal <b>' + kenal + '</b> dari ' + lain.length + ' anggota</span>' +
-      (belum ? '<button type="button" class="chip' + (hanyaBelum ? ' on' : '') + '" id="bukaBelum" aria-pressed="' + hanyaBelum + '">Belum kenalan · ' + belum + '</button>' : '') +
-      '</div><div class="kn-prog-bar"><i style="width:' + Math.round(kenal / lain.length * 100) + '%"></i></div>';
+      '<div class="kn-ring" role="img" aria-label="Sudah kenal ' + kenal + ' dari ' + lain.length + ' anggota">' +
+        '<svg viewBox="0 0 60 60" aria-hidden="true"><circle class="jalur" cx="30" cy="30" r="26"/>' +
+        '<circle class="isi" cx="30" cy="30" r="26" stroke-dasharray="' + kel + '" stroke-dashoffset="' + (kel * (1 - kenal / lain.length)).toFixed(1) + '"/></svg>' +
+        '<span class="kn-ring-in">' + svgKenal('terhubung') + '<b>' + kenal + '/' + lain.length + '</b></span></div>' +
+      '<div class="kn-prog-t"><b>Sudah kenal ' + kenal + ' dari ' + lain.length + ' anggota</b>' +
+        '<span>' + (belum ? 'Ajak kenalan supaya nomornya saling kebuka.' : 'Semua anggota di sini sudah kamu ajak kenalan.') + '</span></div>' +
+      (belum ? '<button type="button" class="chip' + (hanyaBelum ? ' on' : '') + '" id="bukaBelum" aria-pressed="' + hanyaBelum + '">' + svgKenal('belum') + 'Belum kenalan · ' + belum + '</button>' : '');
   }
 
   function saring(bidang){
@@ -4652,12 +4676,12 @@ function hitung(){}
         '<div>' + (o.id ? '<div class="mem-id">' + o.id + '</div>' : '') +
         '<div class="nm-baris"><div class="nm">' + panggilan(o) + '</div>' +
         (founder ? '<span class="nm-full">' + (o.full || o.n) + '</span>' : '') +
-        (o.aku ? '<span class="aku">Kamu</span>' : '') + chipKenal(o) + '</div>' +
+        (o.aku ? '<span class="aku">Kamu</span>' : '') + '</div>' +
         '<div class="tags"><span class="tag hi">' + o.k + '</span>' +
         '<span class="tag">' + o.d + '</span>' +
         (o.a && !(o.j || []).length ? '<span class="tag">Angkatan ' + o.a + '</span>' : '') +
         (o.j || []).map(function(v){ return '<span class="tag">' + v + '</span>'; }).join('') +
-        '</div></div></div>';
+        '</div></div>' + ikonKenal(o) + '</div>';
     }).join('');
     if(!bidang && !hanyaBelum && kini && orang.length < angkaKini()){
       wadah.insertAdjacentHTML('beforeend',

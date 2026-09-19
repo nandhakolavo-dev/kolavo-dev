@@ -1,16 +1,14 @@
 <script>
 /* ============================================================
    Layar komunitas.
-   Komposisi anggota disimpan sebagai angka agregat, bukan daftar orang —
+   Komposisi anggota ditampilkan sebagai agregat, bukan daftar orang —
    itu satu-satunya cara menjual isi komunitas tanpa melanggar janji
-   "daftar anggota cuma buat sesama anggota".
+   "daftar anggota cuma buat sesama anggota". Agregatnya dihitung dari
+   daftar seed di bawah, supaya jumlah di kepala halaman = isi daftar.
    ============================================================ */
 (function(){
   const DATA = {
     'l-forpastara': {
-      profesi:[['Pelajar & mahasiswa',7],['Wiraswasta',4],['Guru',3],['Karyawan swasta',3],['PNS',2],['Lainnya',3]],
-      kota:[['Kab. Bekasi',12],['Kota Bekasi',5],['Jakarta Timur',3],['Lainnya',2]],
-      angkatan:'2008–2023',
       anggota:[
         {n:'Ayu Lestari',k:'Apoteker',d:'Depok',a:2016,f:'p-ayu',s:'Mei 2024'},
         {n:'Wahyu Firmansyah',k:'Karyawan swasta',d:'Kota Bekasi',a:2013,s:'Agustus 2024'},
@@ -22,9 +20,6 @@
       pengurus:[{n:'Ayu Lestari',j:'Ketua',f:'p-ayu'},{n:'Rizal Hakim',j:'Sekretaris'}]
     },
     'l-iapnj': {
-      profesi:[['Software engineer',3],['Data analyst',2],['Dosen',1],['Wiraswasta',1],['Lainnya',2]],
-      kota:[['Depok',3],['Jakarta Selatan',2],['Bandung',2],['Lainnya',2]],
-      angkatan:'2011–2021',
       anggota:[
         {n:'Rani Setiawati',k:'Desainer produk',d:'Jakarta Selatan',a:2015,f:'p-rani',s:'April 2024'},
         {n:'Adit Kurniawan',k:'Software engineer',d:'Depok',a:2013,s:'September 2024'},
@@ -36,9 +31,6 @@
       pengurus:[{n:'Rani Setiawati',j:'Ketua',f:'p-rani'}]
     },
     'l-iasman52': {
-      profesi:[['Karyawan swasta',4],['Guru',3],['Kontraktor',2],['Apoteker',2],['Desainer produk',2],['Lainnya',4]],
-      kota:[['Jakarta Utara',6],['Bekasi',3],['Depok',3],['Jakarta Selatan',2],['Lainnya',3]],
-      angkatan:'1998–2019',
       anggota:[
         {n:'Fajar Nugroho',k:'Kontraktor',d:'Jakarta Utara',a:2009,f:'p-fajar',s:'Maret 2024'},
         {n:'Rani Setiawati',k:'Desainer produk',d:'Jakarta Selatan',a:2014,f:'p-rani',s:'Juli 2024'},
@@ -50,9 +42,6 @@
       pengurus:[{n:'Fajar Nugroho',j:'Ketua',f:'p-fajar'},{n:'Rani Setiawati',j:'Bendahara',f:'p-rani'}]
     },
     'l-ppiju': {
-      profesi:[['Mahasiswa',6],['Karyawan swasta',5],['PNS',3],['TNI/Polri',2],['Wiraswasta',2],['Lainnya',2]],
-      kota:[['Jakarta Utara',14],['Jakarta Pusat',3],['Bekasi',3]],
-      angkatan:'2015–2024',
       anggota:[
         {n:'Rendra Aditya',k:'Karyawan swasta',d:'Jakarta Utara',a:2018,s:'Juni 2024'},
         {n:'Yoga Anggara',k:'Mahasiswa',d:'Jakarta Utara',a:2022,s:'Oktober 2024'},
@@ -64,6 +53,21 @@
       pengurus:[{n:'Dedi Kurniawan',j:'Ketua'},{n:'Ayu Lestari',j:'Humas',f:'p-ayu'}]
     }
   };
+  /* profesi, domisili, dan rentang angkatan diturunkan dari daftar —
+     dulu ditulis tangan (22 anggota) sementara daftarnya cuma 6 */
+  function hitung(daftar, kunci){
+    const peta = {};
+    daftar.forEach(function(o){ peta[o[kunci]] = (peta[o[kunci]] || 0) + 1; });
+    return Object.keys(peta).map(function(k){ return [k, peta[k]]; })
+      .sort(function(a, b){ return b[1] - a[1]; });
+  }
+  Object.keys(DATA).forEach(function(kelas){
+    const d = DATA[kelas];
+    const th = d.anggota.map(function(o){ return o.a; }).filter(Boolean);
+    d.profesi = hitung(d.anggota, 'k');
+    d.kota = hitung(d.anggota, 'd');
+    d.angkatan = th.length ? Math.min.apply(null, th) + '–' + Math.max.apply(null, th) : '—';
+  });
 
   /* Bekal "orang ini siapa", dipisah dari keanggotaan karena melekat ke orangnya
      dan sama di komunitas mana pun dia muncul. kolavo.app tidak punya data ini
@@ -399,16 +403,20 @@
   let bidangKini = '';
   let hanyaBelum = false;
   const KN_LABEL = { belum: 'Belum kenalan', menunggu: 'Menunggu', terhubung: 'Sudah kenal' };
+  /* ikon orang: + (belum), jam (menunggu), centang (sudah kenal) */
+  const ORG = '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/>';
   const KN_IKON = {
-    belum: '<path d="M12 5v14M5 12h14"/>',
-    menunggu: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
-    terhubung: '<path d="m5 12.5 4.5 4.5L19 7"/>'
+    belum: ORG + '<path d="M19 8v6M16 11h6"/>',
+    menunggu: ORG + '<circle cx="19" cy="11" r="3.2"/><path d="M19 9.6V11l.9.7"/>',
+    terhubung: ORG + '<path d="m16 11 2 2 4-4"/>'
   };
-  function chipKenal(o){
+  function svgKenal(st){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + KN_IKON[st] + '</svg>';
+  }
+  function ikonKenal(o){
     if(o.aku) return '';
     const st = window.KolavoStatusKenal(o.n);
-    return '<span class="kn-st ' + st + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-      KN_IKON[st] + '</svg>' + KN_LABEL[st] + '</span>';
+    return '<span class="kn-ic ' + st + '" role="img" aria-label="' + KN_LABEL[st] + '" title="' + KN_LABEL[st] + '">' + svgKenal(st) + '</span>';
   }
   function gambarProgres(){
     const lain = daftarOrang().filter(function(o){ return !o.aku; });
@@ -418,10 +426,16 @@
     w.hidden = !lain.length;
     if(!lain.length) return;
     if(!belum) hanyaBelum = false;
+    /* cincin: keliling r=26 ≈ 163.4; bagian hijau = porsi yang sudah kenal */
+    const kel = 163.4;
     w.innerHTML =
-      '<div class="kn-prog-t"><span>Kamu sudah kenal <b>' + kenal + '</b> dari ' + lain.length + ' anggota</span>' +
-      (belum ? '<button type="button" class="chip' + (hanyaBelum ? ' on' : '') + '" id="bukaBelum" aria-pressed="' + hanyaBelum + '">Belum kenalan · ' + belum + '</button>' : '') +
-      '</div><div class="kn-prog-bar"><i style="width:' + Math.round(kenal / lain.length * 100) + '%"></i></div>';
+      '<div class="kn-ring" role="img" aria-label="Sudah kenal ' + kenal + ' dari ' + lain.length + ' anggota">' +
+        '<svg viewBox="0 0 60 60" aria-hidden="true"><circle class="jalur" cx="30" cy="30" r="26"/>' +
+        '<circle class="isi" cx="30" cy="30" r="26" stroke-dasharray="' + kel + '" stroke-dashoffset="' + (kel * (1 - kenal / lain.length)).toFixed(1) + '"/></svg>' +
+        '<span class="kn-ring-in">' + svgKenal('terhubung') + '<b>' + kenal + '/' + lain.length + '</b></span></div>' +
+      '<div class="kn-prog-t"><b>Sudah kenal ' + kenal + ' dari ' + lain.length + ' anggota</b>' +
+        '<span>' + (belum ? 'Ajak kenalan supaya nomornya saling kebuka.' : 'Semua anggota di sini sudah kamu ajak kenalan.') + '</span></div>' +
+      (belum ? '<button type="button" class="chip' + (hanyaBelum ? ' on' : '') + '" id="bukaBelum" aria-pressed="' + hanyaBelum + '">' + svgKenal('belum') + 'Belum kenalan · ' + belum + '</button>' : '');
   }
 
   function saring(bidang){
@@ -446,12 +460,12 @@
         '<div>' + (o.id ? '<div class="mem-id">' + o.id + '</div>' : '') +
         '<div class="nm-baris"><div class="nm">' + panggilan(o) + '</div>' +
         (founder ? '<span class="nm-full">' + (o.full || o.n) + '</span>' : '') +
-        (o.aku ? '<span class="aku">Kamu</span>' : '') + chipKenal(o) + '</div>' +
+        (o.aku ? '<span class="aku">Kamu</span>' : '') + '</div>' +
         '<div class="tags"><span class="tag hi">' + o.k + '</span>' +
         '<span class="tag">' + o.d + '</span>' +
         (o.a && !(o.j || []).length ? '<span class="tag">Angkatan ' + o.a + '</span>' : '') +
         (o.j || []).map(function(v){ return '<span class="tag">' + v + '</span>'; }).join('') +
-        '</div></div></div>';
+        '</div></div>' + ikonKenal(o) + '</div>';
     }).join('');
     if(!bidang && !hanyaBelum && kini && orang.length < angkaKini()){
       wadah.insertAdjacentHTML('beforeend',

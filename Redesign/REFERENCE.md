@@ -894,17 +894,26 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     "Pendaftaranmu diterima" di komunitas Advance langsung membuka onboarding, juga
     kalau sudah pernah dilihat (`KolavoOnboardingTerbuka()` mencegah dobel buka).
 
-- **Revisi P9 — tanda status kenalan di daftar anggota** (2026-09-19):
-  - Tiap kartu di `#bukaList` diberi chip `.kn-st`: *Belum kenalan* (garis putus oranye),
-    *Menunggu* (netral), *Sudah kenal* (hijau + centang). Baris sendiri (`o.aku`) tanpa chip.
-    Hijau, bukan primary, supaya sama dengan blok "Kalian sudah kenalan" di detail anggota.
-  - `#bukaKenal` di atas sumbu: "Kamu sudah kenal X dari Y anggota" + bar progres. Y = baris
-    lain yang ada di prototipe (bukan angka kepala), supaya progres bisa penuh.
-  - Chip saring **Belum kenalan · n** (`#bukaBelum`) berdiri sendiri dan bisa digabung dengan
-    chip nilai sumbu (`hanyaBelum` + `bidangKini`); hilang saat semua sudah diajak.
-  - Helper `window.KolavoStatusKenal(nama)` → `'belum'|'menunggu'|'terhubung'`, dipakai P10
-    (tombol di kartu sambutan feed). Onboarding masih punya `statusKenal` sendiri.
-  - Hanya tampil saat daftar terbuka (anggota/pemilik); pengunjung tetap melihat panel terkunci.
+- **Revisi P9 — tanda status kenalan di daftar anggota** (2026-09-19, direvisi):
+  - Tiap kartu di `#bukaList` diberi **ikon bulat** `.kn-ic` di kolom kanan (kartu jadi
+    grid 3 kolom lewat `:has(> .kn-ic)`): orang+plus garis putus oranye = *belum*,
+    orang+jam netral = *menunggu*, orang+centang hijau = *sudah kenal*. Labelnya lewat
+    `title` + `aria-label`, bukan teks — permintaan user (awalnya chip berteks).
+    Baris sendiri (`o.aku`) tanpa ikon. Hijau, bukan primary, supaya sama dengan blok
+    "Kalian sudah kenalan" di detail anggota.
+  - `#bukaKenal` di atas sumbu: **cincin progres** SVG 64px (r=26, dashoffset) mengelilingi
+    ikon + "X/Y", di sampingnya "Sudah kenal X dari Y anggota" + ajakan, lalu chip saring.
+    Y = baris lain di daftar. Menggantikan bar garis (permintaan user).
+  - Chip saring **Belum kenalan · n** (`#bukaBelum`) bisa digabung dengan chip nilai sumbu
+    (`hanyaBelum` + `bidangKini`); hilang saat semua sudah diajak.
+  - Helper `window.KolavoStatusKenal(nama)` → `'belum'|'menunggu'|'terhubung'`, dipakai P10.
+  - Hanya tampil saat daftar terbuka (anggota/pemilik).
+  - **Jumlah anggota = isi daftar.** Kartu direktori dulu menulis 22/9/17/20 anggota padahal
+    seed tiap komunitas 6 orang, dan agregat profesi/domisili ditulis tangan untuk angka itu.
+    Sekarang keempat kartu "6 anggota", dan `profesi`, `kota`, `angkatan` di `DATA`
+    **diturunkan dari `anggota`** saat modul dimuat (`hitung()`); literalnya dihapus.
+    Setelah diterima, kepala halaman jadi 7 (6 + kamu). Hero WAG ("22 anggota") tidak
+    disentuh — itu ilustrasi, bukan komunitas di direktori.
 
 ## Yang belum terverifikasi
 

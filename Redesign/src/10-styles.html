@@ -1092,17 +1092,27 @@ body.lgn-open{overflow:hidden}
 .buka-sumbu .chip{font-size:11.5px;padding:5px 11px}
 /* status kenalan per kartu + progres di atas daftar — mendorong mengajak kenalan.
    Hijau untuk "sudah kenal" menyamai blok kenalan di detail anggota. */
-.kn-prog{padding:4px 4px 12px}
-.kn-prog-t{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
-.kn-prog-t b{color:var(--ink);font-weight:600}
-.kn-prog .chip{font-size:11.5px;padding:5px 11px}
-.kn-prog-bar{margin-top:8px;height:6px;border-radius:100px;background:var(--line);overflow:hidden}
-.kn-prog-bar i{display:block;height:100%;border-radius:inherit;background:var(--green);transition:width .4s ease}
-.kn-st{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:2px 8px 2px 6px;border-radius:100px;border:1px solid transparent;white-space:nowrap}
-.kn-st svg{width:11px;height:11px;flex:none}
-.kn-st.belum{border:1px dashed var(--orange);color:var(--orange-ink);background:var(--orange-wash)}
-.kn-st.menunggu{border-color:var(--line);color:var(--ink-2);background:var(--bg-alt)}
-.kn-st.terhubung{color:var(--green);background:var(--green-wash)}
+.kn-prog{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:6px 4px 14px}
+.kn-prog[hidden]{display:none}
+.kn-ring{position:relative;width:64px;height:64px;flex:none}
+.kn-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.kn-ring circle{fill:none;stroke-width:5}
+.kn-ring .jalur{stroke:var(--line)}
+.kn-ring .isi{stroke:var(--green);stroke-linecap:round;transition:stroke-dashoffset .5s ease}
+.kn-ring-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:var(--green)}
+.kn-ring-in svg{width:15px;height:15px;transform:none}
+.kn-ring-in b{font-size:13px;font-weight:600;line-height:1;color:var(--ink)}
+.kn-prog-t{display:flex;flex-direction:column;gap:2px;flex:1 1 180px;min-width:0;font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.kn-prog-t b{font-size:14px;font-weight:600;color:var(--ink)}
+.kn-prog .chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:5px 11px}
+.kn-prog .chip svg{width:14px;height:14px;flex:none}
+/* ikon status di ujung kanan kartu anggota; labelnya lewat title + aria-label */
+.buka .m:has(> .kn-ic){grid-template-columns:auto 1fr auto}
+.kn-ic{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:100px;flex:none;border:1px solid transparent}
+.kn-ic svg{width:18px;height:18px}
+.kn-ic.belum{border:1.5px dashed var(--orange);color:var(--orange-ink);background:var(--orange-wash)}
+.kn-ic.menunggu{border-color:var(--line);color:var(--ink-2);background:var(--bg-alt)}
+.kn-ic.terhubung{color:var(--green);background:var(--green-wash)}
 
 /* ---------- pengurus ----------
    Section-nya dilepas dari halaman komunitas atas permintaan ("untuk sekarang").
