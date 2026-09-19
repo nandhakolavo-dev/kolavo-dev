@@ -815,6 +815,20 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   - **Regresi P5 dibetulkan**: judul detail anggota kini nama panggilan, jadi tombol
     kenalan membaca kunci orangnya dari `#agNm[data-nm]`, bukan dari teks judul.
 
+- **Revisi lanjutan R1 — ikon dashboard & arah angka** (2026-09-19):
+  - Satu set ikon bersama di modul baru `src/50-js-ikon.html` (dirakit tepat setelah
+    footer, sebelum skrip lain): `window.KolavoIkon(nama, kelas)` → `<svg>` stroke 1.75
+    currentColor; markup `<i data-ic="nama"></i>` diisi otomatis (`KolavoIkonIsi(akar)`
+    untuk HTML yang digambar belakangan). Modul lain jangan menyalin path — tambah
+    nama baru di sini. Catatan: daftar `JS` di `kit/split.py` sudah tertinggal sejak
+    modul notifikasi/onboarding; jangan andalkan split.py tanpa memperbaruinya.
+  - Menu dashboard pengurus: tiap `.kl-tab` diberi `.kl-tab-ic` 18px (sub 16px).
+  - Kartu angka Dashboard Advance: ikon 32px di kanan angka (`.sek-stat-ic`), selisih
+    mingguan jadi pil `.sek-delta.naik` (hijau `--green`) / `.turun` (merah `--red`)
+    dengan panah ikon. Warna mengikuti arah angka apa adanya, termasuk "ditolak" naik
+    = hijau (sesuai permintaan). Data contoh: pengunjung 88→81 dan dokumen 31→28
+    supaya keadaan turun terlihat.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

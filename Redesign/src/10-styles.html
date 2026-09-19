@@ -1365,6 +1365,9 @@ body.lgn-open{overflow:hidden}
 .kl-subnav{display:contents}
 .kl-nav [data-induk]{display:none}
 .kl-induk-ic{width:16px;height:16px;display:none;transition:transform .15s ease}
+.kl-tab-ic{flex:none;display:inline-grid;width:18px;height:18px}
+.kl-tab-ic svg{width:100%;height:100%}
+.kl-tab.sub .kl-tab-ic{width:16px;height:16px}
 #scrKelola:not(.mode-adv) .kl-subnav{display:none}
 #scrKelola:not(.mode-adv) [data-induk]:not([data-sek]){display:inline-flex}
 .kl-induk.aktif{color:var(--blue-ink);border-bottom-color:var(--blue)}
@@ -1551,7 +1554,14 @@ body.lgn-open{overflow:hidden}
 .sek-alat{display:flex;gap:10px 14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:16px}
 .sek-judul-k{margin-top:24px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
 .sek-stat2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.sek-stat-i .sek-delta{margin-top:6px;font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.sek-stat-i .sek-delta{margin-top:8px;font-size:11.5px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums;
+  display:inline-flex;align-items:center;gap:4px;padding:2px 8px 2px 6px;border-radius:100px;background:var(--bg-alt)}
+.sek-stat-i .sek-delta svg{width:12px;height:12px;flex:none}
+.sek-stat-i .sek-delta.naik{color:var(--green);background:var(--green-wash)}
+.sek-stat-i .sek-delta.turun{color:var(--red);background:var(--red-wash)}
+.sek-stat-h{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.sek-stat-ic{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--blue-wash);color:var(--blue-ink)}
+.sek-stat-ic svg{width:18px;height:18px}
 .sek-grafik{margin-top:24px}
 .sek-grafik-h{display:flex;gap:10px 14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .sek-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:12.5px}

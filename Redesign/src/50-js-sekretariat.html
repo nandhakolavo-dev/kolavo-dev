@@ -189,11 +189,11 @@
   /* Seri mingguan contoh, 12 minggu, yang terakhir = minggu ini. Diterima/ditolak
      minggu ini ikut bertambah dari keputusan yang dibuat di prototipe (Riwayat). */
   const SERI = {
-    pengunjung: { label: 'Pengunjung profil', data: [42, 48, 51, 47, 60, 66, 58, 71, 79, 74, 88, 96] },
+    pengunjung: { label: 'Pengunjung profil', data: [42, 48, 51, 47, 60, 66, 58, 71, 79, 74, 88, 81] },
     pendaftar:  { label: 'Pendaftar',         data: [6, 7, 9, 8, 11, 12, 10, 14, 15, 13, 17, 19] },
     diterima:   { label: 'Diterima',          data: [5, 6, 7, 7, 9, 10, 8, 11, 13, 11, 14, 15] },
     ditolak:    { label: 'Ditolak',           data: [1, 1, 1, 0, 2, 1, 2, 2, 1, 2, 2, 3] },
-    dokumen:    { label: 'Dokumen komunitas', data: [12, 15, 14, 13, 19, 22, 20, 24, 27, 25, 31, 34] },
+    dokumen:    { label: 'Dokumen komunitas', data: [12, 15, 14, 13, 19, 22, 20, 24, 27, 25, 31, 28] },
     komunikasi: { label: 'Alat komunikasi',   data: [18, 21, 22, 20, 26, 29, 27, 33, 36, 34, 40, 44] }
   };
   /* satu sumbu per grafik: tiap grafik berisi besaran yang satuannya sama (orang).
@@ -223,17 +223,19 @@
 
   function selisih(k){
     const d = mingguan(k), kini = d[d.length - 1], lalu = d[d.length - 2];
-    let teks;
+    let teks, arah = '';
     if(!lalu) teks = kini ? 'minggu lalu 0' : 'sama dengan minggu lalu';
     else {
       const p = Math.round((kini - lalu) / lalu * 100);
-      teks = (p > 0 ? '▲ ' : p < 0 ? '▼ ' : '') + (p ? Math.abs(p) + '%' : 'sama') + ' dari minggu lalu (' + lalu + ')';
+      arah = p > 0 ? 'naik' : p < 0 ? 'turun' : '';
+      teks = (p ? Math.abs(p) + '%' : 'sama') + ' dari minggu lalu (' + lalu + ')';
     }
-    return '<span class="sek-delta">' + teks + '</span>';
+    return '<span class="sek-delta' + (arah ? ' ' + arah : '') + '">' + (arah ? window.KolavoIkon(arah) : '') + teks + '</span>';
   }
+  const IK_STAT = { pengunjung: 'mata', pendaftar: 'tambahOrang', diterima: 'terimaOrang', ditolak: 'tolakOrang', dokumen: 'dokumen', komunikasi: 'jawaban' };
   function kartuAngka(k, ket){
     const d = mingguan(k);
-    return '<div class="sek-stat-i"><b>' + d[d.length - 1] + '</b><span>' + ket + '</span>' + selisih(k) + '</div>';
+    return '<div class="sek-stat-i"><div class="sek-stat-h"><b>' + d[d.length - 1] + '</b><i class="sek-stat-ic">' + window.KolavoIkon(IK_STAT[k]) + '</i></div><span>' + ket + '</span>' + selisih(k) + '</div>';
   }
   function segmen(label, attr, pilihan, kini){
     return '<div class="kl-mode" role="radiogroup" aria-label="' + label + '">' + pilihan.map(function(p){

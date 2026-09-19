@@ -11,6 +11,7 @@
 30-layer-scrBuat.html
 30-layer-scrKelola.html
 40-footer.html
+50-js-ikon.html
 50-js-direktori-filter.html
 50-js-pemilih-lokasi.html
 50-js-modal-masuk.html
