@@ -659,6 +659,28 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     tersembunyi. Induk disembunyikan lewat selektor atribut `[data-induk]`, bukan
     kelas, supaya audit tidak menandai `.kl-tab` vs `.kl-induk` berebut `display`.
 
+  **Revisi P2 — isi Dashboard.** Empat angka pertumbuhan minggu ini (pengunjung profil,
+  pendaftar, diterima, ditolak) + dua angka akses (dokumen komunitas, alat komunikasi),
+  masing-masing dengan ▲/▼ % dari minggu lalu. Satu grafik garis dengan dua pilihan
+  data — *Anggota* (pendaftar/diterima/ditolak) dan *Kunjungan & akses* — bukan satu
+  grafik dua sumbu. Rentang 4/12 minggu, crosshair + tooltip, nilai terakhir di ujung
+  garis, tabel di `<details>`. Unduh rekap = CSV 12 minggu (Blob, sisi klien).
+  - Data 12 minggu adalah contoh (`SERI` di `50-js-sekretariat`); diterima/ditolak
+    minggu ini ikut bertambah dari keputusan di Riwayat prototipe.
+  - Token baru `--viz-1/2/3` (biru, oranye, hijau) di ketiga blok tema, divalidasi
+    `dataviz/validate_palette.js`: lolos terang & gelap. Pasangan hijau–oranye mepet
+    untuk protan (ΔE 6,4), jadi seri oranye digambar putus-putus.
+  - Grafik digambar ulang sesuai lebar wadah (teks tetap 11px di layar sempit).
+    Panel tersembunyi lebarnya 0, jadi ada tiga jalur gambar ulang: ResizeObserver,
+    `setTimeout` sesudah `gambarSemua`, dan klik tab Dashboard. ResizeObserver saja
+    tidak cukup di tab browser yang `hidden`.
+  - Viewer Artifact memblokir tautan Blob/`download`. Artifact dipublish dengan
+    kapabilitas `downloads`; tombol memakai `claude.use('downloads').save()` (viewer
+    mengonfirmasi), dan jatuh ke tautan Blob biasa kalau berkas dibuka langsung.
+    Republish berikutnya **jangan** mengirim `capabilities` kosong — itu mencabutnya.
+  - Blok "Rekap untuk rapat (PDF)" dan empat angka lama (anggota, menunggu, terlama,
+    pemegang dashboard) diganti; rangkuman mingguan ke WhatsApp dipertahankan.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

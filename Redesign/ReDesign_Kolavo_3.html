@@ -70,6 +70,8 @@
   --disabled:#E3E3E3;
   --btn-ink:#FFFFFF;
   --red:#C0362C; --red-wash:#FDF0EE; --red-line:#F3CFCA;
+  /* seri grafik (kit/dataviz validate_palette: lolos terang & gelap) */
+  --viz-1:#2D6BE4; --viz-2:#E0562B; --viz-3:#12855F;
   --scrim:rgba(20,26,38,.34);
   --g-bg:#FFFFFF; --g-ink:#1F1F1F; --g-line:#747775;
   --ring:rgba(45,107,228,.4);
@@ -88,6 +90,7 @@
     --green:#4FBF98;--green-wash:#12281F;
     --disabled:#2A303C;--btn-ink:#0D1017;--ring:rgba(111,151,245,.5);
     --red:#FF9A8F;--red-wash:#2B1512;--red-line:#4A241F;
+    --viz-1:#5B86EE;--viz-2:#E8683F;--viz-3:#2E9C78;
     --scrim:rgba(0,0,0,.55);
     --g-bg:#131314;--g-ink:#E3E3E3;--g-line:#8E918F;
     --kabut:24 29 40;
@@ -106,6 +109,7 @@
   --green:#4FBF98;--green-wash:#12281F;
   --disabled:#2A303C;--btn-ink:#0D1017;--ring:rgba(111,151,245,.5);
   --red:#FF9A8F;--red-wash:#2B1512;--red-line:#4A241F;
+    --viz-1:#5B86EE;--viz-2:#E8683F;--viz-3:#2E9C78;
   --scrim:rgba(0,0,0,.55);
   --g-bg:#131314;--g-ink:#E3E3E3;--g-line:#8E918F;
   --sh-sm:0 1px 2px rgba(0,0,0,.45);
@@ -1401,6 +1405,44 @@ body.lgn-open{overflow:hidden}
 .sek-stat-i b{display:block;font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums}
 .sek-stat-i span{display:block;font-size:12px;color:var(--ink-2);line-height:1.4;margin-top:2px}
 .sek-stat-i.warn b{color:var(--orange-ink)}
+
+/* dashboard: angka mingguan + grafik garis */
+.sek-alat{display:flex;gap:10px 14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:16px}
+.sek-judul-k{margin-top:24px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.sek-stat2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.sek-stat-i .sek-delta{margin-top:6px;font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.sek-grafik{margin-top:24px}
+.sek-grafik-h{display:flex;gap:10px 14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.sek-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:12.5px}
+.sek-legend li{display:inline-flex;align-items:center;gap:7px}
+.sek-legend span{color:var(--ink-2)}
+.sek-legend svg{width:22px;height:10px;flex:none}
+.sek-c1{color:var(--viz-1)}
+.sek-c2{color:var(--viz-2)}
+.sek-c3{color:var(--viz-3)}
+.sek-garis{fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.sek-garis.putus{stroke-dasharray:5 4}
+.sek-plot{position:relative;margin-top:8px;height:220px}
+.sek-plot svg{display:block;width:100%;height:220px;overflow:visible}
+.sek-plot .grid{stroke:var(--line);stroke-width:1}
+.sek-plot .sumbu{fill:var(--ink-3);font-size:11px;font-family:inherit}
+.sek-plot .nilai{fill:var(--ink-2);font-size:11px;font-weight:600;font-family:inherit}
+.sek-plot .titik{fill:currentColor;stroke:var(--card);stroke-width:2}
+.sek-plot .silang{stroke:var(--ink-3);stroke-width:1}
+.sek-sasaran{fill:transparent;cursor:crosshair}
+.sek-tip{position:absolute;top:0;pointer-events:none;background:var(--card);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--sh);padding:8px 10px;font-size:12px;line-height:1.55;color:var(--ink);white-space:nowrap}
+.sek-tip[hidden]{display:none}
+.sek-tip b{font-weight:600}
+.sek-tip .r{display:flex;align-items:center;gap:7px;color:var(--ink-2)}
+.sek-tip .r i{width:8px;height:8px;border-radius:100px;background:currentColor;flex:none}
+.sek-tabel{margin-top:12px}
+.sek-tabel summary{font-size:12.5px;font-weight:600;color:var(--blue-ink);cursor:pointer}
+.sek-tabel-w{overflow-x:auto;margin-top:8px}
+.sek-tabel table{border-collapse:collapse;font-size:12px;width:100%;font-variant-numeric:tabular-nums}
+.sek-tabel th,.sek-tabel td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.sek-tabel th:first-child,.sek-tabel td:first-child{text-align:left}
+.sek-tabel th{font-weight:600;color:var(--ink-2)}
 
 /* rapikan jawaban */
 .sek-ringkas{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
@@ -6048,7 +6090,7 @@ function hitung(){}
                dan langganannya tetap jalan walau sedang di Esensial.
 
    Tiap panel menjawab satu kendala administratif yang tercatat:
-     dasbor  Dashboard        ringkasan untuk semua pengurus + rangkuman mingguan
+     dasbor  Dashboard        pertumbuhan anggota & akses vs minggu lalu, grafik, rekap CSV
      rapi    Rapikan jawaban  jawaban beda tulisan -> tag ganda (user testing 18 Juli 2026)
      Setting (sub-menu)
        akun    Akun           email pemilik (kerangka)
@@ -6076,13 +6118,14 @@ function hitung(){}
     cek:     svg('<path d="m5 13 4 4L19 7"/>'),
     kantor:  svg('<path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/>'),
     panah:   svg('<path d="M5 12h14M13 6l6 6-6 6"/>', 'sek-panah'),
-    pindah:  svg('<path d="M5 12h14M13 6l6 6-6 6"/>')
+    pindah:  svg('<path d="M5 12h14M13 6l6 6-6 6"/>'),
+    unduh:   svg('<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>')
   };
   const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
   /* ---------- daftar fitur Advance (dipakai pop up langganan & judul panel) ---------- */
   const FITUR = {
-    dasbor: { judul: 'Dashboard',      ringkas: 'ringkasan komunitas untuk semua pengurus, plus rangkuman mingguan ke WhatsApp.' },
+    dasbor: { judul: 'Dashboard',      ringkas: 'pertumbuhan anggota dan akses dokumen minggu demi minggu, dengan rekap yang bisa diunduh.' },
     rapi:  { judul: 'Rapikan jawaban', ringkas: 'satukan jawaban yang sama tapi ditulis berbeda, supaya tag tidak ganda.' },
     akun:  { judul: 'Akun' },
     notif: { judul: 'Notifikasi' },
@@ -6125,6 +6168,7 @@ function hitung(){}
     D.mode = 'simple';
     S.rapi = {}; S.namaRapi = {}; S.pilihan = false;
     S.rangkuman = true;
+    S.rentang = 12; S.grafik = 'tumbuh';
     S.akses = {}; S.undangan = []; S.email = ''; S.emailLevel = 'data';
     S.jejak = [];
     S.serah = { ketua: '', pemegang: '', lama: 'lihat', tanggal: '', jadwal: false };
@@ -6203,19 +6247,105 @@ function hitung(){}
       '<button type="button" class="btn outline sm" data-mode="advance">' + (D.sekAktif ? 'Buka Advance' : 'Coba Advance') + '</button>';
   }
 
-  /* ---------- dashboard ---------- */
-  /* Kerangka: angka ringkas, rangkuman mingguan, rekap. Statistik pertumbuhan
-     (pengunjung profil, pendaftar, diterima/ditolak, grafik) menyusul. */
+  /* ---------- dashboard: pertumbuhan anggota ---------- */
+  /* Seri mingguan contoh, 12 minggu, yang terakhir = minggu ini. Diterima/ditolak
+     minggu ini ikut bertambah dari keputusan yang dibuat di prototipe (Riwayat). */
+  const SERI = {
+    pengunjung: { label: 'Pengunjung profil', data: [42, 48, 51, 47, 60, 66, 58, 71, 79, 74, 88, 96] },
+    pendaftar:  { label: 'Pendaftar',         data: [6, 7, 9, 8, 11, 12, 10, 14, 15, 13, 17, 19] },
+    diterima:   { label: 'Diterima',          data: [5, 6, 7, 7, 9, 10, 8, 11, 13, 11, 14, 15] },
+    ditolak:    { label: 'Ditolak',           data: [1, 1, 1, 0, 2, 1, 2, 2, 1, 2, 2, 3] },
+    dokumen:    { label: 'Dokumen komunitas', data: [12, 15, 14, 13, 19, 22, 20, 24, 27, 25, 31, 34] },
+    komunikasi: { label: 'Alat komunikasi',   data: [18, 21, 22, 20, 26, 29, 27, 33, 36, 34, 40, 44] }
+  };
+  /* satu sumbu per grafik: tiap grafik berisi besaran yang satuannya sama (orang).
+     Warna ikut entitas (--viz-1 biru, -2 oranye, -3 hijau); seri oranye digambar
+     putus-putus karena pasangan hijau-oranye mepet untuk buta warna merah. */
+  const GRAFIK = {
+    tumbuh: { judul: 'Pertumbuhan anggota', seri: [['pendaftar', 1], ['diterima', 3], ['ditolak', 2]] },
+    akses:  { judul: 'Kunjungan & akses',   seri: [['pengunjung', 1], ['dokumen', 2], ['komunikasi', 3]] }
+  };
+  function mingguan(k){
+    const d = SERI[k].data.slice();
+    if(k === 'diterima' || k === 'ditolak'){
+      d[d.length - 1] += D.riwayat.filter(function(r){ return r.status === k && r.waktu === 'baru saja'; }).length;
+    }
+    return d;
+  }
+  /* Senin tiap minggu, 12 minggu sampai minggu ini */
+  function awalMinggu(){
+    const senin = new Date(); senin.setHours(0, 0, 0, 0);
+    senin.setDate(senin.getDate() - ((senin.getDay() + 6) % 7));
+    const out = [];
+    for(let i = 11; i >= 0; i--){ const t = new Date(senin); t.setDate(t.getDate() - 7 * i); out.push(t); }
+    return out;
+  }
+  function tglPendek(t){ return t.getDate() + ' ' + BULAN[t.getMonth()].slice(0, 3); }
+  function tglIso(t){ return t.getFullYear() + '-' + ('0' + (t.getMonth() + 1)).slice(-2) + '-' + ('0' + t.getDate()).slice(-2); }
+
+  function selisih(k){
+    const d = mingguan(k), kini = d[d.length - 1], lalu = d[d.length - 2];
+    let teks;
+    if(!lalu) teks = kini ? 'minggu lalu 0' : 'sama dengan minggu lalu';
+    else {
+      const p = Math.round((kini - lalu) / lalu * 100);
+      teks = (p > 0 ? '▲ ' : p < 0 ? '▼ ' : '') + (p ? Math.abs(p) + '%' : 'sama') + ' dari minggu lalu (' + lalu + ')';
+    }
+    return '<span class="sek-delta">' + teks + '</span>';
+  }
+  function kartuAngka(k, ket){
+    const d = mingguan(k);
+    return '<div class="sek-stat-i"><b>' + d[d.length - 1] + '</b><span>' + ket + '</span>' + selisih(k) + '</div>';
+  }
+  function segmen(label, attr, pilihan, kini){
+    return '<div class="kl-mode" role="radiogroup" aria-label="' + label + '">' + pilihan.map(function(p){
+      return '<button type="button" role="radio" ' + attr + '="' + p[0] + '" aria-checked="' + (String(kini) === String(p[0])) + '">' + p[1] + '</button>';
+    }).join('') + '</div>';
+  }
+  function contohGaris(c){
+    return '<svg viewBox="0 0 22 10" aria-hidden="true"><line x1="1" y1="5" x2="21" y2="5" class="sek-garis' + (c === 2 ? ' putus' : '') + '"/></svg>';
+  }
+
   function gambarDasbor(){
-    const tua = D.minta.reduce(function(m, r){ return Math.max(m, r.hari || 0); }, 0);
+    const g = GRAFIK[S.grafik];
+    const minggu = awalMinggu();
+    const kol = Object.keys(SERI);
+    const tabel = '<div class="sek-tabel-w"><table><thead><tr><th>Minggu mulai</th>' +
+      kol.map(function(k){ return '<th>' + SERI[k].label + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      minggu.slice(-S.rentang).map(function(t, j){
+        const i = minggu.length - S.rentang + j;
+        return '<tr><td>' + tglPendek(t) + '</td>' + kol.map(function(k){ return '<td>' + mingguan(k)[i] + '</td>'; }).join('') + '</tr>';
+      }).join('') + '</tbody></table></div>';
+    const daft = mingguan('pendaftar'), trm = mingguan('diterima'), tlk = mingguan('ditolak');
     const peninjau = D.peninjau.map(depan);
+
     el('klPanelDasbor').innerHTML =
-      kepala('dasbor', 'Ringkasan ' + lolos(D.kom.nama) + ' yang dilihat semua pengurus pemegang dashboard.') +
+      kepala('dasbor', 'Pertumbuhan ' + lolos(D.kom.nama) + ' minggu ini dibanding minggu lalu. Dilihat semua pengurus pemegang dashboard.') +
+      '<div class="sek-alat">' +
+        segmen('Rentang grafik', 'data-sek-rentang', [[4, '4 minggu'], [12, '12 minggu']], S.rentang) +
+        '<button type="button" class="btn outline sm" data-sek-unduh="csv">' + IK.unduh + 'Unduh rekap (CSV)</button>' +
+      '</div>' +
+      '<p class="sek-judul-k">Pertumbuhan anggota · minggu ini</p>' +
       '<div class="sek-stat">' +
-        '<div class="sek-stat-i"><b>' + D.jumlahAnggota() + '</b><span>anggota</span></div>' +
-        '<div class="sek-stat-i' + (D.minta.length ? ' warn' : '') + '"><b>' + D.minta.length + '</b><span>menunggu ditinjau</span></div>' +
-        '<div class="sek-stat-i' + (tua >= 3 ? ' warn' : '') + '"><b>' + (D.minta.length ? tua + ' hari' : '—') + '</b><span>terlama menunggu</span></div>' +
-        '<div class="sek-stat-i"><b>' + pemegangAkses().length + '</b><span>pengurus pegang dashboard</span></div>' +
+        kartuAngka('pengunjung', 'pengunjung profil komunitas') +
+        kartuAngka('pendaftar', 'pendaftar') +
+        kartuAngka('diterima', 'diterima jadi anggota') +
+        kartuAngka('ditolak', 'ditolak') +
+      '</div>' +
+      '<p class="sek-judul-k">Akses anggota · minggu ini</p>' +
+      '<div class="sek-stat2">' +
+        kartuAngka('dokumen', 'orang membuka dokumen komunitas') +
+        kartuAngka('komunikasi', 'orang membuka alat komunikasi (grup WhatsApp)') +
+      '</div>' +
+      '<div class="sek-blok sek-grafik">' +
+        '<div class="sek-grafik-h"><div class="sek-blok-h">' + g.judul + ' · ' + S.rentang + ' minggu terakhir</div>' +
+          segmen('Data grafik', 'data-sek-grafik', [['tumbuh', 'Anggota'], ['akses', 'Kunjungan & akses']], S.grafik) +
+        '</div>' +
+        '<ul class="sek-legend">' + g.seri.map(function(s){
+          return '<li class="sek-c' + s[1] + '">' + contohGaris(s[1]) + '<span>' + SERI[s[0]].label + '</span></li>';
+        }).join('') + '</ul>' +
+        '<div class="sek-plot" id="sekPlot"></div>' +
+        '<details class="sek-tabel"><summary>Lihat sebagai tabel</summary>' + tabel + '</details>' +
       '</div>' +
       '<div class="sek-blok">' +
         '<div class="sek-baris atas">' +
@@ -6223,14 +6353,126 @@ function hitung(){}
           '<div class="sek-blok-sub">Tiap Senin 08.00 ke para peninjau: ' + lolos(peninjau.join(', ')) + '.</div></div>' +
           '<label class="sw"><input type="checkbox" data-sek-rangkuman' + (S.rangkuman ? ' checked' : '') + '><i></i>' + (S.rangkuman ? 'Aktif' : 'Mati') + '</label>' +
         '</div>' +
-        (S.rangkuman ? '<p class="sek-kecil jarak">Contoh isi: “Minggu ini ' + D.minta.length + ' pendaftar menunggu' +
-          (D.minta.length ? ' (terlama ' + tua + ' hari)' : '') + '. Buka dashboard: kolavo.app/k/' + lolos(D.kom.slug) + '/dashboard”</p>' : '') +
-      '</div>' +
-      '<div class="sek-blok"><div class="sek-blok-h">Rekap untuk rapat pengurus</div>' +
-        '<div class="sek-blok-sub">Jumlah anggota, yang bergabung dan ditolak periode ini, lama rata-rata peninjauan, dan sebaran anggota.</div>' +
-        '<div class="sek-baris"><button type="button" class="btn outline sm" data-sek-unduh="pdf">Unduh rekap (PDF)</button>' +
-        '<button type="button" class="btn outline sm" data-sek-unduh="csv">Ekspor anggota (CSV)</button></div>' +
+        (S.rangkuman ? '<p class="sek-kecil jarak">Contoh isi: “Minggu ini ' + daft[11] + ' pendaftar, ' + trm[11] + ' diterima, ' + tlk[11] +
+          ' ditolak. Buka dashboard: kolavo.app/k/' + lolos(D.kom.slug) + '/dashboard”</p>' : '') +
       '</div>';
+    gambarGrafik();
+    /* gambarSemua jalan sebelum panel ditampilkan (lebar 0) — gambar lagi sesudahnya */
+    setTimeout(gambarGrafik, 0);
+  }
+
+  /* grafik garis digambar ulang sesuai lebar wadahnya (bukan diskalakan), supaya
+     teks sumbu tetap 11px di layar sempit. Panel yang tersembunyi lebarnya 0 —
+     ResizeObserver menggambarnya begitu panel tampil. */
+  let plotRO = null;
+  function langkahRapi(v){
+    const p = Math.pow(10, Math.floor(Math.log10(Math.max(v, 1))));
+    const m = [1, 2, 5, 10].filter(function(x){ return x * p >= v; })[0];
+    return Math.max(1, m * p);
+  }
+  function gambarGrafik(){
+    const wadah = el('sekPlot');
+    if(!wadah) return;
+    if(window.ResizeObserver){
+      if(!plotRO) plotRO = new ResizeObserver(function(en){
+        const w = Math.round(en[0].contentRect.width);
+        if(w && String(w) !== en[0].target.dataset.w) gambarGrafik();
+      });
+      plotRO.disconnect(); plotRO.observe(wadah);
+    }
+    const W = wadah.clientWidth;
+    wadah.dataset.w = W;
+    if(!W) return;
+    const H = 220, pad = { l: 34, r: 34, t: 12, b: 26 };
+    const n = S.rentang;
+    const minggu = awalMinggu().slice(-n);
+    const seri = GRAFIK[S.grafik].seri.map(function(s){ return { k: s[0], c: s[1], d: mingguan(s[0]).slice(-n) }; });
+    const puncak = Math.max.apply(null, seri.map(function(s){ return Math.max.apply(null, s.d); }));
+    const step = langkahRapi(puncak / 4);
+    const maks = step * Math.max(1, Math.ceil(puncak / step));
+    const lx = W - pad.l - pad.r, ly = H - pad.t - pad.b;
+    const x = function(i){ return pad.l + (n > 1 ? i * lx / (n - 1) : lx / 2); };
+    const y = function(v){ return pad.t + (1 - v / maks) * ly; };
+    const f = function(v){ return Math.round(v * 10) / 10; };
+
+    let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + GRAFIK[S.grafik].judul + ', ' + n + ' minggu terakhir. Rincian ada di tabel.">';
+    for(let v = 0; v <= maks; v += step){
+      s += '<line class="grid" x1="' + pad.l + '" x2="' + (W - pad.r) + '" y1="' + f(y(v)) + '" y2="' + f(y(v)) + '"/>' +
+           '<text class="sumbu" x="' + (pad.l - 8) + '" y="' + f(y(v) + 4) + '" text-anchor="end">' + v + '</text>';
+    }
+    const tiap = Math.max(1, Math.ceil(n * 44 / lx));
+    minggu.forEach(function(t, i){
+      if((n - 1 - i) % tiap) return;
+      s += '<text class="sumbu" x="' + f(x(i)) + '" y="' + (H - 6) + '" text-anchor="' + (i === 0 && n > 1 ? 'start' : i === n - 1 ? 'end' : 'middle') + '">' +
+           (i === n - 1 ? 'Minggu ini' : tglPendek(t)) + '</text>';
+    });
+    seri.forEach(function(sr){
+      s += '<g class="sek-c' + sr.c + '"><path class="sek-garis' + (sr.c === 2 ? ' putus' : '') + '" d="' +
+        sr.d.map(function(v, i){ return (i ? 'L' : 'M') + f(x(i)) + ' ' + f(y(v)); }).join('') + '"/>' +
+        '<circle class="titik" r="4" cx="' + f(x(n - 1)) + '" cy="' + f(y(sr.d[n - 1])) + '"/></g>';
+    });
+    /* nilai terakhir di ujung garis, didorong supaya tidak bertumpuk */
+    const ujung = seri.map(function(sr){ return { v: sr.d[n - 1], y: y(sr.d[n - 1]) }; }).sort(function(a, b){ return a.y - b.y; });
+    ujung.forEach(function(u, i){ if(i && u.y - ujung[i - 1].y < 13) u.y = ujung[i - 1].y + 13; });
+    ujung.forEach(function(u){ s += '<text class="nilai" x="' + f(x(n - 1) + 8) + '" y="' + f(u.y + 4) + '">' + u.v + '</text>'; });
+    s += '<g class="sek-hover" visibility="hidden"><line class="silang" y1="' + pad.t + '" y2="' + (H - pad.b) + '"/>' +
+      seri.map(function(sr){ return '<circle class="titik sek-c' + sr.c + '" r="4"/>'; }).join('') + '</g>' +
+      '<rect class="sek-sasaran" x="' + pad.l + '" y="0" width="' + lx + '" height="' + H + '"/></svg>' +
+      '<div class="sek-tip" hidden></div>';
+    wadah.innerHTML = s;
+
+    const hov = wadah.querySelector('.sek-hover'), tip = wadah.querySelector('.sek-tip');
+    const sasaran = wadah.querySelector('.sek-sasaran');
+    sasaran.addEventListener('pointermove', function(e){
+      const r = wadah.getBoundingClientRect();
+      const i = Math.max(0, Math.min(n - 1, Math.round((e.clientX - r.left - pad.l) / (n > 1 ? lx / (n - 1) : 1))));
+      const cx = f(x(i));
+      hov.setAttribute('visibility', 'visible');
+      hov.querySelector('.silang').setAttribute('x1', cx); hov.querySelector('.silang').setAttribute('x2', cx);
+      hov.querySelectorAll('circle').forEach(function(c, j){ c.setAttribute('cx', cx); c.setAttribute('cy', f(y(seri[j].d[i]))); });
+      tip.innerHTML = '<b>' + (i === n - 1 ? 'Minggu ini' : 'Minggu ' + tglPendek(minggu[i])) + '</b>' +
+        seri.map(function(sr){ return '<div class="r"><i class="sek-c' + sr.c + '"></i>' + SERI[sr.k].label + ' <b>' + sr.d[i] + '</b></div>'; }).join('');
+      tip.hidden = false;
+      const kiri = cx + 12 + tip.offsetWidth > W ? cx - 12 - tip.offsetWidth : cx + 12;
+      tip.style.left = Math.max(0, kiri) + 'px';
+    });
+    sasaran.addEventListener('pointerleave', function(){ hov.setAttribute('visibility', 'hidden'); tip.hidden = true; });
+  }
+
+  let unduhan = null;
+  if(window.claude && typeof window.claude.use === 'function'){
+    window.claude.use('downloads').then(function(d){ unduhan = d; }, function(){});
+  }
+  function unduhRekap(){
+    const minggu = awalMinggu();
+    const kol = Object.keys(SERI);
+    const baris = [['Minggu mulai'].concat(kol.map(function(k){ return SERI[k].label; }))].concat(minggu.map(function(t, i){
+      return [tglIso(t)].concat(kol.map(function(k){ return mingguan(k)[i]; }));
+    }));
+    const csv = baris.map(function(b){
+      return b.map(function(v){ v = String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(',');
+    }).join('\n');
+    const nama = 'rekap-pertumbuhan-' + (D.kom.slug || 'komunitas') + '.csv';
+    /* di viewer Artifact, unduhan lewat kapabilitas downloads (viewer mengonfirmasi);
+       dibuka langsung sebagai berkas, pakai tautan Blob biasa. \ufeff = BOM supaya Excel membaca UTF-8 */
+    if(unduhan){
+      unduhan.save({ filename: nama, data: '\ufeff' + csv }).then(function(){
+        toast('Rekap 12 minggu disimpan sebagai CSV.');
+      }, function(err){
+        const k = err && err.code;
+        if(k === 'declined') return;
+        toast(k === 'rate_limited' ? 'Konfirmasi unduhan masih terbuka.' : 'Unduhan tidak tersedia di tampilan ini.');
+      });
+      return;
+    }
+    try{
+      const url = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' }));
+      const a = document.createElement('a');
+      a.href = url; a.download = nama;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      toast('Rekap 12 minggu diunduh sebagai CSV.');
+    }catch(err){ toast('Unduhan diblokir di pratinjau ini. Di produk, rekap CSV langsung terunduh.'); }
   }
 
   /* ---------- setting: akun, notifikasi, tagihan (kerangka, isinya menyusul) ---------- */
@@ -6484,6 +6726,7 @@ function hitung(){}
     const mode = e.target.closest('[data-mode]');
     if(mode){ pilihMode(mode.dataset.mode); return; }
 
+    if(e.target.closest('.kl-tab[data-tab="dasbor"]')) setTimeout(gambarGrafik, 0);
     const ke = e.target.closest('[data-sek-ke]');
     if(ke){
       D.tab = ke.dataset.sekKe;
@@ -6494,7 +6737,11 @@ function hitung(){}
     }
     if(e.target.closest('[data-sek-kelola]')){ D.pilihTab('tagihan'); return; }
     const unduh = e.target.closest('[data-sek-unduh]');
-    if(unduh){ toast(unduh.dataset.sekUnduh === 'pdf' ? 'Di produk, rekap PDF untuk rapat diunduh di sini.' : 'Di produk, daftar anggota diunduh sebagai CSV di sini.'); return; }
+    if(unduh){ unduhRekap(); return; }
+    const rentang = e.target.closest('[data-sek-rentang]');
+    if(rentang){ S.rentang = +rentang.dataset.sekRentang; gambarDasbor(); return; }
+    const grafik = e.target.closest('[data-sek-grafik]');
+    if(grafik){ S.grafik = grafik.dataset.sekGrafik; gambarDasbor(); return; }
 
     /* rapikan */
     const satu = e.target.closest('[data-sek-satu]');

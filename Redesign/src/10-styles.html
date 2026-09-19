@@ -28,6 +28,8 @@
   --disabled:#E3E3E3;
   --btn-ink:#FFFFFF;
   --red:#C0362C; --red-wash:#FDF0EE; --red-line:#F3CFCA;
+  /* seri grafik (kit/dataviz validate_palette: lolos terang & gelap) */
+  --viz-1:#2D6BE4; --viz-2:#E0562B; --viz-3:#12855F;
   --scrim:rgba(20,26,38,.34);
   --g-bg:#FFFFFF; --g-ink:#1F1F1F; --g-line:#747775;
   --ring:rgba(45,107,228,.4);
@@ -46,6 +48,7 @@
     --green:#4FBF98;--green-wash:#12281F;
     --disabled:#2A303C;--btn-ink:#0D1017;--ring:rgba(111,151,245,.5);
     --red:#FF9A8F;--red-wash:#2B1512;--red-line:#4A241F;
+    --viz-1:#5B86EE;--viz-2:#E8683F;--viz-3:#2E9C78;
     --scrim:rgba(0,0,0,.55);
     --g-bg:#131314;--g-ink:#E3E3E3;--g-line:#8E918F;
     --kabut:24 29 40;
@@ -64,6 +67,7 @@
   --green:#4FBF98;--green-wash:#12281F;
   --disabled:#2A303C;--btn-ink:#0D1017;--ring:rgba(111,151,245,.5);
   --red:#FF9A8F;--red-wash:#2B1512;--red-line:#4A241F;
+    --viz-1:#5B86EE;--viz-2:#E8683F;--viz-3:#2E9C78;
   --scrim:rgba(0,0,0,.55);
   --g-bg:#131314;--g-ink:#E3E3E3;--g-line:#8E918F;
   --sh-sm:0 1px 2px rgba(0,0,0,.45);
@@ -1359,6 +1363,44 @@ body.lgn-open{overflow:hidden}
 .sek-stat-i b{display:block;font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums}
 .sek-stat-i span{display:block;font-size:12px;color:var(--ink-2);line-height:1.4;margin-top:2px}
 .sek-stat-i.warn b{color:var(--orange-ink)}
+
+/* dashboard: angka mingguan + grafik garis */
+.sek-alat{display:flex;gap:10px 14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:16px}
+.sek-judul-k{margin-top:24px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.sek-stat2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.sek-stat-i .sek-delta{margin-top:6px;font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.sek-grafik{margin-top:24px}
+.sek-grafik-h{display:flex;gap:10px 14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.sek-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:12.5px}
+.sek-legend li{display:inline-flex;align-items:center;gap:7px}
+.sek-legend span{color:var(--ink-2)}
+.sek-legend svg{width:22px;height:10px;flex:none}
+.sek-c1{color:var(--viz-1)}
+.sek-c2{color:var(--viz-2)}
+.sek-c3{color:var(--viz-3)}
+.sek-garis{fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.sek-garis.putus{stroke-dasharray:5 4}
+.sek-plot{position:relative;margin-top:8px;height:220px}
+.sek-plot svg{display:block;width:100%;height:220px;overflow:visible}
+.sek-plot .grid{stroke:var(--line);stroke-width:1}
+.sek-plot .sumbu{fill:var(--ink-3);font-size:11px;font-family:inherit}
+.sek-plot .nilai{fill:var(--ink-2);font-size:11px;font-weight:600;font-family:inherit}
+.sek-plot .titik{fill:currentColor;stroke:var(--card);stroke-width:2}
+.sek-plot .silang{stroke:var(--ink-3);stroke-width:1}
+.sek-sasaran{fill:transparent;cursor:crosshair}
+.sek-tip{position:absolute;top:0;pointer-events:none;background:var(--card);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--sh);padding:8px 10px;font-size:12px;line-height:1.55;color:var(--ink);white-space:nowrap}
+.sek-tip[hidden]{display:none}
+.sek-tip b{font-weight:600}
+.sek-tip .r{display:flex;align-items:center;gap:7px;color:var(--ink-2)}
+.sek-tip .r i{width:8px;height:8px;border-radius:100px;background:currentColor;flex:none}
+.sek-tabel{margin-top:12px}
+.sek-tabel summary{font-size:12.5px;font-weight:600;color:var(--blue-ink);cursor:pointer}
+.sek-tabel-w{overflow-x:auto;margin-top:8px}
+.sek-tabel table{border-collapse:collapse;font-size:12px;width:100%;font-variant-numeric:tabular-nums}
+.sek-tabel th,.sek-tabel td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.sek-tabel th:first-child,.sek-tabel td:first-child{text-align:left}
+.sek-tabel th{font-weight:600;color:var(--ink-2)}
 
 /* rapikan jawaban */
 .sek-ringkas{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
