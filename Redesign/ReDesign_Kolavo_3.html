@@ -1489,10 +1489,19 @@ body.lgn-open{overflow:hidden}
 .kl-jab-list{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
 .kl-jab-i{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:100px;background:var(--bg-alt);border:1px solid var(--line);color:var(--ink-2)}
 .kl-jab-i.kustom{background:var(--blue-wash);border-color:transparent;color:var(--blue-ink)}
-.kl-jab-x{display:inline-grid;place-items:center;width:18px;height:18px;margin:0 -5px 0 0;padding:0;border:0;border-radius:100px;background:none;color:inherit;cursor:pointer}
-.kl-jab-x:hover{background:var(--card)}
+.kl-jab-i{padding:5px 8px 5px 12px}
+.kl-jab-x{display:inline-grid;place-items:center;width:24px;height:24px;margin:0;padding:0;border:0;border-radius:100px;background:none;color:var(--ink-3);cursor:pointer}
+.kl-jab-x:first-of-type{margin-left:2px}
+.kl-jab-x:hover{background:var(--card);color:var(--blue-ink)}
+.kl-jab-x.hapus:hover{color:var(--red)}
 .kl-jab-x:focus-visible{outline:3px solid var(--ring);outline-offset:1px}
-.kl-jab-x svg{width:11px;height:11px}
+.kl-jab-x svg{width:14px;height:14px}
+.kl-jab-n{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink);font-size:11px;font-weight:600}
+.kl-jab-i.ubah{padding:4px;gap:4px;background:var(--card);border-color:var(--blue)}
+.kl-jab .kl-jab-i .inp{width:170px;height:30px;font-size:13px;padding:0 10px}
+.kl-jab-i.konfirm{flex-wrap:wrap;gap:6px;padding:6px 6px 6px 12px;border-radius:13px;background:var(--red-wash);border-color:var(--red-line);color:var(--ink)}
+.btn.xs.hapus{background:var(--red);color:var(--btn-ink)}
+.btn.xs.hapus:hover{filter:brightness(.95)}
 .kl-jab .inp{max-width:260px;height:40px}
 .kl-angkat-lbl{font-size:13px;font-weight:600;color:var(--ink-2)}
 /* riwayat keputusan pendaftaran — dilihat semua pengurus */
@@ -1539,7 +1548,15 @@ body.lgn-open{overflow:hidden}
 .kl-req-catatan{margin-top:14px}
 .kl-req-catatan .inp{height:44px}
 .kl-opt{font-weight:500;text-transform:none;letter-spacing:0;color:var(--ink-3)}
-.kl-riwayat-catatan{font-size:12.5px;color:var(--ink-2);font-style:italic;line-height:1.45;margin-top:4px}
+.kl-wajib{font-weight:600;text-transform:none;letter-spacing:0;color:var(--red)}
+.kl-req-catatan-note{font-size:12px;color:var(--ink-3);line-height:1.45;margin-top:6px}
+.kl-req-aksi .btn:disabled{background:var(--disabled);color:var(--ink-3);border-color:transparent;cursor:not-allowed;transform:none}
+.kl-riwayat-catatan{margin-top:10px;padding:10px 12px;border-radius:13px;background:var(--bg-alt);border:1px solid var(--line);border-left:3px solid var(--line)}
+.kl-riwayat-catatan.diterima{border-left-color:var(--green)}
+.kl-riwayat-catatan.ditolak{border-left-color:var(--red)}
+.kl-riwayat-catatan-h{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.kl-riwayat-catatan-h svg{width:14px;height:14px;flex:none}
+.kl-riwayat-catatan p{font-size:13.5px;color:var(--ink);line-height:1.5;margin-top:4px}
 
 /* ---------- Sekretariat: dashboard pengurus berlangganan ---------- */
 /* toggle tampilan Esensial | Advance */
@@ -6267,6 +6284,8 @@ function hitung(){}
   window.KolavoDashboard = D;
   /* kait buat modul yang menempel ke dashboard (50-js-sekretariat) */
   D.onBangun = [];
+  /* dipanggil (lama, baru) saat jabatan diganti nama; baru = null kalau dihapus */
+  D.onJabatanGanti = [];
   D.onGambar = [];
 
   function inisial(n){
@@ -6330,7 +6349,7 @@ function hitung(){}
        sampai diberi jabatan sungguhan lewat menu Struktur Kepengurusan */
     D.pengurus = [{ nama: D.aku, jabatan: 'Community Builder', aku: true }];
     JABATAN.length = 0; Array.prototype.push.apply(JABATAN, JABATAN_AWAL);
-    D.jabatanTeks = '';
+    D.jabatanTeks = ''; D.jabEdit = null; D.jabEditTeks = ''; D.jabHapus = null;
     /* peninjau pendaftaran boleh lebih dari satu — daftar nama, bukan satu orang.
        Awalnya cuma pembuatnya; pengurus lain bisa ditambahkan kapan saja. */
     D.peninjau = [D.aku];
@@ -6346,7 +6365,13 @@ function hitung(){}
     D.tab = 'minta';
     D.angkatFor = null;
     D.ubahFor = null;
-    D.riwayat = [];
+    /* dua keputusan contoh, supaya kotak catatan keputusan di Riwayat langsung terlihat */
+    D.riwayat = [
+      { nama: 'Bima Prasetyo', panggil: 'Bima', kerja: 'Arsitek', kota: 'Surabaya', status: 'diterima', oleh: D.aku, waktu: '2 hari lalu',
+        catatan: 'Alumni angkatan 2015, dikenal langsung oleh Sekretaris. Jawaban pendaftarannya jelas soal ingin bantu program mentoring.' },
+      { nama: 'Andre Wijaya', panggil: 'Andre', kerja: 'Sales properti', kota: 'Jakarta Barat', status: 'ditolak', oleh: D.aku, waktu: '3 hari lalu',
+        catatan: 'Bukan alumni, dan jawabannya menyebut ingin menawarkan produk ke anggota. Disarankan ikut acara terbuka dulu.' }
+    ];
     D.built = true;
     /* modul lain (Sekretariat) mengosongkan keadaannya sendiri di sini */
     D.onBangun.forEach(function(f){ f(); });
@@ -6459,14 +6484,15 @@ function hitung(){}
       }
 
       const catatan = bisa
-        ? '<div class="kl-req-catatan"><label class="kl-info-k" for="kat-' + r.id + '">Catatan keputusan <span class="kl-opt">opsional</span></label>' +
-          '<input class="inp" id="kat-' + r.id + '" type="text" data-catatan maxlength="80" placeholder="Mis. alumni angkatan 2014, dikenal pengurus"></div>'
+        ? '<div class="kl-req-catatan"><label class="kl-info-k" for="kat-' + r.id + '">Catatan keputusan <span class="kl-wajib">wajib</span></label>' +
+          '<input class="inp" id="kat-' + r.id + '" type="text" data-catatan maxlength="140" required aria-required="true" aria-describedby="katn-' + r.id + '" placeholder="Mis. alumni angkatan 2014, dikenal pengurus">' +
+          '<p class="kl-req-catatan-note" id="katn-' + r.id + '">Tulis alasannya dulu, baru bisa setujui atau tolak. Catatan ini tersimpan di Riwayat supaya pengurus lain paham.</p></div>'
         : '';
 
       const aksi = bisa
         ? '<div class="kl-req-aksi">' +
-            '<button type="button" class="btn sm" data-setuju="' + r.id + '">' + IKON_CEK + 'Setujui</button>' +
-            '<button type="button" class="btn sm tolak" data-tolak="' + r.id + '">' + IKON_X + 'Tolak</button>' +
+            '<button type="button" class="btn sm" data-setuju="' + r.id + '" disabled>' + IKON_CEK + 'Setujui</button>' +
+            '<button type="button" class="btn sm tolak" data-tolak="' + r.id + '" disabled>' + IKON_X + 'Tolak</button>' +
           '</div>'
         : '<div class="kl-req-aksi"><span class="tag">Menunggu ditinjau ' + lolos(sebutNama(D.peninjau)) + '</span></div>';
 
@@ -6603,20 +6629,35 @@ function hitung(){}
     }).join('') + gambarJabatan();
   }
 
-  /* daftar jabatan + tambah jabatan kustom. Jabatan kustom bisa dihapus selama
-     belum ada yang memegangnya; jabatan bawaan tidak. */
+  /* daftar jabatan: SEMUA bisa diganti nama dan dihapus, termasuk bawaan (Ketua,
+     Wakil Ketua, ...) — tiap komunitas punya sebutan sendiri. Menghapus jabatan
+     yang ada pemegangnya minta konfirmasi dulu; pemegangnya pindah ke jabatan
+     pertama yang tersisa. Minimal satu jabatan harus tersisa. */
+  function pemegang(j){ return D.pengurus.filter(function(p){ return p.jabatan === j; }); }
   function gambarJabatan(){
-    const dipakai = function(j){ return D.pengurus.some(function(p){ return p.jabatan === j; }); };
+    const satu = JABATAN.length <= 1;
     return '<div class="kl-jab">' +
       '<div class="kl-jab-h">Jabatan di komunitas ini</div>' +
-      '<p class="kl-sub">Tambah jabatan yang tidak ada di daftar bawaan, misalnya Koordinator Wilayah atau Ketua Angkatan. Jabatan baru langsung muncul di pilihan jabatan dan di tabel Siapa boleh apa.</p>' +
+      '<p class="kl-sub">Semua jabatan bisa diganti namanya atau dihapus, termasuk Ketua dan Wakil Ketua — sesuaikan dengan sebutan di komunitasmu, misalnya Ketua Umum atau Koordinator Wilayah. Perubahan langsung berlaku di pilihan jabatan dan di tabel Siapa boleh apa.</p>' +
       '<ul class="kl-jab-list">' + JABATAN.map(function(j){
-        const kustom = JABATAN_AWAL.indexOf(j) < 0;
-        return '<li class="kl-jab-i' + (kustom ? ' kustom' : '') + '">' + lolos(j) +
-          (kustom && !dipakai(j) ? '<button type="button" class="kl-jab-x" data-jab-hapus="' + lolos(j) + '" aria-label="Hapus jabatan ' + lolos(j) + '">' + IKON_X + '</button>' : '') + '</li>';
+        const ada = pemegang(j).length;
+        if(D.jabEdit === j){
+          return '<li class="kl-jab-i ubah"><input class="inp" id="klJabUbah" maxlength="30" value="' + lolos(D.jabEditTeks) + '" aria-label="Nama baru untuk jabatan ' + lolos(j) + '">' +
+            '<button type="button" class="btn xs" data-jab-simpan>Simpan</button>' +
+            '<button type="button" class="btn xs outline" data-jab-batal>Batal</button></li>';
+        }
+        if(D.jabHapus === j){
+          const pindah = JABATAN.filter(function(x){ return x !== j; })[0];
+          return '<li class="kl-jab-i konfirm"><span>Hapus “' + lolos(j) + '”? ' + ada + ' pengurus memegangnya dan akan dipindah ke “' + lolos(pindah) + '”.</span>' +
+            '<button type="button" class="btn xs hapus" data-jab-hapus-ok>Hapus</button>' +
+            '<button type="button" class="btn xs outline" data-jab-batal>Batal</button></li>';
+        }
+        return '<li class="kl-jab-i">' + lolos(j) + (ada ? '<span class="kl-jab-n" title="' + ada + ' pemegang">' + ada + '</span>' : '') +
+          '<button type="button" class="kl-jab-x" data-jab-ubah="' + lolos(j) + '" aria-label="Ganti nama jabatan ' + lolos(j) + '" title="Ganti nama">' + window.KolavoIkon('pensil') + '</button>' +
+          (satu ? '' : '<button type="button" class="kl-jab-x hapus" data-jab-hapus="' + lolos(j) + '" aria-label="Hapus jabatan ' + lolos(j) + '" title="Hapus">' + window.KolavoIkon('sampah') + '</button>') + '</li>';
       }).join('') + '</ul>' +
       '<div class="kl-angkat"><input class="inp" id="klJabBaru" maxlength="30" placeholder="Nama jabatan baru" value="' + lolos(D.jabatanTeks) + '" aria-label="Nama jabatan baru">' +
-        '<button type="button" class="btn sm" data-jab-tambah>+ Jabatan kustom</button></div>' +
+        '<button type="button" class="btn sm" data-jab-tambah>+ Tambah jabatan</button></div>' +
     '</div>';
   }
 
@@ -6688,7 +6729,8 @@ function hitung(){}
       return '<div class="kl-riwayat">' + av +
           '<div class="t">' + idAtas + '<div class="kl-riwayat-nm">' + lolos(r.nama) + '</div>' +
           '<div class="kl-riwayat-sub">' + lolos(r.kerja) + ' · ' + lolos(r.kota) + ' · ' + oleh + ' · ' + lolos(r.waktu) + '</div>' +
-          (r.catatan ? '<div class="kl-riwayat-catatan">“' + lolos(r.catatan) + '”</div>' : '') + '</div>' +
+          '<div class="kl-riwayat-catatan ' + (diterima ? 'diterima' : 'ditolak') + '"><div class="kl-riwayat-catatan-h">' + window.KolavoIkon('dokumen') + 'Catatan keputusan</div>' +
+            '<p>' + (r.catatan ? lolos(r.catatan) : (r.otomatis ? 'Diterima otomatis sesuai aturan penerimaan otomatis.' : 'Tidak ada catatan.')) + '</p></div>' + '</div>' +
           '<span class="kl-hasil ' + (diterima ? 'diterima' : 'ditolak') + '">' + (diterima ? IKON_CEK : IKON_X) + (diterima ? 'Diterima' : 'Ditolak') + '</span>' +
         '</div>';
     }).join('');
@@ -6799,10 +6841,33 @@ function hitung(){}
   });
 
   /* kolom jabatan kustom: disimpan per ketikan supaya tidak hilang saat panel digambar ulang; Enter = tambah */
-  scr.addEventListener('input', function(e){ if(e.target.id === 'klJabBaru') D.jabatanTeks = e.target.value; });
+  scr.addEventListener('input', function(e){
+    if(e.target.id === 'klJabBaru') D.jabatanTeks = e.target.value;
+    if(e.target.id === 'klJabUbah') D.jabEditTeks = e.target.value;
+    /* catatan keputusan wajib: tombol Setujui/Tolak hidup setelah ada isinya */
+    if(e.target.matches('[data-catatan]')){
+      const kosong = !e.target.value.trim();
+      e.target.closest('.kl-req').querySelectorAll('[data-setuju],[data-tolak]').forEach(function(b){ b.disabled = kosong; });
+    }
+  });
   scr.addEventListener('keydown', function(e){
     if(e.key === 'Enter' && e.target.id === 'klJabBaru'){ e.preventDefault(); const b = scr.querySelector('[data-jab-tambah]'); if(b) b.click(); }
+    if(e.target.id === 'klJabUbah' && (e.key === 'Enter' || e.key === 'Escape')){
+      e.preventDefault(); const b = scr.querySelector(e.key === 'Enter' ? '[data-jab-simpan]' : '[data-jab-batal]'); if(b) b.click();
+    }
   });
+
+  function hapusJabatan(j){
+    const i = JABATAN.indexOf(j);
+    if(i < 0 || JABATAN.length <= 1) return;
+    const n = pemegang(j).length;
+    JABATAN.splice(i, 1);
+    D.pengurus.forEach(function(p){ if(p.jabatan === j) p.jabatan = JABATAN[0]; });
+    D.onJabatanGanti.forEach(function(f){ f(j, null); });
+    D.jabHapus = null;
+    gambar();
+    toast('Jabatan “' + j + '” dihapus.' + (n ? ' ' + n + ' pemegangnya pindah ke “' + JABATAN[0] + '”.' : ''));
+  }
 
   /* ---------- aksi ---------- */
   scr.addEventListener('click', function(e){
@@ -6834,14 +6899,37 @@ function hitung(){}
       toast('Jabatan “' + nama + '” ditambahkan. Atur haknya di Setting › Akses pengurus.');
       return;
     }
-    const hapusJab = e.target.closest('[data-jab-hapus]');
-    if(hapusJab){
-      const j = hapusJab.dataset.jabHapus, i = JABATAN.indexOf(j);
-      if(i >= 0 && JABATAN_AWAL.indexOf(j) < 0 && !D.pengurus.some(function(p){ return p.jabatan === j; })) JABATAN.splice(i, 1);
+    const ubahJab = e.target.closest('[data-jab-ubah]');
+    if(ubahJab){
+      D.jabEdit = ubahJab.dataset.jabUbah; D.jabEditTeks = D.jabEdit; D.jabHapus = null;
       gambar();
-      toast('Jabatan “' + j + '” dihapus.');
+      const f = el('klJabUbah'); if(f){ f.focus(); f.select(); }
       return;
     }
+    if(e.target.closest('[data-jab-batal]')){ D.jabEdit = null; D.jabHapus = null; gambar(); return; }
+    if(e.target.closest('[data-jab-simpan]')){
+      const lama = D.jabEdit, baru = D.jabEditTeks.trim().replace(/\s+/g, ' ');
+      if(!baru){ toast('Nama jabatan tidak boleh kosong.'); return; }
+      if(baru !== lama){
+        const sama = JABATAN.concat(['Community Builder']).filter(function(j){ return j !== lama && j.toLowerCase() === baru.toLowerCase(); })[0];
+        if(sama){ toast('Jabatan “' + sama + '” sudah ada.'); return; }
+        JABATAN[JABATAN.indexOf(lama)] = baru;
+        D.pengurus.forEach(function(p){ if(p.jabatan === lama) p.jabatan = baru; });
+        D.onJabatanGanti.forEach(function(f){ f(lama, baru); });
+        toast('“' + lama + '” diganti jadi “' + baru + '”.');
+      }
+      D.jabEdit = null;
+      gambar();
+      return;
+    }
+    const hapusJab = e.target.closest('[data-jab-hapus]');
+    if(hapusJab){
+      const j = hapusJab.dataset.jabHapus;
+      if(pemegang(j).length){ D.jabHapus = j; D.jabEdit = null; gambar(); return; }
+      hapusJabatan(j);
+      return;
+    }
+    if(e.target.closest('[data-jab-hapus-ok]')){ hapusJabatan(D.jabHapus); return; }
 
     /* approval: setujui / tolak */
     const setuju = e.target.closest('[data-setuju]');
@@ -6852,6 +6940,7 @@ function hitung(){}
       /* nomor anggota ditetapkan saat diterima: otomatis ikut urutan, atau
          diambil dari kolom manual yang diisi peninjau */
       const f = kartu && kartu.querySelector('[data-idinput]');
+      if(!bacaCatatan(kartu)){ toast('Tulis catatan keputusannya dulu.'); const c = kartu.querySelector('[data-catatan]'); if(c) c.focus(); return; }
       const id = terima(r, { catatan: bacaCatatan(kartu), id: f ? f.value.trim() : '' });
       gambar();
       toast(r.panggil + ' disetujui.' + (id ? ' Nomor anggota ' + id + '.' : ' Daftar anggota kebuka buat dia.'));
@@ -6861,7 +6950,9 @@ function hitung(){}
     if(tolak){
       const r = D.minta.filter(function(x){ return x.id === tolak.dataset.tolak; })[0];
       if(!r) return;
-      tolakR(r, bacaCatatan(tolak.closest('.kl-req')));
+      const kartuT = tolak.closest('.kl-req');
+      if(!bacaCatatan(kartuT)){ toast('Tulis catatan keputusannya dulu.'); const c = kartuT.querySelector('[data-catatan]'); if(c) c.focus(); return; }
+      tolakR(r, bacaCatatan(kartuT));
       gambar();
       toast('Permintaan ' + r.panggil + ' ditolak.');
       return;
@@ -7079,6 +7170,13 @@ function hitung(){}
     S.kode = acak();
   }
   D.onBangun.push(reset);
+  /* jabatan diganti nama / dihapus di Struktur Kepengurusan: hak ikut pindah kunci */
+  D.onJabatanGanti.push(function(lama, baru){
+    [S.hak, S.hakDraf].forEach(function(peta){
+      if(baru) peta[baru] = (peta[lama] || HAK_AWAL[lama] || ['dasbor']).slice();
+      delete peta[lama];
+    });
+  });
   reset();
 
   function catat(teks){ S.jejak.unshift({ teks: teks, waktu: 'baru saja' }); }

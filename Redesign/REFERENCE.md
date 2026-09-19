@@ -829,6 +829,20 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     = hijau (sesuai permintaan). Data contoh: pengunjung 88→81 dan dokumen 31→28
     supaya keadaan turun terlihat.
 
+- **Revisi lanjutan R2 — jabatan bebas & catatan keputusan wajib** (2026-09-19):
+  - "Jabatan di komunitas ini": SEMUA jabatan (termasuk Ketua/Wakil Ketua bawaan)
+    punya tombol ganti nama (pensil, sunting di tempat, Enter/Esc) dan hapus (sampah).
+    Hapus jabatan berpemegang → konfirmasi di chip; pemegangnya pindah ke jabatan
+    pertama yang tersisa. Minimal satu jabatan tersisa (tombol hapus hilang).
+    Ganti nama/hapus memanggil `D.onJabatanGanti(lama, baru|null)`; Sekretariat
+    memindahkan kunci hak akses (`S.hak`/`S.hakDraf`) supaya centang tidak hilang.
+    `JABATAN_AWAL` kini hanya dipakai untuk reset saat komunitas lain dibangun.
+    Periode lama di Serah terima tetap memakai nama jabatan saat itu (catatan sejarah).
+  - Permintaan gabung: catatan keputusan **wajib** (label merah "wajib", maks. 140
+    karakter); Setujui/Tolak `disabled` sampai catatan terisi, handler juga menjaga.
+  - Riwayat: tiap entri punya kotak "Catatan keputusan" (garis kiri hijau/merah
+    sesuai hasil). Riwayat diisi 2 keputusan contoh saat dashboard dibangun.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

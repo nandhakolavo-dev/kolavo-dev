@@ -113,6 +113,13 @@
     S.kode = acak();
   }
   D.onBangun.push(reset);
+  /* jabatan diganti nama / dihapus di Struktur Kepengurusan: hak ikut pindah kunci */
+  D.onJabatanGanti.push(function(lama, baru){
+    [S.hak, S.hakDraf].forEach(function(peta){
+      if(baru) peta[baru] = (peta[lama] || HAK_AWAL[lama] || ['dasbor']).slice();
+      delete peta[lama];
+    });
+  });
   reset();
 
   function catat(teks){ S.jejak.unshift({ teks: teks, waktu: 'baru saja' }); }
