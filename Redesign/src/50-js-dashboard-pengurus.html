@@ -533,7 +533,7 @@
     }
     D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
     /* tags jawaban ikut disimpan supaya muncul di daftar anggota halaman pemilik */
-    D.mem[r.nama] = { nama: r.nama, kerja: r.kerja, kota: r.kota, panggil: r.panggil, tags: (r.tags || []).slice(), id: id };
+    D.mem[r.nama] = { nama: r.nama, full: r.full || r.nama, kerja: r.kerja, kota: r.kota, panggil: r.panggil, tags: (r.tags || []).slice(), id: id };
     D.anggotaBiasa.push(r.nama);
     D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'diterima', oleh: D.aku, otomatis: !!o.otomatis, waktu: 'baru saja', catatan: o.catatan || '' });
     return id;

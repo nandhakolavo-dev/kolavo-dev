@@ -11,6 +11,7 @@
 
    Tiap panel menjawab satu kendala administratif yang tercatat:
      dasbor  Dashboard        pertumbuhan anggota & akses vs minggu lalu, grafik, rekap CSV
+     info    Info komunitas   pengumuman + tautan grup/peraturan/dokumen di halaman komunitas
      rapi    Rapikan jawaban  jawaban beda tulisan -> tag ganda (user testing 18 Juli 2026)
      Setting (sub-menu)
        akun    Akun           ganti email pemilik, dengan kode konfirmasi
@@ -46,6 +47,7 @@
   /* ---------- daftar fitur Advance (dipakai pop up langganan & judul panel) ---------- */
   const FITUR = {
     dasbor: { judul: 'Dashboard',      ringkas: 'pertumbuhan anggota dan akses dokumen minggu demi minggu, dengan rekap yang bisa diunduh.' },
+    info:  { judul: 'Info komunitas',  ringkas: 'pengumuman pengurus dan tautan grup WhatsApp, peraturan, dan dokumen di halaman komunitas.' },
     rapi:  { judul: 'Rapikan jawaban', ringkas: 'satukan jawaban yang sama tapi ditulis berbeda, supaya tag tidak ganda.' },
     akun:  { judul: 'Akun' },
     notif: { judul: 'Notifikasi' },
@@ -54,7 +56,7 @@
     serah: { judul: 'Serah terima',    ringkas: 'ganti kepengurusan tanpa kehilangan data dan akses.' }
   };
   /* yang ditawarkan di pop up langganan */
-  const URUT = ['dasbor', 'rapi', 'akses', 'serah'];
+  const URUT = ['dasbor', 'info', 'rapi', 'akses', 'serah'];
 
   /* contoh kelompok jawaban. Alumni/himpunan punya kolom jurusan; bentuk lain
      punya cabang. Satu kelompok sengaja meragukan — mesin boleh mengusulkan,
@@ -89,7 +91,7 @@
     S.rangkuman = true;
     S.rentang = 12; S.grafik = 'tumbuh';
     S.akses = {}; S.undangan = []; S.email = ''; S.emailJabatan = 'Pengurus';
-    S.hak = {}; S.hakDraf = {};
+    S.hak = {}; S.hakDraf = {}; S.infoDraf = null;
     S.akun = { email: emailAku(), langkah: 0, baru: '', kode: '' };
     S.notif = { jenis: { baru: true, lama: true, putus: false, keluar: false }, ke: [emailAku()], email: '' };
     S.tagihan = { alamat: { nama: (D.kom && D.kom.nama) || '', email: emailAku(), jalan: '', kota: (D.kom && D.kom.kota) || '', pos: '', npwp: '' },
@@ -398,6 +400,49 @@
       toast('Rekap 12 minggu diunduh sebagai CSV.');
     }catch(err){ toast('Unduhan diblokir di pratinjau ini. Di produk, rekap CSV langsung terunduh.'); }
   }
+
+  /* ---------- info komunitas (tampil di halaman komunitas, khusus Advance) ---------- */
+  const INFO_KOSONG = { pengumuman: '', wa: '', peraturan: '', dokumen: '' };
+  const INFO_F = [
+    ['pengumuman', 'Pengumuman', 'Contoh: Penerimaan anggota dilakukan setiap hari Senin.', 'Tampil paling atas di halaman komunitas, untuk semua pengunjung.'],
+    ['wa', 'Tautan grup komunikasi', 'https://chat.whatsapp.com/…', 'Grup WhatsApp atau tempat ngobrol lain. Hanya terbuka untuk anggota yang sudah diterima.'],
+    ['peraturan', 'Tautan peraturan komunitas', 'https://drive.google.com/…', 'Berkas yang bisa diunduh, misalnya PDF AD/ART. Terbuka untuk semua pengunjung.'],
+    ['dokumen', 'Tautan dokumen komunitas', 'https://drive.google.com/…', 'Folder atau dokumen bersama. Hanya terbuka untuk anggota.']
+  ];
+  const URL_OK = /^https?:\/\/[^\s.]+\.\S+$/;
+  function infoTersimpan(){ return Object.assign({}, INFO_KOSONG, D.kom.info || {}); }
+  function infoBerubah(){ return JSON.stringify(infoTersimpan()) !== JSON.stringify(S.infoDraf); }
+  function segarkanTombolInfo(){
+    const u = infoBerubah();
+    scr.querySelectorAll('[data-sek-info-simpan],[data-sek-info-urung]').forEach(function(b){ b.disabled = !u; });
+    const n = el('sekInfoN'); if(n) n.textContent = S.infoDraf.pengumuman.length;
+  }
+  function gambarInfoKom(){
+    if(!S.infoDraf) S.infoDraf = infoTersimpan();
+    const d = S.infoDraf;
+    el('klPanelInfo').innerHTML =
+      kepala('info', 'Tampil di halaman ' + lolos(D.kom.nama) + ': pengumuman pengurus dan tautan ke grup, peraturan, dan dokumen. Semua opsional — yang kosong tidak ditampilkan.') +
+      '<div class="sek-blok"><div class="sek-info-f">' + INFO_F.map(function(f){
+        const id = 'sekInfo-' + f[0];
+        return '<div class="sek-f"><label class="sek-lbl" for="' + id + '">' + f[1] + '</label>' +
+          (f[0] === 'pengumuman'
+            ? '<textarea class="ta" id="' + id + '" data-sek-info="pengumuman" maxlength="200" rows="3" placeholder="' + f[2] + '">' + lolos(d.pengumuman) + '</textarea>' +
+              '<p class="sek-kecil"><span id="sekInfoN">' + d.pengumuman.length + '</span>/200 · ' + f[3] + '</p>'
+            : '<input class="inp" type="url" id="' + id + '" data-sek-info="' + f[0] + '" placeholder="' + f[2] + '" value="' + lolos(d[f[0]]) + '">' +
+              '<p class="sek-kecil">' + f[3] + '</p>') +
+        '</div>';
+      }).join('') + '</div>' +
+      '<div class="sek-baris"><button type="button" class="btn sm" data-sek-info-simpan' + (infoBerubah() ? '' : ' disabled') + '>Simpan</button>' +
+        '<button type="button" class="btn outline sm" data-sek-info-urung' + (infoBerubah() ? '' : ' disabled') + '>Batalkan</button>' +
+        '<button type="button" class="btn outline sm" data-komunitas-dibuat>Lihat halaman komunitas</button></div>' +
+      '</div>';
+  }
+  /* pintu dari halaman komunitas (kartu ajakan / "Isi di dashboard") */
+  window.KolavoBukaInfoKomunitas = function(){
+    if(window.KolavoBukaDashboard) window.KolavoBukaDashboard();
+    if(!D.sekAktif){ D.tabSesudah = 'info'; bukaModal(); return; }
+    D.mode = 'advance'; D.tab = 'info'; D.gambar();
+  };
 
   /* ---------- setting: akun, notifikasi, tagihan ---------- */
   const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -798,7 +843,7 @@
     if(e.target.closest('[data-sek-aktifkan]')){
       D.sekAktif = true;
       D.mode = 'advance';
-      D.tab = 'dasbor';
+      D.tab = D.tabSesudah || 'dasbor'; D.tabSesudah = null;
       catat('Kamu berlangganan dashboard Advance');
       tutupModal();
       D.gambar();
@@ -811,7 +856,7 @@
   function gambarSemua(){
     gambarMode();
     gambarNudge();
-    if(D.sekAktif){ gambarDasbor(); gambarRapi(); gambarSetting(); gambarAkses(); gambarSerah(); }
+    if(D.sekAktif){ gambarDasbor(); gambarInfoKom(); gambarRapi(); gambarSetting(); gambarAkses(); gambarSerah(); }
   }
   D.onGambar.push(gambarSemua);
   function ulang(){ D.gambar(); }
@@ -920,6 +965,20 @@
       toast('Link undangan pengurus disalin.');
       return;
     }
+
+    /* info komunitas */
+    if(e.target.closest('[data-sek-info-simpan]')){
+      const d = {};
+      Object.keys(INFO_KOSONG).forEach(function(k){ d[k] = String(S.infoDraf[k] || '').trim(); });
+      const salah = INFO_F.filter(function(f){ return f[0] !== 'pengumuman' && d[f[0]] && !URL_OK.test(d[f[0]]); })[0];
+      if(salah){ toast(salah[1] + ' harus alamat lengkap, diawali https://'); const f = el('sekInfo-' + salah[0]); if(f) f.focus(); return; }
+      D.kom.info = d; S.infoDraf = Object.assign({}, d);
+      catat('Kamu memperbarui info komunitas');
+      gambarInfoKom();
+      toast('Info komunitas tersimpan dan tampil di halaman komunitas.');
+      return;
+    }
+    if(e.target.closest('[data-sek-info-urung]')){ S.infoDraf = infoTersimpan(); gambarInfoKom(); return; }
 
     /* setting: akun */
     const akun = e.target.closest('[data-sek-akun]');
@@ -1041,6 +1100,7 @@
   scr.addEventListener('input', function(e){
     const t = e.target;
     if(t.id === 'sekEmail'){ S.email = t.value; return; }
+    if(t.matches('[data-sek-info]')){ S.infoDraf[t.dataset.sekInfo] = t.value; segarkanTombolInfo(); return; }
     if(t.id === 'sekAkunBaru'){ S.akun.baru = t.value; return; }
     if(t.id === 'sekAkunKode'){ S.akun.kode = t.value.replace(/\D/g, '').slice(0, 6); if(t.value !== S.akun.kode) t.value = S.akun.kode; return; }
     if(t.id === 'sekNotifEmail'){ S.notif.email = t.value; return; }

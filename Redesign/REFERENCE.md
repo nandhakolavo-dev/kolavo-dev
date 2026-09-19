@@ -718,6 +718,33 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     saling menimpa. Audit tidak menangkap ini karena kelasnya sama, bukan dua kelas
     berbeda: sebelum menamai kelas baru, `grep` dulu di `10-styles`.
 
+  **Revisi P5 — Info komunitas & pembeda paket di halaman komunitas.**
+  - **Konten premium hanya diisi di dashboard, grup Advance → menu *Info komunitas***
+    (pengumuman ≤200 karakter, tautan grup komunikasi, peraturan, dokumen; semua
+    opsional, tautan wajib `https://`). Disimpan di `KolavoApp.dibuat.info`. Form Buat
+    halaman tidak disentuh.
+  - **Pembeda paket** di `#komInfo` (satu fungsi `gambarInfo`, cabang per paket):
+    Advance = pengumuman + tombol tautan yang terisi saja; Esensial = tidak ada panel.
+    Pemilik Esensial melihat kartu ajakan "Tambahkan pengumuman… dengan paket
+    Advance" (pengunjung/anggota tidak); pemilik Advance dengan info kosong melihat
+    "Info komunitas masih kosong". Komunitas sendiri jadi premium saat `sekAktif`.
+    Direktori: Forpastara & IA SMAN 52 = Advance (data `INFO`), IA PNJ & PPI JU = Esensial.
+  - **Keputusan akses tautan**: Grup WhatsApp dan dokumen *terkunci* untuk non-anggota
+    ("Kebuka setelah kamu jadi anggota"), sejalan dengan daftar anggota yang tertutup;
+    peraturan terbuka untuk semua karena calon anggota perlu membacanya dulu. Status
+    terkunci ditandai atribut `data-kunci` (bukan kelas `.kunci` — itu sudah dipakai
+    panel daftar anggota yang terkunci).
+  - **Bagikan tautan** di `#komAksi` untuk semua paket dan semua peran (kecuali mode
+    contoh): `navigator.share`, cadangan salin ke clipboard + toast, cadangan terakhir
+    toast berisi alamatnya. Alamat `kolavo.app/k/<slug>`.
+  - **Nama panggilan**: daftar anggota dan halaman detail menampilkan panggilan
+    (`pg`, atau kata pertama nama). Nama lengkap hanya di tampilan pengurus (halaman
+    pemilik): di baris daftar (`.nm-full`) dan "Nama lengkap: …" di detail.
+    Sebelumnya `agFull` tampil ke semua anggota. Dashboard kini menyimpan `full`.
+  - **Lengkapi profil**: *Akun media sosial* opsional — baris platform + nama akun,
+    maksimal 5, baris kosong tidak disimpan. Dibaca lewat `KolavoSosmed()`; belum
+    ditampilkan di mana pun.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

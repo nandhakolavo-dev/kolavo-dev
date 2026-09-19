@@ -1154,6 +1154,53 @@ body.lgn-open{overflow:hidden}
 .buat-pratinjau{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:2px 0 26px}
 .buat-pratinjau-note{font-size:12.5px;color:var(--ink-3);line-height:1.5}
 
+/* ---------- info komunitas (Advance) + nama lengkap untuk pengurus ---------- */
+.kom-info{margin-top:18px;display:grid;gap:12px}
+.kom-info[hidden]{display:none}
+.kom-umum{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:13px;background:var(--orange-wash)}
+.kom-umum-ic{flex:none;width:34px;height:34px;border-radius:100px;display:grid;place-items:center;background:var(--card);color:var(--orange-ink)}
+.kom-umum-ic svg{width:18px;height:18px}
+.kom-umum-h{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--orange-ink)}
+.kom-umum-t{font-size:14.5px;line-height:1.55;color:var(--ink);margin-top:2px;white-space:pre-line;overflow-wrap:anywhere}
+.kom-tautan{display:grid;gap:10px}
+@media(min-width:640px){.kom-tautan{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.kom-tautan-i{display:flex;gap:12px;align-items:center;text-align:left;font-family:inherit;padding:12px 14px;border-radius:13px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.kom-tautan-i:hover{border-color:var(--blue);background:var(--blue-tint)}
+.kom-tautan-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.kom-tautan-i[data-kunci]{background:var(--bg-alt);border-style:dashed}
+.kom-tautan-i[data-kunci]:hover{border-color:var(--line);background:var(--bg-alt)}
+.kom-tautan-ic{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--blue-wash);color:var(--blue-ink)}
+.kom-tautan-i[data-kunci] .kom-tautan-ic{background:var(--line-2);color:var(--ink-3)}
+.kom-tautan-ic svg{width:18px;height:18px}
+.kom-tautan-i .t{min-width:0}
+.kom-tautan-i b{display:block;font-size:14px;font-weight:600;line-height:1.35}
+.kom-tautan-i small{display:block;font-size:12px;color:var(--ink-2);line-height:1.4}
+.kom-info-ajak{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 14px;border-radius:13px;border:1px dashed var(--ink-3);background:var(--bg-alt)}
+.kom-info-ajak > svg{flex:none;width:20px;height:20px;color:var(--orange-ink)}
+.kom-info-ajak .t{flex:1;min-width:200px}
+.kom-info-ajak strong{display:block;font-size:13.5px;font-weight:600;line-height:1.4}
+.kom-info-ajak p{font-size:12px;color:var(--ink-2);line-height:1.5}
+.nm-full{font-size:12px;color:var(--ink-3)}
+
+/* akun media sosial di Lengkapi profil */
+.sosmed{display:grid;gap:8px;margin-bottom:10px}
+.sosmed-i{display:flex;gap:8px;align-items:center}
+.sosmed-i .sel{flex:none;width:150px}
+.sosmed-i .inp{flex:1;min-width:0}
+@media(max-width:420px){.sosmed-i .sel{width:118px}}
+.sosmed-x{flex:none;width:40px;height:40px;border-radius:100px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);
+  display:grid;place-items:center;cursor:pointer}
+.sosmed-x:hover{color:var(--red);border-color:var(--red-line)}
+.sosmed-x:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.sosmed-x svg{width:16px;height:16px}
+
+/* dashboard: form Info komunitas */
+.sek-info-f{display:grid;gap:16px;max-width:560px}
+.sek-f{display:grid;gap:6px}
+.sek-f .inp{height:44px}
+.sek-f .ta{min-height:84px}
+
 /* ---------- bar founder di halaman komunitas ---------- */
 .kom-founder{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between;
   margin-top:14px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card)}
