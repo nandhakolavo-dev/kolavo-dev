@@ -915,7 +915,9 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     Setelah diterima, kepala halaman jadi 7 (6 + kamu). Hero WAG ("22 anggota") tidak
     disentuh — itu ilustrasi, bukan komunitas di direktori.
 - **Revisi P10 — feed "Kabar komunitas" (premium Advance)** (2026-09-19). Modul baru
-  `50-js-feed` (manifest sesudah `50-js-onboarding`), wadah `#komFeed` sesudah `#komInfo`.
+  `50-js-feed` (manifest sesudah `50-js-onboarding`). Urutan halaman: `#komInfo` (pengumuman +
+  tautan) → `#komStat` (anggota · kota · bidang · angkatan, dipindah ke sini atas permintaan)
+  → `#komFeed`.
   - **Paket**: `KolavoFeedBoleh(kelas)` — direktori ber-`data-premium="1"` (Forpastara,
     IA SMAN 52) atau `l-dibuat` saat `D.sekAktif`. Esensial: tidak ada feed dan tidak ada
     sambutan (`KolavoFeedTambah` mengembalikan `false`); pemilik Esensial melihat satu
