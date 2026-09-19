@@ -1040,6 +1040,16 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     *Kembalikan ke otomatis* mengembalikannya ke null.
   - Per sumbu: 5 teratas, sisanya + yang belum menjawab masuk "Lainnya".
 
+- **Revisi R6a — peraturan cukup teks, tanpa berkas** (2026-09-19):
+  - Tidak ada lagi berkas peraturan untuk diunggah/diunduh. Kolom "Tautan peraturan
+    komunitas" dihapus dari Info komunitas (`INFO_KOSONG` kini pengumuman/wa/dokumen),
+    `obTautan('Berkas peraturan')` dihapus dari editor Onboarding, tombol "Unduh
+    peraturan lengkap" dihapus dari modal, URL `.pdf` dihapus dari data `INFO` contoh.
+  - Satu-satunya sumber teks: editor Onboarding › Peraturan (`langkah.aturan.ringkas`,
+    format `#` = judul bagian). Teks kosong → "Pengurus belum menulis peraturan."
+  - Item "Peraturan komunitas" di panel info halaman komunitas sementara tidak tampil
+    (tak ada URL); digantikan pop up baca-saja di R6b.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

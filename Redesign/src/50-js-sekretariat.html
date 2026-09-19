@@ -11,7 +11,7 @@
 
    Tiap panel menjawab satu kendala administratif yang tercatat:
      dasbor  Dashboard        pertumbuhan anggota & akses vs minggu lalu, grafik, rekap CSV
-     info    Info komunitas   pengumuman + tautan grup/peraturan/dokumen di halaman komunitas
+     info    Info komunitas   pengumuman + tautan grup/dokumen di halaman komunitas
      broadcast Broadcast      kirim kabar ke feed halaman komunitas (API 50-js-feed), riwayat, sematkan
      onboard Onboarding       sakelar utama + 5 langkah (D.kom.onboarding), dibaca modal anggota
      Jawaban pendaftar (sub-menu)
@@ -55,7 +55,7 @@
   /* ---------- daftar fitur Advance (dipakai pop up langganan & judul panel) ---------- */
   const FITUR = {
     dasbor: { judul: 'Dashboard',      ringkas: 'pertumbuhan anggota dan akses dokumen minggu demi minggu, dengan rekap yang bisa diunduh.' },
-    info:  { judul: 'Info komunitas',  ringkas: 'pengumuman pengurus dan tautan grup WhatsApp, peraturan, dan dokumen di halaman komunitas.' },
+    info:  { judul: 'Info komunitas',  ringkas: 'pengumuman pengurus dan tautan grup WhatsApp serta dokumen di halaman komunitas.' },
     broadcast: { judul: 'Broadcast', ringkas: 'kirim kabar ke feed halaman komunitas; anggota baru disambut otomatis di feed yang sama.' },
     onboard: { judul: 'Onboarding', ringkas: 'sambut anggota baru dengan perkenalan bertahap: sambutan, sejarah, peraturan, alat, dan kenalan.' },
     jawab: { judul: 'Jawaban pendaftar', ringkas: 'tinjau ulang jawaban pendaftar, kelompokkan jadi identitas anggota, rapikan tulisan yang beda-beda, dan pilih persebaran yang tampil di halaman komunitas.' },
@@ -430,11 +430,11 @@
   }
 
   /* ---------- info komunitas (tampil di halaman komunitas, khusus Advance) ---------- */
-  const INFO_KOSONG = { pengumuman: '', wa: '', peraturan: '', dokumen: '' };
+  /* peraturan tidak di sini: cukup teks, ditulis di Onboarding › Peraturan (tanpa berkas) */
+  const INFO_KOSONG = { pengumuman: '', wa: '', dokumen: '' };
   const INFO_F = [
     ['pengumuman', 'Pengumuman', 'Contoh: Penerimaan anggota dilakukan setiap hari Senin.', 'Tampil paling atas di halaman komunitas, untuk semua pengunjung.'],
     ['wa', 'Tautan grup komunikasi', 'https://chat.whatsapp.com/…', 'Grup WhatsApp atau tempat ngobrol lain. Hanya terbuka untuk anggota yang sudah diterima.'],
-    ['peraturan', 'Tautan peraturan komunitas', 'https://drive.google.com/…', 'Berkas yang bisa diunduh, misalnya PDF AD/ART. Terbuka untuk semua pengunjung.'],
     ['dokumen', 'Tautan dokumen komunitas', 'https://drive.google.com/…', 'Folder atau dokumen bersama. Hanya terbuka untuk anggota.']
   ];
   const URL_OK = /^https?:\/\/[^\s.]+\.\S+$/;
@@ -449,7 +449,7 @@
     if(!S.infoDraf) S.infoDraf = infoTersimpan();
     const d = S.infoDraf;
     el('klPanelInfo').innerHTML =
-      kepala('info', 'Tampil di halaman ' + lolos(D.kom.nama) + ': pengumuman pengurus dan tautan ke grup, peraturan, dan dokumen. Semua opsional — yang kosong tidak ditampilkan.') +
+      kepala('info', 'Tampil di halaman ' + lolos(D.kom.nama) + ': pengumuman pengurus dan tautan ke grup dan dokumen. Peraturan ditulis di Onboarding › Peraturan. Semua opsional — yang kosong tidak ditampilkan.') +
       '<div class="sek-blok"><div class="sek-info-f">' + INFO_F.map(function(f){
         const id = 'sekInfo-' + f[0];
         return '<div class="sek-f"><label class="sek-lbl" for="' + id + '">' + f[1] + '</label>' +
@@ -552,13 +552,13 @@
 
   /* ---------- onboarding anggota baru (Advance) ----------
      Konfigurasi disimpan di komunitasnya (D.kom.onboarding) dan dibaca modal
-     onboarding di halaman komunitas. Tersimpan otomatis tiap ketikan. Tautan
-     peraturan, grup, dan dokumen TIDAK diketik ulang di sini — diambil dari
-     Info komunitas supaya tidak ada dua sumber. */
+     onboarding di halaman komunitas. Tersimpan otomatis tiap ketikan. Teks
+     peraturan ditulis DI SINI (satu-satunya sumber, tanpa berkas); tautan grup
+     dan dokumen diambil dari Info komunitas supaya tidak ada dua sumber. */
   const OB_LANGKAH = [
     { k: 'sambutan', h: 'Sambutan dari pengurus', sub: 'Salam pembuka dan kata pengantar singkat.' },
     { k: 'kenal',    h: 'Kenalan dengan komunitas', sub: 'Sejarah singkat, tujuan, visi dan misi.' },
-    { k: 'aturan',   h: 'Peraturan komunitas', sub: 'Ringkasan aturan + tautan unduh dari Info komunitas.' },
+    { k: 'aturan',   h: 'Peraturan komunitas', sub: 'Teks peraturan yang harus dibaca dan disetujui anggota baru.' },
     { k: 'alat',     h: 'Dokumen & alat komunikasi', sub: 'Tempat ngobrol dan dokumen bersama, dari Info komunitas.' },
     { k: 'kenalan',  h: 'Kenalan dengan anggota lain', sub: 'Anggota yang mirip dengannya; kalau belum ada, pengurus.' }
   ];
@@ -601,7 +601,7 @@
     const isi = {
       sambutan: function(){ return obField('sambutan', 'judul', 'Judul sapaan', 'inp', 80) + obField('sambutan', 'pesan', 'Kata pengantar', 'ta', 800) + obField('sambutan', 'pengirim', 'Ditandatangani', 'inp', 80); },
       kenal: function(){ return obField('kenal', 'sejarah', 'Sejarah singkat', 'ta', 800) + obField('kenal', 'visi', 'Visi', 'ta', 400) + obField('kenal', 'misi', 'Misi / tujuan (satu baris satu poin)', 'ta', 800); },
-      aturan: function(){ return obField('aturan', 'ringkas', 'Isi peraturan — baris diawali # jadi judul bagian, baris lain jadi poin', 'ta', 3000) + obTautan('Berkas peraturan', info.peraturan); },
+      aturan: function(){ return obField('aturan', 'ringkas', 'Isi peraturan — baris diawali # jadi judul bagian, baris lain jadi poin', 'ta', 3000); },
       alat: function(){ return obField('alat', 'ket', 'Keterangan', 'ta', 600) + obTautan('Grup komunikasi', info.wa) + obTautan('Dokumen komunitas', info.dokumen); },
       kenalan: function(){
         const c = o.langkah.kenalan.cocok;

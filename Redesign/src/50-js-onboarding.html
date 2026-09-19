@@ -18,7 +18,6 @@
   function samakan(s){ return String(s || '').toLowerCase().replace(/^kab\.?\s+|^kabupaten\s+/, 'kab ').replace(/^kota\s+/, 'kota ').trim(); }
   function svg(isi){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + isi + '</svg>'; }
   const IK = {
-    unduh: svg('<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>'),
     wa:    svg('<path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z"/>'),
     dok:   svg('<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>'),
     cek:   svg('<path d="m5 13 4 4L19 7"/>')
@@ -164,7 +163,7 @@
           return (b.h ? '<p class="ob-lbl">' + lolos(b.h) + '</p>' : '') +
             (b.p.length ? '<ul class="ob-poin">' + b.p.map(function(p){ return '<li>' + IK.cek + '<span>' + lolos(p) + '</span></li>'; }).join('') + '</ul>' : '');
         }).join('') +
-        (tombolTautan('peraturan', 'Unduh peraturan lengkap', info.peraturan, IK.unduh) || (poin.length ? '' : '<p class="ob-teks">Pengurus belum melampirkan peraturan.</p>')) + '</div>' +
+        (poin.length ? '' : '<p class="ob-teks">Pengurus belum menulis peraturan.</p>') + '</div>' +
         '<label class="ob-setuju"><input type="checkbox" data-ob-setuju' + (ctx.setuju ? ' checked' : '') + (bisaCentang ? '' : ' disabled') + '>' +
           '<span>Saya sudah membaca dan menyetujui peraturan ' + lolos(ctx.kom.nama) + '</span></label>' +
         '<p class="ob-kecil ob-petunjuk" data-ob-petunjuk' + (bisaCentang ? ' hidden' : '') + '>Gulir sampai bawah untuk menyetujui.</p>';
@@ -320,7 +319,7 @@
     const t = e.target.closest('[data-ob-tautan]');
     if(t){
       const url = (ctx.info || {})[t.dataset.obTautan] || '';
-      toast((t.dataset.obTautan === 'peraturan' ? 'Di produk, berkas peraturan diunduh dari ' : 'Di produk, ini membuka ') + url.replace(/^https?:\/\//, ''));
+      toast('Di produk, ini membuka ' + url.replace(/^https?:\/\//, ''));
       return;
     }
     /* ajak kenalan langsung dari modal — tidak perlu membuka profil dulu */

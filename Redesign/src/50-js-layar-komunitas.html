@@ -790,13 +790,11 @@
     'l-forpastara': {
       pengumuman: 'Penerimaan anggota baru ditinjau setiap hari Senin. Pendaftaran yang masuk di akhir pekan diproses Senin berikutnya.',
       wa: 'https://chat.whatsapp.com/contoh-forpastara',
-      peraturan: 'https://kolavo.app/k/forpastara/peraturan.pdf',
       dokumen: 'https://drive.google.com/contoh-forpastara'
     },
     'l-iasman52': {
       pengumuman: 'Reuni akbar 25 tahun: daftar ulang dibuka sampai akhir bulan ini. Detail acara ada di grup WhatsApp.',
       wa: 'https://chat.whatsapp.com/contoh-iasman52',
-      peraturan: 'https://kolavo.app/k/iasman52/peraturan.pdf',
       dokumen: ''
     }
   };
@@ -1109,7 +1107,7 @@
       const k = infoBuka.dataset.infoBuka, url = (kini.info || {})[k] || '';
       const toast = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
       if(infoBuka.hasAttribute('data-kunci')){ toast('Grup WhatsApp dan dokumen kebuka setelah pendaftaranmu disetujui pengurus.'); return; }
-      toast((k === 'peraturan' ? 'Di produk, berkas peraturan diunduh dari ' : 'Di produk, ini membuka ') + url.replace(/^https?:\/\//, ''));
+      toast('Di produk, ini membuka ' + url.replace(/^https?:\/\//, ''));
       return;
     }
     if(e.target.closest('#komGabungBtn')){
