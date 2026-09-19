@@ -768,6 +768,24 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   - `TMPL_AWAL` didefinisikan setelah `reset()` dipanggil saat modul dimuat, jadi
     template diisi malas di `gambarEmail` (menghindari TDZ `const`).
 
+  **Revisi P7 — Pengaturan onboarding** (grup Advance, di bawah Info komunitas).
+  - Sakelar utama + lima langkah, tiap langkah punya sakelar dan isi: (1) Sambutan —
+    judul, kata pengantar, penanda tangan (bawaan: nama + jabatan pemilik); (2) Kenalan
+    dengan komunitas — sejarah, visi, misi; (3) Peraturan — ringkasan per baris;
+    (4) Dokumen & alat komunikasi — keterangan; (5) Kenalan dengan anggota lain —
+    cocokkan berdasarkan pekerjaan / domisili / kelompok jawaban, pengurus sebagai
+    cadangan. Isi bawaan contoh supaya pratinjau tidak kosong.
+  - **Tersimpan otomatis** tiap ketikan (beda dari Info komunitas yang pakai Simpan) —
+    banyak kolom, dan langkah yang tak lengkap tetap sah. Tercatat di jejak hanya
+    untuk sakelar.
+  - Tautan peraturan, grup, dan dokumen **tidak diketik ulang**: langkah 3–4 membaca
+    `D.kom.info`; kalau kosong tampil "Belum diisi" + tombol ke Info komunitas.
+  - Semua langkah mati → peringatan + Pratinjau nonaktif. Sakelar utama mati → daftar
+    langkah redup dan tak bisa disunting.
+  - Konfigurasi di `D.kom.onboarding` (= `KolavoApp.dibuat.onboarding`), dibaca lewat
+    `window.KolavoOnboarding()`. Tombol Pratinjau memanggil `KolavoBukaOnboarding`
+    (dibuat di P8); sebelum ada, toast.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

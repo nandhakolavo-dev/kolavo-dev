@@ -1265,6 +1265,19 @@ body.lgn-open{overflow:hidden}
 .sek-surat-isi{padding:14px;font-size:13.5px;line-height:1.65;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}
 .sek-surat mark{background:var(--orange-wash);color:var(--orange-ink);border-radius:4px;padding:0 2px}
 
+/* dashboard: onboarding */
+.sek-ob{display:grid}
+.sek-ob.mati{opacity:.55}
+.sek-langkah-h{display:flex;gap:12px;align-items:flex-start;min-width:0}
+.sek-ob-isi{display:grid;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);max-width:620px}
+.sek-ob-link{display:flex;gap:6px 10px;align-items:center;flex-wrap:wrap;padding:10px 12px;border-radius:11px;background:var(--bg-alt);border:1px solid var(--line)}
+.sek-ob-link code{font-family:"SFMono-Regular",ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--ink);word-break:break-all}
+.sek-ob-link.kosong{border-style:dashed}
+.sek-cek-grup{display:flex;flex-wrap:wrap;gap:8px 18px}
+.sek-cek-grup label{display:inline-flex;gap:8px;align-items:center;font-size:13.5px;cursor:pointer}
+.sek-cek-grup input{width:17px;height:17px;margin:0;accent-color:var(--blue)}
+.sek-peringatan{margin-top:10px;font-size:12.5px;line-height:1.5;color:var(--orange-ink);background:var(--orange-wash);padding:8px 12px;border-radius:10px}
+
 /* dashboard: form Info komunitas */
 .sek-info-f{display:grid;gap:16px;max-width:560px}
 .sek-f{display:grid;gap:6px}
@@ -2564,6 +2577,7 @@ body.lgn-open{overflow:hidden}
         <span class="kl-nav-h sek">Advance</span>
         <button type="button" class="kl-tab" data-tab="dasbor" data-sek role="tab">Dashboard</button>
         <button type="button" class="kl-tab" data-tab="info" data-sek role="tab">Info komunitas</button>
+        <button type="button" class="kl-tab" data-tab="onboard" data-sek role="tab">Onboarding</button>
         <button type="button" class="kl-tab kl-induk" data-induk="jawaban" data-sek aria-expanded="false">Jawaban pendaftar<svg class="kl-induk-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="kl-subnav" data-grup="jawaban">
           <button type="button" class="kl-tab sub" data-tab="jawab" data-sek role="tab">Tinjau jawaban</button>
@@ -2615,6 +2629,7 @@ body.lgn-open{overflow:hidden}
       <!-- ===== Advance: panel berlangganan. Isinya digambar 50-js-sekretariat. ===== -->
       <section class="kl-panel" id="klPanelDasbor" data-panel="dasbor" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelInfo" data-panel="info" role="tabpanel" hidden></section>
+      <section class="kl-panel" id="klPanelOnboard" data-panel="onboard" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelJawab" data-panel="jawab" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelKelompok" data-panel="kelompok" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelRapi" data-panel="rapi" role="tabpanel" hidden></section>
@@ -6479,6 +6494,7 @@ function hitung(){}
    Tiap panel menjawab satu kendala administratif yang tercatat:
      dasbor  Dashboard        pertumbuhan anggota & akses vs minggu lalu, grafik, rekap CSV
      info    Info komunitas   pengumuman + tautan grup/peraturan/dokumen di halaman komunitas
+     onboard Onboarding       sakelar utama + 5 langkah (D.kom.onboarding), dibaca modal anggota
      Jawaban pendaftar (sub-menu)
        jawab    Tinjau jawaban   jawaban tiap pendaftar/anggota + label kelompoknya
        kelompok Kelompokkan      jawaban bebas -> kelompok (D.kelompok), dipakai filter & kenalan
@@ -6519,6 +6535,7 @@ function hitung(){}
   const FITUR = {
     dasbor: { judul: 'Dashboard',      ringkas: 'pertumbuhan anggota dan akses dokumen minggu demi minggu, dengan rekap yang bisa diunduh.' },
     info:  { judul: 'Info komunitas',  ringkas: 'pengumuman pengurus dan tautan grup WhatsApp, peraturan, dan dokumen di halaman komunitas.' },
+    onboard: { judul: 'Onboarding', ringkas: 'sambut anggota baru dengan perkenalan bertahap: sambutan, sejarah, peraturan, alat, dan kenalan.' },
     jawab: { judul: 'Jawaban pendaftar', ringkas: 'tinjau ulang jawaban pendaftar, kelompokkan jadi identitas anggota, dan rapikan tulisan yang beda-beda.' },
     kelompok: { judul: 'Kelompokkan jawaban' },
     email: { judul: 'Template email', ringkas: 'atur isi email saat pendaftar diterima atau ditolak.' },
@@ -6530,7 +6547,7 @@ function hitung(){}
     serah: { judul: 'Serah terima',    ringkas: 'ganti kepengurusan tanpa kehilangan data dan akses.' }
   };
   /* yang ditawarkan di pop up langganan */
-  const URUT = ['dasbor', 'info', 'jawab', 'email', 'akses', 'serah'];
+  const URUT = ['dasbor', 'info', 'onboard', 'jawab', 'email', 'akses', 'serah'];
 
   /* contoh kelompok jawaban. Alumni/himpunan punya kolom jurusan; bentuk lain
      punya cabang. Satu kelompok sengaja meragukan — mesin boleh mengusulkan,
@@ -6920,6 +6937,92 @@ function hitung(){}
     if(!D.sekAktif){ D.tabSesudah = 'info'; bukaModal(); return; }
     D.mode = 'advance'; D.tab = 'info'; D.gambar();
   };
+
+  /* ---------- onboarding anggota baru (Advance) ----------
+     Konfigurasi disimpan di komunitasnya (D.kom.onboarding) dan dibaca modal
+     onboarding di halaman komunitas. Tersimpan otomatis tiap ketikan. Tautan
+     peraturan, grup, dan dokumen TIDAK diketik ulang di sini — diambil dari
+     Info komunitas supaya tidak ada dua sumber. */
+  const OB_LANGKAH = [
+    { k: 'sambutan', h: 'Sambutan dari pengurus', sub: 'Salam pembuka dan kata pengantar singkat.' },
+    { k: 'kenal',    h: 'Kenalan dengan komunitas', sub: 'Sejarah singkat, tujuan, visi dan misi.' },
+    { k: 'aturan',   h: 'Peraturan komunitas', sub: 'Ringkasan aturan + tautan unduh dari Info komunitas.' },
+    { k: 'alat',     h: 'Dokumen & alat komunikasi', sub: 'Tempat ngobrol dan dokumen bersama, dari Info komunitas.' },
+    { k: 'kenalan',  h: 'Kenalan dengan anggota lain', sub: 'Anggota yang mirip dengannya; kalau belum ada, pengurus.' }
+  ];
+  function obAwal(){
+    const nm = D.kom.nama;
+    return {
+      aktif: true,
+      langkah: {
+        sambutan: { aktif: true, judul: 'Selamat datang di ' + nm + '!',
+          pesan: 'Senang kamu bergabung. Di sini kita saling kenal dulu sebelum ketemu di kegiatan. Luangkan dua menit untuk mengenal komunitas ini, ya.',
+          pengirim: D.aku + ', ' + D.jabatanAku() },
+        kenal: { aktif: true,
+          sejarah: nm + ' berawal dari kumpul-kumpul kecil beberapa alumni, lalu tumbuh jadi wadah resmi untuk saling membantu.',
+          visi: 'Jadi rumah yang menyambung silaturahmi dan membuka peluang bagi setiap anggota.',
+          misi: 'Mengadakan kegiatan rutin, membantu anggota yang butuh, dan menghubungkan anggota dengan sesama bidang.' },
+        aturan: { aktif: true, ringkas: 'Saling menghormati, tanpa SARA dan politik praktis.\nPromosi dagangan hanya di hari yang ditentukan.\nData anggota tidak dibagikan ke luar komunitas.' },
+        alat: { aktif: true, ket: 'Obrolan sehari-hari dan info kegiatan ada di grup WhatsApp. Notulen dan dokumen bersama disimpan di folder dokumen.' },
+        kenalan: { aktif: true, cocok: { kerja: true, kota: true, kelompok: true } }
+      }
+    };
+  }
+  function ob(){ if(!D.kom.onboarding) D.kom.onboarding = obAwal(); return D.kom.onboarding; }
+  /* dibaca halaman komunitas / modal onboarding */
+  window.KolavoOnboarding = function(){ return D.kom ? ob() : null; };
+
+  function obField(k, f, label, jenis, maks){
+    const v = ob().langkah[k][f] || '', id = 'sekOb-' + k + '-' + f;
+    return '<div class="sek-f"><label class="sek-lbl" for="' + id + '">' + label + '</label>' +
+      (jenis === 'ta'
+        ? '<textarea class="ta" id="' + id + '" data-sek-ob="' + k + '.' + f + '" rows="3" maxlength="' + (maks || 400) + '">' + lolos(v) + '</textarea>'
+        : '<input class="inp" id="' + id + '" data-sek-ob="' + k + '.' + f + '" maxlength="' + (maks || 80) + '" value="' + lolos(v) + '">') +
+      '</div>';
+  }
+  function obTautan(label, url){
+    return '<div class="sek-ob-link' + (url ? '' : ' kosong') + '">' +
+      '<span class="sek-lbl">' + label + '</span>' +
+      (url ? '<code>' + lolos(url.replace(/^https?:\/\//, '')) + '</code>'
+           : '<span class="sek-kecil">Belum diisi — langkah ini tampil tanpa tautan.</span><button type="button" class="btn outline xs" data-sek-ke="info">Isi di Info komunitas</button>') +
+      '</div>';
+  }
+  function gambarOnboard(){
+    const o = ob(), info = Object.assign({}, INFO_KOSONG, D.kom.info || {});
+    const nAktif = OB_LANGKAH.filter(function(l){ return o.langkah[l.k].aktif; }).length;
+    const isi = {
+      sambutan: function(){ return obField('sambutan', 'judul', 'Judul sapaan', 'inp', 80) + obField('sambutan', 'pesan', 'Kata pengantar', 'ta', 400) + obField('sambutan', 'pengirim', 'Ditandatangani', 'inp', 80); },
+      kenal: function(){ return obField('kenal', 'sejarah', 'Sejarah singkat', 'ta', 500) + obField('kenal', 'visi', 'Visi', 'ta', 300) + obField('kenal', 'misi', 'Misi / tujuan', 'ta', 500); },
+      aturan: function(){ return obField('aturan', 'ringkas', 'Ringkasan aturan (satu baris satu poin)', 'ta', 600) + obTautan('Berkas peraturan', info.peraturan); },
+      alat: function(){ return obField('alat', 'ket', 'Keterangan', 'ta', 400) + obTautan('Grup komunikasi', info.wa) + obTautan('Dokumen komunitas', info.dokumen); },
+      kenalan: function(){
+        const c = o.langkah.kenalan.cocok;
+        return '<div class="sek-f"><span class="sek-lbl">Cocokkan berdasarkan</span><div class="sek-cek-grup">' +
+          [['kerja', 'Pekerjaan'], ['kota', 'Domisili'], ['kelompok', 'Kelompok jawaban']].map(function(x){
+            return '<label><input type="checkbox" data-sek-ob-cocok="' + x[0] + '"' + (c[x[0]] ? ' checked' : '') + '>' + x[1] + '</label>';
+          }).join('') + '</div>' +
+          '<p class="sek-kecil">Anggota baru bisa menyaring sendiri di langkah ini. Kalau belum ada anggota yang cocok, yang ditampilkan pengurus.</p></div>';
+      }
+    };
+    el('klPanelOnboard').innerHTML =
+      kepala('onboard', 'Rangkaian perkenalan yang muncul sekali saat anggota baru pertama kali membuka halaman ' + lolos(D.kom.nama) + ' setelah diterima. Perubahan tersimpan otomatis.') +
+      '<div class="sek-blok"><div class="sek-baris atas"><div><div class="sek-blok-h">Onboarding anggota baru</div>' +
+          '<div class="sek-blok-sub">' + (o.aktif ? nAktif + ' dari 5 langkah aktif.' : 'Mati — anggota baru langsung masuk ke halaman komunitas.') + '</div></div>' +
+          sw('data-sek-ob-utama', o.aktif, 'Onboarding anggota baru') + '</div>' +
+        (o.aktif && !nAktif ? '<p class="sek-peringatan">Semua langkah mati, jadi onboarding tidak akan muncul. Nyalakan minimal satu langkah.</p>' : '') +
+        '<div class="sek-baris"><button type="button" class="btn outline sm" data-sek-ob-pratinjau' + (o.aktif && nAktif ? '' : ' disabled') + '>Pratinjau seperti anggota baru</button></div>' +
+      '</div>' +
+      '<div class="sek-ob' + (o.aktif ? '' : ' mati') + '">' + OB_LANGKAH.map(function(l, i){
+        const st = o.langkah[l.k];
+        return '<div class="sek-blok sek-ob-i">' +
+          '<div class="sek-baris atas"><div class="sek-langkah-h"><span class="sek-no">' + (i + 1) + '</span><div><div class="sek-blok-h">' + l.h + '</div>' +
+            '<div class="sek-blok-sub">' + l.sub + '</div></div></div>' +
+            sw('data-sek-ob-aktif="' + l.k + '"', st.aktif, 'Langkah ' + (i + 1) + ': ' + l.h) + '</div>' +
+          (st.aktif ? '<div class="sek-ob-isi">' + isi[l.k]() + '</div>' : '<p class="sek-kecil jarak">Langkah ini dilewati.</p>') +
+        '</div>';
+      }).join('') + '</div>';
+    if(!o.aktif) el('klPanelOnboard').querySelectorAll('.sek-ob input, .sek-ob textarea, .sek-ob button').forEach(function(x){ x.disabled = true; });
+  }
 
   /* ---------- setting: akun, notifikasi, tagihan ---------- */
   const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -7513,7 +7616,7 @@ function hitung(){}
   function gambarSemua(){
     gambarMode();
     gambarNudge();
-    if(D.sekAktif){ gambarDasbor(); gambarInfoKom(); gambarJawab(); gambarKelompok(); gambarRapi(); gambarEmail(); gambarSetting(); gambarAkses(); gambarSerah(); }
+    if(D.sekAktif){ gambarDasbor(); gambarInfoKom(); gambarOnboard(); gambarJawab(); gambarKelompok(); gambarRapi(); gambarEmail(); gambarSetting(); gambarAkses(); gambarSerah(); }
   }
   D.onGambar.push(gambarSemua);
   function ulang(){ D.gambar(); }
@@ -7623,6 +7726,13 @@ function hitung(){}
       return;
     }
 
+    /* onboarding */
+    if(e.target.closest('[data-sek-ob-pratinjau]')){
+      if(window.KolavoBukaOnboarding) window.KolavoBukaOnboarding({ pratinjau: true });
+      else toast('Pratinjau muncul di sini begitu modal onboarding anggota selesai dibuat.');
+      return;
+    }
+
     /* jawaban pendaftar */
     const js = e.target.closest('[data-sek-jawab-saring]');
     if(js){ S.jawabSaring = js.dataset.sekJawabSaring; gambarJawab(); return; }
@@ -7694,7 +7804,7 @@ function hitung(){}
       if(salah){ toast(salah[1] + ' harus alamat lengkap, diawali https://'); const f = el('sekInfo-' + salah[0]); if(f) f.focus(); return; }
       D.kom.info = d; S.infoDraf = Object.assign({}, d);
       catat('Kamu memperbarui info komunitas');
-      gambarInfoKom();
+      gambarInfoKom(); gambarOnboard();
       toast('Info komunitas tersimpan dan tampil di halaman komunitas.');
       return;
     }
@@ -7799,6 +7909,21 @@ function hitung(){}
     if(t.matches('[data-sek-pilihan]')){ S.pilihan = t.checked; gambarRapi(); return; }
     if(t.matches('[data-sek-rangkuman]')){ S.rangkuman = t.checked; gambarDasbor(); return; }
     if(t.id === 'sekEmailJabatan'){ S.emailJabatan = t.value; return; }
+    if(t.matches('[data-sek-ob-utama]')){
+      ob().aktif = t.checked;
+      catat('Kamu ' + (t.checked ? 'menyalakan' : 'mematikan') + ' onboarding anggota baru');
+      gambarOnboard();
+      return;
+    }
+    if(t.matches('[data-sek-ob-aktif]')){
+      const l = OB_LANGKAH.filter(function(x){ return x.k === t.dataset.sekObAktif; })[0];
+      ob().langkah[l.k].aktif = t.checked;
+      catat('Kamu ' + (t.checked ? 'menyalakan' : 'mematikan') + ' langkah onboarding “' + l.h + '”');
+      gambarOnboard();
+      const f = scr.querySelector('[data-sek-ob-aktif="' + l.k + '"]'); if(f) f.focus();
+      return;
+    }
+    if(t.matches('[data-sek-ob-cocok]')){ ob().langkah.kenalan.cocok[t.dataset.sekObCocok] = t.checked; return; }
     if(t.id === 'sekKolom'){ S.kelompokKolom = t.value; gambarKelompok(); return; }
     if(t.matches('[data-sek-klp]')){
       const g = D.kelompok[S.kelompokKolom] = D.kelompok[S.kelompokKolom] || { label: [], peta: {} };
@@ -7837,6 +7962,7 @@ function hitung(){}
     const t = e.target;
     if(t.id === 'sekEmail'){ S.email = t.value; return; }
     if(t.id === 'sekKlpBaru'){ S.kelompokTeks = t.value; return; }
+    if(t.matches('[data-sek-ob]')){ const p = t.dataset.sekOb.split('.'); ob().langkah[p[0]][p[1]] = t.value; return; }
     if(t.matches('[data-sek-tmpl]')){ S.tmplDraf[S.tmplJenis][t.dataset.sekTmpl] = t.value; segarkanEmail(); return; }
     if(t.matches('[data-sek-info]')){ S.infoDraf[t.dataset.sekInfo] = t.value; segarkanTombolInfo(); return; }
     if(t.id === 'sekAkunBaru'){ S.akun.baru = t.value; return; }
