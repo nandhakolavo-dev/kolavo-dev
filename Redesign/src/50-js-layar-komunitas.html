@@ -171,6 +171,20 @@
     });
   }
 
+  /* satu blok per sumbu persebaran: [{ nama, data: [[label, jumlah], ...] }] */
+  function gambarAgg(daftar){
+    const w = el('aggWadah');
+    w.innerHTML = '';
+    daftar.forEach(function(s){
+      const b = document.createElement('div');
+      b.className = 'agg-blok';
+      b.innerHTML = '<p class="agg-lbl"></p><div class="agg-baris"></div>';
+      b.querySelector('.agg-lbl').textContent = s.nama;
+      w.appendChild(b);
+      bar(s.data, b.querySelector('.agg-baris'), angkaKini());
+    });
+  }
+
   /* ---------- daftar anggota setelah diterima ----------
      Panelnya sengaja komponen yang sama dengan yang dijanjikan di hero.
      Isinya subset — prototipe menampilkan 6 baris dari jumlah sebenarnya,
@@ -997,13 +1011,14 @@
     if(a){
       /* di halaman pemilik agregatnya sudah lengkap dari dashboard — tidak
          perlu menyuntikkan baris "aku" seperti di tampilan calon anggota */
-      if(founder || pratinjau){
-        bar(a.profesi, el('aggProfesi'), angkaKini());
-        bar(a.kota, el('aggKota'), angkaKini());
-      } else {
-      bar(komposisi(a.profesi, nilaiProfil('kerja')), el('aggProfesi'), angkaKini());
-      bar(komposisi(a.kota, nilaiProfil('kota')), el('aggKota'), angkaKini());
-      }
+      /* komunitas sendiri yang berlangganan Advance: sumbu dipilih pengurus di
+         dashboard › Jawaban pendaftar › Persebaran (atau otomatis). Selain itu
+         (Esensial, komunitas contoh): pekerjaan + domisili. */
+      const sebaran = (founder && kini.premium && window.KolavoSumbuPersebaran) ? window.KolavoSumbuPersebaran() : null;
+      if(sebaran && sebaran.length) gambarAgg(sebaran);
+      else if(founder || pratinjau) gambarAgg([{ nama: 'Pekerjaan & keahlian', data: a.profesi }, { nama: 'Domisili', data: a.kota }]);
+      else gambarAgg([{ nama: 'Pekerjaan & keahlian', data: komposisi(a.profesi, nilaiProfil('kerja')) },
+                      { nama: 'Domisili', data: komposisi(a.kota, nilaiProfil('kota')) }]);
       /* Bagas Prakoso dilepas dari daftar pengurus: dia pengguna demonya sendiri,
          dan sebelumnya orang mendaftar ke komunitas yang mencantumkan namanya
          sendiri sebagai Sekretaris. Penggantinya tanpa foto — cuma empat wajah

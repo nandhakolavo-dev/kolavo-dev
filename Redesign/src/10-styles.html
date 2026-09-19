@@ -1857,6 +1857,25 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .sek-pilih{display:grid;gap:8px;margin-top:8px}
 .sek-pilih label{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.5;cursor:pointer}
 .sek-pilih input{margin-top:4px;accent-color:var(--blue)}
+/* persebaran anggota (Advance › Jawaban pendaftar › Persebaran) */
+.sek-sebaran-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.sek-lencana{display:inline-flex;align-items:center;flex:none;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:100px;background:var(--green-wash);color:var(--green)}
+.sek-lencana.diatur{background:var(--blue-wash);color:var(--blue-ink)}
+.sek-sebaran-status .sek-kecil{flex:1;min-width:220px}
+.sek-sebaran{display:grid;gap:8px;margin-top:8px}
+.sek-sebaran-i{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--card)}
+.sek-sebaran-i.on{border-color:var(--blue);background:var(--blue-tint)}
+.sek-sebaran-i label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:13.5px;line-height:1.45}
+.sek-sebaran-i label>span{display:grid;gap:1px}
+.sek-sebaran-i input{margin-top:3px;accent-color:var(--blue)}
+.sek-sebaran-cat{grid-column:1 / -1;padding-left:26px;font-size:12px;color:var(--orange-ink);line-height:1.5}
+.sek-sebaran-geser{display:flex;gap:4px}
+.sek-ikon-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:100px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);cursor:pointer}
+.sek-ikon-btn:hover:not(:disabled){border-color:var(--blue);color:var(--blue-ink)}
+.sek-ikon-btn:disabled{opacity:.4;cursor:default}
+.sek-ikon-btn:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.sek-ikon-btn svg{width:15px;height:15px}
+.sek-sebaran-pra{margin-top:10px}
 .sek-pindah{display:grid;gap:8px;margin-top:10px}
 .sek-pindah li{display:flex;gap:10px;font-size:13px;line-height:1.5}
 .sek-pindah svg{flex:none;width:16px;height:16px;margin-top:3px;color:var(--blue-ink)}

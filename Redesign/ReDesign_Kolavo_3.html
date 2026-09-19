@@ -1899,6 +1899,25 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .sek-pilih{display:grid;gap:8px;margin-top:8px}
 .sek-pilih label{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.5;cursor:pointer}
 .sek-pilih input{margin-top:4px;accent-color:var(--blue)}
+/* persebaran anggota (Advance › Jawaban pendaftar › Persebaran) */
+.sek-sebaran-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.sek-lencana{display:inline-flex;align-items:center;flex:none;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:100px;background:var(--green-wash);color:var(--green)}
+.sek-lencana.diatur{background:var(--blue-wash);color:var(--blue-ink)}
+.sek-sebaran-status .sek-kecil{flex:1;min-width:220px}
+.sek-sebaran{display:grid;gap:8px;margin-top:8px}
+.sek-sebaran-i{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--card)}
+.sek-sebaran-i.on{border-color:var(--blue);background:var(--blue-tint)}
+.sek-sebaran-i label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:13.5px;line-height:1.45}
+.sek-sebaran-i label>span{display:grid;gap:1px}
+.sek-sebaran-i input{margin-top:3px;accent-color:var(--blue)}
+.sek-sebaran-cat{grid-column:1 / -1;padding-left:26px;font-size:12px;color:var(--orange-ink);line-height:1.5}
+.sek-sebaran-geser{display:flex;gap:4px}
+.sek-ikon-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:100px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);cursor:pointer}
+.sek-ikon-btn:hover:not(:disabled){border-color:var(--blue);color:var(--blue-ink)}
+.sek-ikon-btn:disabled{opacity:.4;cursor:default}
+.sek-ikon-btn:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.sek-ikon-btn svg{width:15px;height:15px}
+.sek-sebaran-pra{margin-top:10px}
 .sek-pindah{display:grid;gap:8px;margin-top:10px}
 .sek-pindah li{display:flex;gap:10px;font-size:13px;line-height:1.5}
 .sek-pindah svg{flex:none;width:16px;height:16px;margin-top:3px;color:var(--blue-ink)}
@@ -2522,16 +2541,9 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       <section class="kom-sec">
         <h2 class="kom-h">Siapa saja yang ada di dalam</h2>
         <p class="kom-sub">Gambaran siapa saja yang ada di komunitas ini.</p>
-        <div class="agg">
-          <div class="agg-blok">
-            <p class="agg-lbl">Pekerjaan &amp; keahlian</p>
-            <div class="agg-baris" id="aggProfesi"></div>
-          </div>
-          <div class="agg-blok">
-            <p class="agg-lbl">Domisili</p>
-            <div class="agg-baris" id="aggKota"></div>
-          </div>
-        </div>
+        <!-- blok persebaran digambar 50-js-layar-komunitas: Esensial = pekerjaan + domisili;
+             Advance (komunitas sendiri) = sumbu pilihan pengurus, lihat KolavoSumbuPersebaran -->
+        <div class="agg" id="aggWadah"></div>
       </section>
 
       <!-- feed "Kabar komunitas" (paket Advance): broadcast pengurus + sambutan anggota baru.
@@ -2911,6 +2923,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
           <button type="button" class="kl-tab sub" data-tab="jawab" data-sek role="tab"><i class="kl-tab-ic" data-ic="mata"></i>Tinjau jawaban</button>
           <button type="button" class="kl-tab sub" data-tab="kelompok" data-sek role="tab"><i class="kl-tab-ic" data-ic="kelompok"></i>Kelompokkan</button>
           <button type="button" class="kl-tab sub" data-tab="rapi" data-sek role="tab"><i class="kl-tab-ic" data-ic="rapi"></i>Rapikan tulisan</button>
+          <button type="button" class="kl-tab sub" data-tab="sebaran" data-sek role="tab"><i class="kl-tab-ic" data-ic="sebaran"></i>Persebaran</button>
         </div>
         <button type="button" class="kl-tab" data-tab="email" data-sek role="tab"><i class="kl-tab-ic" data-ic="email"></i>Template email</button>
         <button type="button" class="kl-tab kl-induk" data-induk="setting" data-sek aria-expanded="false"><i class="kl-tab-ic" data-ic="setting"></i>Setting<svg class="kl-induk-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
@@ -2962,6 +2975,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       <section class="kl-panel" id="klPanelJawab" data-panel="jawab" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelKelompok" data-panel="kelompok" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelRapi" data-panel="rapi" role="tabpanel" hidden></section>
+      <section class="kl-panel" id="klPanelSebaran" data-panel="sebaran" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelEmail" data-panel="email" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelAkun" data-panel="akun" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelNotif" data-panel="notif" role="tabpanel" hidden></section>
@@ -3010,6 +3024,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
     onboard:     '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
     jawaban:     '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/>',
     mata:        '<path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/>',
+    sebaran:     '<path d="M3 20h18"/><path d="M6 16v-5M11 16V5M16 16v-8M21 16v-3"/>',
     kelompok:    '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
     rapi:        '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
     email:       '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
@@ -4523,6 +4538,20 @@ function hitung(){}
     });
   }
 
+  /* satu blok per sumbu persebaran: [{ nama, data: [[label, jumlah], ...] }] */
+  function gambarAgg(daftar){
+    const w = el('aggWadah');
+    w.innerHTML = '';
+    daftar.forEach(function(s){
+      const b = document.createElement('div');
+      b.className = 'agg-blok';
+      b.innerHTML = '<p class="agg-lbl"></p><div class="agg-baris"></div>';
+      b.querySelector('.agg-lbl').textContent = s.nama;
+      w.appendChild(b);
+      bar(s.data, b.querySelector('.agg-baris'), angkaKini());
+    });
+  }
+
   /* ---------- daftar anggota setelah diterima ----------
      Panelnya sengaja komponen yang sama dengan yang dijanjikan di hero.
      Isinya subset — prototipe menampilkan 6 baris dari jumlah sebenarnya,
@@ -5349,13 +5378,14 @@ function hitung(){}
     if(a){
       /* di halaman pemilik agregatnya sudah lengkap dari dashboard — tidak
          perlu menyuntikkan baris "aku" seperti di tampilan calon anggota */
-      if(founder || pratinjau){
-        bar(a.profesi, el('aggProfesi'), angkaKini());
-        bar(a.kota, el('aggKota'), angkaKini());
-      } else {
-      bar(komposisi(a.profesi, nilaiProfil('kerja')), el('aggProfesi'), angkaKini());
-      bar(komposisi(a.kota, nilaiProfil('kota')), el('aggKota'), angkaKini());
-      }
+      /* komunitas sendiri yang berlangganan Advance: sumbu dipilih pengurus di
+         dashboard › Jawaban pendaftar › Persebaran (atau otomatis). Selain itu
+         (Esensial, komunitas contoh): pekerjaan + domisili. */
+      const sebaran = (founder && kini.premium && window.KolavoSumbuPersebaran) ? window.KolavoSumbuPersebaran() : null;
+      if(sebaran && sebaran.length) gambarAgg(sebaran);
+      else if(founder || pratinjau) gambarAgg([{ nama: 'Pekerjaan & keahlian', data: a.profesi }, { nama: 'Domisili', data: a.kota }]);
+      else gambarAgg([{ nama: 'Pekerjaan & keahlian', data: komposisi(a.profesi, nilaiProfil('kerja')) },
+                      { nama: 'Domisili', data: komposisi(a.kota, nilaiProfil('kota')) }]);
       /* Bagas Prakoso dilepas dari daftar pengurus: dia pengguna demonya sendiri,
          dan sebelumnya orang mendaftar ke komunitas yang mencantumkan namanya
          sendiri sebagai Sekretaris. Penggantinya tanpa foto — cuma empat wajah
@@ -7963,7 +7993,9 @@ function hitung(){}
     kantor:  svg('<path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/>'),
     panah:   svg('<path d="M5 12h14M13 6l6 6-6 6"/>', 'sek-panah'),
     pindah:  svg('<path d="M5 12h14M13 6l6 6-6 6"/>'),
-    unduh:   svg('<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>')
+    unduh:   svg('<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>'),
+    atas:    svg('<path d="M12 19V5M6 11l6-6 6 6"/>'),
+    bawah:   svg('<path d="M12 5v14M6 13l6 6 6-6"/>')
   };
   const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
@@ -7973,8 +8005,9 @@ function hitung(){}
     info:  { judul: 'Info komunitas',  ringkas: 'pengumuman pengurus dan tautan grup WhatsApp, peraturan, dan dokumen di halaman komunitas.' },
     broadcast: { judul: 'Broadcast', ringkas: 'kirim kabar ke feed halaman komunitas; anggota baru disambut otomatis di feed yang sama.' },
     onboard: { judul: 'Onboarding', ringkas: 'sambut anggota baru dengan perkenalan bertahap: sambutan, sejarah, peraturan, alat, dan kenalan.' },
-    jawab: { judul: 'Jawaban pendaftar', ringkas: 'tinjau ulang jawaban pendaftar, kelompokkan jadi identitas anggota, dan rapikan tulisan yang beda-beda.' },
+    jawab: { judul: 'Jawaban pendaftar', ringkas: 'tinjau ulang jawaban pendaftar, kelompokkan jadi identitas anggota, rapikan tulisan yang beda-beda, dan pilih persebaran yang tampil di halaman komunitas.' },
     kelompok: { judul: 'Kelompokkan jawaban' },
+    sebaran: { judul: 'Persebaran anggota' },
     email: { judul: 'Template email', ringkas: 'atur isi email saat pendaftar diterima atau ditolak.' },
     rapi:  { judul: 'Rapikan tulisan jawaban', ringkas: 'satukan jawaban yang sama tapi ditulis berbeda, supaya tag tidak ganda.' },
     akun:  { judul: 'Akun' },
@@ -8022,6 +8055,7 @@ function hitung(){}
     S.hak = {}; S.hakDraf = {}; S.infoDraf = null;
     S.bc = { isi: '', tautan: '', pin: false, notif: true, hapus: null };
     S.jawabSaring = 'semua'; S.kelompokKolom = 'kerja'; S.kelompokTeks = ''; D.kelompok = {};
+    S.sebaran = null;   /* null = dipilih otomatis; array id sumbu = diatur pengurus */
     /* template diisi saat panelnya pertama digambar (TMPL_AWAL didefinisikan di bawah) */
     S.tmpl = null; S.tmplDraf = null; S.tmplJenis = 'terima'; S.tmplAktif = { terima: true, tolak: true }; S.tmplFokus = 'sekTmplIsi';
     S.akun = { email: emailAku(), langkah: 0, baru: '', kode: '' };
@@ -8735,6 +8769,113 @@ function hitung(){}
     return out;
   };
 
+  /* ---------- persebaran anggota (halaman komunitas) ----------
+     Esensial: pekerjaan + domisili, tetap. Advance: pengurus memilih sumbu mana
+     yang tampil di "Siapa saja yang ada di dalam" dan urutannya. Belum pernah
+     diatur (S.sebaran === null) → sistem memilihkan: pekerjaan, domisili, dan
+     maksimal satu pertanyaan pengurus yang jawabannya paling beragam tapi masih
+     bisa dikelompokkan (tahun, jawaban pendek, atau sudah dikelompokkan). */
+  const SEBARAN_MAKS = 4;
+  function kandidatSebaran(){
+    const q = window.KolavoPertanyaanPengurus ? window.KolavoPertanyaanPengurus() : [];
+    return [{ id: 'kerja', judul: 'Pekerjaan & keahlian' }, { id: 'kota', judul: 'Domisili' }].concat(q.map(function(t){
+      return { id: 'q:' + t.id, judul: t.judul || 'Pertanyaan', qid: t.id, tahun: t.tipe === 'tahun' };
+    }));
+  }
+  /* nilai seseorang di satu sumbu — label kelompok (Kelompokkan) didahulukan */
+  function nilaiSebaran(nama, k){
+    const m = D.mem[nama] || {};
+    let v;
+    if(k.id === 'kerja') v = m.kerja;
+    else if(k.id === 'kota') v = m.kota;
+    else {
+      const j = (m.jawaban || []).filter(function(x){ return x.id === k.qid; })[0];
+      v = j && !j.kosong && j.nilai !== '—' ? j.nilai : '';
+    }
+    const g = D.kelompok[k.id];
+    return (g && g.peta[v]) || v || '';
+  }
+  function statSebaran(k){
+    const nilai = semuaOrang().map(function(n){ return nilaiSebaran(n, k); }).filter(Boolean);
+    const beda = {}; nilai.forEach(function(v){ beda[v] = 1; });
+    const rata = nilai.length ? nilai.reduce(function(s, v){ return s + v.length; }, 0) / nilai.length : 0;
+    return { isi: nilai.length, beda: Object.keys(beda).length, panjang: !k.tahun && !D.kelompok[k.id] && rata > 30 };
+  }
+  /* lima teratas + sisanya (dan yang belum menjawab) jadi "Lainnya" */
+  function hitungSebaran(k){
+    const peta = {};
+    semuaOrang().forEach(function(n){ const v = nilaiSebaran(n, k) || 'Lainnya'; peta[v] = (peta[v] || 0) + 1; });
+    const urut = Object.keys(peta).filter(function(v){ return v !== 'Lainnya'; })
+      .sort(function(a, b){ return peta[b] - peta[a] || a.localeCompare(b); });
+    const atas = urut.slice(0, 5).map(function(v){ return [v, peta[v]]; });
+    const sisa = urut.slice(5).reduce(function(s, v){ return s + peta[v]; }, 0) + (peta['Lainnya'] || 0);
+    return sisa ? atas.concat([['Lainnya', sisa]]) : atas;
+  }
+  function sebaranOtomatis(){
+    const kand = kandidatSebaran();
+    let terbaik = null, skor = 1;
+    kand.slice(2).forEach(function(k){
+      const s = statSebaran(k);
+      if(!s.panjang && s.beda > skor){ terbaik = k; skor = s.beda; }
+    });
+    return kand.slice(0, 2).concat(terbaik ? [terbaik] : []);
+  }
+  function sebaranAktif(){
+    if(!S.sebaran) return sebaranOtomatis();
+    const kand = kandidatSebaran();
+    const pilih = S.sebaran.map(function(id){ return kand.filter(function(k){ return k.id === id; })[0]; }).filter(Boolean);
+    return pilih.length ? pilih : sebaranOtomatis();
+  }
+  /* dibaca halaman komunitas; null = tampilan bawaan (Esensial) */
+  window.KolavoSumbuPersebaran = function(){
+    if(!D.built || !D.sekAktif) return null;
+    return sebaranAktif().map(function(k){ return { nama: k.judul, data: hitungSebaran(k) }; });
+  };
+
+  function gambarSebaran(){
+    const aktif = sebaranAktif().map(function(k){ return k.id; });
+    const penuh = aktif.length >= SEBARAN_MAKS;
+    const kand = kandidatSebaran();
+    const urut = aktif.map(function(id){ return kand.filter(function(k){ return k.id === id; })[0]; })
+      .concat(kand.filter(function(k){ return aktif.indexOf(k.id) < 0; }));
+    const total = semuaOrang().length || 1;
+    const baris = urut.map(function(k){
+      const i = aktif.indexOf(k.id), on = i >= 0;
+      const s = statSebaran(k);
+      const sub = s.isi ? s.isi + ' anggota menjawab · ' + s.beda + ' jawaban berbeda' : 'Belum ada anggota yang menjawab';
+      const kunci = (!on && penuh) || (on && aktif.length === 1);
+      const geser = on && aktif.length > 1
+        ? '<div class="sek-sebaran-geser">' +
+            '<button type="button" class="sek-ikon-btn" data-sek-sebaran-geser="' + k.id + '" data-arah="-1" aria-label="Naikkan ' + lolos(k.judul) + '"' + (i === 0 ? ' disabled' : '') + '>' + IK.atas + '</button>' +
+            '<button type="button" class="sek-ikon-btn" data-sek-sebaran-geser="' + k.id + '" data-arah="1" aria-label="Turunkan ' + lolos(k.judul) + '"' + (i === aktif.length - 1 ? ' disabled' : '') + '>' + IK.bawah + '</button></div>'
+        : '';
+      return '<div class="sek-sebaran-i' + (on ? ' on' : '') + '">' +
+        '<label><input type="checkbox" data-sek-sebaran-cek="' + k.id + '"' + (on ? ' checked' : '') + (kunci ? ' disabled' : '') + '>' +
+          '<span><b>' + (on ? (i + 1) + '. ' : '') + lolos(k.judul) + '</b><span class="sek-kecil">' + sub + '</span></span></label>' + geser +
+        (s.panjang ? '<p class="sek-sebaran-cat">Jawabannya panjang-panjang — <button type="button" class="kl-mode-link" data-sek-ke="kelompok">kelompokkan dulu</button> supaya enak dibaca.</p>' : '') +
+      '</div>';
+    }).join('');
+    const pratinjau = sebaranAktif().map(function(k){
+      return '<div class="agg-blok"><p class="agg-lbl">' + lolos(k.judul) + '</p><div class="agg-baris">' + hitungSebaran(k).map(function(p){
+        return '<div class="agg-item' + (p[0] === 'Lainnya' ? ' lain' : '') + '"><span class="nm">' + lolos(p[0]) + '</span>' +
+          '<span class="agg-bar"><i style="width:' + Math.round(p[1] / total * 100) + '%"></i></span><span class="n">' + p[1] + '</span></div>';
+      }).join('') + '</div></div>';
+    }).join('');
+    el('klPanelSebaran').innerHTML =
+      kepala('sebaran', 'Pilih jawaban mana yang tampil sebagai persebaran di bagian <b>Siapa saja yang ada di dalam</b> halaman komunitas, beserta urutannya. Tanpa Advance, halaman komunitas selalu menampilkan pekerjaan dan domisili.') +
+      '<div class="sek-blok"><div class="sek-sebaran-status">' +
+        (S.sebaran
+          ? '<span class="sek-lencana diatur">Diatur pengurus</span><button type="button" class="btn outline sm" data-sek-sebaran-auto>Kembalikan ke otomatis</button>'
+          : '<span class="sek-lencana">Dipilih otomatis</span><span class="sek-kecil">Pekerjaan dan domisili, ditambah satu pertanyaan yang jawabannya paling beragam tapi masih bisa dikelompokkan. Ikut berubah mengikuti jawaban anggota sampai kamu mengaturnya sendiri.</span>') +
+        '</div>' +
+        '<div class="sek-blok-h">Sumbu yang tampil <span class="sek-kecil">· maksimal ' + SEBARAN_MAKS + '</span></div>' +
+        '<div class="sek-sebaran">' + baris + '</div></div>' +
+      '<div class="sek-blok"><div class="sek-blok-h">Pratinjau</div>' +
+        '<p class="sek-kecil">Dari ' + semuaOrang().length + ' anggota saat ini — tampil begini di halaman komunitas.</p>' +
+        '<div class="agg sek-sebaran-pra">' + pratinjau + '</div>' +
+        '<div class="sek-baris"><button type="button" class="btn outline sm" data-sek-sebaran-lihat>Lihat di halaman komunitas</button></div></div>';
+  }
+
   function gambarJawab(){
     const semua = orangJawab();
     const saring = S.jawabSaring;
@@ -9161,7 +9302,7 @@ function hitung(){}
   function gambarSemua(){
     gambarMode();
     gambarNudge();
-    if(D.sekAktif){ gambarDasbor(); gambarInfoKom(); gambarBroadcast(); gambarOnboard(); gambarJawab(); gambarKelompok(); gambarRapi(); gambarEmail(); gambarSetting(); gambarAkses(); gambarSerah(); }
+    if(D.sekAktif){ gambarDasbor(); gambarInfoKom(); gambarBroadcast(); gambarOnboard(); gambarJawab(); gambarKelompok(); gambarRapi(); gambarSebaran(); gambarEmail(); gambarSetting(); gambarAkses(); gambarSerah(); }
   }
   D.onGambar.push(gambarSemua);
   function ulang(){ D.gambar(); }
@@ -9182,6 +9323,17 @@ function hitung(){}
     }
 
     if(e.target.closest('.kl-tab[data-tab="dasbor"]')) setTimeout(gambarGrafik, 0);
+    /* persebaran */
+    if(e.target.closest('[data-sek-sebaran-auto]')){ S.sebaran = null; gambarSebaran(); toast('Persebaran kembali dipilih otomatis.'); return; }
+    const geser = e.target.closest('[data-sek-sebaran-geser]');
+    if(geser){
+      const a = sebaranAktif().map(function(k){ return k.id; });
+      const i = a.indexOf(geser.dataset.sekSebaranGeser), j = i + (+geser.dataset.arah);
+      if(i >= 0 && j >= 0 && j < a.length){ const t = a[i]; a[i] = a[j]; a[j] = t; S.sebaran = a; gambarSebaran(); }
+      return;
+    }
+    if(e.target.closest('[data-sek-sebaran-lihat]')){ if(window.KolavoBukaKomunitasDibuat) window.KolavoBukaKomunitasDibuat(); return; }
+
     const ke = e.target.closest('[data-sek-ke]');
     if(ke){
       D.tab = ke.dataset.sekKe;
@@ -9496,6 +9648,14 @@ function hitung(){}
   scr.addEventListener('change', function(e){
     const t = e.target;
     if(t.matches('[data-sek-pilihan]')){ S.pilihan = t.checked; gambarRapi(); return; }
+    if(t.matches('[data-sek-sebaran-cek]')){
+      /* suntingan pertama berangkat dari pilihan otomatis yang sedang tampil */
+      const a = sebaranAktif().map(function(k){ return k.id; });
+      const id = t.dataset.sekSebaranCek;
+      if(t.checked){ if(a.indexOf(id) < 0 && a.length < SEBARAN_MAKS) a.push(id); }
+      else if(a.length > 1) a.splice(a.indexOf(id), 1);
+      S.sebaran = a; gambarSebaran(); return;
+    }
     if(t.matches('[data-sek-rangkuman]')){ S.rangkuman = t.checked; gambarDasbor(); return; }
     if(t.matches('[data-sek-bc-sw]')){ S.bc[t.dataset.sekBcSw] = t.checked; gambarBroadcast(); return; }
     if(t.id === 'sekEmailJabatan'){ S.emailJabatan = t.value; return; }

@@ -1024,6 +1024,21 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     sebagai baris "Media sosial" di Data profil, berupa chip tautan `.kl-sosmed-i` (tab baru).
     Kosong → baris tidak ada. Contoh: 6 dari 8 pendaftar punya akun; Bayu dan Yoga tidak.
   - Saat diterima, `D.mem[].jawaban` menyalin jawaban saat itu (potret, bukan getter).
+- **Revisi P17 — persebaran anggota + pemilih sumbu** (2026-09-19).
+  - **Halaman komunitas**: dua blok tetap `#aggProfesi`/`#aggKota` diganti wadah `#aggWadah`,
+    digambar `gambarAgg([{nama, data}])`. Esensial dan komunitas contoh: pekerjaan + domisili
+    (seperti sebelumnya). Komunitas sendiri yang Advance-nya aktif: dari `KolavoSumbuPersebaran()`.
+  - **Dashboard**: sub-menu *Persebaran* (`data-tab="sebaran"`, ikon `sebaran`) di bawah
+    Jawaban pendaftar, dengan panel `#klPanelSebaran`. Karena ber-`data-sek`, sub-menu ini tidak
+    ada di Esensial. Kandidat: pekerjaan, domisili, tiap pertanyaan pengurus
+    (`KolavoPertanyaanPengurus`, P16). Nilai memakai label Kelompokkan kalau ada. Centang
+    (maks. 4, min. 1) dan tombol naik/turun langsung berlaku; pratinjau batang di panel.
+  - **Otomatis** (`S.sebaran === null`): pekerjaan + domisili + satu pertanyaan dengan jawaban
+    berbeda terbanyak (≥2) yang bisa dikelompokkan, yaitu bertipe tahun, rata-rata jawaban ≤30
+    karakter, atau sudah dikelompokkan. Jawaban panjang ditandai "kelompokkan dulu" dan tidak
+    dipilih otomatis. Suntingan pertama berangkat dari pilihan otomatis yang sedang tampil;
+    *Kembalikan ke otomatis* mengembalikannya ke null.
+  - Per sumbu: 5 teratas, sisanya + yang belum menjawab masuk "Lainnya".
 
 ## Yang belum terverifikasi
 
