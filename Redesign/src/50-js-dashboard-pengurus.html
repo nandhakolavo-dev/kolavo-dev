@@ -570,6 +570,8 @@
     D.mem[r.nama] = { nama: r.nama, full: r.full || r.nama, kerja: r.kerja, kota: r.kota, panggil: r.panggil, tags: (r.tags || []).slice(), jawaban: (r.jawaban || []).slice(), id: id };
     D.anggotaBiasa.push(r.nama);
     D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'diterima', oleh: D.aku, otomatis: !!o.otomatis, waktu: 'baru saja', catatan: o.catatan || '' });
+    /* sambutan otomatis di feed halaman komunitas — ditolak sendiri kalau belum Advance */
+    if(window.KolavoFeedTambah) window.KolavoFeedTambah('l-dibuat', { jenis: 'sambutan', anggota: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota });
     return id;
   }
   function tolakR(r, catatan){

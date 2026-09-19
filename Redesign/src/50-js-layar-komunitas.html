@@ -415,6 +415,27 @@
   }
   /* ikon yang sama dengan notifikasi "… menerima ajakan kenalanmu" (50-js-notifikasi) */
   const IKON_TERIMA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>';
+  window.KolavoIkonKenal = svgKenal;
+  /* dipakai daftar anggota & kartu sambutan feed: cincin, ikon, dan saringan ikut segar */
+  function segarKenal(){
+    if(kini && !el('komBuka').hidden){ gambarProgres(); saring(bidangKini); }
+    if(window.KolavoGambarFeed) window.KolavoGambarFeed();
+  }
+  window.KolavoAjakKenal = function(nama){
+    const App = window.KolavoApp || {};
+    App.kenalan = App.kenalan || {};
+    if(App.kenalan[nama]) return;
+    App.kenalan[nama] = 'menunggu';
+    tandaiDemo();
+    segarKenal();
+    if(window.KolavoToast) window.KolavoToast('Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + '.');
+  };
+  /* keadaan halaman yang sedang dibuka, dibaca modul feed */
+  window.KolavoKomKini = function(){
+    if(!kini) return null;
+    return { kelas: kini.kelas, nama: kini.nama, premium: !!kini.premium, founder: founder,
+      pratinjau: pratinjau, anggota: !pratinjau && anggotaKini(), agg: kini.agg };
+  };
   function ikonKenal(o){
     if(o.aku) return '';
     const st = window.KolavoStatusKenal(o.n);
@@ -578,6 +599,7 @@
     tandaiDemo();
     if(window.KolavoNotifTambah) window.KolavoNotifTambah({ jenis: 'kenalan', judul: nama.split(' ')[0] + ' menerima ajakan kenalanmu', teks: 'Nomor WhatsApp kalian sekarang saling terbuka.', anggota: nama });
     if(el('agNm').dataset.nm === nama) gambarAnggota(nama);
+    segarKenal();
     if(window.KolavoToast) window.KolavoToast(nama.split(' ')[0] + ' menerima ajakan kenalanmu. Nomornya kebuka.');
   };
 
@@ -716,6 +738,11 @@
     if(!kelas) return;
     d[kelas] = 'anggota';
     tandaiDemo();
+    /* sambutan otomatis di feed — KolavoFeedTambah sendiri menolak komunitas Esensial */
+    if(window.KolavoFeedTambah){
+      const s = aku();
+      window.KolavoFeedTambah(kelas, { jenis: 'sambutan', anggota: s.n, kerja: s.k, kota: s.d, f: s.f, aku: true });
+    }
 
     const nama = (kini && kini.kelas === kelas) ? kini.nama
                : ((App.komunitas && App.komunitas.nama) || 'komunitas itu');
@@ -959,6 +986,7 @@
     el('komKunciT').textContent = angkaKini() + ' anggota di dalam';
     gambarAksi();
     gambarInfo();
+    if(window.KolavoGambarFeed) window.KolavoGambarFeed();
     gambarFounder();
     gambarDaftar(founder || (window.KolavoApp.diajukan || {})[kini.kelas] === 'anggota');
     el('komGabung').hidden = true;
@@ -1105,6 +1133,7 @@
       else delete App.kenalan[nama];
       tandaiDemo();
       gambarAnggota(nama);
+      segarKenal();
       if(window.KolavoToast){
         window.KolavoToast(minta
           ? 'Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + '.'

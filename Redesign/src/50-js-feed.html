@@ -1,0 +1,227 @@
+<script>
+/* ============================================================
+   Feed "Kabar komunitas" — fitur paket Advance.
+   Dua jenis postingan: broadcast pengurus (formnya di menu Broadcast, P11)
+   dan sambutan otomatis tiap anggota baru diterima. Esensial tidak punya
+   feed sama sekali; pemiliknya cuma melihat satu kartu ajakan.
+   Data: KolavoApp.feed[kelas] = [{id, jenis, waktu, ...}]
+   API : KolavoFeedTambah(kelas, post) · KolavoFeed(kelas) · KolavoFeedBoleh(kelas)
+   ============================================================ */
+(function(){
+  const el = function(id){ return document.getElementById(id); };
+  const wadah = el('komFeed');
+  if(!wadah) return;
+  const App = function(){ const a = window.KolavoApp || (window.KolavoApp = {}); a.feed = a.feed || {}; a.feedSeed = a.feedSeed || {}; return a; };
+  const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const HARI = 86400000;
+  const BATAS = 5;
+  let urut = 0;
+  let terbuka = {};   /* "Lihat kabar lainnya" per komunitas */
+
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function svg(isi, w){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 2) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + isi + '</svg>'; }
+  const IK = {
+    toa: svg('<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>'),
+    sambut: svg('<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>', 1.9),
+    pin: svg('<path d="M12 17v5M9 3h6l-1 6 3 3v2H7v-2l3-3z"/>'),
+    tautan: svg('<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>'),
+    gembok: svg('<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>'),
+    advance: svg('<path d="M12 3l2.4 5.2L20 9l-4 4 1 5.6L12 16l-5 2.6L8 13 4 9l5.6-.8z"/>')
+  };
+
+  /* ---------- paket ---------- */
+  function boleh(kelas){
+    if(kelas === 'l-dibuat') return !!(window.KolavoDashboard && window.KolavoDashboard.sekAktif);
+    const logo = document.querySelector('#direktori .ccard .logo-sq.' + kelas);
+    return !!(logo && logo.closest('.ccard').dataset.premium === '1');
+  }
+
+  /* ---------- seed: hanya dua komunitas Advance di direktori ----------
+     Sambutan memakai anggota seed yang bergabung paling akhir; waktunya
+     diambil dari bulan bergabungnya (s), supaya tidak berselisih dengan
+     detail anggota. */
+  const SEED = {
+    'l-forpastara': {
+      sambut: ['Sekar Wulandari', 'Rizky Ananda'],
+      kabar: 'Kumpul angkatan bulan Oktober! Kita cari tanggal yang paling banyak bisa datang — isi polling di grup WhatsApp paling lambat Jumat ini, ya.'
+    },
+    'l-iasman52': {
+      sambut: ['Reza Maulana', 'Tari Andriani'],
+      kabar: 'Reuni akbar lintas angkatan dijadwalkan November 2026. Panitia masih butuh 5 relawan untuk acara & dokumentasi — kabari pengurus kalau mau bantu.'
+    }
+  };
+  function dariBulan(s){
+    const m = String(s || '').split(' ');
+    const i = BULAN.indexOf(m[0]);
+    return i < 0 ? Date.now() - 30 * HARI : new Date(Number(m[1]), i, 10).getTime();
+  }
+  function seed(kelas, agg){
+    const A = App();
+    A.feed[kelas] = A.feed[kelas] || [];
+    if(A.feedSeed[kelas] || !SEED[kelas] || !agg) return;
+    A.feedSeed[kelas] = true;
+    const sd = SEED[kelas];
+    sd.sambut.forEach(function(n){
+      const o = (agg.anggota || []).filter(function(x){ return x.n === n; })[0];
+      if(o) A.feed[kelas].push({ id: 'fd' + (++urut), jenis: 'sambutan', waktu: dariBulan(o.s), anggota: o.n, kerja: o.k, kota: o.d, f: o.f });
+    });
+    const ketua = (agg.pengurus || [])[0];
+    if(ketua) A.feed[kelas].push({ id: 'fd' + (++urut), jenis: 'broadcast', waktu: Date.now() - 2 * HARI - 3 * 3600000,
+      penulis: { n: ketua.n, j: ketua.j, f: ketua.f }, isi: sd.kabar });
+  }
+
+  window.KolavoFeedBoleh = boleh;
+  window.KolavoFeed = function(kelas){
+    const k = window.KolavoKomKini && window.KolavoKomKini();
+    seed(kelas, k && k.kelas === kelas ? k.agg : null);
+    return (App().feed[kelas] || []).slice();
+  };
+  /* ditolak (false) untuk komunitas Esensial — pemanggil tak perlu cek paket */
+  window.KolavoFeedTambah = function(kelas, post){
+    if(!boleh(kelas)) return false;
+    const k = window.KolavoKomKini && window.KolavoKomKini();
+    seed(kelas, k && k.kelas === kelas ? k.agg : null);
+    post.id = 'fd' + (++urut);
+    post.waktu = post.waktu || Date.now();
+    App().feed[kelas].unshift(post);
+    if(k && k.kelas === kelas) gambarFeed();
+    return true;
+  };
+
+  /* ---------- tampilan ---------- */
+  function kapan(t){
+    const d = (Date.now() - t) / 1000;
+    if(d < 60) return 'baru saja';
+    if(d < 3600) return Math.floor(d / 60) + ' menit lalu';
+    if(d < 86400) return Math.floor(d / 3600) + ' jam lalu';
+    if(d < 172800) return 'kemarin';
+    if(d < 7 * 86400) return Math.floor(d / 86400) + ' hari lalu';
+    const x = new Date(t);
+    if(d < 30 * 86400) return x.getDate() + ' ' + BULAN[x.getMonth()].slice(0, 3);
+    return BULAN[x.getMonth()] + ' ' + x.getFullYear();
+  }
+  function inisial(n){ return String(n || '?').split(' ').slice(0, 2).map(function(k){ return k[0]; }).join('').toUpperCase(); }
+  function panggil(p){ return p.panggil || String(p.anggota || '').split(' ')[0]; }
+  function avatar(o, i){
+    return o.f
+      ? '<span class="av photo ' + o.f + '" role="img" aria-label="Foto profil ' + esc(o.n) + ' — gambar AI"></span>'
+      : '<span class="av ' + 'abc'[(i || 0) % 3] + '" aria-hidden="true">' + inisial(o.n) + '</span>';
+  }
+  function tombolKenal(nama){
+    const st = window.KolavoStatusKenal ? window.KolavoStatusKenal(nama) : 'belum';
+    const ik = window.KolavoIkonKenal ? window.KolavoIkonKenal(st) : '';
+    if(st === 'belum') return '<button type="button" class="btn outline xs fd-kenal" data-feed-kenal="' + esc(nama) + '">' + ik + 'Ajak kenalan</button>';
+    return '<span class="fd-kenal-st ' + st + '">' + ik + (st === 'menunggu' ? 'Menunggu' : 'Sudah kenal') + '</span>';
+  }
+
+  function kartuKabar(p){
+    return '<article class="fd-post">' +
+      '<div class="fd-kepala">' + avatar(p.penulis, 0) +
+        '<div class="t"><p class="fd-nm">' + esc(p.penulis.n) + '<span class="fd-jab">' + esc(p.penulis.j) + '</span></p>' +
+        '<p class="fd-waktu">' + kapan(p.waktu) + '</p></div>' +
+        (p.sematkan ? '<span class="fd-pin">' + IK.pin + 'Disematkan</span>' : '') +
+      '</div>' +
+      '<p class="fd-isi">' + esc(p.isi) + '</p>' +
+      (p.tautan ? '<button type="button" class="fd-tautan" data-feed-tautan>' + IK.tautan + '<span>' + esc(p.tautan.replace(/^https:\/\//, '')) + '</span></button>' : '') +
+      '</article>';
+  }
+  function kartuSambut(p){
+    const orang = { n: p.anggota, f: p.f };
+    const sub = [p.kerja, p.kota].filter(function(v){ return v && v !== '—'; }).map(esc).join(' · ');
+    const klik = p.aku ? '' : ' data-feed-orang="' + esc(p.anggota) + '" role="button" tabindex="0"';
+    return '<article class="fd-post fd-sambut">' +
+      '<p class="fd-label">' + IK.sambut + 'Anggota baru<span class="fd-waktu">· ' + kapan(p.waktu) + '</span></p>' +
+      '<div class="fd-sambut-isi"><span class="fd-orang"' + klik + '>' + avatar(orang, 1) + '</span>' +
+        '<div class="t"><b' + klik + ' class="fd-orang">Selamat datang, ' + (p.aku ? 'kamu' : esc(panggil(p))) + '!</b>' +
+        (sub ? '<small>' + sub + '</small>' : '') + '</div>' +
+        (p.aku ? '' : tombolKenal(p.anggota)) +
+      '</div></article>';
+  }
+  function kartuRombongan(g){
+    const nama = g.map(function(p){ return p.aku ? 'kamu' : esc(panggil(p)); });
+    const daftar = nama.length > 1 ? nama.slice(0, -1).join(', ') + ', dan ' + nama[nama.length - 1] : nama[0];
+    return '<article class="fd-post fd-sambut">' +
+      '<p class="fd-label">' + IK.sambut + 'Anggota baru<span class="fd-waktu">· ' + kapan(g[0].waktu) + '</span></p>' +
+      '<div class="fd-sambut-isi"><span class="fd-tumpuk">' + g.slice(0, 4).map(function(p, i){ return avatar({ n: p.anggota, f: p.f }, i); }).join('') + '</span>' +
+        '<div class="t"><b>' + g.length + ' anggota baru bergabung</b><small>Selamat datang, ' + daftar + '!</small></div>' +
+        '<button type="button" class="btn outline xs" data-feed-daftar>Lihat &amp; ajak kenalan</button>' +
+      '</div></article>';
+  }
+
+  /* disematkan di atas, sisanya terbaru dulu; sambutan di hari yang sama digabung */
+  function susun(list){
+    const pin = list.filter(function(p){ return p.sematkan; });
+    const lain = list.filter(function(p){ return !p.sematkan; }).sort(function(a, b){ return b.waktu - a.waktu; });
+    const unit = pin.map(function(p){ return [p]; });
+    lain.forEach(function(p){
+      const akhir = unit[unit.length - 1];
+      if(p.jenis === 'sambutan' && akhir && !akhir[0].sematkan && akhir[0].jenis === 'sambutan' &&
+         new Date(akhir[0].waktu).toDateString() === new Date(p.waktu).toDateString()) akhir.push(p);
+      else unit.push([p]);
+    });
+    return unit;
+  }
+  function gambarUnit(u){
+    if(u.length > 1) return kartuRombongan(u);
+    return u[0].jenis === 'broadcast' ? kartuKabar(u[0]) : kartuSambut(u[0]);
+  }
+
+  const KEPALA = '<h2 class="kom-h">Kabar komunitas</h2>' +
+    '<p class="kom-sub">Info dari pengurus dan sambutan untuk anggota yang baru bergabung.</p>';
+
+  function gambarFeed(){
+    const k = window.KolavoKomKini && window.KolavoKomKini();
+    const sembunyi = function(){ wadah.hidden = true; wadah.innerHTML = ''; };
+    if(!k || k.pratinjau) return sembunyi();
+    if(!k.premium){
+      if(!k.founder) return sembunyi();
+      wadah.hidden = false;
+      wadah.innerHTML = '<div class="kom-info-ajak">' + IK.advance +
+        '<div class="t"><strong>Kabarkan info &amp; sambut anggota baru lewat feed dengan paket Advance</strong>' +
+        '<p>Cuma kamu yang melihat kartu ini — pengunjung dan anggota tidak.</p></div>' +
+        '<button type="button" class="btn outline xs" data-info-advance>Lihat Advance</button></div>';
+      return;
+    }
+    seed(k.kelas, k.agg);
+    wadah.hidden = false;
+    if(!k.anggota){
+      wadah.innerHTML = KEPALA + '<div class="fd-kunci" data-kunci>' + IK.gembok +
+        '<div><b>Kebuka setelah kamu jadi anggota</b><p>Pengurus membagikan info dan menyambut anggota baru di sini.</p></div></div>';
+      return;
+    }
+    const unit = susun(App().feed[k.kelas] || []);
+    if(!unit.length){
+      wadah.innerHTML = KEPALA + '<p class="fd-kosong">Belum ada kabar. Info dari pengurus dan sambutan anggota baru akan muncul di sini.</p>';
+      return;
+    }
+    const semua = terbuka[k.kelas] || unit.length <= BATAS;
+    wadah.innerHTML = KEPALA + '<div class="fd-list">' + (semua ? unit : unit.slice(0, BATAS)).map(gambarUnit).join('') + '</div>' +
+      (semua ? '' : '<button type="button" class="btn outline sm fd-lagi" data-feed-lagi>Lihat kabar lainnya (' + (unit.length - BATAS) + ')</button>');
+  }
+  window.KolavoGambarFeed = gambarFeed;
+
+  wadah.addEventListener('click', function(e){
+    const kenal = e.target.closest('[data-feed-kenal]');
+    if(kenal){ if(window.KolavoAjakKenal) window.KolavoAjakKenal(kenal.dataset.feedKenal); return; }
+    const orang = e.target.closest('[data-feed-orang]');
+    if(orang){ if(window.KolavoBukaAnggota) window.KolavoBukaAnggota(orang.dataset.feedOrang); return; }
+    if(e.target.closest('[data-feed-daftar]')){
+      const b = el('komBuka');
+      if(b) b.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    if(e.target.closest('[data-feed-lagi]')){
+      const k = window.KolavoKomKini && window.KolavoKomKini();
+      if(k){ terbuka[k.kelas] = true; gambarFeed(); }
+      return;
+    }
+    if(e.target.closest('[data-feed-tautan]')){
+      if(window.KolavoToast) window.KolavoToast('Mode demo — di produk, ini membuka tautannya.');
+    }
+  });
+  wadah.addEventListener('keydown', function(e){
+    const orang = e.target.closest('[data-feed-orang]');
+    if(orang && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); orang.click(); }
+  });
+})();
+</script>

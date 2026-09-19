@@ -22,6 +22,7 @@
 50-js-layar-komunitas.html
 50-js-notifikasi.html
 50-js-onboarding.html
+50-js-feed.html
 50-js-tema-komunitas.html
 50-js-layar-buat.html
 50-js-dashboard-pengurus.html

@@ -1317,6 +1317,51 @@ body.lgn-open{overflow:hidden}
 .kom-info-ajak .t{flex:1;min-width:200px}
 .kom-info-ajak strong{display:block;font-size:13.5px;font-weight:600;line-height:1.4}
 .kom-info-ajak p{font-size:12px;color:var(--ink-2);line-height:1.5}
+
+/* ---------- feed "Kabar komunitas" (Advance) ----------
+   Broadcast = kartu putih berkepala pengurus; sambutan = kartu hijau lembut,
+   supaya dua jenis kabar terbaca beda sekilas tanpa perlu label panjang. */
+.kom-feed .kom-info-ajak{margin-top:0}
+.fd-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.fd-post{padding:14px 16px;border:1px solid var(--line);border-radius:13px;background:var(--card)}
+.fd-kepala{display:flex;align-items:center;gap:10px}
+.fd-kepala .av{width:40px;height:40px;font-size:14px;flex:none}
+.fd-kepala .t{flex:1;min-width:0}
+.fd-nm{font-size:14px;font-weight:600;line-height:1.35}
+.fd-jab{margin-left:8px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink);vertical-align:1px}
+.fd-waktu{font-size:12px;font-weight:500;color:var(--ink-3);letter-spacing:0;text-transform:none}
+.fd-pin{display:inline-flex;align-items:center;gap:4px;flex:none;font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px;background:var(--orange-wash);color:var(--orange-ink)}
+.fd-pin svg{width:12px;height:12px}
+.fd-isi{margin-top:10px;font-size:14.5px;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere}
+.fd-tautan{margin-top:10px;display:inline-flex;align-items:center;gap:6px;max-width:100%;font:inherit;font-size:13px;font-weight:500;padding:6px 12px;border-radius:100px;border:1px solid var(--line);background:var(--blue-tint);color:var(--blue-ink);cursor:pointer}
+.fd-tautan span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fd-tautan svg{width:14px;height:14px;flex:none}
+.fd-sambut{background:var(--green-wash);border-color:transparent}
+.fd-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green)}
+.fd-label svg{width:15px;height:15px;flex:none}
+.fd-sambut-isi{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px}
+.fd-sambut-isi .av{width:48px;height:48px;font-size:15px;flex:none}
+.fd-sambut-isi .t{flex:1 1 160px;min-width:0}
+.fd-sambut-isi b{display:block;font-size:15px;font-weight:600;line-height:1.35}
+.fd-sambut-isi small{display:block;margin-top:2px;font-size:12.5px;color:var(--ink-2);line-height:1.45}
+[data-feed-orang]{cursor:pointer}
+[data-feed-orang]:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:8px}
+.fd-orang{flex:none}
+.fd-kenal{flex:none;background:var(--card)}
+.fd-kenal svg{width:16px;height:16px}
+.fd-kenal-st{display:inline-flex;align-items:center;gap:6px;flex:none;font-size:12px;font-weight:600;padding:6px 12px;border-radius:100px;background:var(--card)}
+.fd-kenal-st svg{width:16px;height:16px}
+.fd-kenal-st.menunggu{color:var(--ink-2)}
+.fd-kenal-st.terhubung{color:var(--green)}
+.fd-tumpuk{display:flex;flex:none}
+.fd-tumpuk .av{width:40px;height:40px;font-size:13px;margin-left:-12px;box-shadow:0 0 0 2px var(--green-wash)}
+.fd-tumpuk .av:first-child{margin-left:0}
+.fd-lagi{margin-top:10px;width:100%}
+.fd-kosong{margin-top:12px;padding:22px 16px;border:1px dashed var(--line);border-radius:13px;text-align:center;font-size:13px;color:var(--ink-3)}
+.fd-kunci{display:flex;align-items:center;gap:12px;margin-top:12px;padding:14px 16px;border-radius:13px;border:1px dashed var(--ink-3);background:var(--bg-alt)}
+.fd-kunci svg{width:20px;height:20px;flex:none;color:var(--ink-2)}
+.fd-kunci b{display:block;font-size:13.5px;font-weight:600}
+.fd-kunci p{font-size:12px;color:var(--ink-2);line-height:1.5}
 .nm-full{font-size:12px;color:var(--ink-3)}
 
 /* akun media sosial di Lengkapi profil */

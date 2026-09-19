@@ -914,6 +914,30 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     **diturunkan dari `anggota`** saat modul dimuat (`hitung()`); literalnya dihapus.
     Setelah diterima, kepala halaman jadi 7 (6 + kamu). Hero WAG ("22 anggota") tidak
     disentuh — itu ilustrasi, bukan komunitas di direktori.
+- **Revisi P10 — feed "Kabar komunitas" (premium Advance)** (2026-09-19). Modul baru
+  `50-js-feed` (manifest sesudah `50-js-onboarding`), wadah `#komFeed` sesudah `#komInfo`.
+  - **Paket**: `KolavoFeedBoleh(kelas)` — direktori ber-`data-premium="1"` (Forpastara,
+    IA SMAN 52) atau `l-dibuat` saat `D.sekAktif`. Esensial: tidak ada feed dan tidak ada
+    sambutan (`KolavoFeedTambah` mengembalikan `false`); pemilik Esensial melihat satu
+    kartu ajakan `.kom-info-ajak` (tombol `data-info-advance`, pintu yang sama dengan Info
+    komunitas). Advance yang baru aktif mulai dengan feed kosong — tidak ada sambutan mundur.
+  - **Data**: `KolavoApp.feed[kelas]`, API `KolavoFeedTambah(kelas, post)` /
+    `KolavoFeed(kelas)`. Seed malas (`feedSeed`) hanya dua komunitas Advance: 2 sambutan
+    (anggota yang paling akhir bergabung, waktunya dari bulan `s`) + 1 broadcast Ketua.
+  - **Tampilan**: disematkan di atas, lalu terbaru; 5 unit lalu "Lihat kabar lainnya (n)".
+    Broadcast = kartu putih berkepala pengurus + pil jabatan + waktu relatif + tautan
+    (toast demo). Sambutan = kartu `--green-wash`, "Selamat datang, {panggilan}!" +
+    pekerjaan · domisili + tombol **Ajak kenalan** (ikon `KolavoIkonKenal` dari P9) atau
+    status Menunggu/Sudah kenal. Sambutan sehari yang berurutan digabung jadi "N anggota
+    baru bergabung" (avatar bertumpuk, tombol ke daftar). Sambutan diri sendiri: "kamu",
+    tanpa tombol.
+  - **Pemicu**: `terima()` di dashboard (`l-dibuat`, termasuk terima massal) dan
+    `KolavoSetujui` (demo, diri sendiri).
+  - **Akses**: anggota & pemilik melihat isi; pengunjung komunitas Advance melihat kartu
+    terkunci `data-kunci`.
+  - Sambungan baru di `50-js-layar-komunitas`: `KolavoKomKini()`, `KolavoAjakKenal(nama)`,
+    `KolavoIkonKenal(st)`, dan `segarKenal()` — ajakan dari feed, dari detail anggota,
+    atau terima demo sama-sama menyegarkan cincin, ikon daftar, dan feed.
 
 ## Yang belum terverifikasi
 
