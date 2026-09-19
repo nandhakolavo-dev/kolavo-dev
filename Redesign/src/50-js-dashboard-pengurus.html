@@ -252,7 +252,7 @@
       }
 
       const catatan = bisa
-        ? '<div class="kl-req-catatan"><label class="kl-info-k" for="kat-' + r.id + '">Catatan keputusan <span class="kl-wajib">wajib</span></label>' +
+        ? '<div class="kl-req-catatan"><label class="kl-info-k" for="kat-' + r.id + '">Catatan keputusan<span class="kl-wajib" aria-hidden="true">*</span></label>' +
           '<input class="inp" id="kat-' + r.id + '" type="text" data-catatan maxlength="140" required aria-required="true" aria-describedby="katn-' + r.id + '" placeholder="Mis. alumni angkatan 2014, dikenal pengurus">' +
           '<p class="kl-req-catatan-note" id="katn-' + r.id + '">Tulis alasannya dulu, baru bisa setujui atau tolak. Catatan ini tersimpan di Riwayat supaya pengurus lain paham.</p></div>'
         : '';

@@ -1548,7 +1548,7 @@ body.lgn-open{overflow:hidden}
 .kl-req-catatan{margin-top:14px}
 .kl-req-catatan .inp{height:44px}
 .kl-opt{font-weight:500;text-transform:none;letter-spacing:0;color:var(--ink-3)}
-.kl-wajib{font-weight:600;text-transform:none;letter-spacing:0;color:var(--red)}
+.kl-wajib{font-weight:600;color:var(--red);margin-left:2px}
 .kl-req-catatan-note{font-size:12px;color:var(--ink-3);line-height:1.45;margin-top:6px}
 .kl-req-aksi .btn:disabled{background:var(--disabled);color:var(--ink-3);border-color:transparent;cursor:not-allowed;transform:none}
 .kl-riwayat-catatan{margin-top:10px;padding:10px 12px;border-radius:13px;background:var(--bg-alt);border:1px solid var(--line);border-left:3px solid var(--line)}
@@ -6484,7 +6484,7 @@ function hitung(){}
       }
 
       const catatan = bisa
-        ? '<div class="kl-req-catatan"><label class="kl-info-k" for="kat-' + r.id + '">Catatan keputusan <span class="kl-wajib">wajib</span></label>' +
+        ? '<div class="kl-req-catatan"><label class="kl-info-k" for="kat-' + r.id + '">Catatan keputusan<span class="kl-wajib" aria-hidden="true">*</span></label>' +
           '<input class="inp" id="kat-' + r.id + '" type="text" data-catatan maxlength="140" required aria-required="true" aria-describedby="katn-' + r.id + '" placeholder="Mis. alumni angkatan 2014, dikenal pengurus">' +
           '<p class="kl-req-catatan-note" id="katn-' + r.id + '">Tulis alasannya dulu, baru bisa setujui atau tolak. Catatan ini tersimpan di Riwayat supaya pengurus lain paham.</p></div>'
         : '';
