@@ -917,7 +917,7 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
 - **Revisi P10 — feed "Kabar komunitas" (premium Advance)** (2026-09-19). Modul baru
   `50-js-feed` (manifest sesudah `50-js-onboarding`). Urutan halaman: `#komInfo` (pengumuman +
   tautan) → `#komStat` (anggota · kota · bidang · angkatan, dipindah ke sini atas permintaan)
-  → `#komFeed`.
+  → "Siapa saja yang ada di dalam" (agregat) → `#komFeed` → Daftar anggota.
   - **Paket**: `KolavoFeedBoleh(kelas)` — direktori ber-`data-premium="1"` (Forpastara,
     IA SMAN 52) atau `l-dibuat` saat `D.sekAktif`. Esensial: tidak ada feed dan tidak ada
     sambutan (`KolavoFeedTambah` mengembalikan `false`); pemilik Esensial melihat satu
