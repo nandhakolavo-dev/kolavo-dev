@@ -597,7 +597,7 @@
     const isi = {
       sambutan: function(){ return obField('sambutan', 'judul', 'Judul sapaan', 'inp', 80) + obField('sambutan', 'pesan', 'Kata pengantar', 'ta', 800) + obField('sambutan', 'pengirim', 'Ditandatangani', 'inp', 80); },
       kenal: function(){ return obField('kenal', 'sejarah', 'Sejarah singkat', 'ta', 800) + obField('kenal', 'visi', 'Visi', 'ta', 400) + obField('kenal', 'misi', 'Misi / tujuan (satu baris satu poin)', 'ta', 800); },
-      aturan: function(){ return obField('aturan', 'ringkas', 'Ringkasan aturan (satu baris satu poin)', 'ta', 600) + obTautan('Berkas peraturan', info.peraturan); },
+      aturan: function(){ return obField('aturan', 'ringkas', 'Isi peraturan — baris diawali # jadi judul bagian, baris lain jadi poin', 'ta', 3000) + obTautan('Berkas peraturan', info.peraturan); },
       alat: function(){ return obField('alat', 'ket', 'Keterangan', 'ta', 600) + obTautan('Grup komunikasi', info.wa) + obTautan('Dokumen komunitas', info.dokumen); },
       kenalan: function(){
         const c = o.langkah.kenalan.cocok;

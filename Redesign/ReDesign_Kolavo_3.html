@@ -1323,6 +1323,14 @@ body.lgn-open{overflow:hidden}
 .ob-orang .t{flex:1;min-width:0}
 .ob-orang b{display:block;font-size:14px;font-weight:600}
 .ob-orang .t span{display:block;font-size:12.5px;color:var(--ink-2)}
+/* peraturan: area bergulir + centang persetujuan (P12) */
+.ob-gulir{max-height:46vh;overflow-y:auto;overscroll-behavior:contain;margin-top:6px;padding:4px 10px 4px 0;border-bottom:1px solid var(--line)}
+.ob-gulir:focus-visible{outline:3px solid var(--ring);border-radius:8px}
+.ob-setuju{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:14px;font-weight:500;line-height:1.5;color:var(--ink);cursor:pointer}
+.ob-setuju input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--blue);cursor:pointer}
+.ob-setuju:has(input:disabled){color:var(--ink-3);cursor:not-allowed}
+.ob-setuju input:disabled{cursor:not-allowed}
+.ob-kaki .btn:disabled{background:var(--disabled);color:var(--ink-3);border-color:transparent;cursor:not-allowed;transform:none}
 .ob-kaki{display:flex;gap:8px;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
 .ob-sp{flex:1}
 .ob-lewati{font:inherit;font-size:13.5px;font-weight:500;color:var(--ink-2);background:none;border:0;cursor:pointer;padding:8px 4px}
@@ -5658,7 +5666,38 @@ function hitung(){}
       sejarah: (desc ? desc + '\n\n' : '') + nama + ' berawal dari obrolan kecil beberapa orang yang ingin tetap terhubung setelah jalan masing-masing. Dari kumpul-kumpul sederhana, komunitas ini tumbuh lewat kegiatan rutin, saling bantu saat ada yang butuh, dan acara tahunan yang selalu ditunggu.',
       visi: 'Menjadi rumah yang menyambung silaturahmi lintas angkatan dan daerah, sekaligus membuka peluang — belajar, bekerja, dan berkarya — bagi setiap anggotanya.',
       misi: 'Mengadakan kegiatan rutin yang bisa diikuti siapa saja, dari diskusi daring sampai kumpul akbar.\nMembantu anggota yang sedang butuh, lewat dana sosial dan jejaring.\nMenghubungkan anggota dengan sesama bidang, supaya kolaborasi tumbuh dari saling kenal.',
-      ringkas: 'Saling menghormati — tanpa SARA, ujaran kebencian, dan politik praktis.\nPakai nama asli dan foto yang jelas supaya sesama anggota mudah mengenalimu.\nPromosi usaha boleh, khusus hari Jumat lewat kanal yang disediakan.\nData dan nomor anggota tidak dibagikan ke luar komunitas tanpa izin.\nBeda pendapat diselesaikan lewat pesan pribadi atau pengurus, bukan di grup besar.',
+      ringkas: '# 1. Tentang peraturan ini\n' +
+        'Peraturan ini berlaku untuk semua anggota ' + nama + ' — di Kolavo, grup WhatsApp, dan setiap kegiatan resmi komunitas.\n' +
+        'Dengan menyetujuinya, kamu ikut menjaga komunitas ini tetap nyaman untuk semua.\n' +
+        '# 2. Identitas & profil\n' +
+        'Pakai nama asli dan foto wajah yang jelas supaya sesama anggota mudah mengenalimu.\n' +
+        'Isi data profil dengan jujur; pengurus berhak memverifikasi keanggotaan.\n' +
+        'Satu orang satu akun — akun tidak boleh dipinjamkan.\n' +
+        '# 3. Etika berinteraksi\n' +
+        'Saling menghormati — tanpa SARA, ujaran kebencian, perundungan, maupun pelecehan dalam bentuk apa pun.\n' +
+        'Tidak membahas politik praktis atau kampanye di kanal komunitas.\n' +
+        'Beda pendapat diselesaikan lewat pesan pribadi atau pengurus, bukan di grup besar.\n' +
+        '# 4. Informasi & konten\n' +
+        'Cek kebenaran kabar sebelum membagikannya; hindari hoaks dan pesan berantai.\n' +
+        'Tidak menyebarkan konten pornografi, kekerasan, atau yang melanggar hukum.\n' +
+        'Hargai karya orang lain — sebutkan sumber saat membagikan.\n' +
+        '# 5. Promosi & usaha\n' +
+        'Promosi usaha boleh, khusus hari Jumat lewat kanal yang disediakan.\n' +
+        'Dilarang menawarkan investasi, arisan berantai, atau skema yang menjanjikan untung pasti.\n' +
+        'Jangan menghubungi anggota secara pribadi hanya untuk berjualan tanpa persetujuan mereka.\n' +
+        '# 6. Privasi & data anggota\n' +
+        'Data dan nomor anggota tidak dibagikan ke luar komunitas tanpa izin pemiliknya.\n' +
+        'Nomor WhatsApp baru terbuka setelah kedua pihak setuju berkenalan — hormati anggota yang belum mau.\n' +
+        'Tangkapan layar percakapan internal tidak diunggah ke luar komunitas.\n' +
+        '# 7. Kegiatan & iuran\n' +
+        'Info kegiatan resmi hanya datang dari pengurus lewat pengumuman di halaman komunitas.\n' +
+        'Iuran atau donasi (jika ada) hanya dibayarkan ke rekening resmi yang diumumkan pengurus.\n' +
+        '# 8. Pelanggaran & sanksi\n' +
+        'Pelanggaran ringan: teguran pribadi dari pengurus.\n' +
+        'Pelanggaran berat atau berulang: pembatasan akses sementara hingga dikeluarkan dari komunitas.\n' +
+        'Laporkan pelanggaran ke pengurus; identitas pelapor dijaga.\n' +
+        '# 9. Perubahan peraturan\n' +
+        'Pengurus dapat memperbarui peraturan ini; perubahan penting diumumkan di halaman komunitas.',
       ket: 'Obrolan sehari-hari, info kegiatan, dan kabar duka maupun bahagia ada di grup WhatsApp — perkenalkan dirimu di sana setelah bergabung, ya.\n\nNotulen rapat, foto kegiatan, dan dokumen bersama tersimpan rapi di folder dokumen. Kalau ada yang tidak bisa dibuka, kabari pengurus.'
     };
   }
@@ -5737,10 +5776,24 @@ function hitung(){}
           return '<div class="ob-bagian"><p class="ob-lbl">' + x[0] + '</p><p class="ob-teks">' + lolos(x[1]) + '</p></div>';
         }).join('');
     } else if(l[0] === 'aturan'){
+      /* baris "# …" = judul bagian, baris lain = poin milik bagian di atasnya */
       const poin = String(L.ringkas || '').split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
-      isi = '<h2 class="ob-judul" id="obJudul">Peraturan komunitas</h2>' +
-        (poin.length ? '<ul class="ob-poin">' + poin.map(function(p){ return '<li>' + IK.cek + '<span>' + lolos(p) + '</span></li>'; }).join('') + '</ul>' : '') +
-        (tombolTautan('peraturan', 'Unduh peraturan lengkap', info.peraturan, IK.unduh) || (poin.length ? '' : '<p class="ob-teks">Pengurus belum melampirkan peraturan.</p>'));
+      const bagian = [];
+      poin.forEach(function(p){
+        if(/^#\s*/.test(p)) bagian.push({ h: p.replace(/^#\s*/, ''), p: [] });
+        else { if(!bagian.length) bagian.push({ h: '', p: [] }); bagian[bagian.length - 1].p.push(p); }
+      });
+      /* gerbang persetujuan: centang aktif setelah area digulir sampai bawah (cekGulir) */
+      const bisaCentang = ctx.setuju || ctx.bacaSampai;
+      isi = '<h2 class="ob-judul" id="obJudul">Peraturan komunitas</h2><div class="ob-gulir" data-ob-gulir tabindex="0" aria-label="Isi peraturan">' +
+        bagian.map(function(b){
+          return (b.h ? '<p class="ob-lbl">' + lolos(b.h) + '</p>' : '') +
+            (b.p.length ? '<ul class="ob-poin">' + b.p.map(function(p){ return '<li>' + IK.cek + '<span>' + lolos(p) + '</span></li>'; }).join('') + '</ul>' : '');
+        }).join('') +
+        (tombolTautan('peraturan', 'Unduh peraturan lengkap', info.peraturan, IK.unduh) || (poin.length ? '' : '<p class="ob-teks">Pengurus belum melampirkan peraturan.</p>')) + '</div>' +
+        '<label class="ob-setuju"><input type="checkbox" data-ob-setuju' + (ctx.setuju ? ' checked' : '') + (bisaCentang ? '' : ' disabled') + '>' +
+          '<span>Saya sudah membaca dan menyetujui peraturan ' + lolos(ctx.kom.nama) + '</span></label>' +
+        '<p class="ob-kecil ob-petunjuk" data-ob-petunjuk' + (bisaCentang ? ' hidden' : '') + '>Gulir sampai bawah untuk menyetujui.</p>';
     } else if(l[0] === 'alat'){
       const t = tombolTautan('wa', 'Gabung grup komunikasi', info.wa, IK.wa) + tombolTautan('dokumen', 'Buka dokumen komunitas', info.dokumen, IK.dok);
       isi = '<h2 class="ob-judul" id="obJudul">Tempat ngobrol & dokumen</h2>' + (L.ket ? '<p class="ob-teks">' + lolos(L.ket) + '</p>' : '') +
@@ -5749,6 +5802,10 @@ function hitung(){}
       isi = '<h2 class="ob-judul" id="obJudul">Kenalan dengan anggota lain</h2>' + isiKenalan();
     }
     const akhir = i === aktif.length - 1, n = aktif.length;
+    /* Lewati baru muncul sesudah langkah Peraturan disetujui (atau kalau langkah itu mati) */
+    const iAturan = aktif.findIndex(function(x){ return x[0] === 'aturan'; });
+    const bolehLewati = iAturan < 0 || (i > iAturan && ctx.setuju);
+    const kunciLanjut = l[0] === 'aturan' && !ctx.setuju;
     const persen = function(k){ return n > 1 ? Math.round(k / (n - 1) * 100) : 100; };
     el('obIsi').innerHTML =
       (ctx.pratinjau ? '<span class="ob-pratinjau">Pratinjau pengurus</span>' : '') +
@@ -5758,12 +5815,13 @@ function hitung(){}
       }).join('') + '</ol></div>' +
       '<p class="ob-kecil ob-hitung">Langkah ' + (i + 1) + ' dari ' + n + '</p>' +
       '<div class="ob-badan">' + isi + '</div>' +
-      '<div class="ob-kaki"><button type="button" class="ob-lewati" data-ob-lewati>Lewati</button>' +
+      '<div class="ob-kaki">' + (bolehLewati ? '<button type="button" class="ob-lewati" data-ob-lewati>Lewati</button>' : '') +
         '<span class="ob-sp"></span>' +
         '<span class="ob-titik" aria-hidden="true">' + aktif.map(function(x, j){ return '<i class="' + (j === iLalu ? 'on' : j < iLalu ? 'lewat' : '') + '"></i>'; }).join('') + '</span>' +
         '<span class="ob-sp"></span>' +
         (i ? '<button type="button" class="btn outline sm" data-ob-kembali>Kembali</button>' : '') +
-        '<button type="button" class="btn sm" data-ob-lanjut>' + (akhir ? 'Selesai' : 'Lanjut') + '</button></div>';
+        '<button type="button" class="btn sm" data-ob-lanjut' + (kunciLanjut ? ' disabled' : '') + '>' + (akhir ? 'Selesai' : 'Lanjut') + '</button></div>';
+    cekGulir();
     /* geser penanda dari posisi lama ke langkah sekarang (setTimeout, bukan rAF:
        tetap jalan walau tab tersembunyi) */
     const dari = iLalu; iLalu = i;
@@ -5773,21 +5831,50 @@ function hitung(){}
     }, 30);
   }
 
+  /* isi peraturan pendek (tidak meluap) atau sudah digulir ke bawah → centang boleh */
+  function cekGulir(){
+    const g = ctx && modal.querySelector('[data-ob-gulir]');
+    if(!g || ctx.bacaSampai || !g.clientHeight) return;
+    if(g.scrollTop + g.clientHeight >= g.scrollHeight - 8){
+      ctx.bacaSampai = true;
+      const c = modal.querySelector('[data-ob-setuju]'); if(c) c.disabled = false;
+      const p = modal.querySelector('[data-ob-petunjuk]'); if(p) p.hidden = true;
+    }
+  }
+  modal.addEventListener('scroll', function(e){ if(e.target.matches && e.target.matches('[data-ob-gulir]')) cekGulir(); }, true);
+  modal.addEventListener('change', function(e){
+    if(!ctx || !e.target.matches('[data-ob-setuju]')) return;
+    ctx.setuju = e.target.checked;
+    if(!ctx.pratinjau){ const a = App(); a.aturanSetuju = a.aturanSetuju || {}; a.aturanSetuju[ctx.kom.kelas] = ctx.setuju; }
+    const b = modal.querySelector('[data-ob-lanjut]'); if(b) b.disabled = !ctx.setuju;
+  });
+
+  /* langkah Peraturan aktif = anggota wajib menyetujuinya sebelum onboarding dianggap selesai */
+  function wajibSetuju(cfg){ return !!(cfg && cfg.langkah.aturan && cfg.langkah.aturan.aktif); }
+  function sudahSetuju(kelas){ return !!(App().aturanSetuju || {})[kelas]; }
+
   function buka(c){
     ctx = c; i = 0; iLalu = 0; saring = null;
+    if(!c.pratinjau && sudahSetuju(c.kom.kelas)){ c.setuju = true; c.bacaSampai = true; }
     if(!langkahAktif().length) return false;
     fokusAsal = document.activeElement;
     gambar();
     modal.hidden = false; void modal.offsetWidth;
     modal.classList.add('on'); document.body.classList.add('lgn-open');
+    cekGulir();
     const b = modal.querySelector('[data-ob-lanjut]'); if(b) b.focus();
     return true;
   }
   function tutup(selesai){
     if(!ctx) return;
     if(!ctx.pratinjau){
-      const a = App(); a.onboardDilihat = a.onboardDilihat || {}; a.onboardDilihat[ctx.kom.kelas] = true;
-      if(selesai) toast('Selamat bergabung di ' + ctx.kom.nama + '!');
+      /* belum setuju peraturan = belum dianggap dilihat → muncul lagi di kunjungan berikutnya */
+      if(wajibSetuju(ctx.cfg) && !sudahSetuju(ctx.kom.kelas)){
+        toast('Perkenalan akan muncul lagi sampai kamu menyetujui peraturan.');
+      } else {
+        const a = App(); a.onboardDilihat = a.onboardDilihat || {}; a.onboardDilihat[ctx.kom.kelas] = true;
+        if(selesai) toast('Selamat bergabung di ' + ctx.kom.nama + '!');
+      }
     }
     ctx = null;
     modal.classList.remove('on'); document.body.classList.remove('lgn-open');
@@ -5830,9 +5917,10 @@ function hitung(){}
     const kom = window.KolavoKomunitasKini && window.KolavoKomunitasKini();
     if(!kom || ctx || kom.kelas === 'l-dibuat' || kom.kelas === 'l-pratinjau') return;
     if((App().diajukan || {})[kom.kelas] !== 'anggota') return;
-    if((App().onboardDilihat || {})[kom.kelas]) return;
     const c = ctxKini(false);
     if(!c || !c.cfg.aktif) return;
+    /* tampil kalau belum pernah dilihat, ATAU peraturan wajib tapi belum disetujui */
+    if((App().onboardDilihat || {})[kom.kelas] && !(wajibSetuju(c.cfg) && !sudahSetuju(kom.kelas))) return;
     setTimeout(function(){ if(!el('scrKomunitas').hidden && !ctx) buka(c); }, 350);
   };
   /* dari dashboard (pratinjau pengurus) atau tautan "Buka lagi perkenalan" */
@@ -5851,6 +5939,7 @@ function hitung(){}
     if(!ctx) return;
     if(e.target.closest('[data-ob-lewati]') || e.target.closest('[data-ob-tutup]')){ tutup(false); return; }
     if(e.target.closest('[data-ob-lanjut]')){
+      if(e.target.closest('[data-ob-lanjut]').disabled) return;
       if(i >= langkahAktif().length - 1){ tutup(true); return; }
       i++; gambar(); const b = modal.querySelector('[data-ob-lanjut]'); if(b) b.focus(); return;
     }
@@ -8242,7 +8331,7 @@ function hitung(){}
     const isi = {
       sambutan: function(){ return obField('sambutan', 'judul', 'Judul sapaan', 'inp', 80) + obField('sambutan', 'pesan', 'Kata pengantar', 'ta', 800) + obField('sambutan', 'pengirim', 'Ditandatangani', 'inp', 80); },
       kenal: function(){ return obField('kenal', 'sejarah', 'Sejarah singkat', 'ta', 800) + obField('kenal', 'visi', 'Visi', 'ta', 400) + obField('kenal', 'misi', 'Misi / tujuan (satu baris satu poin)', 'ta', 800); },
-      aturan: function(){ return obField('aturan', 'ringkas', 'Ringkasan aturan (satu baris satu poin)', 'ta', 600) + obTautan('Berkas peraturan', info.peraturan); },
+      aturan: function(){ return obField('aturan', 'ringkas', 'Isi peraturan — baris diawali # jadi judul bagian, baris lain jadi poin', 'ta', 3000) + obTautan('Berkas peraturan', info.peraturan); },
       alat: function(){ return obField('alat', 'ket', 'Keterangan', 'ta', 600) + obTautan('Grup komunikasi', info.wa) + obTautan('Dokumen komunitas', info.dokumen); },
       kenalan: function(){
         const c = o.langkah.kenalan.cocok;

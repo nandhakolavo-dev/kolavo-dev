@@ -885,6 +885,26 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     di modul onboarding; dipakai komunitas direktori dan isi awal editor dashboard.
     Batas editor dinaikkan (pengantar 800, sejarah 800, visi 400, misi 800, alat 600),
     textarea 5 baris.
+  - P12/P1: Peraturan jadi ala TnC — 9 bagian bernomor (tentang, identitas, etika,
+    informasi, promosi, privasi, kegiatan & iuran, sanksi, perubahan), 23 poin.
+    Format isian: baris diawali `# ` = judul bagian (`.ob-lbl`), baris lain = poin
+    (`.ob-poin`) milik bagian di atasnya. Batas editor aturan 600 → 3000.
+  - P12/P2: gerbang persetujuan di langkah Peraturan. Isi dibungkus `.ob-gulir`
+    (max-height 46vh; di layar 800px ≈ 367px dari isi ±1200px). Centang
+    `[data-ob-setuju]` disabled sampai digulir ke bawah (toleransi 8px; isi yang
+    tidak meluap langsung boleh), petunjuk `[data-ob-petunjuk]` hilang saat itu.
+    Lanjut disabled sampai dicentang. Lewati TIDAK dirender sebelum/di langkah
+    Peraturan — baru muncul di langkah sesudahnya setelah setuju; kalau langkah
+    Peraturan dimatikan pengurus, Lewati tampil seperti biasa. Status disimpan di
+    `ctx.bacaSampai`/`ctx.setuju` (bertahan saat Kembali/Lanjut). Deteksi gulir lewat
+    listener `scroll` capture di modal + `cekGulir()` sesudah render dan sesudah
+    modal tampil (clientHeight 0 saat modal masih hidden → dilewati).
+  - P12/P3: peraturan wajib disetujui. `App().aturanSetuju[kelas]` diisi saat centang
+    (bukan di pratinjau). `tutup()` hanya mengisi `onboardDilihat` kalau sudah setuju
+    atau langkah Peraturan mati; kalau belum, toast "Perkenalan akan muncul lagi…".
+    `KolavoCekOnboarding` membuka lagi selama peraturan wajib tapi belum disetujui.
+    ✕/Esc tetap bisa menutup (sengaja — mengunci modal terasa memaksa). Buka ulang
+    setelah setuju: centang sudah terisi, gulir tidak perlu diulang.
   - Langkah Kenalan: "Lihat profil" diganti **Ajak kenalan** langsung di kartu
     (`window.KolavoAjakKenalan(nama)` di modul komunitas); modal tetap terbuka dan
     kartunya berubah jadi "Ajakan terkirim" / "Terhubung". Kartu pengurus (saat tak

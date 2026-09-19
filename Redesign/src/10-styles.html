@@ -1281,6 +1281,14 @@ body.lgn-open{overflow:hidden}
 .ob-orang .t{flex:1;min-width:0}
 .ob-orang b{display:block;font-size:14px;font-weight:600}
 .ob-orang .t span{display:block;font-size:12.5px;color:var(--ink-2)}
+/* peraturan: area bergulir + centang persetujuan (P12) */
+.ob-gulir{max-height:46vh;overflow-y:auto;overscroll-behavior:contain;margin-top:6px;padding:4px 10px 4px 0;border-bottom:1px solid var(--line)}
+.ob-gulir:focus-visible{outline:3px solid var(--ring);border-radius:8px}
+.ob-setuju{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:14px;font-weight:500;line-height:1.5;color:var(--ink);cursor:pointer}
+.ob-setuju input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--blue);cursor:pointer}
+.ob-setuju:has(input:disabled){color:var(--ink-3);cursor:not-allowed}
+.ob-setuju input:disabled{cursor:not-allowed}
+.ob-kaki .btn:disabled{background:var(--disabled);color:var(--ink-3);border-color:transparent;cursor:not-allowed;transform:none}
 .ob-kaki{display:flex;gap:8px;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
 .ob-sp{flex:1}
 .ob-lewati{font:inherit;font-size:13.5px;font-weight:500;color:var(--ink-2);background:none;border:0;cursor:pointer;padding:8px 4px}
