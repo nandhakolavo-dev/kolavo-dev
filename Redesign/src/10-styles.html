@@ -1090,6 +1090,19 @@ body.lgn-open{overflow:hidden}
 .buka-sumbu{align-items:center;gap:8px}
 .buka-lbl{font-size:11.5px;font-weight:500;color:var(--ink-3);margin-right:2px}
 .buka-sumbu .chip{font-size:11.5px;padding:5px 11px}
+/* status kenalan per kartu + progres di atas daftar — mendorong mengajak kenalan.
+   Hijau untuk "sudah kenal" menyamai blok kenalan di detail anggota. */
+.kn-prog{padding:4px 4px 12px}
+.kn-prog-t{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
+.kn-prog-t b{color:var(--ink);font-weight:600}
+.kn-prog .chip{font-size:11.5px;padding:5px 11px}
+.kn-prog-bar{margin-top:8px;height:6px;border-radius:100px;background:var(--line);overflow:hidden}
+.kn-prog-bar i{display:block;height:100%;border-radius:inherit;background:var(--green);transition:width .4s ease}
+.kn-st{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:2px 8px 2px 6px;border-radius:100px;border:1px solid transparent;white-space:nowrap}
+.kn-st svg{width:11px;height:11px;flex:none}
+.kn-st.belum{border:1px dashed var(--orange);color:var(--orange-ink);background:var(--orange-wash)}
+.kn-st.menunggu{border-color:var(--line);color:var(--ink-2);background:var(--bg-alt)}
+.kn-st.terhubung{color:var(--green);background:var(--green-wash)}
 
 /* ---------- pengurus ----------
    Section-nya dilepas dari halaman komunitas atas permintaan ("untuk sekarang").

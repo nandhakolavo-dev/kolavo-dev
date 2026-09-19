@@ -1132,6 +1132,19 @@ body.lgn-open{overflow:hidden}
 .buka-sumbu{align-items:center;gap:8px}
 .buka-lbl{font-size:11.5px;font-weight:500;color:var(--ink-3);margin-right:2px}
 .buka-sumbu .chip{font-size:11.5px;padding:5px 11px}
+/* status kenalan per kartu + progres di atas daftar — mendorong mengajak kenalan.
+   Hijau untuk "sudah kenal" menyamai blok kenalan di detail anggota. */
+.kn-prog{padding:4px 4px 12px}
+.kn-prog-t{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
+.kn-prog-t b{color:var(--ink);font-weight:600}
+.kn-prog .chip{font-size:11.5px;padding:5px 11px}
+.kn-prog-bar{margin-top:8px;height:6px;border-radius:100px;background:var(--line);overflow:hidden}
+.kn-prog-bar i{display:block;height:100%;border-radius:inherit;background:var(--green);transition:width .4s ease}
+.kn-st{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:2px 8px 2px 6px;border-radius:100px;border:1px solid transparent;white-space:nowrap}
+.kn-st svg{width:11px;height:11px;flex:none}
+.kn-st.belum{border:1px dashed var(--orange);color:var(--orange-ink);background:var(--orange-wash)}
+.kn-st.menunggu{border-color:var(--line);color:var(--ink-2);background:var(--bg-alt)}
+.kn-st.terhubung{color:var(--green);background:var(--green-wash)}
 
 /* ---------- pengurus ----------
    Section-nya dilepas dari halaman komunitas atas permintaan ("untuk sekarang").
@@ -2419,6 +2432,7 @@ body.lgn-open{overflow:hidden}
              Baru muncul setelah pengurus menyetujui pendaftaran. -->
         <div class="panel buka" id="komBuka" hidden>
           <div class="panel-bar"><span class="t">Daftar Anggota</span><span class="c" id="bukaJml">—</span></div>
+          <div class="kn-prog" id="bukaKenal" hidden></div>
           <div class="panel-filters buka-sumbu" id="bukaSumbu"></div>
           <div class="panel-filters" id="bukaFilter"></div>
           <div id="bukaList"></div>
@@ -4587,13 +4601,47 @@ function hitung(){}
     });
   }
 
+  /* saringan "Belum kenalan" berdiri sendiri, bisa digabung dengan chip sumbu */
+  let bidangKini = '';
+  let hanyaBelum = false;
+  const KN_LABEL = { belum: 'Belum kenalan', menunggu: 'Menunggu', terhubung: 'Sudah kenal' };
+  const KN_IKON = {
+    belum: '<path d="M12 5v14M5 12h14"/>',
+    menunggu: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    terhubung: '<path d="m5 12.5 4.5 4.5L19 7"/>'
+  };
+  function chipKenal(o){
+    if(o.aku) return '';
+    const st = window.KolavoStatusKenal(o.n);
+    return '<span class="kn-st ' + st + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      KN_IKON[st] + '</svg>' + KN_LABEL[st] + '</span>';
+  }
+  function gambarProgres(){
+    const lain = daftarOrang().filter(function(o){ return !o.aku; });
+    const kenal = lain.filter(function(o){ return statusKenal(o.n) === 'terhubung'; }).length;
+    const belum = lain.filter(function(o){ return !statusKenal(o.n); }).length;
+    const w = el('bukaKenal');
+    w.hidden = !lain.length;
+    if(!lain.length) return;
+    if(!belum) hanyaBelum = false;
+    w.innerHTML =
+      '<div class="kn-prog-t"><span>Kamu sudah kenal <b>' + kenal + '</b> dari ' + lain.length + ' anggota</span>' +
+      (belum ? '<button type="button" class="chip' + (hanyaBelum ? ' on' : '') + '" id="bukaBelum" aria-pressed="' + hanyaBelum + '">Belum kenalan · ' + belum + '</button>' : '') +
+      '</div><div class="kn-prog-bar"><i style="width:' + Math.round(kenal / lain.length * 100) + '%"></i></div>';
+  }
+
   function saring(bidang){
+    bidangKini = bidang || '';
     const orang = daftarOrang().filter(function(o){
       return !bidang || String(o[sumbuKini] == null ? '' : o[sumbuKini]) === bidang;
+    }).filter(function(o){
+      return !hanyaBelum || (!o.aku && !statusKenal(o.n));
     });
     const wadah = el('bukaList');
     if(!orang.length){
-      wadah.innerHTML = '<p class="buka-kosong">Belum ada anggota dengan keahlian itu.</p>';
+      wadah.innerHTML = '<p class="buka-kosong">' + (hanyaBelum
+        ? (bidang ? 'Semua anggota di kelompok ini sudah kamu ajak kenalan.' : 'Semua anggota di sini sudah kamu ajak kenalan.')
+        : 'Belum ada anggota dengan keahlian itu.') + '</p>';
       return;
     }
     wadah.innerHTML = orang.map(function(o, i){
@@ -4604,14 +4652,14 @@ function hitung(){}
         '<div>' + (o.id ? '<div class="mem-id">' + o.id + '</div>' : '') +
         '<div class="nm-baris"><div class="nm">' + panggilan(o) + '</div>' +
         (founder ? '<span class="nm-full">' + (o.full || o.n) + '</span>' : '') +
-        (o.aku ? '<span class="aku">Kamu</span>' : '') + '</div>' +
+        (o.aku ? '<span class="aku">Kamu</span>' : '') + chipKenal(o) + '</div>' +
         '<div class="tags"><span class="tag hi">' + o.k + '</span>' +
         '<span class="tag">' + o.d + '</span>' +
         (o.a && !(o.j || []).length ? '<span class="tag">Angkatan ' + o.a + '</span>' : '') +
         (o.j || []).map(function(v){ return '<span class="tag">' + v + '</span>'; }).join('') +
         '</div></div></div>';
     }).join('');
-    if(!bidang && kini && orang.length < angkaKini()){
+    if(!bidang && !hanyaBelum && kini && orang.length < angkaKini()){
       wadah.insertAdjacentHTML('beforeend',
         '<p class="buka-kosong">Menampilkan ' + orang.length + ' dari ' + angkaKini() +
         ' anggota — sisanya belum dibuat di prototipe.</p>');
@@ -4663,6 +4711,8 @@ function hitung(){}
   function statusKenal(nama){
     return ((window.KolavoApp || {}).kenalan || {})[nama];
   }
+  /* tiga keadaan untuk tampilan: tanpa nilai berarti belum pernah diajak */
+  window.KolavoStatusKenal = function(nama){ return statusKenal(nama) || 'belum'; };
 
   function gambarKenal(nama, o){
     const wadah = el('agKenal');
@@ -4821,6 +4871,7 @@ function hitung(){}
 
     const orang = daftarOrang();
     el('bukaJml').textContent = angkaKini() + ' anggota';
+    gambarProgres();
 
     const sumbu = sumbuDaftar();
     if(!sumbu.some(function(s){ return s.id === sumbuKini; })) sumbuKini = 'k';
@@ -5213,6 +5264,12 @@ function hitung(){}
     const baris = e.target.closest('#bukaList .m');
     if(baris && baris.dataset.nm){
       window.KolavoBukaAnggota(baris.dataset.nm);
+      return;
+    }
+    if(e.target.closest('#bukaBelum')){
+      hanyaBelum = !hanyaBelum;
+      gambarProgres();
+      saring(bidangKini);
       return;
     }
     const chip = e.target.closest('#bukaFilter .chip');

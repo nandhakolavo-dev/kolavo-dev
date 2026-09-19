@@ -894,6 +894,18 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     "Pendaftaranmu diterima" di komunitas Advance langsung membuka onboarding, juga
     kalau sudah pernah dilihat (`KolavoOnboardingTerbuka()` mencegah dobel buka).
 
+- **Revisi P9 — tanda status kenalan di daftar anggota** (2026-09-19):
+  - Tiap kartu di `#bukaList` diberi chip `.kn-st`: *Belum kenalan* (garis putus oranye),
+    *Menunggu* (netral), *Sudah kenal* (hijau + centang). Baris sendiri (`o.aku`) tanpa chip.
+    Hijau, bukan primary, supaya sama dengan blok "Kalian sudah kenalan" di detail anggota.
+  - `#bukaKenal` di atas sumbu: "Kamu sudah kenal X dari Y anggota" + bar progres. Y = baris
+    lain yang ada di prototipe (bukan angka kepala), supaya progres bisa penuh.
+  - Chip saring **Belum kenalan · n** (`#bukaBelum`) berdiri sendiri dan bisa digabung dengan
+    chip nilai sumbu (`hanyaBelum` + `bidangKini`); hilang saat semua sudah diajak.
+  - Helper `window.KolavoStatusKenal(nama)` → `'belum'|'menunggu'|'terhubung'`, dipakai P10
+    (tombol di kartu sambutan feed). Onboarding masih punya `statusKenal` sendiri.
+  - Hanya tampil saat daftar terbuka (anggota/pemilik); pengunjung tetap melihat panel terkunci.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi
