@@ -873,6 +873,7 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
 
 - **Revisi lanjutan R5 — onboarding lebih lega, stepper berikon, alur notifikasi** (2026-09-19):
   - Modal onboarding 760px (padding 34/40), badan min. 280px, judul 26px, teks 15.5px.
+    Tanda tangan sambutan (`.ob-ttd`, "— Nama, Jabatan") rata kanan.
   - Stepper: tiap langkah punya ikon `KolavoIkon` (tangan, bendera, akses, jawaban,
     orang) dalam lingkaran 44px, label di bawahnya; garis progres `.ob-step-isi` di
     belakang ikon terisi sampai langkah kini. Di kaki modal ada titik `.ob-titik`
