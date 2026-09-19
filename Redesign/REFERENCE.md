@@ -678,8 +678,27 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     kapabilitas `downloads`; tombol memakai `claude.use('downloads').save()` (viewer
     mengonfirmasi), dan jatuh ke tautan Blob biasa kalau berkas dibuka langsung.
     Republish berikutnya **jangan** mengirim `capabilities` kosong — itu mencabutnya.
+  - Kelas tabel rincian di Dashboard bernama `.sek-rinci*`, bukan `.sek-tabel*` —
+    nama itu sudah dipakai tabel Siapa boleh apa (P2 sempat bentrok, dibetulkan di P3).
   - Blok "Rekap untuk rapat (PDF)" dan empat angka lama (anggota, menunggu, terlama,
     pemegang dashboard) diganti; rangkuman mingguan ke WhatsApp dipertahankan.
+
+  **Revisi P3 — Setting.**
+  - **Akun**: ganti email pemilik dua langkah (email baru → kode 6 angka; prototipe
+    menerima kode apa pun). Email lama di penerima notifikasi dan email tagihan ikut
+    diganti. Pindah kepemilikan tetap lewat Serah terima (ada tautannya).
+  - **Notifikasi**: empat jenis aktivitas dengan sakelar + penerima maksimal 3 email.
+    Di 3, kolom dan tombol tambah dinonaktifkan; penerima terakhir tak bisa dihapus.
+  - **Tagihan**: paket (harga tetap `XXXX`), alamat penagihan (lihat/ubah), metode
+    pembayaran VA / QRIS / kartu — **tanpa kolom nomor kartu**; data kartu diisi di
+    halaman penyedia pembayaran. Riwayat tagihan contoh.
+  - **Akses pengurus — model hak berubah: dari per orang (Penuh / Data anggota /
+    Lihat saja) ke per JABATAN.** Tabel Siapa boleh apa = baris hak × kolom jabatan,
+    berisi centang; perubahan ditandai (sel oranye) dan baru berlaku setelah Simpan.
+    Tiap orang tinggal Beri akses / Cabut; baris menampilkan "Boleh: …" dari jabatannya.
+    Undangan memilih jabatan, bukan level. Daftar jabatan satu sumber: `D.jabatan`
+    (`50-js-dashboard-pengurus`), dipakai P4 untuk jabatan kustom; jabatan tanpa hak
+    awal di `HAK_AWAL` mendapat "Lihat Dashboard" saja.
 
 ## Yang belum terverifikasi
 

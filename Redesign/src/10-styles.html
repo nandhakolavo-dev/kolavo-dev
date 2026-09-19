@@ -1394,13 +1394,13 @@ body.lgn-open{overflow:hidden}
 .sek-tip b{font-weight:600}
 .sek-tip .r{display:flex;align-items:center;gap:7px;color:var(--ink-2)}
 .sek-tip .r i{width:8px;height:8px;border-radius:100px;background:currentColor;flex:none}
-.sek-tabel{margin-top:12px}
-.sek-tabel summary{font-size:12.5px;font-weight:600;color:var(--blue-ink);cursor:pointer}
-.sek-tabel-w{overflow-x:auto;margin-top:8px}
-.sek-tabel table{border-collapse:collapse;font-size:12px;width:100%;font-variant-numeric:tabular-nums}
-.sek-tabel th,.sek-tabel td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
-.sek-tabel th:first-child,.sek-tabel td:first-child{text-align:left}
-.sek-tabel th{font-weight:600;color:var(--ink-2)}
+.sek-rinci{margin-top:12px}
+.sek-rinci summary{font-size:12.5px;font-weight:600;color:var(--blue-ink);cursor:pointer}
+.sek-rinci-w{overflow-x:auto;margin-top:8px}
+.sek-rinci table{border-collapse:collapse;font-size:12px;width:100%;font-variant-numeric:tabular-nums}
+.sek-rinci th,.sek-rinci td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.sek-rinci th:first-child,.sek-rinci td:first-child{text-align:left}
+.sek-rinci th{font-weight:600;color:var(--ink-2)}
 
 /* rapikan jawaban */
 .sek-ringkas{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
@@ -1434,6 +1434,38 @@ body.lgn-open{overflow:hidden}
 .sek-tabel th:first-child,.sek-tabel td:first-child{text-align:left}
 .sek-tabel .ya{color:var(--green);font-weight:700}
 .sek-tabel .tak{color:var(--ink-3)}
+/* akses: centang hak per jabatan */
+.sek-hak th{white-space:nowrap}
+.sek-hak td:first-child{white-space:normal;min-width:180px}
+.sek-hak input{width:18px;height:18px;margin:0;accent-color:var(--blue);cursor:pointer;vertical-align:middle}
+.sek-hak td.beda{background:var(--orange-wash)}
+
+/* setting: akun, notifikasi, tagihan */
+.sek-form{margin-top:12px;display:grid;gap:8px;max-width:420px}
+.sek-form .inp{height:44px}
+.sek-lbl{font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.sek-kode{max-width:180px;letter-spacing:.3em;font-variant-numeric:tabular-nums}
+.sek-nilai{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.sek-nilai code{font-family:"SFMono-Regular",ui-monospace,Menlo,monospace;font-size:13.5px;color:var(--ink);word-break:break-all}
+.sek-opsi-h{font-size:14px;font-weight:600;line-height:1.4}
+.sek-garis-b{padding:12px 0;border-bottom:1px solid var(--line)}
+.sek-garis-b:last-child{border-bottom:0;padding-bottom:0}
+.sek-kuota{flex:none;font-size:12px;font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.sek-grid2{display:grid;gap:12px;margin-top:12px}
+@media(min-width:640px){.sek-grid2{grid-template-columns:1fr 1fr}}
+.sek-grid2 > div{display:grid;gap:6px}
+.sek-grid2 .inp{height:44px}
+.sek-penuh{grid-column:1/-1}
+.sek-dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:10px 0 0;font-size:13.5px;line-height:1.5}
+.sek-dl dt{color:var(--ink-3)}
+.sek-dl dd{margin:0;color:var(--ink);min-width:0;overflow-wrap:anywhere}
+.sek-pilih{display:grid;gap:8px;margin-top:12px}
+.sek-pilih-i{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:var(--card);cursor:pointer}
+.sek-pilih-i:has(input:checked){border-color:var(--blue);background:var(--blue-tint)}
+.sek-pilih-i input{margin:3px 0 0;flex:none;accent-color:var(--blue)}
+.sek-pilih-i .t{flex:1;min-width:0}
+.sek-pilih-i b{display:block;font-size:14px;font-weight:600;line-height:1.4}
+.sek-pilih-i small{display:block;font-size:12px;color:var(--ink-2);line-height:1.5}
 .sek-jejak li{display:flex;gap:10px;justify-content:space-between;font-size:13px;line-height:1.5;padding:8px 0;border-bottom:1px solid var(--line)}
 .sek-jejak li:last-child{border-bottom:0}
 .sek-jejak span{color:var(--ink-3);font-size:12px;white-space:nowrap}

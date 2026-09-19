@@ -13,10 +13,10 @@
      dasbor  Dashboard        pertumbuhan anggota & akses vs minggu lalu, grafik, rekap CSV
      rapi    Rapikan jawaban  jawaban beda tulisan -> tag ganda (user testing 18 Juli 2026)
      Setting (sub-menu)
-       akun    Akun           email pemilik (kerangka)
-       notif   Notifikasi     email pengurus penerima notifikasi (kerangka)
-       tagihan Tagihan        alamat & metode pembayaran (kerangka)
-       akses   Akses pengurus data di akun pribadi satu orang; data sensitif (BP · riset)
+       akun    Akun           ganti email pemilik, dengan kode konfirmasi
+       notif   Notifikasi     jenis aktivitas + maks. 3 email pengurus penerima
+       tagihan Tagihan        paket, alamat penagihan, metode pembayaran
+       akses   Akses pengurus hak per JABATAN (bisa dicentang) + undang pengurus
      serah   Serah terima     pergantian kepengurusan (BP) — sub-menu Kepengurusan
 
    Langganannya melekat ke KOMUNITAS, bukan ke akun: semua pengurus yang
@@ -78,7 +78,6 @@
   function grup(){ return alumni() ? GRUP_JURUSAN : GRUP_CABANG; }
   function labelRapi(){ return alumni() ? ((D.kom.bentuk === 'Himpunan') ? 'Program studi' : 'Jurusan') : 'Cabang'; }
 
-  const LEVEL = { penuh: 'Penuh', data: 'Data anggota', lihat: 'Lihat saja' };
 
   /* ---------- keadaan per komunitas ---------- */
   const S = {};
@@ -89,7 +88,12 @@
     S.rapi = {}; S.namaRapi = {}; S.pilihan = false;
     S.rangkuman = true;
     S.rentang = 12; S.grafik = 'tumbuh';
-    S.akses = {}; S.undangan = []; S.email = ''; S.emailLevel = 'data';
+    S.akses = {}; S.undangan = []; S.email = ''; S.emailJabatan = 'Pengurus';
+    S.hak = {}; S.hakDraf = {};
+    S.akun = { email: emailAku(), langkah: 0, baru: '', kode: '' };
+    S.notif = { jenis: { baru: true, lama: true, putus: false, keluar: false }, ke: [emailAku()], email: '' };
+    S.tagihan = { alamat: { nama: (D.kom && D.kom.nama) || '', email: emailAku(), jalan: '', kota: (D.kom && D.kom.kota) || '', pos: '', npwp: '' },
+      ubahAlamat: false, draf: {}, metode: 'va', draftMetode: 'va' };
     S.jejak = [];
     S.serah = { ketua: '', pemegang: '', lama: 'lihat', tanggal: '', jadwal: false };
     S.kode = acak();
@@ -230,7 +234,7 @@
     const g = GRAFIK[S.grafik];
     const minggu = awalMinggu();
     const kol = Object.keys(SERI);
-    const tabel = '<div class="sek-tabel-w"><table><thead><tr><th>Minggu mulai</th>' +
+    const tabel = '<div class="sek-rinci-w"><table><thead><tr><th>Minggu mulai</th>' +
       kol.map(function(k){ return '<th>' + SERI[k].label + '</th>'; }).join('') + '</tr></thead><tbody>' +
       minggu.slice(-S.rentang).map(function(t, j){
         const i = minggu.length - S.rentang + j;
@@ -265,7 +269,7 @@
           return '<li class="sek-c' + s[1] + '">' + contohGaris(s[1]) + '<span>' + SERI[s[0]].label + '</span></li>';
         }).join('') + '</ul>' +
         '<div class="sek-plot" id="sekPlot"></div>' +
-        '<details class="sek-tabel"><summary>Lihat sebagai tabel</summary>' + tabel + '</details>' +
+        '<details class="sek-rinci"><summary>Lihat sebagai tabel</summary>' + tabel + '</details>' +
       '</div>' +
       '<div class="sek-blok">' +
         '<div class="sek-baris atas">' +
@@ -395,20 +399,126 @@
     }catch(err){ toast('Unduhan diblokir di pratinjau ini. Di produk, rekap CSV langsung terunduh.'); }
   }
 
-  /* ---------- setting: akun, notifikasi, tagihan (kerangka, isinya menyusul) ---------- */
-  const SETTING = {
-    akun:    { sub: 'Email pemilik dashboard dan pemegang langganan.', h: 'Email pemilik' },
-    notif:   { sub: 'Kabar aktivitas anggota, misalnya pendaftaran baru, dikirim ke email pengurus.', h: 'Penerima notifikasi' },
-    tagihan: { sub: 'Langganan Advance ditagihkan ke komunitas, bukan ke akun pribadi.', h: 'Alamat & metode pembayaran' }
-  };
-  function gambarSetting(){
-    Object.keys(SETTING).forEach(function(k){
-      el('klPanel' + k.charAt(0).toUpperCase() + k.slice(1)).innerHTML =
-        kepala(k, SETTING[k].sub) +
-        '<div class="sek-blok"><div class="sek-blok-h">' + SETTING[k].h + '</div>' +
-        '<div class="sek-blok-sub">Bagian ini sedang disiapkan.</div></div>';
-    });
+  /* ---------- setting: akun, notifikasi, tagihan ---------- */
+  const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const NOTIF = [
+    { k: 'baru',   h: 'Pendaftaran baru',             sub: 'Tiap ada yang minta gabung.' },
+    { k: 'lama',   h: 'Pendaftar menunggu 3 hari',    sub: 'Pengingat kalau belum ada pengurus yang meninjau.' },
+    { k: 'putus',  h: 'Keputusan pengurus lain',      sub: 'Saat pendaftar diterima atau ditolak oleh pengurus lain.' },
+    { k: 'keluar', h: 'Anggota keluar',               sub: 'Saat anggota meninggalkan komunitas.' }
+  ];
+  const BAYAR = [
+    { k: 'va',    h: 'Transfer virtual account', sub: 'BCA, Mandiri, BNI, BRI. Nomor VA dikirim bersama tagihan.' },
+    { k: 'qris',  h: 'QRIS',                     sub: 'Bayar lewat aplikasi bank atau dompet digital.' },
+    { k: 'kartu', h: 'Kartu kredit / debit',     sub: 'Data kartu diisi di halaman penyedia pembayaran, bukan di Kolavo.' }
+  ];
+  function emailAku(){
+    const e = document.querySelector('.acct-em');
+    return (e && e.textContent.trim()) || 'pemilik@gmail.com';
   }
+  function sw(attr, on, label){
+    return '<label class="sw"><input type="checkbox" ' + attr + (on ? ' checked' : '') + (label ? ' aria-label="' + label + '"' : '') + '><i></i>' + (on ? 'Aktif' : 'Mati') + '</label>';
+  }
+
+  function gambarAkun(){
+    const a = S.akun;
+    let ganti;
+    if(a.langkah === 1){
+      ganti = '<div class="sek-form">' +
+        '<label class="sek-lbl" for="sekAkunBaru">Email pemilik yang baru</label>' +
+        '<input class="inp" id="sekAkunBaru" type="email" placeholder="nama@gmail.com" value="' + lolos(a.baru) + '">' +
+        '<p class="sek-kecil">Harus akun Google. Email lama tetap bisa masuk sampai email baru dikonfirmasi.</p>' +
+        '<div class="sek-baris"><button type="button" class="btn sm" data-sek-akun="kirim">Kirim kode konfirmasi</button>' +
+        '<button type="button" class="btn outline sm" data-sek-akun="batal">Batal</button></div></div>';
+    } else if(a.langkah === 2){
+      ganti = '<div class="sek-form">' +
+        '<p class="sek-blok-sub">Kode 6 angka sudah dikirim ke <b>' + lolos(a.baru) + '</b>. Buka emailnya, lalu tulis kodenya di sini.</p>' +
+        '<label class="sek-lbl" for="sekAkunKode">Kode konfirmasi</label>' +
+        '<input class="inp sek-kode" id="sekAkunKode" inputmode="numeric" maxlength="6" placeholder="000000" value="' + lolos(a.kode) + '">' +
+        '<p class="sek-kecil">Prototipe: 6 angka apa pun diterima.</p>' +
+        '<div class="sek-baris"><button type="button" class="btn sm" data-sek-akun="konfirmasi">Konfirmasi & ganti</button>' +
+        '<button type="button" class="btn outline sm" data-sek-akun="ulang">Ubah email</button>' +
+        '<button type="button" class="btn outline sm" data-sek-akun="batal">Batal</button></div></div>';
+    } else {
+      ganti = '<div class="sek-baris"><button type="button" class="btn outline sm" data-sek-akun="mulai">Ganti email pemilik</button></div>';
+    }
+    el('klPanelAkun').innerHTML =
+      kepala('akun', 'Email pemilik dipakai untuk masuk ke dashboard, menerima tagihan, dan memulihkan akses.') +
+      '<div class="sek-blok"><div class="sek-blok-h">Email pemilik</div>' +
+        '<div class="sek-nilai"><code>' + lolos(a.email) + '</code><span class="sek-status pemilik">Pemilik langganan</span></div>' +
+        ganti +
+      '</div>' +
+      '<div class="sek-blok"><div class="sek-blok-h">Pindah ke pengurus lain?</div>' +
+        '<div class="sek-blok-sub">Mengganti email tidak memindahkan kepemilikan. Untuk menyerahkan langganan ke ketua berikutnya, pakai Serah terima.</div>' +
+        '<div class="sek-baris"><button type="button" class="btn outline sm" data-sek-ke="serah">Buka Serah terima</button></div>' +
+      '</div>';
+  }
+
+  function gambarNotif(){
+    const n = S.notif, penuh = n.ke.length >= 3;
+    el('klPanelNotif').innerHTML =
+      kepala('notif', 'Kabar aktivitas anggota dikirim lewat email ke pengurus yang kamu pilih.') +
+      '<div class="sek-blok"><div class="sek-blok-h">Kirim email saat…</div>' +
+        '<div class="sek-daftar">' + NOTIF.map(function(x){
+          return '<div class="sek-baris atas sek-garis-b"><div><div class="sek-opsi-h">' + x.h + '</div><div class="sek-blok-sub">' + x.sub + '</div></div>' +
+            sw('data-sek-notif="' + x.k + '"', n.jenis[x.k], x.h) + '</div>';
+        }).join('') + '</div>' +
+      '</div>' +
+      '<div class="sek-blok"><div class="sek-baris atas"><div class="sek-blok-h">Penerima</div><span class="sek-kuota">' + n.ke.length + ' / 3</span></div>' +
+        '<div class="sek-blok-sub">Maksimal tiga email pengurus.</div>' +
+        '<div class="sek-daftar">' + n.ke.map(function(e, i){
+          return '<div class="kl-row">' + av(e) + '<div class="t"><div class="kl-row-nm">' + lolos(e) +
+            (e === S.akun.email ? '<span class="sek-status pemilik">Pemilik</span>' : '') + '</div></div>' +
+            (n.ke.length > 1 ? '<div class="kl-row-aksi"><button type="button" class="btn outline sm" data-sek-notif-hapus="' + i + '">Hapus</button></div>' : '') + '</div>';
+        }).join('') + '</div>' +
+        '<div class="sek-undang"><input class="inp" id="sekNotifEmail" type="email" list="sekNotifSaran" placeholder="' + (penuh ? 'Sudah 3 penerima' : 'email pengurus') + '" value="' + lolos(n.email) + '"' + (penuh ? ' disabled' : '') + ' aria-label="Email penerima notifikasi">' +
+          '<button type="button" class="btn sm" data-sek-notif-tambah' + (penuh ? ' disabled' : '') + '>Tambah penerima</button></div>' +
+        '<datalist id="sekNotifSaran">' + D.pengurus.map(function(p){
+          const m = D.mem[p.nama]; return m && m.email ? '<option value="' + lolos(m.email) + '">' + lolos(p.nama) + '</option>' : '';
+        }).join('') + '</datalist>' +
+        (penuh ? '<p class="sek-kecil jarak">Hapus satu penerima dulu untuk menambah yang lain.</p>' : '') +
+      '</div>';
+  }
+
+  function gambarTagihan(){
+    const t = S.tagihan, al = t.alamat;
+    const n = Math.max(50, D.jumlahAnggota());
+    const alamatBlok = t.ubahAlamat
+      ? '<div class="sek-form sek-grid2">' +
+          [['nama', 'Nama di tagihan'], ['email', 'Email tagihan'], ['jalan', 'Alamat'], ['kota', 'Kota'], ['pos', 'Kode pos'], ['npwp', 'NPWP (opsional)']].map(function(f){
+            return '<div><label class="sek-lbl" for="sekAl-' + f[0] + '">' + f[1] + '</label>' +
+              '<input class="inp" id="sekAl-' + f[0] + '" data-sek-alamat="' + f[0] + '" value="' + lolos(t.draf[f[0]] || '') + '"></div>';
+          }).join('') +
+          '<div class="sek-baris sek-penuh"><button type="button" class="btn sm" data-sek-tagih="simpan-alamat">Simpan alamat</button>' +
+          '<button type="button" class="btn outline sm" data-sek-tagih="batal-alamat">Batal</button></div></div>'
+      : '<dl class="sek-dl">' +
+          '<dt>Nama</dt><dd>' + lolos(al.nama) + '</dd><dt>Email tagihan</dt><dd>' + lolos(al.email) + '</dd>' +
+          '<dt>Alamat</dt><dd>' + lolos([al.jalan, al.kota, al.pos].filter(Boolean).join(', ') || '—') + '</dd>' +
+          '<dt>NPWP</dt><dd>' + lolos(al.npwp || '—') + '</dd></dl>' +
+        '<div class="sek-baris"><button type="button" class="btn outline sm" data-sek-tagih="ubah-alamat">Ubah alamat</button></div>';
+    el('klPanelTagihan').innerHTML =
+      kepala('tagihan', 'Langganan Advance ditagihkan ke ' + lolos(D.kom.nama) + ', bukan ke akun pribadi — tidak ikut pergi saat kepengurusan berganti.') +
+      '<div class="sek-blok"><div class="sek-baris atas"><div><div class="sek-blok-h">Advance · bulanan</div>' +
+        '<div class="sek-blok-sub">Rp XXXX / anggota / bulan · ' + n + ' anggota ditagihkan (minimal 50)</div></div>' +
+        '<span class="sek-status">Aktif</span></div>' +
+        '<p class="sek-kecil jarak">Tagihan berikutnya 1 ' + BULAN[(new Date().getMonth() + 1) % 12] + '.</p>' +
+      '</div>' +
+      '<div class="sek-blok"><div class="sek-blok-h">Alamat penagihan</div>' + alamatBlok + '</div>' +
+      '<div class="sek-blok"><div class="sek-blok-h">Metode pembayaran</div>' +
+        '<div class="sek-pilih" role="radiogroup" aria-label="Metode pembayaran">' + BAYAR.map(function(b){
+          return '<label class="sek-pilih-i"><input type="radio" name="sekBayar" value="' + b.k + '" data-sek-bayar' + (t.draftMetode === b.k ? ' checked' : '') + '>' +
+            '<span class="t"><b>' + b.h + '</b><small>' + b.sub + '</small></span>' + (t.metode === b.k ? '<span class="sek-status">Dipakai</span>' : '') + '</label>';
+        }).join('') + '</div>' +
+        '<div class="sek-baris"><button type="button" class="btn sm" data-sek-tagih="simpan-metode"' + (t.draftMetode === t.metode ? ' disabled' : '') + '>Pakai metode ini</button></div>' +
+      '</div>' +
+      '<div class="sek-blok"><div class="sek-blok-h">Riwayat tagihan</div>' +
+        '<ul class="sek-jejak">' + [1, 2].map(function(m){
+          const d = new Date(); d.setMonth(d.getMonth() - m + 1, 1);
+          return '<li>1 ' + BULAN[d.getMonth()] + ' ' + d.getFullYear() + ' · Rp XXXX<span>Lunas</span></li>';
+        }).join('') + '</ul>' +
+      '</div>';
+  }
+  function gambarSetting(){ gambarAkun(); gambarNotif(); gambarTagihan(); }
 
   /* ---------- rapikan jawaban ---------- */
   function gambarRapi(){
@@ -463,69 +573,97 @@
   }
 
   /* ---------- akses pengurus ---------- */
-  function opsiLevel(pilih){
-    return Object.keys(LEVEL).map(function(k){ return '<option value="' + k + '"' + (k === pilih ? ' selected' : '') + '>' + LEVEL[k] + '</option>'; }).join('');
+  /* Hak mengikuti JABATAN, bukan orang: centang di tabel "Siapa boleh apa" berlaku
+     untuk semua pemegang jabatan itu. Daftar jabatan satu sumber: D.jabatan
+     (dipakai juga oleh Struktur Kepengurusan). Pemilik langganan selalu penuh. */
+  const HAK = [
+    ['dasbor', 'Lihat Dashboard & daftar anggota'],
+    ['kontak', 'Lihat WhatsApp & email anggota'],
+    ['rapi',   'Rapikan jawaban'],
+    ['notif',  'Ubah notifikasi'],
+    ['undang', 'Undang pengurus & atur hak']
+  ];
+  const HAK_AWAL = {
+    'Ketua':       ['dasbor', 'kontak', 'rapi', 'notif', 'undang'],
+    'Wakil Ketua': ['dasbor', 'kontak', 'rapi', 'notif'],
+    'Sekretaris':  ['dasbor', 'kontak', 'rapi'],
+    'Bendahara':   ['dasbor'],
+    'Humas':       ['dasbor', 'kontak'],
+    'Pengurus':    ['dasbor']
+  };
+  function hakJabatan(peta, j){
+    if(!peta[j]) peta[j] = (HAK_AWAL[j] || ['dasbor']).slice();
+    return peta[j];
   }
+  function ringkasHak(j){
+    if(j === 'Community Builder') return 'semua hak (pemilik)';
+    const h = hakJabatan(S.hak, j);
+    return h.length ? HAK.filter(function(x){ return h.indexOf(x[0]) >= 0; }).map(function(x){ return x[1].replace(/^Lihat /, ''); }).join(' · ') : 'belum ada hak';
+  }
+  function hakBerubah(){ return JSON.stringify(S.hak) !== JSON.stringify(S.hakDraf); }
+
   function gambarAkses(){
     const link = 'kolavo.app/k/' + (D.kom.slug || 'komunitas') + '/pengurus/' + S.kode;
+    D.jabatan.forEach(function(j){ hakJabatan(S.hak, j); hakJabatan(S.hakDraf, j); });
 
     const baris = D.pengurus.map(function(p){
-      const lv = S.akses[p.nama];
-      let kanan, aksi;
+      let kanan, aksi = '';
       if(p.aku){
         kanan = '<span class="sek-status pemilik">Pemilik langganan</span>';
-        aksi = '';
-      } else if(lv){
+      } else if(S.akses[p.nama]){
         kanan = '<span class="sek-status">Sudah masuk</span>';
-        aksi = '<select class="sel sek-level" data-sek-level="' + lolos(p.nama) + '" aria-label="Hak akses ' + lolos(p.nama) + '">' + opsiLevel(lv) + '</select>' +
-               '<button type="button" class="btn sm tolak" data-sek-cabut="' + lolos(p.nama) + '">Cabut</button>';
+        aksi = '<button type="button" class="btn sm tolak" data-sek-cabut="' + lolos(p.nama) + '">Cabut</button>';
       } else {
         kanan = '<span class="sek-status undang">Belum punya akses</span>';
-        aksi = '<select class="sel sek-level" data-sek-level-baru="' + lolos(p.nama) + '" aria-label="Hak akses ' + lolos(p.nama) + '">' + opsiLevel('data') + '</select>' +
-               '<button type="button" class="btn outline sm" data-sek-beri="' + lolos(p.nama) + '">Beri akses</button>';
+        aksi = '<button type="button" class="btn outline sm" data-sek-beri="' + lolos(p.nama) + '">Beri akses</button>';
       }
       return '<div class="kl-row">' + av(p.nama) + '<div class="t"><div class="kl-row-nm">' + lolos(p.nama) +
-        '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' + kanan + '</div></div>' +
+        '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' + kanan + '</div>' +
+        '<div class="kl-row-sub">Boleh: ' + ringkasHak(p.aku ? 'Community Builder' : p.jabatan) + '</div></div>' +
         (aksi ? '<div class="kl-row-aksi">' + aksi + '</div>' : '') + '</div>';
     }).join('') +
     S.undangan.map(function(u, i){
       return '<div class="kl-row">' + av(u.email) + '<div class="t"><div class="kl-row-nm">' + lolos(u.email) +
-        '<span class="sek-status undang">Undangan terkirim</span></div>' +
-        '<div class="kl-row-sub">Hak: ' + LEVEL[u.level] + ' · jadi pengurus setelah dia masuk dengan akun Google ini</div></div>' +
+        '<span class="kl-jabatan">' + lolos(u.jabatan) + '</span><span class="sek-status undang">Undangan terkirim</span></div>' +
+        '<div class="kl-row-sub">Jadi pengurus setelah dia masuk dengan akun Google ini</div></div>' +
         '<div class="kl-row-aksi"><button type="button" class="btn outline sm" data-sek-demo="' + i + '">Terima undangan (demo)</button>' +
         '<button type="button" class="btn sm tolak" data-sek-batal="' + i + '">Batalkan</button></div></div>';
     }).join('');
 
-    const HAK = [
-      ['Dashboard & daftar anggota', 1, 1, 1],
-      ['WhatsApp & email anggota', 1, 1, 0],
-      ['Rapikan jawaban', 1, 1, 0],
-      ['Undang pengurus & atur hak', 1, 0, 0]
-    ];
-
+    const ubah = hakBerubah();
     el('klPanelAkses').innerHTML =
       kepala('akses', 'Satu langganan untuk seluruh pengurus ' + lolos(D.kom.nama) + '. Tiap orang masuk dengan akun Google-nya sendiri — tidak ada password yang dibagi di grup.') +
       '<div class="sek-blok"><div class="sek-blok-h">Pengurus & haknya</div>' +
-        '<div class="sek-blok-sub">Jabatan di halaman komunitas belum berarti memegang dashboard. Pengurus baru diangkat di menu Struktur Kepengurusan.</div>' +
+        '<div class="sek-blok-sub">Hak tiap orang mengikuti jabatannya di tabel Siapa boleh apa. Jabatan diatur di menu Struktur Kepengurusan.</div>' +
         '<div class="sek-daftar">' + baris + '</div>' +
+      '</div>' +
+      '<div class="sek-blok"><div class="sek-blok-h">Siapa boleh apa</div>' +
+        '<div class="sek-blok-sub">Centang hak untuk tiap jabatan, lalu simpan. Berlaku untuk semua pemegang jabatan itu.</div>' +
+        '<div class="sek-tabel-w"><table class="sek-tabel sek-hak"><thead><tr><th>Hak</th>' +
+          D.jabatan.map(function(j){ return '<th>' + lolos(j) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          HAK.map(function(h){
+            return '<tr><td>' + h[1] + '</td>' + D.jabatan.map(function(j){
+              const on = S.hakDraf[j].indexOf(h[0]) >= 0;
+              const beda = on !== (S.hak[j].indexOf(h[0]) >= 0);
+              return '<td' + (beda ? ' class="beda"' : '') + '><input type="checkbox" data-sek-hak="' + lolos(j) + '|' + h[0] + '"' + (on ? ' checked' : '') +
+                ' aria-label="' + lolos(j) + ': ' + h[1] + '"></td>';
+            }).join('') + '</tr>';
+          }).join('') +
+        '</tbody></table></div>' +
+        '<div class="sek-baris"><button type="button" class="btn sm" data-sek-hak-simpan' + (ubah ? '' : ' disabled') + '>Simpan perubahan</button>' +
+          '<button type="button" class="btn outline sm" data-sek-hak-urung' + (ubah ? '' : ' disabled') + '>Kembalikan</button>' +
+          (ubah ? '<span class="sek-kecil">Ada perubahan yang belum disimpan.</span>' : '') + '</div>' +
+        '<p class="sek-kecil jarak">Menyetujui pendaftaran tetap mengikuti <b>peninjau pendaftaran</b> di menu Struktur Kepengurusan. Serah terima dan langganan hanya oleh pemilik langganan.</p>' +
       '</div>' +
       '<div class="sek-blok"><div class="sek-blok-h">Undang pengurus yang belum ada di sini</div>' +
         '<div class="sek-blok-sub">Kalau dia belum jadi anggota, dia diminta mendaftar dulu — pendaftarannya langsung diterima.</div>' +
         '<div class="sek-undang"><input class="inp" id="sekEmail" type="email" placeholder="alamat Gmail pengurus" value="' + lolos(S.email) + '" aria-label="Email pengurus">' +
-          '<select class="sel" id="sekEmailLevel" aria-label="Hak akses">' + opsiLevel(S.emailLevel) + '</select>' +
+          '<select class="sel" id="sekEmailJabatan" aria-label="Jabatan">' + D.jabatan.map(function(j){
+            return '<option' + (j === S.emailJabatan ? ' selected' : '') + '>' + lolos(j) + '</option>';
+          }).join('') + '</select>' +
           '<button type="button" class="btn sm" data-sek-undang>Kirim undangan</button></div>' +
         '<div class="sek-link"><code>' + lolos(link) + '</code><button type="button" class="btn outline xs" data-sek-salin="' + lolos(link) + '">Salin link</button></div>' +
-        '<p class="sek-kecil jarak">Atau bagikan link ke grup pengurus. Berlaku 7 hari; yang membukanya mendapat hak Lihat saja sampai kamu ubah.</p>' +
-      '</div>' +
-      '<div class="sek-blok"><div class="sek-blok-h">Siapa boleh apa</div>' +
-        '<div class="sek-tabel-w"><table class="sek-tabel"><thead><tr><th></th><th>Penuh</th><th>Data anggota</th><th>Lihat saja</th></tr></thead><tbody>' +
-          HAK.map(function(h){
-            return '<tr><td>' + h[0] + '</td>' + h.slice(1).map(function(v){
-              return v ? '<td class="ya" aria-label="boleh">✓</td>' : '<td class="tak" aria-label="tidak">—</td>';
-            }).join('') + '</tr>';
-          }).join('') +
-        '</tbody></table></div>' +
-        '<p class="sek-kecil jarak">Menyetujui pendaftaran tetap mengikuti <b>peninjau pendaftaran</b> di menu Struktur Kepengurusan. Serah terima dan langganan hanya oleh pemilik langganan.</p>' +
+        '<p class="sek-kecil jarak">Atau bagikan link ke grup pengurus. Berlaku 7 hari; yang membukanya masuk sebagai Pengurus sampai jabatannya kamu ubah.</p>' +
       '</div>' +
       '<div class="sek-blok"><div class="sek-blok-h">Jejak aktivitas</div>' +
         (S.jejak.length ? '<ul class="sek-jejak">' + S.jejak.slice(0, 8).map(function(j){
@@ -692,12 +830,11 @@
     const beri = e.target.closest('[data-sek-beri]');
     if(beri){
       const nama = beri.dataset.sekBeri;
-      const sel = scr.querySelector('[data-sek-level-baru="' + nama + '"]');
-      const lv = sel ? sel.value : 'data';
-      S.akses[nama] = lv;
-      catat('Kamu memberi ' + nama.split(' ')[0] + ' akses ' + LEVEL[lv]);
+      const p = D.pengurus.filter(function(x){ return x.nama === nama; })[0];
+      S.akses[nama] = true;
+      catat('Kamu memberi ' + nama.split(' ')[0] + ' akses dashboard (' + (p ? p.jabatan : 'Pengurus') + ')');
       ulang();
-      toast(nama.split(' ')[0] + ' bisa membuka dashboard dengan akunnya sendiri (' + LEVEL[lv] + ').');
+      toast(nama.split(' ')[0] + ' bisa membuka dashboard dengan akunnya sendiri, dengan hak ' + (p ? p.jabatan : 'Pengurus') + '.');
       return;
     }
     const cabut = e.target.closest('[data-sek-cabut]');
@@ -712,8 +849,8 @@
     if(e.target.closest('[data-sek-undang]')){
       const email = S.email.trim();
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ toast('Tulis alamat email yang lengkap dulu.'); return; }
-      S.undangan.push({ email: email, level: S.emailLevel });
-      catat('Kamu mengundang ' + email + ' (' + LEVEL[S.emailLevel] + ')');
+      S.undangan.push({ email: email, jabatan: S.emailJabatan });
+      catat('Kamu mengundang ' + email + ' sebagai ' + S.emailJabatan);
       S.email = '';
       ulang();
       toast('Undangan terkirim ke ' + email + '.');
@@ -730,9 +867,9 @@
       if(!D.mem[nama]) D.mem[nama] = { nama: nama, kerja: '', kota: '' };
       if(!D.pengurus.some(function(p){ return p.nama === nama; })){
         D.anggotaBiasa = D.anggotaBiasa.filter(function(n){ return n !== nama; });
-        D.pengurus.push({ nama: nama, jabatan: 'Pengurus' });
+        D.pengurus.push({ nama: nama, jabatan: u.jabatan || 'Pengurus' });
       }
-      S.akses[nama] = u.level;
+      S.akses[nama] = true;
       catat(nama + ' menerima undangan dan masuk dashboard');
       ulang();
       toast(nama.split(' ')[0] + ' sekarang pengurus dan memegang dashboard dengan akunnya sendiri.');
@@ -746,6 +883,83 @@
       toast('Link undangan pengurus disalin.');
       return;
     }
+
+    /* setting: akun */
+    const akun = e.target.closest('[data-sek-akun]');
+    if(akun){
+      const a = S.akun, aksi = akun.dataset.sekAkun;
+      if(aksi === 'mulai' || aksi === 'ulang'){ a.langkah = 1; a.kode = ''; }
+      else if(aksi === 'batal'){ a.langkah = 0; a.baru = ''; a.kode = ''; }
+      else if(aksi === 'kirim'){
+        const baru = a.baru.trim();
+        if(!EMAIL_OK.test(baru)){ toast('Tulis alamat email yang lengkap dulu.'); return; }
+        if(baru === a.email){ toast('Itu email pemilik yang sekarang.'); return; }
+        a.baru = baru; a.langkah = 2;
+        toast('Kode konfirmasi dikirim ke ' + baru + '.');
+      } else if(aksi === 'konfirmasi'){
+        if(!/^\d{6}$/.test(a.kode)){ toast('Kodenya 6 angka.'); return; }
+        const lama = a.email;
+        a.email = a.baru; a.langkah = 0; a.baru = ''; a.kode = '';
+        const i = S.notif.ke.indexOf(lama); if(i >= 0) S.notif.ke[i] = a.email;
+        if(S.tagihan.alamat.email === lama) S.tagihan.alamat.email = a.email;
+        catat('Kamu mengganti email pemilik ke ' + a.email);
+        toast('Email pemilik sekarang ' + a.email + '.');
+        gambarSetting();
+        return;
+      }
+      gambarAkun();
+      const f = el(a.langkah === 1 ? 'sekAkunBaru' : 'sekAkunKode'); if(f) f.focus();
+      return;
+    }
+    /* setting: notifikasi */
+    const hapusN = e.target.closest('[data-sek-notif-hapus]');
+    if(hapusN){
+      const e1 = S.notif.ke.splice(+hapusN.dataset.sekNotifHapus, 1)[0];
+      catat('Kamu menghapus ' + e1 + ' dari penerima notifikasi');
+      gambarNotif();
+      return;
+    }
+    if(e.target.closest('[data-sek-notif-tambah]')){
+      const n = S.notif, email = n.email.trim().toLowerCase();
+      if(n.ke.length >= 3) return;
+      if(!EMAIL_OK.test(email)){ toast('Tulis alamat email yang lengkap dulu.'); return; }
+      if(n.ke.indexOf(email) >= 0){ toast('Email itu sudah jadi penerima.'); return; }
+      n.ke.push(email); n.email = '';
+      catat('Kamu menambah ' + email + ' sebagai penerima notifikasi');
+      gambarNotif();
+      toast(email + ' akan menerima email notifikasi.');
+      return;
+    }
+    /* setting: tagihan */
+    const tagih = e.target.closest('[data-sek-tagih]');
+    if(tagih){
+      const tg = S.tagihan, aksi = tagih.dataset.sekTagih;
+      if(aksi === 'ubah-alamat'){ tg.ubahAlamat = true; tg.draf = JSON.parse(JSON.stringify(tg.alamat)); }
+      else if(aksi === 'batal-alamat'){ tg.ubahAlamat = false; }
+      else if(aksi === 'simpan-alamat'){
+        if(!(tg.draf.nama || '').trim()){ toast('Nama di tagihan wajib diisi.'); return; }
+        if(!EMAIL_OK.test((tg.draf.email || '').trim())){ toast('Email tagihan belum lengkap.'); return; }
+        tg.alamat = JSON.parse(JSON.stringify(tg.draf)); tg.ubahAlamat = false;
+        catat('Kamu memperbarui alamat penagihan');
+        toast('Alamat penagihan tersimpan.');
+      } else if(aksi === 'simpan-metode'){
+        tg.metode = tg.draftMetode;
+        const b = BAYAR.filter(function(x){ return x.k === tg.metode; })[0];
+        catat('Kamu mengganti metode pembayaran ke ' + b.h);
+        toast('Tagihan berikutnya dibayar lewat ' + b.h + '.');
+      }
+      gambarTagihan();
+      return;
+    }
+    /* akses: siapa boleh apa */
+    if(e.target.closest('[data-sek-hak-simpan]')){
+      S.hak = JSON.parse(JSON.stringify(S.hakDraf));
+      catat('Kamu mengubah hak per jabatan di Siapa boleh apa');
+      gambarAkses();
+      toast('Hak per jabatan tersimpan. Berlaku untuk semua pemegang jabatannya.');
+      return;
+    }
+    if(e.target.closest('[data-sek-hak-urung]')){ S.hakDraf = JSON.parse(JSON.stringify(S.hak)); gambarAkses(); return; }
 
     /* serah terima */
     if(e.target.closest('[data-sek-jadwal]')){
@@ -768,20 +982,32 @@
     const t = e.target;
     if(t.matches('[data-sek-pilihan]')){ S.pilihan = t.checked; gambarRapi(); return; }
     if(t.matches('[data-sek-rangkuman]')){ S.rangkuman = t.checked; gambarDasbor(); return; }
-    if(t.matches('[data-sek-level]')){
-      const nama = t.dataset.sekLevel;
-      S.akses[nama] = t.value;
-      catat('Kamu mengubah hak ' + nama.split(' ')[0] + ' jadi ' + LEVEL[t.value]);
-      gambarAkses();
-      toast('Hak ' + nama.split(' ')[0] + ' sekarang ' + LEVEL[t.value] + '.');
+    if(t.id === 'sekEmailJabatan'){ S.emailJabatan = t.value; return; }
+    if(t.matches('[data-sek-notif]')){
+      S.notif.jenis[t.dataset.sekNotif] = t.checked;
+      catat('Kamu ' + (t.checked ? 'menyalakan' : 'mematikan') + ' email notifikasi “' + NOTIF.filter(function(x){ return x.k === t.dataset.sekNotif; })[0].h + '”');
+      gambarNotif();
       return;
     }
-    if(t.id === 'sekEmailLevel'){ S.emailLevel = t.value; return; }
+    if(t.matches('[data-sek-bayar]')){ S.tagihan.draftMetode = t.value; gambarTagihan(); return; }
+    if(t.matches('[data-sek-hak]')){
+      const bag = t.dataset.sekHak.split('|'), daftar = S.hakDraf[bag[0]];
+      const i = daftar.indexOf(bag[1]);
+      if(t.checked && i < 0) daftar.push(bag[1]);
+      if(!t.checked && i >= 0) daftar.splice(i, 1);
+      gambarAkses();
+      const f = scr.querySelector('[data-sek-hak="' + t.dataset.sekHak + '"]'); if(f) f.focus();
+      return;
+    }
     if(t.matches('[data-sek-serah]')){ S.serah[t.dataset.sekSerah] = t.value; gambarSerah(); return; }
   });
   scr.addEventListener('input', function(e){
     const t = e.target;
     if(t.id === 'sekEmail'){ S.email = t.value; return; }
+    if(t.id === 'sekAkunBaru'){ S.akun.baru = t.value; return; }
+    if(t.id === 'sekAkunKode'){ S.akun.kode = t.value.replace(/\D/g, '').slice(0, 6); if(t.value !== S.akun.kode) t.value = S.akun.kode; return; }
+    if(t.id === 'sekNotifEmail'){ S.notif.email = t.value; return; }
+    if(t.matches('[data-sek-alamat]')){ S.tagihan.draf[t.dataset.sekAlamat] = t.value; return; }
     if(t.matches('[data-sek-nama]')){ S.namaRapi[t.dataset.sekNama] = t.value; return; }
   });
 })();
