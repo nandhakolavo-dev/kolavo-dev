@@ -1126,6 +1126,19 @@ body.lgn-open{overflow:hidden}
 .peng-i .av{width:44px;height:44px;flex:none}
 .peng-nm{font-size:14.5px;font-weight:600;line-height:1.35}
 .peng-j{font-size:12.5px;color:var(--ink-3)}
+button.peng-i{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:border-color .15s ease,box-shadow .15s ease}
+button.peng-i:hover{border-color:var(--blue);box-shadow:var(--sh-sm)}
+button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+/* pop up profil pengurus */
+.lgn-box.peng-box{max-width:420px;padding:32px 28px 26px}
+.peng-pp{display:flex;justify-content:center}
+.peng-pp .av{width:88px;height:88px;font-size:28px}
+.peng-pp-nm{font-size:21px;margin-top:14px}
+.peng-pp-j{font-size:13.5px;color:var(--ink-2);margin-top:4px}
+.peng-pp-kenal{margin-top:18px;padding:14px 16px;border-radius:13px;background:var(--bg-alt);border:1px solid var(--line);text-align:left}
+.peng-pp-lbl{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.peng-pp-kenal p{font-size:14px;line-height:1.6;color:var(--ink)}
+.peng-pp-kenal p.peng-pp-kosong{color:var(--ink-3)}
 
 /* ---------- detail anggota ----------
    Urutannya sengaja dibalik dari kolavo.app. Di sana blok terbesar adalah
@@ -1568,6 +1581,12 @@ body.lgn-open{overflow:hidden}
 .kl-tier b{color:var(--blue-ink)}
 .kl-seksi-h{font-size:13px;font-weight:600;color:var(--ink);margin:2px 0 6px}
 .kl-cb-hint{font-size:12.5px;color:var(--ink-3);line-height:1.5;margin:0 0 10px}
+/* perkenalan singkat pengurus di Struktur Kepengurusan */
+.kl-kenal-cuplik{font-size:12.5px;color:var(--ink-2);line-height:1.5;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.kl-kenal-ed{display:grid;gap:8px;padding:14px 16px;border-radius:14px;border:1px dashed var(--blue);background:var(--blue-tint);margin-bottom:10px}
+.kl-kenal-kaki{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.kl-kenal-kaki .kl-cb-hint{margin:0}
+.kl-kenal-aksi{display:flex;gap:10px}
 .kl-upsell{margin-top:18px;border:1px dashed var(--line);border-radius:13px;padding:14px 16px;background:var(--bg-alt)}
 .kl-upsell-h{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
 .kl-upsell p{font-size:12.5px;color:var(--ink-3);line-height:1.55;margin:0 0 12px}

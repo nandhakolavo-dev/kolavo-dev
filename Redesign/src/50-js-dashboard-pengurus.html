@@ -140,7 +140,7 @@
     });
     D.tab = 'minta';
     D.angkatFor = null;
-    D.ubahFor = null;
+    D.ubahFor = null; D.kenalFor = null;
     /* dua keputusan contoh, supaya kotak catatan keputusan di Riwayat langsung terlihat */
     D.riwayat = [
       { nama: 'Bima Prasetyo', panggil: 'Bima', kerja: 'Arsitek', kota: 'Surabaya', status: 'diterima', oleh: D.aku, waktu: '2 hari lalu',
@@ -364,6 +364,35 @@
     else gambarPengurusEsensial();
   }
 
+  /* perkenalan singkat pengurus — ditulis di sini, dibaca di pop up profil
+     pengurus halaman komunitas (field `perkenalan` → `kenal` di agregat) */
+  const KENAL_MAKS = 280;
+  function pengurusBernama(nama){ return D.pengurus.filter(function(x){ return x.nama === nama; })[0] || null; }
+  function kenalTombol(p){
+    if(!p || D.kenalFor === p.nama) return '';
+    return '<button type="button" class="btn outline sm" data-kenal="' + lolos(p.nama) + '">' + (p.perkenalan ? 'Ubah perkenalan' : 'Tulis perkenalan') + '</button>';
+  }
+  function kenalCuplik(p){
+    if(!p || !p.perkenalan || D.kenalFor === p.nama) return '';
+    return '<div class="kl-kenal-cuplik">“' + lolos(p.perkenalan) + '”</div>';
+  }
+  function kenalEditor(p){
+    if(!p || D.kenalFor !== p.nama) return '';
+    const isi = p.perkenalan || '';
+    return '<div class="kl-kenal-ed">' +
+        '<label class="kl-angkat-lbl" for="klKenalTa">Perkenalan singkat ' + (p.aku ? 'kamu' : lolos(p.nama.split(' ')[0])) + '</label>' +
+        '<textarea class="ta" id="klKenalTa" maxlength="' + KENAL_MAKS + '" placeholder="Contoh: Angkatan 2015, sekarang di bidang logistik. Hubungi aku soal acara reuni dan kerja sama.">' + lolos(isi) + '</textarea>' +
+        '<div class="kl-kenal-kaki"><span class="kl-cb-hint">Tampil saat anggota mengklik profil pengurus di halaman komunitas.</span>' +
+          '<span class="hitung"><span id="klKenalN">' + isi.length + '</span>/' + KENAL_MAKS + '</span></div>' +
+        '<div class="kl-kenal-aksi"><button type="button" class="btn sm" data-kenal-ok="' + lolos(p.nama) + '">Simpan</button>' +
+          '<button type="button" class="btn outline sm" data-kenal-batal>Batal</button></div>' +
+      '</div>';
+  }
+  el('klPengurusList').addEventListener('input', function(e){
+    if(e.target.id !== 'klKenalTa') return;
+    const n = el('klKenalN'); if(n) n.textContent = e.target.value.length;
+  });
+
   /* Advance: susunan pengurus penuh — angkat, ubah jabatan, atur peninjau */
   function gambarPengurusAdvance(){
     const wadah = el('klPengurusList');
@@ -380,6 +409,7 @@
       let aksi = '';
       /* jabatan siapa pun bisa diubah, termasuk pembuat halaman sendiri */
       if(D.ubahFor !== p.nama) aksi += '<button type="button" class="btn outline sm" data-ubah="' + lolos(p.nama) + '">Ubah jabatan</button>';
+      aksi += kenalTombol(p);
       if(ini){
         /* peninjau terakhir tidak boleh dilepas — selalu ada yang meninjau */
         if(!satuPeninjau) aksi += '<button type="button" class="btn outline sm" data-peninjau-off="' + lolos(p.nama) + '">Lepas dari peninjau</button>';
@@ -390,8 +420,9 @@
 
       let html = '<div class="kl-row">' + av +
         '<div class="t"><div class="kl-row-nm">' + nm + '</div>' +
-        (sub ? '<div class="kl-row-sub">' + lolos(sub) + '</div>' : '') + '</div>' +
+        (sub ? '<div class="kl-row-sub">' + lolos(sub) + '</div>' : '') + kenalCuplik(p) + '</div>' +
         (aksi ? '<div class="kl-row-aksi">' + aksi + '</div>' : '') + '</div>';
+      html += kenalEditor(p);
 
       if(D.ubahFor === p.nama){
         const opsi = JABATAN.map(function(j){ return '<option' + (j === p.jabatan ? ' selected' : '') + '>' + j + '</option>'; }).join('');
@@ -449,11 +480,14 @@
       const av = '<div class="av ' + 'abc'[(nama.length) % 3] + '" aria-hidden="true">' + inisial(nama) + '</div>';
       const tag = (nama === D.aku) ? '<span class="tag hi">Kamu</span>' : '';
       const lepas = satuPeninjau ? '' : '<button type="button" class="btn outline sm" data-peninjau-off="' + lolos(nama) + '">Lepas</button>';
+      /* peninjau yang juga pengurus bisa menulis perkenalan — tampil di halaman komunitas */
+      const p = pengurusBernama(nama);
+      const aksiE = kenalTombol(p) + lepas;
       return '<div class="kl-row">' + av +
         '<div class="t"><div class="kl-row-nm">' + lolos(nama) + tag +
           '<span class="kl-peninjau">' + IKON_MATA + 'Peninjau</span></div>' +
-        (sub ? '<div class="kl-row-sub">' + lolos(sub) + '</div>' : '') + '</div>' +
-        (lepas ? '<div class="kl-row-aksi">' + lepas + '</div>' : '') + '</div>';
+        (sub ? '<div class="kl-row-sub">' + lolos(sub) + '</div>' : '') + kenalCuplik(p) + '</div>' +
+        (aksiE ? '<div class="kl-row-aksi">' + aksiE + '</div>' : '') + '</div>' + kenalEditor(p);
     }).join('');
 
     const bisa = [D.aku].concat(D.anggotaBiasa).filter(function(n){ return !adaPeninjau(n); });
@@ -802,9 +836,28 @@
       return;
     }
 
+    /* kepengurusan: perkenalan singkat */
+    const kenal = e.target.closest('[data-kenal]');
+    if(kenal){
+      D.kenalFor = kenal.dataset.kenal; D.ubahFor = null; gambarPengurus();
+      const ta = el('klKenalTa'); if(ta){ ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+      return;
+    }
+    if(e.target.closest('[data-kenal-batal]')){ D.kenalFor = null; gambarPengurus(); return; }
+    const kenalOk = e.target.closest('[data-kenal-ok]');
+    if(kenalOk){
+      const p = pengurusBernama(kenalOk.dataset.kenalOk);
+      const ta = el('klKenalTa');
+      if(p && ta) p.perkenalan = ta.value.trim().slice(0, KENAL_MAKS);
+      D.kenalFor = null;
+      gambar();
+      toast(p && p.perkenalan ? 'Perkenalan tersimpan — tampil di halaman komunitas.' : 'Perkenalan dikosongkan.');
+      return;
+    }
+
     /* kepengurusan: ubah jabatan (termasuk jabatan pembuat sendiri) */
     const ubah = e.target.closest('[data-ubah]');
-    if(ubah){ D.ubahFor = ubah.dataset.ubah; D.angkatFor = null; gambarPengurus(); return; }
+    if(ubah){ D.ubahFor = ubah.dataset.ubah; D.angkatFor = null; D.kenalFor = null; gambarPengurus(); return; }
     if(e.target.closest('[data-ubah-batal]')){ D.ubahFor = null; gambarPengurus(); return; }
     const ubahOk = e.target.closest('[data-ubah-ok]');
     if(ubahOk){

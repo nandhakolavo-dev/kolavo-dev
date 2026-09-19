@@ -17,7 +17,7 @@
         {n:'Rizky Ananda',k:'PNS',d:'Jakarta Timur',a:2009,s:'Maret 2025'},
         {n:'Sekar Wulandari',k:'Pelajar & mahasiswa',d:'Kab. Bekasi',a:2023,s:'Februari 2026'}
       ],
-      pengurus:[{n:'Ayu Lestari',j:'Ketua',f:'p-ayu'},{n:'Rizal Hakim',j:'Sekretaris'}]
+      pengurus:[{n:'Ayu Lestari',j:'Ketua',f:'p-ayu',kenal:'Purna Paskibra 2016, sekarang melatih adik-adik tim kecamatan tiap Sabtu. Kalau mau bantu latihan atau punya ide kegiatan, sapa aku saja.'},{n:'Rizal Hakim',j:'Sekretaris'}]
     },
     'l-iapnj': {
       anggota:[
@@ -28,7 +28,7 @@
         {n:'Tio Wibowo',k:'Dosen',d:'Depok',a:2012,s:'Oktober 2025'},
         {n:'Salma Nabila',k:'Wiraswasta',d:'Jakarta Selatan',a:2021,s:'Januari 2026'}
       ],
-      pengurus:[{n:'Rani Setiawati',j:'Ketua',f:'p-rani'}]
+      pengurus:[{n:'Rani Setiawati',j:'Ketua',f:'p-rani',kenal:'TIK angkatan 2012, kerja sebagai product manager. Fokusku tahun ini: program mentoring alumni ke mahasiswa tingkat akhir.'}]
     },
     'l-iasman52': {
       anggota:[
@@ -39,7 +39,7 @@
         {n:'Tari Andriani',k:'Karyawan swasta',d:'Jakarta Utara',a:2005,s:'Agustus 2025'},
         {n:'Reza Maulana',k:'Karyawan swasta',d:'Jakarta Utara',a:1999,s:'Mei 2026'}
       ],
-      pengurus:[{n:'Fajar Nugroho',j:'Ketua',f:'p-fajar'},{n:'Rani Setiawati',j:'Bendahara',f:'p-rani'}]
+      pengurus:[{n:'Fajar Nugroho',j:'Ketua',f:'p-fajar',kenal:'Angkatan 2009. Mengurus reuni akbar dan dana beasiswa adik kelas. Senang dihubungi soal kolaborasi usaha antaralumni.'},{n:'Rani Setiawati',j:'Bendahara',f:'p-rani'}]
     },
     'l-ppiju': {
       anggota:[
@@ -218,7 +218,7 @@
     return {
       profesi: tally('k'), kota: tally('d'), angkatan: '—',
       anggota: anggota,
-      pengurus: D.pengurus.map(function(p){ return { n: p.nama, j: p.jabatan }; })
+      pengurus: D.pengurus.map(function(p){ return { n: p.nama, j: p.jabatan, kenal: p.perkenalan || '' }; })
     };
   }
 
@@ -924,6 +924,40 @@
     wadah.appendChild(c);
   }
 
+  /* ---------- pop up profil pengurus ----------
+     Klik kartu pengurus → foto/inisial, jabatan, perkenalan singkat. Perkenalan
+     ditulis pengurusnya di dashboard → Struktur Kepengurusan (field `kenal`). */
+  let pengKini = [];
+  const pengModal = el('pengModal');
+  function avPeng(p, i){
+    return p.f
+      ? '<span class="av photo ' + p.f + '" role="img" aria-label="Foto profil ' + esc(p.n) + ' — gambar AI"></span>'
+      : '<span class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(p.n) + '</span>';
+  }
+  function bukaPengurus(i){
+    const p = pengKini[i]; if(!p) return;
+    el('pengIsi').innerHTML = '<div class="peng-pp">' + avPeng(p, i) + '</div>' +
+      '<h2 class="peng-pp-nm" id="pengHead">' + esc(p.n) + '</h2>' +
+      '<p class="peng-pp-j">' + esc(p.j) + (kini ? ' · ' + esc(kini.nama) : '') + '</p>' +
+      '<div class="peng-pp-kenal"><span class="peng-pp-lbl">Perkenalan singkat</span>' +
+        (p.kenal ? '<p>' + esc(p.kenal) + '</p>' : '<p class="peng-pp-kosong">Belum ada perkenalan.</p>') + '</div>';
+    pengModal.hidden = false;
+    void pengModal.offsetWidth;
+    pengModal.classList.add('on');
+    document.body.classList.add('lgn-open');
+    const x = pengModal.querySelector('.lgn-x'); if(x) x.focus();
+  }
+  function tutupPengurus(){
+    pengModal.classList.remove('on');
+    document.body.classList.remove('lgn-open');
+    setTimeout(function(){ if(!pengModal.classList.contains('on')) pengModal.hidden = true; }, 170);
+  }
+  pengModal.addEventListener('click', function(e){ if(e.target.closest('[data-peng-tutup]')) tutupPengurus(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !pengModal.hidden) tutupPengurus(); });
+  el('komPengurus').addEventListener('click', function(e){
+    const b = e.target.closest('[data-peng]'); if(b) bukaPengurus(+b.dataset.peng);
+  });
+
   function gambar(){
     if(!kini) return;
     el('komJalurNm').textContent = kini.nama;
@@ -974,12 +1008,10 @@
          dan sebelumnya orang mendaftar ke komunitas yang mencantumkan namanya
          sendiri sebagai Sekretaris. Penggantinya tanpa foto — cuma empat wajah
          hasil AI yang boleh dipakai. */
+      pengKini = a.pengurus;
       el('komPengurus').innerHTML = a.pengurus.map(function(p, i){
-        const av = p.f
-          ? '<span class="av photo ' + p.f + '" role="img" aria-label="Foto profil ' + p.n + ' — gambar AI"></span>'
-          : '<span class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(p.n) + '</span>';
-        return '<div class="peng-i">' + av +
-               '<div><div class="peng-nm">' + p.n + '</div><div class="peng-j">' + p.j + '</div></div></div>';
+        return '<button type="button" class="peng-i" data-peng="' + i + '" aria-haspopup="dialog">' + avPeng(p, i) +
+               '<div><div class="peng-nm">' + esc(p.n) + '</div><div class="peng-j">' + esc(p.j) + '</div></div></button>';
       }).join('');
     }
 

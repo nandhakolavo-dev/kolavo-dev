@@ -999,6 +999,18 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
   ATAS `#komNm` (revisi: semula di bawah); kosong → `hidden`, tanpa sisa jarak. Kartu direktori memakai `data-alias`;
   IA SMAN 52 sengaja dibiarkan tanpa alias sebagai contoh kondisi kosong. Ini berbeda dari
   "Nama Panggilan" anggota (pertanyaan `nickname`).
+- **Revisi P15 — perkenalan singkat pengurus** (2026-09-19).
+  - **Data**: `D.pengurus[].perkenalan` (maks. 280) → agregat `pengurus[].kenal`. Kunci `k`
+    TIDAK dipakai karena sudah berarti "kerja" di data anggota. Contoh terisi: Ayu (Forpastara),
+    Rani (IA PNJ), Fajar (IA SMAN 52); Rizal dan Dedi sengaja kosong.
+  - **Sunting**: dashboard → Struktur Kepengurusan. Tombol *Tulis/Ubah perkenalan* per baris
+    pengurus (Advance) dan per peninjau yang juga pengurus (Esensial). Editor `.kl-kenal-ed`
+    (textarea + hitungan/280, Simpan/Batal) muncul tepat di bawah barisnya, cuplikan 2 baris
+    `.kl-kenal-cuplik` tampil di baris. State `D.kenalFor`; membuka *Ubah jabatan* menutupnya.
+  - **Tampil**: kartu pengurus di halaman komunitas jadi `<button class="peng-i" data-peng>`,
+    klik → pop up `#pengModal` (kerangka `.lgn`, `.peng-box` 420px): avatar 88px, nama,
+    jabatan · komunitas, kotak "Perkenalan singkat". Kosong → "Belum ada perkenalan." redup.
+    Tutup lewat ×, scrim, atau Esc. Teks pengurus di-escape (`esc`) karena ditulis pengguna.
 
 ## Yang belum terverifikasi
 
