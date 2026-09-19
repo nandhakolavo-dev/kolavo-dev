@@ -83,14 +83,60 @@
       const nilai = t.tipe === 'tahun' ? String(s.tahun)
         : (s.alasan && soalAlasan.test((t.judul || '') + ' ' + (t.tanya || ''))) ? s.alasan
         : (teks[ti++] || '—');
-      return { judul: t.judul || 'Pertanyaan', nilai: nilai };
+      return { id: t.id, judul: t.judul || 'Pertanyaan', nilai: nilai };
     });
   }
-  /* versi ringkas (tag) untuk daftar anggota */
-  function tagsFor(s){
-    return jawabanFor(s).map(function(j){
-      return /^\d{4}$/.test(j.nilai) ? j.judul + ' ' + j.nilai : j.nilai;
-    });
+
+  /* Pertanyaan pengurus yang BERLAKU sekarang (tanpa nama panggilan). Satu pintu
+     untuk kartu peninjau, Tinjau jawaban, dan pemilih sumbu persebaran. */
+  function pertanyaanPengurus(){
+    return ((D.kom && D.kom.tanya) || []).filter(function(t){ return t.id !== 'nickname'; });
+  }
+  window.KolavoPertanyaanPengurus = pertanyaanPengurus;
+
+  /* Jawaban disimpan per id pertanyaan (r.jwb), lalu dirakit ulang dari
+     pertanyaanPengurus() tiap kali dibaca — pertanyaan diganti, dihapus, atau
+     diurutkan ulang di layar Buat → kartu peninjau ikut. Pertanyaan yang ditambah
+     setelah orangnya mendaftar belum punya jawaban → '—' (kosong: true). */
+  function jawabPerId(s){
+    const m = {};
+    jawabanFor(s).forEach(function(j){ m[j.id] = j.nilai; });
+    return m;
+  }
+  function denganJawaban(r){
+    Object.defineProperty(r, 'jawaban', { enumerable: true, get: function(){
+      return pertanyaanPengurus().map(function(t){
+        const ada = Object.prototype.hasOwnProperty.call(r.jwb, t.id);
+        return { id: t.id, judul: t.judul || 'Pertanyaan', nilai: ada ? r.jwb[t.id] : '—', kosong: !ada };
+      });
+    }});
+    /* versi ringkas (tag) untuk daftar anggota */
+    Object.defineProperty(r, 'tags', { enumerable: true, get: function(){
+      return r.jawaban.filter(function(j){ return !j.kosong; }).map(function(j){
+        return /^\d{4}$/.test(j.nilai) ? j.judul + ' ' + j.nilai : j.nilai;
+      });
+    }});
+    return r;
+  }
+
+  /* akun media sosial pendaftar — dari profil Kolavo (bentuk sama dengan
+     KolavoSosmed() di lengkapi profil). Bayu dan Yoga sengaja tanpa akun. */
+  const SOSMED_SEED = {
+    'Putri Maharani':  [{ platform: 'Instagram', akun: '@putri.maharani' }, { platform: 'LinkedIn', akun: 'linkedin.com/in/putrimaharani' }],
+    'Andi Firmansyah': [{ platform: 'LinkedIn', akun: 'linkedin.com/in/andifirmansyah' }],
+    'Sinta Dewi':      [{ platform: 'Instagram', akun: '@sinta.kue' }, { platform: 'TikTok', akun: '@sintabakery' }],
+    'Rina Kartika':    [{ platform: 'Instagram', akun: '@rinaks' }],
+    'Galih Pramudya':  [{ platform: 'Instagram', akun: '@galihpramudya' }],
+    'Dimas Aryo':      [{ platform: 'LinkedIn', akun: 'linkedin.com/in/dimas-aryo' }, { platform: 'X (Twitter)', akun: '@dimasriset' }]
+  };
+  const SOSMED_URL = { 'Instagram': 'https://instagram.com/', 'TikTok': 'https://tiktok.com/@', 'X (Twitter)': 'https://x.com/', 'YouTube': 'https://youtube.com/@' };
+  function sosmedHtml(daftar){
+    return '<span class="kl-sosmed">' + daftar.map(function(s){
+      const url = SOSMED_URL[s.platform]
+        ? SOSMED_URL[s.platform] + s.akun.replace(/^@/, '')
+        : 'https://' + s.akun.replace(/^https?:\/\//, '');
+      return '<a class="kl-sosmed-i" href="' + lolos(url) + '" target="_blank" rel="noopener noreferrer"><b>' + lolos(s.platform) + '</b>' + lolos(s.akun) + '</a>';
+    }).join('') + '</span>';
   }
 
   const IKON_CEK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
@@ -131,12 +177,12 @@
     D.peninjau = [D.aku];
     D.anggotaBiasa = [];
     D.minta = SEED.map(function(s, i){
-      return {
+      return denganJawaban({
         id: 'r' + i, nama: s.nama, panggil: s.panggil, full: s.full, jk: s.jk,
         kerja: s.kerja, kota: s.kota, wa: s.wa, email: s.email, lengkap: s.lengkap,
         waktu: s.waktu, hari: s.hari, tahun: s.tahun,
-        jawaban: jawabanFor(s), tags: tagsFor(s)
-      };
+        jwb: jawabPerId(s), sosmed: SOSMED_SEED[s.nama] || []
+      });
     });
     D.tab = 'minta';
     D.angkatFor = null;
@@ -234,7 +280,9 @@
             r.jawaban.map(function(j){
               /* jawaban panjang (mis. alasan bergabung) ditaruh di bawah pertanyaannya, rata kiri */
               return '<div class="kl-jawab-row' + (j.nilai.length > 40 ? ' panjang' : '') + '"><span class="kl-jawab-q">' + lolos(j.judul) + '</span>' +
-                     '<span class="kl-jawab-a">' + lolos(j.nilai) + '</span></div>';
+                     (j.kosong
+                       ? '<span class="kl-jawab-a kl-jawab-kosong" title="Pertanyaan ini ditambahkan setelah orangnya mendaftar">— <small>pertanyaan baru, belum dijawab</small></span>'
+                       : '<span class="kl-jawab-a">' + lolos(j.nilai) + '</span>') + '</div>';
             }).join('') +
           '</div>'
         : '';
@@ -244,6 +292,7 @@
         '<div class="kl-req-info"><span class="kl-info-h">Data profil</span>' +
           baris2('WhatsApp', lolos(r.wa) + ' <span class="kl-verif">' + IKON_CEK_KECIL + 'terverifikasi</span>') +
           baris2('Email', lolos(r.email)) +
+          (r.sosmed && r.sosmed.length ? baris2('Media sosial', sosmedHtml(r.sosmed)) : '') +
           baris2('Jenis kelamin', lolos(r.jk)) +
           baris2('Kelengkapan profil', r.lengkap
             ? '<span class="kl-ok">Profil lengkap</span>'

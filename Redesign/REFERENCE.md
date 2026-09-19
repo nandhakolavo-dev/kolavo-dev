@@ -1011,6 +1011,19 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     klik → pop up `#pengModal` (kerangka `.lgn`, `.peng-box` 420px): avatar 88px, nama,
     jabatan · komunitas, kotak "Perkenalan singkat". Kosong → "Belum ada perkenalan." redup.
     Tutup lewat ×, scrim, atau Esc. Teks pengurus di-escape (`esc`) karena ditulis pengguna.
+- **Revisi P16 — kartu peninjau: media sosial + pertanyaan dinamis** (2026-09-19).
+  - **Pertanyaan dinamis**: dulu `r.jawaban` dihitung sekali di `bangun()`, jadi kartu membeku
+    pada pertanyaan saat dashboard dibuat. Sekarang jawaban disimpan per id pertanyaan
+    (`r.jwb`), dan `r.jawaban`/`r.tags` jadi getter (`denganJawaban`) yang merakit ulang dari
+    `pertanyaanPengurus()` = `D.kom.tanya` tanpa `nickname`. Judul diganti, urutan diubah, atau
+    pertanyaan dihapus di layar Buat (sunting, id tetap) → kartu, Tinjau jawaban, dan tag ikut.
+    Pertanyaan yang ditambah setelah orangnya mendaftar → "— pertanyaan baru, belum dijawab"
+    (`.kl-jawab-kosong`) dan tidak jadi tag. Diekspos `window.KolavoPertanyaanPengurus()` —
+    dipakai P17 (sumbu persebaran).
+  - **Media sosial**: `r.sosmed` (bentuk `{platform, akun}`, sama dengan `KolavoSosmed()`) tampil
+    sebagai baris "Media sosial" di Data profil, berupa chip tautan `.kl-sosmed-i` (tab baru).
+    Kosong → baris tidak ada. Contoh: 6 dari 8 pendaftar punya akun; Bayu dan Yoga tidak.
+  - Saat diterima, `D.mem[].jawaban` menyalin jawaban saat itu (potret, bukan getter).
 
 ## Yang belum terverifikasi
 
