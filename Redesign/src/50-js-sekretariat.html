@@ -505,8 +505,8 @@
       '</div>' +
       '<div class="sek-blok"><div class="sek-blok-h">Alamat penagihan</div>' + alamatBlok + '</div>' +
       '<div class="sek-blok"><div class="sek-blok-h">Metode pembayaran</div>' +
-        '<div class="sek-pilih" role="radiogroup" aria-label="Metode pembayaran">' + BAYAR.map(function(b){
-          return '<label class="sek-pilih-i"><input type="radio" name="sekBayar" value="' + b.k + '" data-sek-bayar' + (t.draftMetode === b.k ? ' checked' : '') + '>' +
+        '<div class="sek-bayar" role="radiogroup" aria-label="Metode pembayaran">' + BAYAR.map(function(b){
+          return '<label class="sek-bayar-i"><input type="radio" name="sekBayar" value="' + b.k + '" data-sek-bayar' + (t.draftMetode === b.k ? ' checked' : '') + '>' +
             '<span class="t"><b>' + b.h + '</b><small>' + b.sub + '</small></span>' + (t.metode === b.k ? '<span class="sek-status">Dipakai</span>' : '') + '</label>';
         }).join('') + '</div>' +
         '<div class="sek-baris"><button type="button" class="btn sm" data-sek-tagih="simpan-metode"' + (t.draftMetode === t.metode ? ' disabled' : '') + '>Pakai metode ini</button></div>' +
@@ -673,6 +673,47 @@
   }
 
   /* ---------- serah terima ---------- */
+  /* Sejarah kepengurusan: satu baris per periode, bisa dibuka untuk melihat
+     siapa memegang jabatan apa. Periode sekarang dibaca langsung dari susunan
+     pengurus; dua periode lama adalah contoh (nama rekaan, tanpa foto). */
+  const SEJARAH_LAMA = [
+    { mundur: 2, susunan: [['Ketua', ['Hendra Wijaya']], ['Wakil Ketua', ['Laras Ayuningtyas']], ['Sekretaris', ['Fajar Nugroho']],
+      ['Bendahara', ['Maya Kusuma']], ['Humas', ['Rizky Ananda', 'Tiara Putri']]] },
+    { mundur: 4, susunan: [['Ketua', ['Agung Pratama']], ['Sekretaris', ['Nadia Rahma']], ['Bendahara', ['Yusuf Hakim']],
+      ['Pengurus', ['Indra Saputra', 'Wulan Sari']]] }
+  ];
+  function susunanKini(){
+    const urut = ['Community Builder'].concat(D.jabatan);
+    const peta = {};
+    D.pengurus.forEach(function(p){ (peta[p.jabatan] = peta[p.jabatan] || []).push(p.nama); });
+    return urut.filter(function(j){ return peta[j]; }).map(function(j){ return [j, peta[j]]; });
+  }
+  function periodeItem(label, susunan, catatan, buka, tanda){
+    const ketua = susunan.filter(function(s){ return s[0] === 'Ketua'; })[0];
+    const jml = susunan.reduce(function(n, s){ return n + s[1].length; }, 0);
+    return '<details class="sek-periode"' + (buka ? ' open' : '') + '><summary>' +
+        '<b>' + label + '</b><span class="t">' + (ketua ? 'Ketua ' + lolos(ketua[1].join(', ')) + ' · ' : '') + jml + ' pengurus</span>' +
+        (tanda ? '<span class="tag hi">' + tanda + '</span>' : '') + '</summary>' +
+      '<dl class="sek-dl">' + susunan.map(function(s){
+        return '<dt>' + lolos(s[0]) + '</dt><dd>' + s[1].map(lolos).join(', ') + '</dd>';
+      }).join('') + '</dl>' +
+      (catatan ? '<p class="sek-kecil jarak">' + catatan + '</p>' : '') +
+    '</details>';
+  }
+  function gambarSejarah(mulai, akhir){
+    const s = S.serah;
+    return '<div class="sek-blok"><div class="sek-blok-h">Sejarah kepengurusan</div>' +
+      '<div class="sek-blok-sub">Siapa saja yang pernah mengurus ' + lolos(D.kom.nama) + ', per periode. Tercatat otomatis tiap serah terima.</div>' +
+      '<div class="sek-periode-list">' +
+        (s.jadwal ? periodeItem(akhir + '–' + (akhir + 2), [['Ketua', [s.ketua]]], 'Mulai ' + tglIndo(s.tanggal) + '. Susunan lengkapnya diatur ketua baru setelah serah terima.', false, 'dijadwalkan') : '') +
+        periodeItem(mulai + '–' + akhir, susunanKini(), 'Berakhir Desember ' + akhir + '. Ikut berubah saat susunan di Struktur Kepengurusan diubah.', true, 'sekarang') +
+        SEJARAH_LAMA.map(function(p){
+          return periodeItem((mulai - p.mundur) + '–' + (mulai - p.mundur + 2), p.susunan, '', false, '');
+        }).join('') +
+      '</div>' +
+      '<p class="sek-kecil jarak">Periode sebelum ' + (mulai - 4) + ' belum dicatat.</p>' +
+    '</div>';
+  }
   function gambarSerah(){
     const s = S.serah;
     const mulai = D.tahun, akhir = D.tahun + 2;
@@ -692,11 +733,7 @@
     ];
     const daftarPindah = '<ul class="sek-pindah">' + pindah.map(function(t){ return '<li>' + IK.pindah + '<span>' + t + '</span></li>'; }).join('') + '</ul>';
 
-    const periode = '<div class="sek-blok"><div class="sek-blok-h">Sejarah kepengurusan</div><ul class="sek-periode">' +
-      (s.jadwal ? '<li><b>' + akhir + '–' + (akhir + 2) + '</b><span>Ketua ' + lolos(ketua) + ' · mulai ' + tglIndo(s.tanggal) + '</span></li>' : '') +
-      '<li><b>' + mulai + '–' + akhir + '</b><span>' + D.pengurus.length + ' pengurus · berakhir Desember ' + akhir + ' <span class="tag hi">sekarang</span></span></li>' +
-      '<li><b>Sebelumnya</b><span class="sek-kecil">Belum dicatat. Periode ini jadi catatan pertama.</span></li>' +
-    '</ul></div>';
+    const periode = gambarSejarah(mulai, akhir);
 
     if(s.jadwal){
       el('klPanelSerah').innerHTML =

@@ -1308,6 +1308,16 @@ body.lgn-open{overflow:hidden}
 .kl-upsell-h{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
 .kl-upsell p{font-size:12.5px;color:var(--ink-3);line-height:1.55;margin:0 0 12px}
 .kl-angkat .sel{max-width:200px;height:40px}
+.kl-jab{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.kl-jab-h{font-size:15px;font-weight:600;margin-bottom:4px}
+.kl-jab-list{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.kl-jab-i{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:100px;background:var(--bg-alt);border:1px solid var(--line);color:var(--ink-2)}
+.kl-jab-i.kustom{background:var(--blue-wash);border-color:transparent;color:var(--blue-ink)}
+.kl-jab-x{display:inline-grid;place-items:center;width:18px;height:18px;margin:0 -5px 0 0;padding:0;border:0;border-radius:100px;background:none;color:inherit;cursor:pointer}
+.kl-jab-x:hover{background:var(--card)}
+.kl-jab-x:focus-visible{outline:3px solid var(--ring);outline-offset:1px}
+.kl-jab-x svg{width:11px;height:11px}
+.kl-jab .inp{max-width:260px;height:40px}
 .kl-angkat-lbl{font-size:13px;font-weight:600;color:var(--ink-2)}
 /* riwayat keputusan pendaftaran — dilihat semua pengurus */
 .kl-riwayat{display:flex;align-items:center;gap:13px;padding:14px 16px;border-radius:14px;
@@ -1501,13 +1511,13 @@ body.lgn-open{overflow:hidden}
 .sek-dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:10px 0 0;font-size:13.5px;line-height:1.5}
 .sek-dl dt{color:var(--ink-3)}
 .sek-dl dd{margin:0;color:var(--ink);min-width:0;overflow-wrap:anywhere}
-.sek-pilih{display:grid;gap:8px;margin-top:12px}
-.sek-pilih-i{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:var(--card);cursor:pointer}
-.sek-pilih-i:has(input:checked){border-color:var(--blue);background:var(--blue-tint)}
-.sek-pilih-i input{margin:3px 0 0;flex:none;accent-color:var(--blue)}
-.sek-pilih-i .t{flex:1;min-width:0}
-.sek-pilih-i b{display:block;font-size:14px;font-weight:600;line-height:1.4}
-.sek-pilih-i small{display:block;font-size:12px;color:var(--ink-2);line-height:1.5}
+.sek-bayar{display:grid;gap:8px;margin-top:12px}
+.sek-bayar-i{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:var(--card);cursor:pointer}
+.sek-bayar-i:has(input:checked){border-color:var(--blue);background:var(--blue-tint)}
+.sek-bayar-i input{margin:3px 0 0;flex:none;accent-color:var(--blue)}
+.sek-bayar-i .t{flex:1;min-width:0}
+.sek-bayar-i b{display:block;font-size:14px;font-weight:600;line-height:1.4}
+.sek-bayar-i small{display:block;font-size:12px;color:var(--ink-2);line-height:1.5}
 .sek-jejak li{display:flex;gap:10px;justify-content:space-between;font-size:13px;line-height:1.5;padding:8px 0;border-bottom:1px solid var(--line)}
 .sek-jejak li:last-child{border-bottom:0}
 .sek-jejak span{color:var(--ink-3);font-size:12px;white-space:nowrap}
@@ -1526,9 +1536,17 @@ body.lgn-open{overflow:hidden}
 .sek-pindah svg{flex:none;width:16px;height:16px;margin-top:3px;color:var(--blue-ink)}
 .sek-pindah b{font-weight:600}
 .sek-jadwal{background:var(--green-wash);border-color:transparent}
-.sek-periode li{display:flex;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px}
-.sek-periode li:last-child{border-bottom:0}
-.sek-periode b{font-weight:600;min-width:94px}
+.sek-periode-list{margin-top:12px;border-top:1px solid var(--line)}
+.sek-periode{border-bottom:1px solid var(--line)}
+.sek-periode summary{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:11px 0;cursor:pointer;font-size:13.5px;list-style:none}
+.sek-periode summary::-webkit-details-marker{display:none}
+.sek-periode summary::before{content:"";flex:none;width:7px;height:7px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);transform:rotate(-45deg);transition:transform .15s ease;margin-right:2px}
+.sek-periode[open] summary::before{transform:rotate(45deg)}
+.sek-periode summary:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:6px}
+.sek-periode summary b{font-weight:600;min-width:86px;font-variant-numeric:tabular-nums}
+.sek-periode summary .t{flex:1;min-width:0;color:var(--ink-2)}
+.sek-periode .sek-dl{margin:0 0 12px 19px}
+.sek-periode .sek-kecil{margin:-4px 0 12px 19px}
 
 /* modal aktifkan */
 .lgn-box.sek-box{max-width:520px;text-align:left;padding:28px 26px 24px}
@@ -5434,6 +5452,9 @@ function hitung(){}
   if(!scr) return;
 
   const JABATAN = ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Bendahara', 'Humas', 'Pengurus'];
+  /* jabatan bawaan; yang ditambah pengurus lewat "+ Jabatan kustom" masuk ke
+     JABATAN yang sama (D.jabatan) dan dikembalikan ke ini saat komunitas lain dibangun */
+  const JABATAN_AWAL = JABATAN.slice();
 
   /* pendaftar contoh. Sengaja bukan salah satu dari empat wajah ber-foto AI —
      pendaftar pakai inisial, jadi tidak ada foto orang yang dipakai tanpa izin */
@@ -5523,6 +5544,8 @@ function hitung(){}
     /* pembuat halaman belum tentu ketua — defaultnya Community Builder
        sampai diberi jabatan sungguhan lewat menu Struktur Kepengurusan */
     D.pengurus = [{ nama: D.aku, jabatan: 'Community Builder', aku: true }];
+    JABATAN.length = 0; Array.prototype.push.apply(JABATAN, JABATAN_AWAL);
+    D.jabatanTeks = '';
     /* peninjau pendaftaran boleh lebih dari satu — daftar nama, bukan satu orang.
        Awalnya cuma pembuatnya; pengurus lain bisa ditambahkan kapan saja. */
     D.peninjau = [D.aku];
@@ -5792,7 +5815,24 @@ function hitung(){}
           '</div>';
       }
       return html;
-    }).join('');
+    }).join('') + gambarJabatan();
+  }
+
+  /* daftar jabatan + tambah jabatan kustom. Jabatan kustom bisa dihapus selama
+     belum ada yang memegangnya; jabatan bawaan tidak. */
+  function gambarJabatan(){
+    const dipakai = function(j){ return D.pengurus.some(function(p){ return p.jabatan === j; }); };
+    return '<div class="kl-jab">' +
+      '<div class="kl-jab-h">Jabatan di komunitas ini</div>' +
+      '<p class="kl-sub">Tambah jabatan yang tidak ada di daftar bawaan, misalnya Koordinator Wilayah atau Ketua Angkatan. Jabatan baru langsung muncul di pilihan jabatan dan di tabel Siapa boleh apa.</p>' +
+      '<ul class="kl-jab-list">' + JABATAN.map(function(j){
+        const kustom = JABATAN_AWAL.indexOf(j) < 0;
+        return '<li class="kl-jab-i' + (kustom ? ' kustom' : '') + '">' + lolos(j) +
+          (kustom && !dipakai(j) ? '<button type="button" class="kl-jab-x" data-jab-hapus="' + lolos(j) + '" aria-label="Hapus jabatan ' + lolos(j) + '">' + IKON_X + '</button>' : '') + '</li>';
+      }).join('') + '</ul>' +
+      '<div class="kl-angkat"><input class="inp" id="klJabBaru" maxlength="30" placeholder="Nama jabatan baru" value="' + lolos(D.jabatanTeks) + '" aria-label="Nama jabatan baru">' +
+        '<button type="button" class="btn sm" data-jab-tambah>+ Jabatan kustom</button></div>' +
+    '</div>';
   }
 
   /* Esensial: tanpa susunan jabatan — cuma atur siapa peninjau + ajakan Advance */
@@ -5973,6 +6013,12 @@ function hitung(){}
     if(b){ e.preventDefault(); window.KolavoBukaDashboard(b.getAttribute('data-dashboard') || null); }
   });
 
+  /* kolom jabatan kustom: disimpan per ketikan supaya tidak hilang saat panel digambar ulang; Enter = tambah */
+  scr.addEventListener('input', function(e){ if(e.target.id === 'klJabBaru') D.jabatanTeks = e.target.value; });
+  scr.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && e.target.id === 'klJabBaru'){ e.preventDefault(); const b = scr.querySelector('[data-jab-tambah]'); if(b) b.click(); }
+  });
+
   /* ---------- aksi ---------- */
   scr.addEventListener('click', function(e){
     /* induk: di Esensial langsung ke sub-menu pertama; di kolom samping Advance
@@ -5990,6 +6036,27 @@ function hitung(){}
     }
     const tab = e.target.closest('.kl-tab');
     if(tab){ pilihTab(tab.dataset.tab); return; }
+
+    /* jabatan kustom */
+    if(e.target.closest('[data-jab-tambah]')){
+      const nama = D.jabatanTeks.trim().replace(/\s+/g, ' ');
+      if(!nama){ toast('Tulis nama jabatannya dulu.'); return; }
+      const sama = JABATAN.concat(['Community Builder']).filter(function(j){ return j.toLowerCase() === nama.toLowerCase(); })[0];
+      if(sama){ toast('Jabatan “' + sama + '” sudah ada.'); return; }
+      JABATAN.push(nama); D.jabatanTeks = '';
+      gambar();
+      const f = el('klJabBaru'); if(f) f.focus();
+      toast('Jabatan “' + nama + '” ditambahkan. Atur haknya di Setting › Akses pengurus.');
+      return;
+    }
+    const hapusJab = e.target.closest('[data-jab-hapus]');
+    if(hapusJab){
+      const j = hapusJab.dataset.jabHapus, i = JABATAN.indexOf(j);
+      if(i >= 0 && JABATAN_AWAL.indexOf(j) < 0 && !D.pengurus.some(function(p){ return p.jabatan === j; })) JABATAN.splice(i, 1);
+      gambar();
+      toast('Jabatan “' + j + '” dihapus.');
+      return;
+    }
 
     /* approval: setujui / tolak */
     const setuju = e.target.closest('[data-setuju]');
@@ -6619,8 +6686,8 @@ function hitung(){}
       '</div>' +
       '<div class="sek-blok"><div class="sek-blok-h">Alamat penagihan</div>' + alamatBlok + '</div>' +
       '<div class="sek-blok"><div class="sek-blok-h">Metode pembayaran</div>' +
-        '<div class="sek-pilih" role="radiogroup" aria-label="Metode pembayaran">' + BAYAR.map(function(b){
-          return '<label class="sek-pilih-i"><input type="radio" name="sekBayar" value="' + b.k + '" data-sek-bayar' + (t.draftMetode === b.k ? ' checked' : '') + '>' +
+        '<div class="sek-bayar" role="radiogroup" aria-label="Metode pembayaran">' + BAYAR.map(function(b){
+          return '<label class="sek-bayar-i"><input type="radio" name="sekBayar" value="' + b.k + '" data-sek-bayar' + (t.draftMetode === b.k ? ' checked' : '') + '>' +
             '<span class="t"><b>' + b.h + '</b><small>' + b.sub + '</small></span>' + (t.metode === b.k ? '<span class="sek-status">Dipakai</span>' : '') + '</label>';
         }).join('') + '</div>' +
         '<div class="sek-baris"><button type="button" class="btn sm" data-sek-tagih="simpan-metode"' + (t.draftMetode === t.metode ? ' disabled' : '') + '>Pakai metode ini</button></div>' +
@@ -6787,6 +6854,47 @@ function hitung(){}
   }
 
   /* ---------- serah terima ---------- */
+  /* Sejarah kepengurusan: satu baris per periode, bisa dibuka untuk melihat
+     siapa memegang jabatan apa. Periode sekarang dibaca langsung dari susunan
+     pengurus; dua periode lama adalah contoh (nama rekaan, tanpa foto). */
+  const SEJARAH_LAMA = [
+    { mundur: 2, susunan: [['Ketua', ['Hendra Wijaya']], ['Wakil Ketua', ['Laras Ayuningtyas']], ['Sekretaris', ['Fajar Nugroho']],
+      ['Bendahara', ['Maya Kusuma']], ['Humas', ['Rizky Ananda', 'Tiara Putri']]] },
+    { mundur: 4, susunan: [['Ketua', ['Agung Pratama']], ['Sekretaris', ['Nadia Rahma']], ['Bendahara', ['Yusuf Hakim']],
+      ['Pengurus', ['Indra Saputra', 'Wulan Sari']]] }
+  ];
+  function susunanKini(){
+    const urut = ['Community Builder'].concat(D.jabatan);
+    const peta = {};
+    D.pengurus.forEach(function(p){ (peta[p.jabatan] = peta[p.jabatan] || []).push(p.nama); });
+    return urut.filter(function(j){ return peta[j]; }).map(function(j){ return [j, peta[j]]; });
+  }
+  function periodeItem(label, susunan, catatan, buka, tanda){
+    const ketua = susunan.filter(function(s){ return s[0] === 'Ketua'; })[0];
+    const jml = susunan.reduce(function(n, s){ return n + s[1].length; }, 0);
+    return '<details class="sek-periode"' + (buka ? ' open' : '') + '><summary>' +
+        '<b>' + label + '</b><span class="t">' + (ketua ? 'Ketua ' + lolos(ketua[1].join(', ')) + ' · ' : '') + jml + ' pengurus</span>' +
+        (tanda ? '<span class="tag hi">' + tanda + '</span>' : '') + '</summary>' +
+      '<dl class="sek-dl">' + susunan.map(function(s){
+        return '<dt>' + lolos(s[0]) + '</dt><dd>' + s[1].map(lolos).join(', ') + '</dd>';
+      }).join('') + '</dl>' +
+      (catatan ? '<p class="sek-kecil jarak">' + catatan + '</p>' : '') +
+    '</details>';
+  }
+  function gambarSejarah(mulai, akhir){
+    const s = S.serah;
+    return '<div class="sek-blok"><div class="sek-blok-h">Sejarah kepengurusan</div>' +
+      '<div class="sek-blok-sub">Siapa saja yang pernah mengurus ' + lolos(D.kom.nama) + ', per periode. Tercatat otomatis tiap serah terima.</div>' +
+      '<div class="sek-periode-list">' +
+        (s.jadwal ? periodeItem(akhir + '–' + (akhir + 2), [['Ketua', [s.ketua]]], 'Mulai ' + tglIndo(s.tanggal) + '. Susunan lengkapnya diatur ketua baru setelah serah terima.', false, 'dijadwalkan') : '') +
+        periodeItem(mulai + '–' + akhir, susunanKini(), 'Berakhir Desember ' + akhir + '. Ikut berubah saat susunan di Struktur Kepengurusan diubah.', true, 'sekarang') +
+        SEJARAH_LAMA.map(function(p){
+          return periodeItem((mulai - p.mundur) + '–' + (mulai - p.mundur + 2), p.susunan, '', false, '');
+        }).join('') +
+      '</div>' +
+      '<p class="sek-kecil jarak">Periode sebelum ' + (mulai - 4) + ' belum dicatat.</p>' +
+    '</div>';
+  }
   function gambarSerah(){
     const s = S.serah;
     const mulai = D.tahun, akhir = D.tahun + 2;
@@ -6806,11 +6914,7 @@ function hitung(){}
     ];
     const daftarPindah = '<ul class="sek-pindah">' + pindah.map(function(t){ return '<li>' + IK.pindah + '<span>' + t + '</span></li>'; }).join('') + '</ul>';
 
-    const periode = '<div class="sek-blok"><div class="sek-blok-h">Sejarah kepengurusan</div><ul class="sek-periode">' +
-      (s.jadwal ? '<li><b>' + akhir + '–' + (akhir + 2) + '</b><span>Ketua ' + lolos(ketua) + ' · mulai ' + tglIndo(s.tanggal) + '</span></li>' : '') +
-      '<li><b>' + mulai + '–' + akhir + '</b><span>' + D.pengurus.length + ' pengurus · berakhir Desember ' + akhir + ' <span class="tag hi">sekarang</span></span></li>' +
-      '<li><b>Sebelumnya</b><span class="sek-kecil">Belum dicatat. Periode ini jadi catatan pertama.</span></li>' +
-    '</ul></div>';
+    const periode = gambarSejarah(mulai, akhir);
 
     if(s.jadwal){
       el('klPanelSerah').innerHTML =

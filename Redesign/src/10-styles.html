@@ -1266,6 +1266,16 @@ body.lgn-open{overflow:hidden}
 .kl-upsell-h{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
 .kl-upsell p{font-size:12.5px;color:var(--ink-3);line-height:1.55;margin:0 0 12px}
 .kl-angkat .sel{max-width:200px;height:40px}
+.kl-jab{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.kl-jab-h{font-size:15px;font-weight:600;margin-bottom:4px}
+.kl-jab-list{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.kl-jab-i{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:100px;background:var(--bg-alt);border:1px solid var(--line);color:var(--ink-2)}
+.kl-jab-i.kustom{background:var(--blue-wash);border-color:transparent;color:var(--blue-ink)}
+.kl-jab-x{display:inline-grid;place-items:center;width:18px;height:18px;margin:0 -5px 0 0;padding:0;border:0;border-radius:100px;background:none;color:inherit;cursor:pointer}
+.kl-jab-x:hover{background:var(--card)}
+.kl-jab-x:focus-visible{outline:3px solid var(--ring);outline-offset:1px}
+.kl-jab-x svg{width:11px;height:11px}
+.kl-jab .inp{max-width:260px;height:40px}
 .kl-angkat-lbl{font-size:13px;font-weight:600;color:var(--ink-2)}
 /* riwayat keputusan pendaftaran — dilihat semua pengurus */
 .kl-riwayat{display:flex;align-items:center;gap:13px;padding:14px 16px;border-radius:14px;
@@ -1459,13 +1469,13 @@ body.lgn-open{overflow:hidden}
 .sek-dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:10px 0 0;font-size:13.5px;line-height:1.5}
 .sek-dl dt{color:var(--ink-3)}
 .sek-dl dd{margin:0;color:var(--ink);min-width:0;overflow-wrap:anywhere}
-.sek-pilih{display:grid;gap:8px;margin-top:12px}
-.sek-pilih-i{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:var(--card);cursor:pointer}
-.sek-pilih-i:has(input:checked){border-color:var(--blue);background:var(--blue-tint)}
-.sek-pilih-i input{margin:3px 0 0;flex:none;accent-color:var(--blue)}
-.sek-pilih-i .t{flex:1;min-width:0}
-.sek-pilih-i b{display:block;font-size:14px;font-weight:600;line-height:1.4}
-.sek-pilih-i small{display:block;font-size:12px;color:var(--ink-2);line-height:1.5}
+.sek-bayar{display:grid;gap:8px;margin-top:12px}
+.sek-bayar-i{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:var(--card);cursor:pointer}
+.sek-bayar-i:has(input:checked){border-color:var(--blue);background:var(--blue-tint)}
+.sek-bayar-i input{margin:3px 0 0;flex:none;accent-color:var(--blue)}
+.sek-bayar-i .t{flex:1;min-width:0}
+.sek-bayar-i b{display:block;font-size:14px;font-weight:600;line-height:1.4}
+.sek-bayar-i small{display:block;font-size:12px;color:var(--ink-2);line-height:1.5}
 .sek-jejak li{display:flex;gap:10px;justify-content:space-between;font-size:13px;line-height:1.5;padding:8px 0;border-bottom:1px solid var(--line)}
 .sek-jejak li:last-child{border-bottom:0}
 .sek-jejak span{color:var(--ink-3);font-size:12px;white-space:nowrap}
@@ -1484,9 +1494,17 @@ body.lgn-open{overflow:hidden}
 .sek-pindah svg{flex:none;width:16px;height:16px;margin-top:3px;color:var(--blue-ink)}
 .sek-pindah b{font-weight:600}
 .sek-jadwal{background:var(--green-wash);border-color:transparent}
-.sek-periode li{display:flex;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px}
-.sek-periode li:last-child{border-bottom:0}
-.sek-periode b{font-weight:600;min-width:94px}
+.sek-periode-list{margin-top:12px;border-top:1px solid var(--line)}
+.sek-periode{border-bottom:1px solid var(--line)}
+.sek-periode summary{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:11px 0;cursor:pointer;font-size:13.5px;list-style:none}
+.sek-periode summary::-webkit-details-marker{display:none}
+.sek-periode summary::before{content:"";flex:none;width:7px;height:7px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);transform:rotate(-45deg);transition:transform .15s ease;margin-right:2px}
+.sek-periode[open] summary::before{transform:rotate(45deg)}
+.sek-periode summary:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:6px}
+.sek-periode summary b{font-weight:600;min-width:86px;font-variant-numeric:tabular-nums}
+.sek-periode summary .t{flex:1;min-width:0;color:var(--ink-2)}
+.sek-periode .sek-dl{margin:0 0 12px 19px}
+.sek-periode .sek-kecil{margin:-4px 0 12px 19px}
 
 /* modal aktifkan */
 .lgn-box.sek-box{max-width:520px;text-align:left;padding:28px 26px 24px}

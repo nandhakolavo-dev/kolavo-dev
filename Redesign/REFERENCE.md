@@ -700,6 +700,24 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     (`50-js-dashboard-pengurus`), dipakai P4 untuk jabatan kustom; jabatan tanpa hak
     awal di `HAK_AWAL` mendapat "Lihat Dashboard" saja.
 
+  **Revisi P4 — Kepengurusan.**
+  - **Struktur Kepengurusan** (Advance) diberi bagian *Jabatan di komunitas ini*:
+    chip semua jabatan (kustom berwarna biru) + kolom "+ Jabatan kustom" (Enter juga
+    menambah). Jabatan kustom ditolak kalau namanya sudah ada (tak peka huruf besar,
+    termasuk "Community Builder"), dan hanya bisa dihapus selama belum dipegang
+    siapa pun. Jabatan baru langsung muncul di pemilih jabatan dan sebagai kolom di
+    tabel Siapa boleh apa (hak awal: Lihat Dashboard). Daftar dikembalikan ke enam
+    jabatan bawaan (`JABATAN_AWAL`) saat komunitas lain dibangun.
+  - **Serah terima → Sejarah kepengurusan**: tiap periode satu `<details>` (tahun,
+    ketua, jumlah pengurus) yang dibuka untuk melihat pemegang tiap jabatan. Periode
+    sekarang dibaca langsung dari susunan pengurus dan terbuka secara bawaan; periode
+    terjadwal muncul setelah serah terima dijadwalkan; dua periode lama adalah contoh
+    (`SEJARAH_LAMA`, nama rekaan).
+  - Kelas pilihan metode pembayaran P3 diganti jadi `.sek-bayar*` — `.sek-pilih`
+    sudah dipakai radio "Pengurus lama setelahnya" di Serah terima dan aturannya
+    saling menimpa. Audit tidak menangkap ini karena kelasnya sama, bukan dua kelas
+    berbeda: sebelum menamai kelas baru, `grep` dulu di `10-styles`.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi

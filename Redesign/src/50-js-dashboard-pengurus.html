@@ -22,6 +22,9 @@
   if(!scr) return;
 
   const JABATAN = ['Ketua', 'Wakil Ketua', 'Sekretaris', 'Bendahara', 'Humas', 'Pengurus'];
+  /* jabatan bawaan; yang ditambah pengurus lewat "+ Jabatan kustom" masuk ke
+     JABATAN yang sama (D.jabatan) dan dikembalikan ke ini saat komunitas lain dibangun */
+  const JABATAN_AWAL = JABATAN.slice();
 
   /* pendaftar contoh. Sengaja bukan salah satu dari empat wajah ber-foto AI —
      pendaftar pakai inisial, jadi tidak ada foto orang yang dipakai tanpa izin */
@@ -111,6 +114,8 @@
     /* pembuat halaman belum tentu ketua — defaultnya Community Builder
        sampai diberi jabatan sungguhan lewat menu Struktur Kepengurusan */
     D.pengurus = [{ nama: D.aku, jabatan: 'Community Builder', aku: true }];
+    JABATAN.length = 0; Array.prototype.push.apply(JABATAN, JABATAN_AWAL);
+    D.jabatanTeks = '';
     /* peninjau pendaftaran boleh lebih dari satu — daftar nama, bukan satu orang.
        Awalnya cuma pembuatnya; pengurus lain bisa ditambahkan kapan saja. */
     D.peninjau = [D.aku];
@@ -380,7 +385,24 @@
           '</div>';
       }
       return html;
-    }).join('');
+    }).join('') + gambarJabatan();
+  }
+
+  /* daftar jabatan + tambah jabatan kustom. Jabatan kustom bisa dihapus selama
+     belum ada yang memegangnya; jabatan bawaan tidak. */
+  function gambarJabatan(){
+    const dipakai = function(j){ return D.pengurus.some(function(p){ return p.jabatan === j; }); };
+    return '<div class="kl-jab">' +
+      '<div class="kl-jab-h">Jabatan di komunitas ini</div>' +
+      '<p class="kl-sub">Tambah jabatan yang tidak ada di daftar bawaan, misalnya Koordinator Wilayah atau Ketua Angkatan. Jabatan baru langsung muncul di pilihan jabatan dan di tabel Siapa boleh apa.</p>' +
+      '<ul class="kl-jab-list">' + JABATAN.map(function(j){
+        const kustom = JABATAN_AWAL.indexOf(j) < 0;
+        return '<li class="kl-jab-i' + (kustom ? ' kustom' : '') + '">' + lolos(j) +
+          (kustom && !dipakai(j) ? '<button type="button" class="kl-jab-x" data-jab-hapus="' + lolos(j) + '" aria-label="Hapus jabatan ' + lolos(j) + '">' + IKON_X + '</button>' : '') + '</li>';
+      }).join('') + '</ul>' +
+      '<div class="kl-angkat"><input class="inp" id="klJabBaru" maxlength="30" placeholder="Nama jabatan baru" value="' + lolos(D.jabatanTeks) + '" aria-label="Nama jabatan baru">' +
+        '<button type="button" class="btn sm" data-jab-tambah>+ Jabatan kustom</button></div>' +
+    '</div>';
   }
 
   /* Esensial: tanpa susunan jabatan — cuma atur siapa peninjau + ajakan Advance */
@@ -561,6 +583,12 @@
     if(b){ e.preventDefault(); window.KolavoBukaDashboard(b.getAttribute('data-dashboard') || null); }
   });
 
+  /* kolom jabatan kustom: disimpan per ketikan supaya tidak hilang saat panel digambar ulang; Enter = tambah */
+  scr.addEventListener('input', function(e){ if(e.target.id === 'klJabBaru') D.jabatanTeks = e.target.value; });
+  scr.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && e.target.id === 'klJabBaru'){ e.preventDefault(); const b = scr.querySelector('[data-jab-tambah]'); if(b) b.click(); }
+  });
+
   /* ---------- aksi ---------- */
   scr.addEventListener('click', function(e){
     /* induk: di Esensial langsung ke sub-menu pertama; di kolom samping Advance
@@ -578,6 +606,27 @@
     }
     const tab = e.target.closest('.kl-tab');
     if(tab){ pilihTab(tab.dataset.tab); return; }
+
+    /* jabatan kustom */
+    if(e.target.closest('[data-jab-tambah]')){
+      const nama = D.jabatanTeks.trim().replace(/\s+/g, ' ');
+      if(!nama){ toast('Tulis nama jabatannya dulu.'); return; }
+      const sama = JABATAN.concat(['Community Builder']).filter(function(j){ return j.toLowerCase() === nama.toLowerCase(); })[0];
+      if(sama){ toast('Jabatan “' + sama + '” sudah ada.'); return; }
+      JABATAN.push(nama); D.jabatanTeks = '';
+      gambar();
+      const f = el('klJabBaru'); if(f) f.focus();
+      toast('Jabatan “' + nama + '” ditambahkan. Atur haknya di Setting › Akses pengurus.');
+      return;
+    }
+    const hapusJab = e.target.closest('[data-jab-hapus]');
+    if(hapusJab){
+      const j = hapusJab.dataset.jabHapus, i = JABATAN.indexOf(j);
+      if(i >= 0 && JABATAN_AWAL.indexOf(j) < 0 && !D.pengurus.some(function(p){ return p.jabatan === j; })) JABATAN.splice(i, 1);
+      gambar();
+      toast('Jabatan “' + j + '” dihapus.');
+      return;
+    }
 
     /* approval: setujui / tolak */
     const setuju = e.target.closest('[data-setuju]');
