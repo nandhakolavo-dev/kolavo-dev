@@ -444,7 +444,29 @@ body.m-tab .nav-in{position:relative}
 /* Home: satu kolom selebar halaman lain; ringkasan pribadi memakai kartu statistik
    dashboard pengurus (.sek-stat), di sini bisa diklik */
 .home-stat .sek-stat{margin-top:22px}
-.hs-i{font:inherit;text-align:left;color:inherit;width:100%}
+.hs-i{font:inherit;text-align:left;color:inherit;width:100%;position:relative;overflow:hidden;padding:14px 16px 14px}
+/* visual kartu ringkasan: tumpukan logo/foto dari datanya, atau ikon berwarna bila kosong */
+/* kekhususan dinaikkan (.hs-i …): .sek-stat-i span{display:block} milik dashboard ikut kena */
+.hs-i .hs-vis{display:flex;align-items:center;height:40px;margin:0 0 12px}
+.hs-i .hs-tumpuk{display:flex;margin:0}
+.hs-i .hs-tumpuk > span{display:grid;place-items:center;flex:none;width:36px;height:36px;margin:0 0 0 -10px;border:2px solid var(--card);box-shadow:var(--sh-sm);font-size:12px;font-weight:600;line-height:1}
+.hs-i .hs-tumpuk > span:first-child{margin-left:0}
+.hs-tumpuk .av{border-radius:100px}
+.hs-i .hs-tumpuk.hs-tkom > .logo-sq{border-radius:11px}
+.hs-tumpuk .av.lagi{background:var(--line-2);color:var(--ink-2);font-weight:600}
+.hs-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px}
+.hs-ic svg{width:21px;height:21px}
+.hs-biru .hs-ic{background:var(--blue-wash);color:var(--blue-ink)}
+.hs-hijau .hs-ic{background:var(--green-wash);color:var(--green)}
+.hs-oranye .hs-ic{background:var(--orange-wash);color:var(--orange-ink)}
+.hs-ungu .hs-ic{background:var(--blue-tint);color:var(--blue)}
+/* sapuan warna khas di sudut kartu supaya keempatnya terasa berbeda */
+.hs-i::after{content:"";position:absolute;right:-28px;top:-28px;width:96px;height:96px;border-radius:50%;opacity:.6;pointer-events:none}
+.hs-biru::after{background:var(--blue-wash)}
+.hs-hijau::after{background:var(--green-wash)}
+.hs-oranye::after{background:var(--orange-wash)}
+.hs-ungu::after{background:var(--blue-tint)}
+.hs-i > *{position:relative;z-index:1}
 button.hs-i{cursor:pointer;transition:border-color .15s ease,box-shadow .15s ease}
 button.hs-i:hover{border-color:var(--blue);box-shadow:var(--sh-sm)}
 button.hs-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
@@ -11734,22 +11756,50 @@ function hitung(){}
 
   /* ---------- sapaan + ringkasan pribadi ----------
      Komponen kartu statistik sama dengan dashboard pengurus (.sek-stat-i). */
+  /* ---------- visual kartu ringkasan ----------
+     Bukan ikon generik: gambar dari datanya sendiri (logo komunitas, foto/inisial
+     orang) bertumpuk. Kalau kosong, ikon dalam lingkaran berwarna khas kartunya. */
+  function fotoOrang(){
+    const peta = {};
+    diterima().forEach(function(k){
+      (window.KolavoAnggotaKomunitas ? window.KolavoAnggotaKomunitas(k) : []).forEach(function(o){ if(o.f) peta[o.n] = o.f; });
+    });
+    return peta;
+  }
+  function tumpukOrang(nama, foto){
+    return '<span class="hs-tumpuk">' + nama.slice(0, 3).map(function(n, i){
+      const pg = n.split(' ')[0];
+      return foto[n] ? '<span class="av photo ' + foto[n] + '" role="img" aria-label="' + esc(pg) + '"></span>'
+                     : '<span class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + esc(n.split(' ').map(function(w){ return w[0]; }).join('').slice(0, 2)) + '</span>';
+    }).join('') + (nama.length > 3 ? '<span class="av lagi">+' + (nama.length - 3) + '</span>' : '') + '</span>';
+  }
+  function tumpukKom(kelas){
+    return '<span class="hs-tumpuk hs-tkom">' + kelas.slice(0, 3).map(function(k){
+      if(k === 'l-dibuat'){ const d = App().dibuat || {}; return '<span class="logo-sq baru"' + (d.logo ? ' style="background-image:url(' + d.logo + ')"' : '') + '>' + (d.logo ? '' : esc(d.inisial || '')) + '</span>'; }
+      return '<span class="logo-sq ' + k + '"></span>';
+    }).join('') + '</span>';
+  }
+
   function gambarRingkas(){
     const a = App(), kn = a.kenalan || {};
     const nm = (el('pfNm') && el('pfNm').textContent.trim()) || '';
     if(el('homeSapa')) el('homeSapa').textContent = nm ? 'Selamat datang, ' + nm.split(' ')[0] : 'Home';
-    const terhubung = Object.keys(kn).filter(function(k){ return kn[k] === 'terhubung'; }).length;
-    const masuk = kenalanMasuk().length;   /* siapkan dulu ajakan contoh sebelum dihitung */
+    const foto = fotoOrang();
+    const kom = diterima();
+    const terhubung = Object.keys(kn).filter(function(k){ return kn[k] === 'terhubung'; });
+    const masuk = kenalanMasuk().map(function(o){ return o.nama; });   /* siapkan dulu ajakan contoh */
+    const saran = saranKenal(true).map(function(x){ return x.o.n; });
     /* empat angka saja; tiap kartu membawa ke bagian yang relevan */
-    const kotak = function(angka, ket, ikon, ke, jangkar, warn){
-      return '<button type="button" class="sek-stat-i hs-i' + (warn ? ' warn' : '') + '" data-ke="' + ke + '"' + (jangkar ? ' data-anchor="' + jangkar + '"' : '') + '>' +
-        '<div class="sek-stat-h"><b>' + angka + '</b><i class="sek-stat-ic">' + ic(ikon) + '</i></div><span>' + ket + '</span></button>';
+    const kotak = function(angka, ket, varian, vis, ikon, ke, jangkar, warn){
+      return '<button type="button" class="sek-stat-i hs-i hs-' + varian + (warn ? ' warn' : '') + '" data-ke="' + ke + '"' + (jangkar ? ' data-anchor="' + jangkar + '"' : '') + '>' +
+        '<span class="hs-vis">' + (vis || '<i class="hs-ic">' + ic(ikon) + '</i>') + '</span>' +
+        '<b>' + angka + '</b><span>' + ket + '</span></button>';
     };
     el('homeRingkas').innerHTML = '<div class="sek-stat">' +
-      kotak(diterima().length, 'Komunitas Diikuti', 'komunitas', 'scrApp', '') +
-      kotak(terhubung, 'Kenalan Terhubung', 'tangan', 'scrHome', 'homeKenal') +
-      kotak(masuk, 'Permintaan Kenalan', 'tambahOrang', 'scrHome', 'homeAksi', masuk > 0) +
-      kotak(saranKenal(true).length, 'Rekomendasi Kenalan', 'orang', 'scrHome', 'homeKenal') +
+      kotak(kom.length, 'Komunitas Diikuti', 'biru', kom.length ? tumpukKom(kom) : '', 'komunitas', 'scrApp', '') +
+      kotak(terhubung.length, 'Kenalan Terhubung', 'hijau', terhubung.length ? tumpukOrang(terhubung, foto) : '', 'tangan', 'scrHome', 'homeKenal') +
+      kotak(masuk.length, 'Permintaan Kenalan', 'oranye', masuk.length ? tumpukOrang(masuk, foto) : '', 'tambahOrang', 'scrHome', 'homeAksi', masuk.length > 0) +
+      kotak(saran.length, 'Rekomendasi Kenalan', 'ungu', saran.length ? tumpukOrang(saran, foto) : '', 'orang', 'scrHome', 'homeKenal') +
       '</div>';
   }
 

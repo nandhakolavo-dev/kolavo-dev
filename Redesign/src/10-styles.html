@@ -401,7 +401,29 @@ body.m-tab .nav-in{position:relative}
 /* Home: satu kolom selebar halaman lain; ringkasan pribadi memakai kartu statistik
    dashboard pengurus (.sek-stat), di sini bisa diklik */
 .home-stat .sek-stat{margin-top:22px}
-.hs-i{font:inherit;text-align:left;color:inherit;width:100%}
+.hs-i{font:inherit;text-align:left;color:inherit;width:100%;position:relative;overflow:hidden;padding:14px 16px 14px}
+/* visual kartu ringkasan: tumpukan logo/foto dari datanya, atau ikon berwarna bila kosong */
+/* kekhususan dinaikkan (.hs-i …): .sek-stat-i span{display:block} milik dashboard ikut kena */
+.hs-i .hs-vis{display:flex;align-items:center;height:40px;margin:0 0 12px}
+.hs-i .hs-tumpuk{display:flex;margin:0}
+.hs-i .hs-tumpuk > span{display:grid;place-items:center;flex:none;width:36px;height:36px;margin:0 0 0 -10px;border:2px solid var(--card);box-shadow:var(--sh-sm);font-size:12px;font-weight:600;line-height:1}
+.hs-i .hs-tumpuk > span:first-child{margin-left:0}
+.hs-tumpuk .av{border-radius:100px}
+.hs-i .hs-tumpuk.hs-tkom > .logo-sq{border-radius:11px}
+.hs-tumpuk .av.lagi{background:var(--line-2);color:var(--ink-2);font-weight:600}
+.hs-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px}
+.hs-ic svg{width:21px;height:21px}
+.hs-biru .hs-ic{background:var(--blue-wash);color:var(--blue-ink)}
+.hs-hijau .hs-ic{background:var(--green-wash);color:var(--green)}
+.hs-oranye .hs-ic{background:var(--orange-wash);color:var(--orange-ink)}
+.hs-ungu .hs-ic{background:var(--blue-tint);color:var(--blue)}
+/* sapuan warna khas di sudut kartu supaya keempatnya terasa berbeda */
+.hs-i::after{content:"";position:absolute;right:-28px;top:-28px;width:96px;height:96px;border-radius:50%;opacity:.6;pointer-events:none}
+.hs-biru::after{background:var(--blue-wash)}
+.hs-hijau::after{background:var(--green-wash)}
+.hs-oranye::after{background:var(--orange-wash)}
+.hs-ungu::after{background:var(--blue-tint)}
+.hs-i > *{position:relative;z-index:1}
 button.hs-i{cursor:pointer;transition:border-color .15s ease,box-shadow .15s ease}
 button.hs-i:hover{border-color:var(--blue);box-shadow:var(--sh-sm)}
 button.hs-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}

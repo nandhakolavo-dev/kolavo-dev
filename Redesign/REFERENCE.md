@@ -1453,3 +1453,12 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   Case), kartu "Sekar ingin berkenalan", "Pengajuan bergabung sedang ditinjau", "Lengkapi
   profilmu", kosong → "Semua beres. Belum ada yang memerlukan tindakan." Sapaan tetap "kamu"
   (suara brand), hanya dibuat lebih ringkas & formal.
+- **Visual kartu ringkasan Home.** Ikon generik diganti gambar dari datanya sendiri
+  (`.hs-vis`): tumpukan logo komunitas yang diikuti (`.hs-tumpuk.hs-tkom`, maks 3), tumpukan
+  foto AI / inisial untuk kenalan terhubung, peminta kenalan, dan rekomendasi (+N bila >3).
+  Kosong → ikon dalam kotak berwarna khas kartu. Tiap kartu punya warna sendiri
+  (`.hs-biru/.hs-hijau/.hs-oranye/.hs-ungu` — "ungu" memakai `--blue-tint` karena belum ada
+  token ungu) yang juga muncul sebagai lingkaran samar di sudut kanan atas (`::after`).
+  Jebakan yang tertangkap: `.sek-stat-i span{display:block}` (dashboard) mengenai semua span
+  visual → aturan visual ditulis `.hs-i .hs-tumpuk > span`; dan kelas `.kom` sudah dipakai
+  pembungkus halaman komunitas — jangan dipakai sebagai pengubah.
