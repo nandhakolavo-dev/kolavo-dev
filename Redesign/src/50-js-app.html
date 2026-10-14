@@ -102,7 +102,8 @@
   })();
 
   function bukaDasbor(jenis){
-    if(jenis === 'dibuat'){ window.KolavoKe('scrKelola'); return; }
+    /* lewat KolavoBukaDashboard, bukan KolavoKe: keadaan dashboard harus dibangun dulu */
+    if(jenis === 'dibuat'){ window.KolavoBukaDashboard(); return; }
     toast('Prototipe: dashboard komunitas yang mengangkatmu memakai tampilan yang sama, belum disimulasikan.');
   }
 

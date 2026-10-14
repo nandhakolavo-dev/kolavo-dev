@@ -20,8 +20,11 @@
      bisa ditulis — di sana routing berbasis hash diam-diam tidak jalan.
      Anchor dalam halaman (#direktori, #pengurus) tetap seperti biasa. */
   const LAYAR = ['scrBeranda', 'scrMasuk', 'scrApp', 'scrDasbor', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
-  /* Halaman komunitas sengaja tidak perlu masuk — di kolavo.app pun publik.
-     Orang boleh menjelajah dulu; login baru diminta saat menekan Gabung. */
+  /* Dua pintu (PROMPT-APP): scrBeranda = landing jualan; layar lain = Kolavo App.
+     Tab app: Komunitas (scrApp) · Profil · Dashboard (scrDasbor). Layar terlindung
+     tanpa akun → scrMasuk + App.tujuan. Halaman komunitas sendiri tetap tanpa
+     penjaga (bisa dilihat sebelum Gabung), tapi pintunya kini lewat tautan/QR
+     undangan (KolavoBukaTautan) yang meminta masuk dulu. */
   /* detail anggota cuma bisa dicapai dari daftar yang sudah terbuka, tapi
      penjaganya tetap dipasang supaya tidak bisa dibuka lewat KolavoKe langsung */
   const perluMasuk = { scrApp: true, scrDasbor: true, scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };

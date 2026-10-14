@@ -1315,3 +1315,13 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   Bagian **etalase** (`#etalase`) menggantikan direktori: 3 kartu disalin dari `#direktori`
   oleh 50-js-app (satu sumber data), tombol "Lihat profil" → `KolavoBukaTautan` (halaman
   masuk varian undangan → profil komunitas). Hero "Lihat komunitas" → `#etalase`.
+- **A7 · uji regresi (14 Okt 2026).** Dijalankan lewat formulir sungguhan di browser lokal,
+  bukan jalan pintas: masuk Google → lengkapi (WA, kalender lahir, lokasi bertingkat,
+  persetujuan TnC) → tab Komunitas · buat komunitas → layar sukses + QR · Dashboard (3 menu
+  Esensial, 7 menu Advance) · minta gabung Forpastara → disetujui (demo) → onboarding 3
+  langkah dengan gerbang gulir peraturan · feed tulis/semat/hapus · kenalan ajak → terhubung
+  · notifikasi · peraturan baca-saja · TnC & Privasi · `KolavoHarga` · arsip & hapus komunitas
+  buatan. Satu regresi ditemukan & diperbaiki: tab Dashboard membuka `scrKelola` lewat
+  `KolavoKe` tanpa membangun keadaan (judul kosong, `D.gambar()` error) — kini lewat
+  `KolavoBukaDashboard()`. Tidak ada error konsol lain. 375px: tanpa luapan horizontal.
+  Sisa: modal masuk `#lgn` tidak lagi dipicu (markup cadangan, boleh dibuang).
