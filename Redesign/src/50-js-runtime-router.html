@@ -53,7 +53,9 @@
        pengurusnya orang asli, bukan akun kosong */
     if((id === 'scrProfil' || id === 'scrBuat') && !App.lengkap) id = 'scrLengkapi';
     /* dashboard pengurus baru ada setelah komunitasnya dibuat */
-    if(id === 'scrKelola' && !App.dibuat) id = 'scrDasbor';
+    /* ...atau komunitas orang lain yang mengangkatmu sedang dibuka di dashboard */
+    const D = window.KolavoDashboard;
+    if(id === 'scrKelola' && !App.dibuat && !(D && D.built && D.kom && D.kom.diangkat && App.diangkat)) id = 'scrDasbor';
     sekarang = id;
     /* dua pintu: landing untuk jualan ke pengurus, app untuk yang sudah punya akun.
        Nav & footer membaca kelas body ini, bukan memeriksa layar satu per satu. */

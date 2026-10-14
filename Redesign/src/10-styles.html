@@ -400,6 +400,20 @@ body.m-tab .nav-in{position:relative}
 .home-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0 28px}
 .home-grid .app-sek:empty{display:none}
 .home-utama,.home-samping{min-width:0}
+/* Home 2 kolom (H3): aksi + kabar di kiri, kenalan di kanan menempel saat digulir */
+@media(min-width:1024px){
+  .home-grid{grid-template-columns:minmax(0,1fr) 320px}
+  .home-samping{position:sticky;top:96px;align-self:start}
+}
+/* < 1024px satu kolom: kenalan di antara aksi dan kabar */
+@media(max-width:1023px){
+  .home-utama,.home-samping{display:contents}
+  #homeAksi{order:1} #homeKenal{order:2} #homeKabar{order:3}
+}
+.hn-i .t{min-width:0;flex:1;display:flex;flex-direction:column}
+.hn-i .t span{font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.hn-i .t .hn-kom{font-size:11.5px;color:var(--ink-3)}
+.hn-i .btn{flex:none}
 /* Perlu tindakanmu: satu kolom, ikon + teks + aksi di kolom tetap */
 #homeAksi .ha-list{grid-template-columns:1fr}
 .pf-item.ha-i{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px}

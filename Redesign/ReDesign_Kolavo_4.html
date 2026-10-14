@@ -443,6 +443,20 @@ body.m-tab .nav-in{position:relative}
 .home-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0 28px}
 .home-grid .app-sek:empty{display:none}
 .home-utama,.home-samping{min-width:0}
+/* Home 2 kolom (H3): aksi + kabar di kiri, kenalan di kanan menempel saat digulir */
+@media(min-width:1024px){
+  .home-grid{grid-template-columns:minmax(0,1fr) 320px}
+  .home-samping{position:sticky;top:96px;align-self:start}
+}
+/* < 1024px satu kolom: kenalan di antara aksi dan kabar */
+@media(max-width:1023px){
+  .home-utama,.home-samping{display:contents}
+  #homeAksi{order:1} #homeKenal{order:2} #homeKabar{order:3}
+}
+.hn-i .t{min-width:0;flex:1;display:flex;flex-direction:column}
+.hn-i .t span{font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.hn-i .t .hn-kom{font-size:11.5px;color:var(--ink-3)}
+.hn-i .btn{flex:none}
 /* Perlu tindakanmu: satu kolom, ikon + teks + aksi di kolom tetap */
 #homeAksi .ha-list{grid-template-columns:1fr}
 .pf-item.ha-i{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px}
@@ -4811,7 +4825,9 @@ function hitung(){}
        pengurusnya orang asli, bukan akun kosong */
     if((id === 'scrProfil' || id === 'scrBuat') && !App.lengkap) id = 'scrLengkapi';
     /* dashboard pengurus baru ada setelah komunitasnya dibuat */
-    if(id === 'scrKelola' && !App.dibuat) id = 'scrDasbor';
+    /* ...atau komunitas orang lain yang mengangkatmu sedang dibuka di dashboard */
+    const D = window.KolavoDashboard;
+    if(id === 'scrKelola' && !App.dibuat && !(D && D.built && D.kom && D.kom.diangkat && App.diangkat)) id = 'scrDasbor';
     sekarang = id;
     /* dua pintu: landing untuk jualan ke pengurus, app untuk yang sudah punya akun.
        Nav & footer membaca kelas body ini, bukan memeriksa layar satu per satu. */
@@ -5966,6 +5982,13 @@ function hitung(){}
     if(window.KolavoToast) window.KolavoToast('Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + '.');
   };
   /* keadaan halaman yang sedang dibuka, dibaca modul feed */
+  /* anggota satu komunitas tanpa membukanya — dipakai saran kenalan di Home (PROMPT-HOME H3).
+     Sumber sama dengan halaman komunitas: DATA contoh, atau dashboard untuk komunitas buatan. */
+  window.KolavoAnggotaKomunitas = function(kelas){
+    if(kelas === 'l-dibuat') return aggDibuat().anggota;
+    return ((DATA[kelas] || {}).anggota || []).slice();
+  };
+
   window.KolavoKomKini = function(){
     if(!kini) return null;
     return { kelas: kini.kelas, nama: kini.nama, premium: !!kini.premium, founder: founder,
@@ -7211,14 +7234,25 @@ function hitung(){}
     return url ? '<button type="button" class="ob-tautan" data-ob-tautan="' + k + '">' + ik + '<span><b>' + label + '</b><small>' + lolos(url.replace(/^https?:\/\//, '')) + '</small></span></button>' : '';
   }
 
+  /* pencocokan kenalan — satu sumber untuk langkah Kenalan di onboarding dan
+     "Orang yang mungkin kamu kenal" di Home (PROMPT-HOME H3).
+     aku {kerja, kota, kelompok}, orang [{n, k, d, ...}], cocok {kerja, kota, kelompok}.
+     Hasil: saringan [{id, label, alasan, hasil}] dengan urutan orang sesuai daftar asal. */
+  function cocokkan(aku, orang, c){
+    c = c || { kerja: true, kota: true };
+    const saringan = [];
+    if(c.kerja && aku.kerja) saringan.push({ id: 'kerja', label: 'Sama pekerjaan · ' + aku.kerja, alasan: 'Sama-sama ' + aku.kerja, uji: function(o){ return samakan(o.k) === samakan(aku.kerja); } });
+    if(c.kota && aku.kota) saringan.push({ id: 'kota', label: 'Sama domisili · ' + aku.kota, alasan: 'Sama-sama di ' + aku.kota, uji: function(o){ return samakan(o.d) === samakan(aku.kota); } });
+    if(c.kelompok && aku.kelompok) saringan.push({ id: 'kelompok', label: 'Sama kelompok · ' + aku.kelompok, alasan: 'Sama-sama ' + aku.kelompok, uji: function(o){ return o['g:kerja'] === aku.kelompok; } });
+    saringan.forEach(function(s){ s.hasil = orang.filter(s.uji); });
+    return saringan;
+  }
+  window.KolavoCocokkan = cocokkan;
+
   function isiKenalan(){
     const c = ctx.cfg.langkah.kenalan.cocok || {}, aku = ctx.aku;
     const orang = ctx.anggota.filter(function(o){ return !o.aku && o.n !== ctx.akuNama; });
-    const saringan = [];
-    if(c.kerja && aku.kerja) saringan.push({ id: 'kerja', label: 'Sama pekerjaan · ' + aku.kerja, uji: function(o){ return samakan(o.k) === samakan(aku.kerja); } });
-    if(c.kota && aku.kota) saringan.push({ id: 'kota', label: 'Sama domisili · ' + aku.kota, uji: function(o){ return samakan(o.d) === samakan(aku.kota); } });
-    if(c.kelompok && aku.kelompok) saringan.push({ id: 'kelompok', label: 'Sama kelompok · ' + aku.kelompok, uji: function(o){ return o['g:kerja'] === aku.kelompok; } });
-    saringan.forEach(function(s){ s.hasil = orang.filter(s.uji); });
+    const saringan = cocokkan(aku, orang, c);
     const ada = saringan.filter(function(s){ return s.hasil.length; });
     if(!ada.some(function(s){ return s.id === saring; })) saring = ada.length ? ada[0].id : null;
     const kini = ada.filter(function(s){ return s.id === saring; })[0];
@@ -11555,10 +11589,53 @@ function hitung(){}
         : '<p class="app-kosong">Komunitasmu belum punya kabar baru. Kabar tampil di komunitas paket Advance.</p>');
   }
 
+  /* ---------- Orang yang mungkin kamu kenal (H3) ----------
+     Pencocokan memakai KolavoCocokkan (fungsi yang sama dengan langkah Kenalan di
+     onboarding). Urutan: paling banyak kesamaan dulu, lalu urutan daftar asal. */
+  function saranKenal(){
+    if(!window.KolavoCocokkan || !window.KolavoAnggotaKomunitas) return [];
+    const a = App(), kn = a.kenalan || {};
+    const aku = window.KolavoProfilKu ? window.KolavoProfilKu() : {};
+    const akuNama = (el('pfNm') && el('pfNm').textContent.trim()) || '';
+    const masuk = (a.kenalanMasuk || []).map(function(o){ return o.nama; });
+    const peta = {}, urut = [];
+    diterima().forEach(function(kelas){
+      const orang = window.KolavoAnggotaKomunitas(kelas).filter(function(o){
+        return !o.aku && o.n !== akuNama && !kn[o.n] && masuk.indexOf(o.n) < 0;
+      });
+      window.KolavoCocokkan({ kerja: aku.kerja, kota: aku.kota }, orang).forEach(function(s){
+        s.hasil.forEach(function(o){
+          if(!peta[o.n]){ peta[o.n] = { o: o, kelas: kelas, alasan: [] }; urut.push(o.n); }
+          if(peta[o.n].alasan.indexOf(s.alasan) < 0) peta[o.n].alasan.push(s.alasan);
+        });
+      });
+    });
+    return urut.map(function(n, i){ return Object.assign({ i: i }, peta[n]); })
+      .sort(function(x, y){ return y.alasan.length - x.alasan.length || x.i - y.i; }).slice(0, 5);
+  }
+  function gambarKenal(){
+    const w = el('homeKenal');
+    if(!w) return;
+    const list = saranKenal();
+    if(!list.length){ w.innerHTML = ''; return; }   /* kosong: bagian disembunyikan */
+    w.innerHTML = '<h2>Orang yang mungkin kamu kenal</h2>' +
+      '<p class="app-sub">Anggota komunitasmu yang punya kesamaan denganmu.</p>' +
+      '<div class="ob-orang-list">' + list.map(function(x, j){
+        const o = x.o, pg = o.pg || o.n.split(' ')[0];
+        /* nama panggilan saja — nama lengkap termasuk data pribadi */
+        const av = o.f ? '<span class="av photo ' + o.f + '" role="img" aria-label="Foto profil ' + esc(pg) + ' — gambar AI"></span>'
+                       : '<span class="av ' + 'abc'[j % 3] + '" aria-hidden="true">' + esc(o.n.split(' ').map(function(w){ return w[0]; }).join('').slice(0, 2)) + '</span>';
+        return '<div class="ob-orang hn-i">' + av + '<div class="t"><b>' + esc(pg) + '</b><span>' + esc(x.alasan.join(' · ')) + '</span>' +
+          '<span class="hn-kom">' + esc(info(x.kelas).nama) + '</span></div>' +
+          '<button type="button" class="btn outline sm" data-home-ajak="' + esc(o.n) + '">Ajak kenalan</button></div>';
+      }).join('') + '</div>';
+  }
+
   window.KolavoGambarHome = function(){
     if(!el('homeAksi')) return;
     gambarAksi();
     gambarKabar();
+    gambarKenal();
   };
   const segar = function(){ window.KolavoGambarHome(); };
 
@@ -11579,6 +11656,10 @@ function hitung(){}
     if((b = t.closest('[data-home-tinjau]'))){
       window.KolavoBukaDashboard('minta', b.dataset.homeTinjau === 'diangkat' ? window.KolavoKomDiangkat() : null);
       return;
+    }
+    if((b = t.closest('[data-home-ajak]'))){
+      if(window.KolavoAjakKenalan) window.KolavoAjakKenalan(b.dataset.homeAjak);
+      gambarKenal(); return;
     }
     if((b = t.closest('[data-home-saring]'))){ saring = b.dataset.homeSaring; tampil = BATAS; gambarKabar(); return; }
     if(t.closest('[data-home-lagi]')){ tampil += BATAS; gambarKabar(); return; }

@@ -131,10 +131,53 @@
         : '<p class="app-kosong">Komunitasmu belum punya kabar baru. Kabar tampil di komunitas paket Advance.</p>');
   }
 
+  /* ---------- Orang yang mungkin kamu kenal (H3) ----------
+     Pencocokan memakai KolavoCocokkan (fungsi yang sama dengan langkah Kenalan di
+     onboarding). Urutan: paling banyak kesamaan dulu, lalu urutan daftar asal. */
+  function saranKenal(){
+    if(!window.KolavoCocokkan || !window.KolavoAnggotaKomunitas) return [];
+    const a = App(), kn = a.kenalan || {};
+    const aku = window.KolavoProfilKu ? window.KolavoProfilKu() : {};
+    const akuNama = (el('pfNm') && el('pfNm').textContent.trim()) || '';
+    const masuk = (a.kenalanMasuk || []).map(function(o){ return o.nama; });
+    const peta = {}, urut = [];
+    diterima().forEach(function(kelas){
+      const orang = window.KolavoAnggotaKomunitas(kelas).filter(function(o){
+        return !o.aku && o.n !== akuNama && !kn[o.n] && masuk.indexOf(o.n) < 0;
+      });
+      window.KolavoCocokkan({ kerja: aku.kerja, kota: aku.kota }, orang).forEach(function(s){
+        s.hasil.forEach(function(o){
+          if(!peta[o.n]){ peta[o.n] = { o: o, kelas: kelas, alasan: [] }; urut.push(o.n); }
+          if(peta[o.n].alasan.indexOf(s.alasan) < 0) peta[o.n].alasan.push(s.alasan);
+        });
+      });
+    });
+    return urut.map(function(n, i){ return Object.assign({ i: i }, peta[n]); })
+      .sort(function(x, y){ return y.alasan.length - x.alasan.length || x.i - y.i; }).slice(0, 5);
+  }
+  function gambarKenal(){
+    const w = el('homeKenal');
+    if(!w) return;
+    const list = saranKenal();
+    if(!list.length){ w.innerHTML = ''; return; }   /* kosong: bagian disembunyikan */
+    w.innerHTML = '<h2>Orang yang mungkin kamu kenal</h2>' +
+      '<p class="app-sub">Anggota komunitasmu yang punya kesamaan denganmu.</p>' +
+      '<div class="ob-orang-list">' + list.map(function(x, j){
+        const o = x.o, pg = o.pg || o.n.split(' ')[0];
+        /* nama panggilan saja — nama lengkap termasuk data pribadi */
+        const av = o.f ? '<span class="av photo ' + o.f + '" role="img" aria-label="Foto profil ' + esc(pg) + ' — gambar AI"></span>'
+                       : '<span class="av ' + 'abc'[j % 3] + '" aria-hidden="true">' + esc(o.n.split(' ').map(function(w){ return w[0]; }).join('').slice(0, 2)) + '</span>';
+        return '<div class="ob-orang hn-i">' + av + '<div class="t"><b>' + esc(pg) + '</b><span>' + esc(x.alasan.join(' · ')) + '</span>' +
+          '<span class="hn-kom">' + esc(info(x.kelas).nama) + '</span></div>' +
+          '<button type="button" class="btn outline sm" data-home-ajak="' + esc(o.n) + '">Ajak kenalan</button></div>';
+      }).join('') + '</div>';
+  }
+
   window.KolavoGambarHome = function(){
     if(!el('homeAksi')) return;
     gambarAksi();
     gambarKabar();
+    gambarKenal();
   };
   const segar = function(){ window.KolavoGambarHome(); };
 
@@ -155,6 +198,10 @@
     if((b = t.closest('[data-home-tinjau]'))){
       window.KolavoBukaDashboard('minta', b.dataset.homeTinjau === 'diangkat' ? window.KolavoKomDiangkat() : null);
       return;
+    }
+    if((b = t.closest('[data-home-ajak]'))){
+      if(window.KolavoAjakKenalan) window.KolavoAjakKenalan(b.dataset.homeAjak);
+      gambarKenal(); return;
     }
     if((b = t.closest('[data-home-saring]'))){ saring = b.dataset.homeSaring; tampil = BATAS; gambarKabar(); return; }
     if(t.closest('[data-home-lagi]')){ tampil += BATAS; gambarKabar(); return; }

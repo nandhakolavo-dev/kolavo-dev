@@ -1375,3 +1375,17 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   `KolavoFeedUnitBaca` (versi baca-saja: tanpa tombol kenalan/tautan profil); kepala kartu =
   logo + nama komunitas (klik → halamannya) + lencana "Disematkan". Belum diterima di mana pun
   → ajakan Cari komunitas / buka tautan undangan.
+- **H3 · Orang yang mungkin kamu kenal + dua kolom.** Pencocokan kenalan dikeluarkan dari
+  `isiKenalan` (onboarding) jadi `window.KolavoCocokkan(aku, orang, cocok)` → saringan
+  `{id, label, alasan, hasil}`; onboarding & Home memakai fungsi yang sama (terverifikasi:
+  saran identik). `KolavoAnggotaKomunitas(kelas)` (layar-komunitas) memberi daftar anggota
+  tanpa membuka halamannya (DATA contoh / dashboard untuk komunitas buatan). `#homeKenal`:
+  maks 5 orang dari komunitas yang menerimamu, kecuali dirimu, yang sudah terhubung/menunggu,
+  dan yang sedang mengajakmu; urut jumlah kesamaan lalu urutan asal; nama panggilan + alasan
+  ("Sama-sama Apoteker") + nama komunitas + **Ajak kenalan** (`KolavoAjakKenalan`, status
+  ikut berubah di seluruh app). Tidak ada yang cocok → bagian disembunyikan.
+  Tata letak: ≥ 1024px grid `1fr 320px`, kolom kanan `sticky`; < 1024px satu kolom urutan
+  Aksi → Kenalan → Kabar (`display:contents` + `order`).
+  Regresi tertangkap & diperbaiki: penjaga router `scrKelola` (butuh `App.dibuat`) memantulkan
+  pengguna **tanpa komunitas buatan** dari dashboard komunitas yang mengangkatnya — kini lolos
+  bila dashboard aktif adalah komunitas diangkat dan `App.diangkat` masih menyala.

@@ -461,6 +461,13 @@
     if(window.KolavoToast) window.KolavoToast('Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + '.');
   };
   /* keadaan halaman yang sedang dibuka, dibaca modul feed */
+  /* anggota satu komunitas tanpa membukanya — dipakai saran kenalan di Home (PROMPT-HOME H3).
+     Sumber sama dengan halaman komunitas: DATA contoh, atau dashboard untuk komunitas buatan. */
+  window.KolavoAnggotaKomunitas = function(kelas){
+    if(kelas === 'l-dibuat') return aggDibuat().anggota;
+    return ((DATA[kelas] || {}).anggota || []).slice();
+  };
+
   window.KolavoKomKini = function(){
     if(!kini) return null;
     return { kelas: kini.kelas, nama: kini.nama, premium: !!kini.premium, founder: founder,
