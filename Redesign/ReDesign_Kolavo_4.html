@@ -533,7 +533,31 @@ body:not([data-layar="scrBeranda"]):not([data-layar="scrMasuk"]) #demoTautan{dis
 @keyframes mskApung{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 @media(prefers-reduced-motion:reduce){.msk-g{animation:none}}
 .msk-in{max-width:440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:22px}
-.msk-box{width:100%;background:var(--card);border-radius:32px;box-shadow:var(--sh-lg);padding:30px 28px 24px;text-align:center}
+/* kartu masuk: semi-transparan + blur supaya bentuk latar tembus samar,
+   aksen biru→oranye di tepi atas, isi rata kiri */
+.msk-box{position:relative;width:100%;overflow:hidden;text-align:left;padding:34px 34px 26px;border-radius:32px;
+  background:color-mix(in srgb,var(--card) 84%,transparent);-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);
+  border:1px solid var(--line);box-shadow:var(--sh-lg)}
+.msk-box::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--blue),var(--orange))}
+.msk-kepala{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:26px}
+.msk-eyebrow{font-size:11.5px;font-weight:600;color:var(--orange-ink);background:var(--orange-wash);padding:5px 11px;border-radius:100px;white-space:nowrap}
+.msk-undang{margin-bottom:18px}
+.msk-undang .lgn-cap{margin-top:8px}
+.msk-h{font-size:27px;font-weight:600;letter-spacing:-.02em;line-height:1.2;color:var(--ink)}
+.msk-sub{margin-top:8px;font-size:14.5px;line-height:1.55;color:var(--ink-2)}
+.msk-gbtn{margin-top:24px}
+.msk-alt{margin-top:10px;font-size:12.5px;color:var(--ink-3);text-align:center}
+.msk-bukti[hidden],.msk-undang[hidden]{display:none}
+.msk-bukti{display:flex;align-items:center;gap:12px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.msk-bukti .lgn-tiles{flex:none;gap:0}
+.msk-bukti .lgn-tiles .logo-sq{width:30px;height:30px;border-radius:9px;border:2px solid var(--card);margin-left:-8px}
+.msk-bukti .lgn-tiles .logo-sq:first-child{margin-left:0}
+.msk-trust{margin-top:14px;padding:12px 14px;border-top:0;border-radius:13px;background:var(--bg-alt);text-align:left}
+@media(max-width:480px){
+  .msk-box{padding:28px 22px 22px}
+  .msk-kepala{flex-wrap:wrap}
+  .msk-h{font-size:23px}
+}
 .msk-foot{font-size:13.5px;color:var(--ink-2);text-align:center}
 .msk-foot a{color:var(--blue);font-weight:500}
 .msk-kom{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:13px;text-align:left}
@@ -2726,16 +2750,21 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
     <span class="msk-g g4"></span><span class="msk-g g5"></span><span class="msk-g g6"></span>
   </div>
   <div class="msk-in">
-    <a class="logo" href="#0" data-ke="scrBeranda" aria-label="Kolavo — tentang Kolavo">Kolavo</a>
     <div class="msk-box">
-      <div class="lgn-proof" id="mskProof"></div>
-      <h1 class="lgn-head" id="mskHead">Masuk ke Kolavo</h1>
-      <p class="lgn-sub" id="mskSub"></p>
-      <div class="lgn-cta">
-        <button class="gbtn" id="mskG" type="button"></button>
+      <!-- kepala kartu: logo + brand line, di dalam kartu -->
+      <div class="msk-kepala">
+        <a class="logo sm" href="#0" data-ke="scrBeranda" aria-label="Kolavo — tentang Kolavo">Kolavo</a>
+        <span class="msk-eyebrow">Basecamp digital komunitasmu</span>
       </div>
-      <p class="lgn-alt">Belum punya akun Kolavo? <b>Tombol yang sama sekaligus bikin akunmu.</b></p>
-      <div class="lgn-trust">
+      <!-- varian undangan: kartu komunitas pengundang tampil di atas judul -->
+      <div class="msk-undang" id="mskProof" hidden></div>
+      <h1 class="msk-h" id="mskHead">Masuk ke Kolavo</h1>
+      <p class="msk-sub" id="mskSub"></p>
+      <button class="gbtn msk-gbtn" id="mskG" type="button"></button>
+      <p class="msk-alt">Belum punya akun? Tombol yang sama sekaligus membuat akunmu.</p>
+      <!-- bukti komunitas (varian biasa/pengurus) -->
+      <div class="msk-bukti" id="mskBukti" hidden></div>
+      <div class="lgn-trust msk-trust">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6.5v5c0 4.6 3.4 8.4 8 9.5 4.6-1.1 8-4.9 8-9.5v-5L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
         <span>Kolavo cuma menerima nama, email, dan foto profil Google-mu. Kami tidak bisa membaca isi emailmu atau memposting apa pun di akunmu.
         <button type="button" data-legal="privasi">Kebijakan Privasi</button> · <button type="button" data-legal="tnc">Ketentuan Layanan</button></span>
@@ -4523,7 +4552,15 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       head: 'Masuk ke Kolavo',
       sub: 'Satu akun untuk semua komunitasmu: lihat profil komunitas, kenali sesama anggota, dan kelola komunitas yang kamu urus.'
     } : isi(trigger, kartu);
-    mProof.innerHTML = v.proof + `<div class="lgn-cap">${v.cap}</div>`;
+    /* undangan: kartu komunitas di atas judul; lainnya: deretan logo komunitas di bawah tombol */
+    const undang = trigger === 'undangan';
+    const bukti = document.getElementById('mskBukti');
+    mProof.hidden = !undang;
+    mProof.innerHTML = undang ? v.proof + `<div class="lgn-cap">${v.cap}</div>` : '';
+    if(bukti){
+      bukti.hidden = undang;
+      bukti.innerHTML = undang ? '' : v.proof + `<span>${v.cap}</span>`;
+    }
     mHead.textContent = v.head;
     mSub.textContent = v.sub;
     /* setelah masuk, undangan diperlakukan seperti tombol Gabung di kartunya */

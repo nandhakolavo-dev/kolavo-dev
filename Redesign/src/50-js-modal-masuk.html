@@ -112,7 +112,15 @@
       head: 'Masuk ke Kolavo',
       sub: 'Satu akun untuk semua komunitasmu: lihat profil komunitas, kenali sesama anggota, dan kelola komunitas yang kamu urus.'
     } : isi(trigger, kartu);
-    mProof.innerHTML = v.proof + `<div class="lgn-cap">${v.cap}</div>`;
+    /* undangan: kartu komunitas di atas judul; lainnya: deretan logo komunitas di bawah tombol */
+    const undang = trigger === 'undangan';
+    const bukti = document.getElementById('mskBukti');
+    mProof.hidden = !undang;
+    mProof.innerHTML = undang ? v.proof + `<div class="lgn-cap">${v.cap}</div>` : '';
+    if(bukti){
+      bukti.hidden = undang;
+      bukti.innerHTML = undang ? '' : v.proof + `<span>${v.cap}</span>`;
+    }
     mHead.textContent = v.head;
     mSub.textContent = v.sub;
     /* setelah masuk, undangan diperlakukan seperti tombol Gabung di kartunya */
