@@ -4053,8 +4053,10 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 (function(){
   var q = document.getElementById('q');
   if(!q) return;
-  var cards   = [].slice.call(document.querySelectorAll('.ccard')),
-      chips   = [].slice.call(document.querySelectorAll('button.chip[data-bentuk]')),
+  /* kartu dibaca ulang tiap render: komunitas buatan pengguna bisa masuk/keluar
+     direktori kapan saja (50-js-app). Hanya kartu di #direktori, bukan etalase landing. */
+  function kartu(){ return [].slice.call(document.querySelectorAll('#direktori .grid .ccard')); }
+  var chips   = [].slice.call(document.querySelectorAll('button.chip[data-bentuk]')),
       bar     = document.getElementById('resultbar'),
       empty   = document.getElementById('empty'),
       msg     = document.getElementById('emptymsg'),
@@ -4097,7 +4099,12 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   }
 
   function render(){
-    var tampil = 0;
+    var tampil = 0, cards = kartu();
+    /* hitungan di chip bentuk mengikuti isi direktori */
+    chips.forEach(function(ch){
+      var cnt = ch.querySelector('.cnt');
+      if(cnt) cnt.textContent = cards.filter(function(c){ return !ch.dataset.bentuk || c.dataset.bentuk === ch.dataset.bentuk; }).length;
+    });
     cards.forEach(function(c){
       var ok = cocok(c);
       c.hidden = !ok;
@@ -4162,6 +4169,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   });
 
   render();
+  window.KolavoSaringDirektori = render;
 })();
 </script>
 
@@ -8252,6 +8260,8 @@ function hitung(){}
       slug: slug,
       bentuk: pilihBentuk(),
       kota: el('bkKota').value,
+      /* negara & provinsi ikut disimpan untuk filter lokasi di direktori */
+      negara: el('bkNegara').value, provinsi: el('bkProvinsi').value,
       warna: warna,
       logo: logo,
       inisial: inisial(nama),
@@ -11359,8 +11369,8 @@ function hitung(){}
   window.KolavoKomDiangkat = function(){ return App().diangkat ? komDiangkat() : null; };
 
   window.KolavoGambarApp = function(id){
-    if(id === 'scrBeranda'){ gambarEtalase(); return; }
-    if(id === 'scrApp'){ gambarKu(); gambarKartu(); }
+    if(id === 'scrBeranda'){ sinkronDibuat(); gambarEtalase(); return; }
+    if(id === 'scrApp'){ sinkronDibuat(); gambarKu(); gambarKartu(); }
     else if(id === 'scrDasbor') gambarDasbor();
     else if(id === 'scrHome' && window.KolavoGambarHome) window.KolavoGambarHome();
   };
@@ -11387,30 +11397,49 @@ function hitung(){}
      yang dibuat di Kolavo App (bila tidak diarsipkan). Etalase ini penghubung landing ke
      app: tombol "Lihat profil" membuka alur masuk → profil komunitasnya. Digambar ulang
      setiap landing dibuka, supaya komunitas yang baru dibuat langsung ikut tampil. */
-  function gambarEtalase(){
-    const w = document.getElementById('etalaseGrid');
-    if(!w) return;
-    w.innerHTML = '';
-    document.querySelectorAll('#direktori .ccard').forEach(function(k){
-      const c = k.cloneNode(true);
-      c.removeAttribute('id');
-      const b = c.querySelector('[data-gabung-kartu]');
-      if(b){ b.removeAttribute('data-gabung-kartu'); b.classList.remove('outline'); b.setAttribute('data-etalase', kelasKartu(k)); b.textContent = 'Lihat profil'; }
-      w.appendChild(c);
-    });
+  /* komunitas buatan pengguna ikut di direktori (tab Komunitas) selama tidak diarsipkan —
+     satu kartu ber-data-dibuat, disinkronkan tiap direktori/etalase digambar */
+  function sinkronDibuat(){
+    const grid = document.querySelector('#direktori .grid');
+    if(!grid) return;
+    const lama = grid.querySelector('.ccard[data-dibuat]');
+    if(lama) lama.remove();
     const d = App().dibuat;
     if(d && !d.arsip){
       const D = window.KolavoDashboard;
       const n = D && D.built && D.kom === d && D.jumlahAnggota ? D.jumlahAnggota() : 1;
       const gaya = d.logo ? ' style="background-image:url(' + d.logo + ')"' : '';
-      w.insertAdjacentHTML('beforeend',
-        '<article class="ccard"><div class="loc">' + esc([d.kota, d.bentuk].filter(Boolean).join(' · ') || 'Indonesia') + '</div>' +
+      grid.insertAdjacentHTML('beforeend',
+        '<article class="ccard" data-dibuat data-bentuk="' + esc(d.bentuk || '') + '" data-alias="' + esc(d.alias || '') + '"' +
+          ' data-negara="' + esc(d.negara || '') + '" data-provinsi="' + esc(d.provinsi || '') + '" data-kota="' + esc(d.kota || '') + '">' +
+        '<div class="loc">' + esc([d.kota, d.provinsi].filter(Boolean).join(', ') || 'Indonesia') + '</div>' +
         '<div class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' + (d.logo ? '' : esc(d.inisial || '')) + '</div>' +
         '<h3>' + esc(d.nama) + '</h3>' + (d.ajakan ? '<p class="desc">' + esc(d.ajakan) + '</p>' : '') +
         '<div class="row"><div><div class="mem">' + n + ' anggota</div></div>' +
-        '<button type="button" class="btn sm" data-etalase="l-dibuat">Lihat profil</button></div></article>');
+        '<button type="button" class="btn sm outline" data-buka-milik>Komunitasmu</button></div></article>');
     }
+    if(window.KolavoSaringDirektori) window.KolavoSaringDirektori();
   }
+
+  /* etalase = salinan semua kartu direktori (termasuk komunitas buatan) */
+  function gambarEtalase(){
+    const w = document.getElementById('etalaseGrid');
+    if(!w) return;
+    w.innerHTML = '';
+    document.querySelectorAll('#direktori .grid .ccard').forEach(function(k){
+      const c = k.cloneNode(true);
+      c.removeAttribute('id');
+      c.hidden = false;   /* saringan direktori tidak berlaku di etalase */
+      const b = c.querySelector('[data-gabung-kartu],[data-buka-milik]');
+      if(b){
+        b.removeAttribute('data-gabung-kartu'); b.removeAttribute('data-buka-milik'); b.classList.remove('outline');
+        b.setAttribute('data-etalase', k.hasAttribute('data-dibuat') ? 'l-dibuat' : kelasKartu(k));
+        b.textContent = 'Lihat profil';
+      }
+      w.appendChild(c);
+    });
+  }
+  sinkronDibuat();
   gambarEtalase();
 
   function bukaDasbor(jenis){
@@ -11429,6 +11458,10 @@ function hitung(){}
       return;
     }
     const et = e.target.closest('[data-etalase]');
+    if(e.target.closest('[data-buka-milik]')){
+      if(window.KolavoBukaKomunitasDibuat) window.KolavoBukaKomunitasDibuat();
+      return;
+    }
     if(et && et.dataset.etalase === 'l-dibuat'){
       /* komunitas buatanmu sendiri: sudah masuk → langsung halamannya; belum → masuk dulu */
       if(App().masuk && window.KolavoBukaKomunitasDibuat) window.KolavoBukaKomunitasDibuat();

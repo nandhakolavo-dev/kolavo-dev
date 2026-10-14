@@ -1401,5 +1401,12 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   diarsipkan; jumlah anggota dari dashboard). Digambar ulang setiap landing dibuka
   (`KolavoGambarApp('scrBeranda')`), jadi komunitas yang baru dibuat langsung ikut tampil.
   Peran: penghubung landing → app; "Lihat profil" → alur masuk → profil komunitasnya
-  (komunitas buatan sendiri: sudah masuk → langsung halamannya). Catatan: direktori di tab
-  Komunitas (app) belum memuat komunitas buatan pengguna.
+  (komunitas buatan sendiri: sudah masuk → langsung halamannya).
+- **Direktori memuat komunitas buatan.** `sinkronDibuat()` (50-js-app) menyisipkan satu kartu
+  `.ccard[data-dibuat]` ke `#direktori .grid` selama `App.dibuat` tidak diarsipkan (dipanggil
+  saat tab Komunitas & landing digambar); tombolnya **Komunitasmu** (`data-buka-milik` →
+  halaman komunitasnya), bukan Minta gabung. `50-js-layar-buat` kini menyimpan `negara` &
+  `provinsi` supaya filter lokasi bekerja. `50-js-direktori-filter` membaca kartu ulang tiap
+  render (hanya `#direktori .grid .ccard`) dan menghitung ulang angka di chip bentuk;
+  `window.KolavoSaringDirektori` dipanggil sesudah sinkron. Etalase landing kini cukup
+  menyalin semua kartu direktori (komunitas buatan ikut, tombolnya `data-etalase="l-dibuat"`).
