@@ -300,7 +300,7 @@
     const KOSONG = {
       terhubung: ['Belum ada kenalan terhubung', 'Ajak anggota yang punya kesamaan denganmu. Begitu ajakan diterima, kontak kalian saling terbuka.'],
       masuk: ['Tidak ada permintaan masuk', 'Permintaan kenalan dari anggota lain akan muncul di sini.'],
-      terkirim: ['Tidak ada ajakan yang menunggu', 'Ajakan yang belum dijawab akan muncul di sini. Membatalkan ajakan mengembalikan 10 kredit.']
+      terkirim: ['Tidak ada ajakan yang menunggu', 'Ajakan yang belum dijawab akan muncul di sini. Kredit dikembalikan bila ajakan ditolak atau kamu batalkan.']
     }[knTab];
     el('knList').innerHTML = isi.length
       ? '<div class="kn-grid">' + isi.map(function(y){ return kartuKenalan(y.x.n, knTab, y.j, y.x.x); }).join('') + '</div>'

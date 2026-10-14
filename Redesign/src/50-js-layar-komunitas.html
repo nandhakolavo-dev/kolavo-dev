@@ -645,6 +645,24 @@
     if(window.KolavoToast) window.KolavoToast(nama.split(' ')[0] + ' menerima ajakan kenalanmu. Nomornya kebuka.');
   };
 
+  /* demo: pihak lain menolak ajakan tertua yang masih menunggu. Kredit dikembalikan
+     (keputusan 15 Okt 2026) dan statusnya kembali "belum", jadi bisa diajak lagi nanti. */
+  window.KolavoTolakKenalan = function(){
+    const App = window.KolavoApp || {};
+    const kn = App.kenalan || {};
+    const nama = Object.keys(kn).filter(function(n){ return kn[n] === 'menunggu'; })[0];
+    if(!nama) return;
+    delete kn[nama];
+    if(window.KolavoKredit) window.KolavoKredit.kembalikan();
+    tandaiDemo();
+    const pg = nama.split(' ')[0];
+    if(window.KolavoNotifTambah) window.KolavoNotifTambah({ jenis: 'kenalan', judul: pg + ' belum bisa menerima ajakan kenalanmu', teks: '10 kredit sudah dikembalikan ke saldomu.', anggota: nama });
+    if(el('agNm').dataset.nm === nama) gambarAnggota(nama);
+    segarKenal();
+    if(window.KolavoGambarKenalan && !document.getElementById('scrKenalan').hidden) window.KolavoGambarKenalan();
+    if(window.KolavoToast) window.KolavoToast(pg + ' menolak ajakan kenalanmu. 10 kredit dikembalikan.');
+  };
+
   /* Keanggotaan pengguna sendiri tidak ada di DATA — dia bukan bagian dari data
      contoh, keanggotaannya tumbuh saat prototipe dipakai. Jadi dibaca dari
      App.diajukan, dan yang masih menunggu ikut ditampilkan apa adanya. */
@@ -774,6 +792,8 @@
     if(k){
       const kn = (window.KolavoApp || {}).kenalan || {};
       k.hidden = !Object.keys(kn).some(function(n){ return kn[n] === 'menunggu'; });
+      const t = document.getElementById('demoTolakKenal');
+      if(t) t.hidden = k.hidden;
     }
   }
 
@@ -1209,6 +1229,10 @@
     }
     if(e.target.closest('#demoSetuju')){
       window.KolavoSetujui();
+      return;
+    }
+    if(e.target.closest('#demoTolakKenal')){
+      window.KolavoTolakKenalan();
       return;
     }
     if(e.target.closest('#demoKenal')){

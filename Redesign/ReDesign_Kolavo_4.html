@@ -4275,7 +4275,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       <strong>Rp50.000</strong>
     </div>
     <button type="button" class="btn md krd-bayar" id="krdBayar">Bayar Rp50.000</button>
-    <p class="krd-catat">Setiap ajakan kenalan memakai 10 kredit. Kredit berlaku di semua komunitas yang kamu ikuti dan tidak hangus. Prototipe: pembayaran disimulasikan.</p>
+    <p class="krd-catat">Setiap ajakan kenalan memakai 10 kredit dan dikembalikan bila ajakan ditolak atau dibatalkan. Kredit berlaku di semua komunitas yang kamu ikuti dan tidak hangus. Prototipe: pembayaran disimulasikan.</p>
   </div>
 </div>
 
@@ -4332,7 +4332,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       setTimeout(segar, 0);
       return true;
     },
-    /* ajakan yang dibatalkan sebelum dijawab: kredit dikembalikan */
+    /* ajakan dibatalkan sebelum dijawab, atau ditolak pihak lain: kredit dikembalikan */
     kembalikan: function(){ App().kreditSaldo += BIAYA; setTimeout(segar, 0); },
     bukaTopUp: buka
   };
@@ -4828,6 +4828,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   <span><b>Mode demo</b> · tanpa jaringan</span>
   <button type="button" class="setuju" id="demoSetuju" hidden>Setujui pendaftaran</button>
   <button type="button" class="setuju" id="demoKenal" hidden>Terima ajakan kenalan</button>
+  <button type="button" id="demoTolakKenal" hidden>Tolak ajakan kenalan</button>
   <button type="button" id="demoTautan">Buka tautan undangan</button>
   <button type="button" id="demoAngkat">Angkat saya jadi pengurus</button>
   <button type="button" id="demoReset">Ulangi dari awal</button>
@@ -6479,6 +6480,24 @@ function hitung(){}
     if(window.KolavoToast) window.KolavoToast(nama.split(' ')[0] + ' menerima ajakan kenalanmu. Nomornya kebuka.');
   };
 
+  /* demo: pihak lain menolak ajakan tertua yang masih menunggu. Kredit dikembalikan
+     (keputusan 15 Okt 2026) dan statusnya kembali "belum", jadi bisa diajak lagi nanti. */
+  window.KolavoTolakKenalan = function(){
+    const App = window.KolavoApp || {};
+    const kn = App.kenalan || {};
+    const nama = Object.keys(kn).filter(function(n){ return kn[n] === 'menunggu'; })[0];
+    if(!nama) return;
+    delete kn[nama];
+    if(window.KolavoKredit) window.KolavoKredit.kembalikan();
+    tandaiDemo();
+    const pg = nama.split(' ')[0];
+    if(window.KolavoNotifTambah) window.KolavoNotifTambah({ jenis: 'kenalan', judul: pg + ' belum bisa menerima ajakan kenalanmu', teks: '10 kredit sudah dikembalikan ke saldomu.', anggota: nama });
+    if(el('agNm').dataset.nm === nama) gambarAnggota(nama);
+    segarKenal();
+    if(window.KolavoGambarKenalan && !document.getElementById('scrKenalan').hidden) window.KolavoGambarKenalan();
+    if(window.KolavoToast) window.KolavoToast(pg + ' menolak ajakan kenalanmu. 10 kredit dikembalikan.');
+  };
+
   /* Keanggotaan pengguna sendiri tidak ada di DATA — dia bukan bagian dari data
      contoh, keanggotaannya tumbuh saat prototipe dipakai. Jadi dibaca dari
      App.diajukan, dan yang masih menunggu ikut ditampilkan apa adanya. */
@@ -6608,6 +6627,8 @@ function hitung(){}
     if(k){
       const kn = (window.KolavoApp || {}).kenalan || {};
       k.hidden = !Object.keys(kn).some(function(n){ return kn[n] === 'menunggu'; });
+      const t = document.getElementById('demoTolakKenal');
+      if(t) t.hidden = k.hidden;
     }
   }
 
@@ -7043,6 +7064,10 @@ function hitung(){}
     }
     if(e.target.closest('#demoSetuju')){
       window.KolavoSetujui();
+      return;
+    }
+    if(e.target.closest('#demoTolakKenal')){
+      window.KolavoTolakKenalan();
       return;
     }
     if(e.target.closest('#demoKenal')){
@@ -12113,7 +12138,7 @@ function hitung(){}
     const KOSONG = {
       terhubung: ['Belum ada kenalan terhubung', 'Ajak anggota yang punya kesamaan denganmu. Begitu ajakan diterima, kontak kalian saling terbuka.'],
       masuk: ['Tidak ada permintaan masuk', 'Permintaan kenalan dari anggota lain akan muncul di sini.'],
-      terkirim: ['Tidak ada ajakan yang menunggu', 'Ajakan yang belum dijawab akan muncul di sini. Membatalkan ajakan mengembalikan 10 kredit.']
+      terkirim: ['Tidak ada ajakan yang menunggu', 'Ajakan yang belum dijawab akan muncul di sini. Kredit dikembalikan bila ajakan ditolak atau kamu batalkan.']
     }[knTab];
     el('knList').innerHTML = isi.length
       ? '<div class="kn-grid">' + isi.map(function(y){ return kartuKenalan(y.x.n, knTab, y.j, y.x.x); }).join('') + '</div>'

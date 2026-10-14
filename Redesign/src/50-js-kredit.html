@@ -18,7 +18,7 @@
       <strong>Rp50.000</strong>
     </div>
     <button type="button" class="btn md krd-bayar" id="krdBayar">Bayar Rp50.000</button>
-    <p class="krd-catat">Setiap ajakan kenalan memakai 10 kredit. Kredit berlaku di semua komunitas yang kamu ikuti dan tidak hangus. Prototipe: pembayaran disimulasikan.</p>
+    <p class="krd-catat">Setiap ajakan kenalan memakai 10 kredit dan dikembalikan bila ajakan ditolak atau dibatalkan. Kredit berlaku di semua komunitas yang kamu ikuti dan tidak hangus. Prototipe: pembayaran disimulasikan.</p>
   </div>
 </div>
 
@@ -75,7 +75,7 @@
       setTimeout(segar, 0);
       return true;
     },
-    /* ajakan yang dibatalkan sebelum dijawab: kredit dikembalikan */
+    /* ajakan dibatalkan sebelum dijawab, atau ditolak pihak lain: kredit dikembalikan */
     kembalikan: function(){ App().kreditSaldo += BIAYA; setTimeout(segar, 0); },
     bukaTopUp: buka
   };

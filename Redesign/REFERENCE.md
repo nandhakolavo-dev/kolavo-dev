@@ -1492,8 +1492,11 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   saja), kepala Rekomendasi Kenalan di Home, bawah tombol ajak di profil anggota, dan kartu
   "Kredit kenalan" di Profil saya. Semua elemen `[data-kredit-saldo]` disegarkan bersama;
   semua `[data-kredit-topup]` membuka popup.
-- **Saldo awal 100 kredit** (= 10 ajakan; keputusan 15 Okt 2026). **Belum diputuskan**:
-  apakah kredit dikembalikan bila ajakan ditolak; paket top up lain selain 100.
+- **Saldo awal 100 kredit** (= 10 ajakan; keputusan 15 Okt 2026). **Kredit dikembalikan bila ajakan ditolak**
+  (keputusan 15 Okt 2026) — `KolavoTolakKenalan()` (layar-komunitas): status kembali "belum"
+  (boleh diajak lagi), +10 kredit, notifikasi "… belum bisa menerima ajakan kenalanmu";
+  disimulasikan tombol demo **Tolak ajakan kenalan** (muncul bersama "Terima ajakan
+  kenalan"). **Belum diputuskan**: paket top up lain selain 100.
 - **Rekomendasi Kenalan dirapikan**: kartu `.hn-i` — foto 52px + nama panggilan + pekerjaan ·
   kota + logo & nama komunitas (klik → profil), kotak **"Kenapa cocok"** berisi chip hijau
   ber-centang (alasan dari `KolavoCocokkan`) + chip netral angkatan, tombol **Lihat profil**
