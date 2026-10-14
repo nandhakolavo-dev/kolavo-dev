@@ -2510,7 +2510,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
     <div class="sec-tengah">
       <div class="kicker">Komunitas yang sudah join Kolavo</div>
       <h2>Lihat profil komunitas lain.</h2>
-      <p class="sec-lede">Beberapa komunitas yang sudah memperkenalkan orang-orangnya lewat Kolavo.</p>
+      <p class="sec-lede">Komunitas yang sudah memperkenalkan orang-orangnya lewat Kolavo. Buka profilnya untuk mulai bergabung.</p>
     </div>
     <div class="grid" id="etalaseGrid"></div>
   </div>
@@ -4844,7 +4844,7 @@ function hitung(){}
     });
     window.scrollTo(0, 0);
     if(id === 'scrProfil') isiProfil();
-    if((id === 'scrHome' || id === 'scrApp' || id === 'scrDasbor') && window.KolavoGambarApp) window.KolavoGambarApp(id);
+    if((id === 'scrBeranda' || id === 'scrHome' || id === 'scrApp' || id === 'scrDasbor') && window.KolavoGambarApp) window.KolavoGambarApp(id);
   }
 
   /* ---------- tab nav Kolavo App (A3) ----------
@@ -11359,6 +11359,7 @@ function hitung(){}
   window.KolavoKomDiangkat = function(){ return App().diangkat ? komDiangkat() : null; };
 
   window.KolavoGambarApp = function(id){
+    if(id === 'scrBeranda'){ gambarEtalase(); return; }
     if(id === 'scrApp'){ gambarKu(); gambarKartu(); }
     else if(id === 'scrDasbor') gambarDasbor();
     else if(id === 'scrHome' && window.KolavoGambarHome) window.KolavoGambarHome();
@@ -11381,20 +11382,36 @@ function hitung(){}
   };
   let demoKe = 0;
 
-  /* ---------- etalase landing (A6) ----------
-     salinan kartu #direktori (satu sumber data), tombolnya diganti "Lihat profil" */
-  (function(){
+  /* ---------- etalase landing (A6, diperluas) ----------
+     SEMUA komunitas di Kolavo — salinan kartu #direktori (satu sumber data) + komunitas
+     yang dibuat di Kolavo App (bila tidak diarsipkan). Etalase ini penghubung landing ke
+     app: tombol "Lihat profil" membuka alur masuk → profil komunitasnya. Digambar ulang
+     setiap landing dibuka, supaya komunitas yang baru dibuat langsung ikut tampil. */
+  function gambarEtalase(){
     const w = document.getElementById('etalaseGrid');
     if(!w) return;
-    document.querySelectorAll('#direktori .ccard').forEach(function(k, i){
-      if(i > 2) return;   /* satu baris penuh di grid 3 kolom */
+    w.innerHTML = '';
+    document.querySelectorAll('#direktori .ccard').forEach(function(k){
       const c = k.cloneNode(true);
       c.removeAttribute('id');
       const b = c.querySelector('[data-gabung-kartu]');
-      if(b){ b.removeAttribute('data-gabung-kartu'); b.setAttribute('data-etalase', kelasKartu(k)); b.textContent = 'Lihat profil'; }
+      if(b){ b.removeAttribute('data-gabung-kartu'); b.classList.remove('outline'); b.setAttribute('data-etalase', kelasKartu(k)); b.textContent = 'Lihat profil'; }
       w.appendChild(c);
     });
-  })();
+    const d = App().dibuat;
+    if(d && !d.arsip){
+      const D = window.KolavoDashboard;
+      const n = D && D.built && D.kom === d && D.jumlahAnggota ? D.jumlahAnggota() : 1;
+      const gaya = d.logo ? ' style="background-image:url(' + d.logo + ')"' : '';
+      w.insertAdjacentHTML('beforeend',
+        '<article class="ccard"><div class="loc">' + esc([d.kota, d.bentuk].filter(Boolean).join(' · ') || 'Indonesia') + '</div>' +
+        '<div class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' + (d.logo ? '' : esc(d.inisial || '')) + '</div>' +
+        '<h3>' + esc(d.nama) + '</h3>' + (d.ajakan ? '<p class="desc">' + esc(d.ajakan) + '</p>' : '') +
+        '<div class="row"><div><div class="mem">' + n + ' anggota</div></div>' +
+        '<button type="button" class="btn sm" data-etalase="l-dibuat">Lihat profil</button></div></article>');
+    }
+  }
+  gambarEtalase();
 
   function bukaDasbor(jenis){
     /* lewat KolavoBukaDashboard, bukan KolavoKe: keadaan dashboard harus dibangun dulu */
@@ -11412,6 +11429,12 @@ function hitung(){}
       return;
     }
     const et = e.target.closest('[data-etalase]');
+    if(et && et.dataset.etalase === 'l-dibuat'){
+      /* komunitas buatanmu sendiri: sudah masuk → langsung halamannya; belum → masuk dulu */
+      if(App().masuk && window.KolavoBukaKomunitasDibuat) window.KolavoBukaKomunitasDibuat();
+      else window.KolavoKeMasuk('nav');
+      return;
+    }
     if(et){
       const asli = document.querySelector('#direktori .ccard .logo-sq.' + et.dataset.etalase);
       if(asli) window.KolavoBukaTautan(asli.closest('.ccard'));

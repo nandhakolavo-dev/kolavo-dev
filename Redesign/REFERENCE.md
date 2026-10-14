@@ -1396,3 +1396,10 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
 - **Nav landing: label & posisi.** Tautan jualan kini **Solusi** (`#untuk`) · **Alur Kerja**
   (`#pengurus`) · **Paket Harga** (`#harga`), rata kiri tepat setelah logo (jarak 18px);
   spacer `.nav-sp` dipindah ke sesudahnya sehingga Buat komunitas + Masuk tetap di kanan.
+- **Etalase landing = semua komunitas.** Bukan lagi 3 kartu: `gambarEtalase()` (50-js-app)
+  menyalin **semua** kartu `#direktori` + kartu komunitas buatan pengguna (bila tidak
+  diarsipkan; jumlah anggota dari dashboard). Digambar ulang setiap landing dibuka
+  (`KolavoGambarApp('scrBeranda')`), jadi komunitas yang baru dibuat langsung ikut tampil.
+  Peran: penghubung landing → app; "Lihat profil" → alur masuk → profil komunitasnya
+  (komunitas buatan sendiri: sudah masuk → langsung halamannya). Catatan: direktori di tab
+  Komunitas (app) belum memuat komunitas buatan pengguna.
