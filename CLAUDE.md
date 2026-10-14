@@ -137,8 +137,8 @@ Dark mode wajib lewat token. Jangan pernah menulis warna harfiah di dalam blok
 ## Dua pintu: landing vs Kolavo App (Okt 2026)
 
 Rencana & keputusan: `Redesign/PROMPT-APP.md`; rincian teknis di `REFERENCE.md`.
-- **Landing** (`scrBeranda`) = halaman jualan untuk calon pengurus: nav Untuk siapa · Cara
-  kerja · Harga · Buat komunitas · Masuk, etalase 3 komunitas. Tanpa menu akun/notifikasi.
+- **Landing** (`scrBeranda`) = halaman jualan untuk calon pengurus: nav Solusi · Alur Kerja ·
+  Paket Harga (rata kiri) · Buat komunitas · Masuk (kanan), etalase 3 komunitas. Tanpa menu akun/notifikasi.
 - **Kolavo App** = semua layar lain. Pintu masuknya halaman login penuh `scrMasuk` (Google
   SSO; varian undangan bila datang dari tautan/QR). Nav ikon ala Facebook: Home
   (`scrHome`: apa yang baru & perlu dilakukan — `PROMPT-HOME.md`) · Komunitas (`scrApp`:

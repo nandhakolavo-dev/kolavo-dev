@@ -1305,7 +1305,7 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   (onboarding Advance seperti biasa); sudah masuk → langsung `scrKomunitas`; sudah anggota →
   halaman menampilkan "Kamu anggota di sini". Pemicu prototipe: tombol demo **Buka tautan
   undangan**, hanya di landing & `scrMasuk`, bergiliran antar 4 komunitas contoh.
-- **A6 · landing jadi halaman jualan.** Nav landing: Untuk siapa (`#untuk`) · Cara kerja
+- **A6 · landing jadi halaman jualan.** Nav landing (diperbarui: label Nav landing: Untuk siapa (`#untuk`) · Cara kerja posisi di bawah): Untuk siapa (`#untuk`) · Cara kerja
   (`#pengurus`) · Harga · **Buat komunitas** (`data-login="pengurus"`) · **Masuk**; tautan teks
   hilang < 960px. Sudah masuk di landing: akun & lonceng disembunyikan, diganti tombol
   **Buka Kolavo** (`#btnApp` → `scrApp`). Semua pemicu masuk (`data-login`, tombol Gabung
@@ -1393,3 +1393,6 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   cari). Bar atas app kini: logo · tab Home/Komunitas/Dashboard (tetap tepat di tengah) ·
   lonceng · avatar. Pencarian komunitas tetap di tab Komunitas › Jelajahi. Ikon `cari` di
   `50-js-ikon` dibiarkan (tidak dipakai, aman).
+- **Nav landing: label & posisi.** Tautan jualan kini **Solusi** (`#untuk`) · **Alur Kerja**
+  (`#pengurus`) · **Paket Harga** (`#harga`), rata kiri tepat setelah logo (jarak 18px);
+  spacer `.nav-sp` dipindah ke sesudahnya sehingga Buat komunitas + Masuk tetap di kanan.
