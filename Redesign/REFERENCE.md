@@ -1410,3 +1410,10 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   render (hanya `#direktori .grid .ccard`) dan menghitung ulang angka di chip bentuk;
   `window.KolavoSaringDirektori` dipanggil sesudah sinkron. Etalase landing kini cukup
   menyalin semua kartu direktori (komunitas buatan ikut, tombolnya `data-etalase="l-dibuat"`).
+- **Latar halaman masuk (`scrMasuk`).** `.msk`: dua gradasi radial dari token (`--blue-wash`
+  kiri atas, `--orange-wash` kanan bawah) di atas `--blue-tint → --bg-alt`, plus pola titik
+  `--line` yang memudar ke tepi (mask). Di ≥ 1180px: empat keping anggota melayang
+  (`.msk-deko`, `aria-hidden`; foto AI Fajar, Rani, Ayu, Bagas + keterangan singkat) yang
+  menggemakan "Kenali anggotamu"; animasi naik-turun 7 detik, mati bila
+  `prefers-reduced-motion`. Di bawah 1180px keping disembunyikan (di 960–1180 sempat
+  menyentuh kartu masuk). Semua warna lewat token — tetap terbaca di tema gelap.

@@ -465,7 +465,29 @@ body:not([data-layar="scrBeranda"]):not([data-layar="scrMasuk"]) #demoTautan{dis
   /* bar atas cukup logo + lonceng + avatar; cari ada di tab Komunitas */
   body.m-tab #acctChip,body.m-tab .acct-btn .chev{display:none}
 }
-.msk{min-height:100vh;padding:clamp(32px,10vh,96px) 16px 64px;background:var(--bg-alt)}
+.msk{position:relative;isolation:isolate;overflow:hidden;min-height:100vh;padding:clamp(32px,10vh,96px) 16px 64px;
+  background:radial-gradient(55% 45% at 12% 8%,var(--blue-wash) 0%,transparent 72%),
+             radial-gradient(45% 40% at 92% 92%,var(--orange-wash) 0%,transparent 72%),
+             linear-gradient(180deg,var(--blue-tint) 0%,var(--bg-alt) 60%)}
+/* pola titik halus, memudar ke tepi */
+.msk::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:radial-gradient(var(--line) 1.2px,transparent 1.3px);background-size:22px 22px;
+  -webkit-mask-image:radial-gradient(70% 60% at 50% 42%,#000 0%,transparent 78%);mask-image:radial-gradient(70% 60% at 50% 42%,#000 0%,transparent 78%)}
+.msk-in{position:relative;z-index:1}
+.msk-deko{display:none}
+@media(min-width:1180px){
+  .msk-deko{display:block;position:absolute;inset:0;z-index:0;pointer-events:none}
+  .msk-org{position:absolute;display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:100px;
+    background:var(--card);border:1px solid var(--line);box-shadow:var(--sh-lg);animation:mskApung 7s ease-in-out infinite}
+  .msk-org .av{width:44px;height:44px}
+  .msk-tag{font-size:12.5px;font-weight:500;color:var(--ink-2);white-space:nowrap}
+  .msk-org.o1{left:7%;top:18%}
+  .msk-org.o2{left:11%;bottom:20%;animation-delay:-2s}
+  .msk-org.o3{right:7%;top:24%;animation-delay:-4s}
+  .msk-org.o4{right:10%;bottom:16%;animation-delay:-1s}
+}
+@keyframes mskApung{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@media(prefers-reduced-motion:reduce){.msk-org{animation:none}}
 .msk-in{max-width:440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:22px}
 .msk-box{width:100%;background:var(--card);border-radius:32px;box-shadow:var(--sh-lg);padding:30px 28px 24px;text-align:center}
 .msk-foot{font-size:13.5px;color:var(--ink-2);text-align:center}
