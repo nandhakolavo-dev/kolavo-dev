@@ -888,7 +888,9 @@
     const slug = founder ? (((window.KolavoApp || {}).dibuat || {}).slug || '') : String(kini.kelas || '').replace(/^l-/, '');
     return 'https://kolavo.app/k/' + (slug || 'komunitas');
   }
+  /* A5a: satu popup Bagikan (tautan + QR) untuk semua pemicu — lihat 50-js-qr */
   function bagikan(){
+    if(window.KolavoBagikan){ window.KolavoBagikan(kini && kini.nama, alamatKini()); return; }
     const url = alamatKini(), pendek = url.replace(/^https:\/\//, '');
     const toast = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
     const salin = function(){

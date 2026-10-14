@@ -431,6 +431,13 @@ body.m-tab .nav-in{position:relative}
 .app-kosong{padding:18px;border:1px dashed var(--line);border-radius:13px;background:var(--card);font-size:14px;color:var(--ink-2)}
 #dasborList{margin-top:24px}
 .dsb-buat{margin-top:16px}
+/* popup Bagikan + QR (A5a). Kotak QR tetap putih di kedua tema — kamera butuh
+   gelap di atas terang; warnanya ada di SVG, bukan di CSS tema */
+.bgk-box{max-width:420px}
+.bgk-qr{width:220px;margin:18px auto 0;border-radius:13px;overflow:hidden;border:1px solid var(--line)}
+.bgk-qr svg{display:block;width:100%;height:auto}
+.bgk-nm{margin:10px 0 16px;font-size:14px;font-weight:600;color:var(--ink)}
+.bgk-aksi{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
 /* tombol demo pengurus hanya relevan di tab Dashboard */
 body:not([data-layar="scrDasbor"]) #demoAngkat{display:none}
 /* layar sempit: tab pindah ke bilah bawah, label kecil tampil */
@@ -3485,6 +3492,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
     <div class="linkrow">
       <span class="linkrow-url" id="bkDoneLink">kolavo.app/</span>
       <button type="button" class="btn outline sm" id="bkSalin">Salin link</button>
+      <button type="button" class="btn sm" id="bkQr">Tampilkan QR</button>
     </div>
 
     <ul class="steps">
@@ -3691,6 +3699,265 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   window.KolavoIkon = ikon;
   window.KolavoIkonIsi = isi;
   isi();
+})();
+</script>
+<!-- ============================================================
+     Popup Bagikan (A5a): tautan + Salin + QR asli yang bisa dipindai.
+     Dipakai tombol bagikan di halaman komunitas dan layar sukses Buat.
+     ============================================================ -->
+<div class="lgn" id="bgk" hidden>
+  <div class="lgn-scrim" data-bgk-tutup></div>
+  <div class="lgn-box bgk-box" role="dialog" aria-modal="true" aria-labelledby="bgkH">
+    <button class="lgn-x" type="button" data-bgk-tutup aria-label="Tutup">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <h2 class="lgn-head" id="bgkH">Bagikan komunitas</h2>
+    <p class="lgn-sub">Pindai QR atau buka tautannya untuk masuk dan bergabung.</p>
+    <div class="bgk-qr" id="bgkQr" role="img" aria-label="Kode QR tautan komunitas"></div>
+    <p class="bgk-nm" id="bgkNm"></p>
+    <div class="linkrow">
+      <span class="linkrow-url" id="bgkUrl"></span>
+      <button type="button" class="btn outline sm" id="bgkSalin">Salin link</button>
+    </div>
+    <div class="bgk-aksi">
+      <button type="button" class="btn outline md" id="bgkUnduh">Unduh QR</button>
+      <button type="button" class="btn md" id="bgkShare" hidden>Bagikan…</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   KolavoQR(teks) -> SVG. Pembuat QR kecil tanpa pustaka (CSP Artifact
+   memblokir CDN): mode byte, koreksi galat M, versi 1–6 (≤ 106 byte —
+   cukup untuk tautan kolavo.app). Mask dipilih lewat skor penalti standar.
+   Warna sengaja hitam di atas putih di kedua tema: QR gelap-di-atas-terang
+   paling andal dibaca kamera.
+   ============================================================ */
+(function(){
+  /* [ec per blok, jumlah blok, total codeword data] untuk tingkat M */
+  const TABEL = [null, [10,1,16], [16,1,28], [26,1,44], [18,2,64], [24,2,86], [16,4,108]];
+  const ALIGN = [null, [], [6,18], [6,22], [6,26], [6,30], [6,34]];
+
+  /* GF(256), polinom 0x11D */
+  const EXP = new Array(512), LOG = new Array(256);
+  (function(){ let x = 1; for(let i = 0; i < 255; i++){ EXP[i] = x; LOG[x] = i; x <<= 1; if(x & 256) x ^= 0x11D; } for(let i = 255; i < 512; i++) EXP[i] = EXP[i - 255]; })();
+  const kali = (a, b) => (a && b) ? EXP[LOG[a] + LOG[b]] : 0;
+  function rs(data, n){
+    let gen = [1];
+    for(let i = 0; i < n; i++){
+      const g = new Array(gen.length + 1).fill(0);
+      for(let j = 0; j < gen.length; j++){ g[j] ^= gen[j]; g[j + 1] ^= kali(gen[j], EXP[i]); }
+      gen = g;
+    }
+    const sisa = new Array(n).fill(0);
+    data.forEach(function(b){
+      const f = b ^ sisa.shift(); sisa.push(0);
+      for(let j = 0; j < n; j++) sisa[j] ^= kali(gen[j + 1], f);
+    });
+    return sisa;
+  }
+
+  function encode(teks){
+    const bytes = Array.from(new TextEncoder().encode(teks));
+    let v = 1;
+    while(v <= 6 && 12 + bytes.length * 8 > TABEL[v][2] * 8) v++;
+    if(v > 6) throw new Error('Teks terlalu panjang untuk QR');
+    const [ecN, blokN, dataN] = TABEL[v];
+    /* aliran bit: mode 0100, panjang 8 bit, isi, terminator, pad */
+    const bit = [];
+    const tulis = (val, len) => { for(let i = len - 1; i >= 0; i--) bit.push((val >>> i) & 1); };
+    tulis(4, 4); tulis(bytes.length, 8); bytes.forEach(b => tulis(b, 8));
+    tulis(0, Math.min(4, dataN * 8 - bit.length));
+    while(bit.length % 8) bit.push(0);
+    const cw = [];
+    for(let i = 0; i < bit.length; i += 8) cw.push(parseInt(bit.slice(i, i + 8).join(''), 2));
+    for(let p = 0; cw.length < dataN; p++) cw.push(p % 2 ? 0x11 : 0xEC);
+    /* blok berukuran sama untuk versi 1–6 tingkat M; disisipkan kolom demi kolom */
+    const per = dataN / blokN, blok = [], ec = [];
+    for(let b = 0; b < blokN; b++){ const d = cw.slice(b * per, (b + 1) * per); blok.push(d); ec.push(rs(d, ecN)); }
+    const akhir = [];
+    for(let i = 0; i < per; i++) blok.forEach(d => akhir.push(d[i]));
+    for(let i = 0; i < ecN; i++) ec.forEach(e => akhir.push(e[i]));
+    return { v: v, cw: akhir };
+  }
+
+  function matriks(v, cw){
+    const n = 17 + 4 * v;
+    const m = [], fn = [];
+    for(let y = 0; y < n; y++){ m.push(new Array(n).fill(false)); fn.push(new Array(n).fill(false)); }
+    const set = (x, y, d) => { m[y][x] = d; fn[y][x] = true; };
+    for(let i = 0; i < n; i++){ set(6, i, i % 2 === 0); set(i, 6, i % 2 === 0); }
+    const finder = (cx, cy) => {
+      for(let dy = -4; dy <= 4; dy++) for(let dx = -4; dx <= 4; dx++){
+        const x = cx + dx, y = cy + dy, d = Math.max(Math.abs(dx), Math.abs(dy));
+        if(x >= 0 && x < n && y >= 0 && y < n) set(x, y, d !== 2 && d !== 4);
+      }
+    };
+    finder(3, 3); finder(n - 4, 3); finder(3, n - 4);
+    const al = ALIGN[v];
+    al.forEach(function(ay, i){ al.forEach(function(ax, j){
+      if((i === 0 && j === 0) || (i === 0 && j === al.length - 1) || (i === al.length - 1 && j === 0)) return;
+      for(let dy = -2; dy <= 2; dy++) for(let dx = -2; dx <= 2; dx++) set(ax + dx, ay + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+    }); });
+    format(m, fn, n, 0, set);   /* cadangkan area format */
+    /* isi data zig-zag dari kanan bawah, lewati kolom pewaktu 6 */
+    let i = 0;
+    for(let kanan = n - 1; kanan >= 1; kanan -= 2){
+      if(kanan === 6) kanan = 5;
+      for(let k = 0; k < n; k++){
+        for(let j = 0; j < 2; j++){
+          const x = kanan - j, naik = ((kanan + 1) & 2) === 0, y = naik ? n - 1 - k : k;
+          if(!fn[y][x] && i < cw.length * 8){ m[y][x] = ((cw[i >>> 3] >>> (7 - (i & 7))) & 1) === 1; i++; }
+        }
+      }
+    }
+    return { m: m, fn: fn, n: n, set: set };
+  }
+
+  function format(m, fn, n, mask, set){
+    const data = (0 << 3) | mask;   /* tingkat M = 00 */
+    let r = data;
+    for(let i = 0; i < 10; i++) r = (r << 1) ^ ((r >>> 9) * 0x537);
+    const b = ((data << 10) | r) ^ 0x5412;
+    const bit = i => ((b >>> i) & 1) === 1;
+    for(let i = 0; i <= 5; i++) set(8, i, bit(i));
+    set(8, 7, bit(6)); set(8, 8, bit(7)); set(7, 8, bit(8));
+    for(let i = 9; i < 15; i++) set(14 - i, 8, bit(i));
+    for(let i = 0; i < 8; i++) set(n - 1 - i, 8, bit(i));
+    for(let i = 8; i < 15; i++) set(8, n - 15 + i, bit(i));
+    set(8, n - 8, true);
+  }
+
+  const MASK = [
+    (x, y) => (x + y) % 2 === 0, (x, y) => y % 2 === 0, (x, y) => x % 3 === 0, (x, y) => (x + y) % 3 === 0,
+    (x, y) => (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0, (x, y) => x * y % 2 + x * y % 3 === 0,
+    (x, y) => (x * y % 2 + x * y % 3) % 2 === 0, (x, y) => ((x + y) % 2 + x * y % 3) % 2 === 0
+  ];
+
+  function penalti(m, n){
+    let p = 0, gelap = 0;
+    const garis = function(ambil){
+      for(let a = 0; a < n; a++){
+        let run = 1;
+        const row = [];
+        for(let b = 0; b < n; b++) row.push(ambil(a, b) ? 1 : 0);
+        for(let b = 1; b <= n; b++){
+          if(b < n && row[b] === row[b - 1]) run++;
+          else { if(run >= 5) p += run - 2; run = 1; }
+        }
+        const s = row.join('');
+        let k = -1;
+        while((k = s.indexOf('10111010000', k + 1)) !== -1) p += 40;
+        k = -1;
+        while((k = s.indexOf('00001011101', k + 1)) !== -1) p += 40;
+      }
+    };
+    garis((a, b) => m[a][b]); garis((a, b) => m[b][a]);
+    for(let y = 0; y < n; y++) for(let x = 0; x < n; x++){
+      if(m[y][x]) gelap++;
+      if(x < n - 1 && y < n - 1 && m[y][x] === m[y][x + 1] && m[y][x] === m[y + 1][x] && m[y][x] === m[y + 1][x + 1]) p += 3;
+    }
+    return p + Math.floor(Math.abs(gelap * 100 / (n * n) - 50) / 5) * 10;
+  }
+
+  function modul(teks){
+    const e = encode(teks);
+    let terbaik = null;
+    for(let k = 0; k < 8; k++){
+      const q = matriks(e.v, e.cw);
+      for(let y = 0; y < q.n; y++) for(let x = 0; x < q.n; x++) if(!q.fn[y][x] && MASK[k](x, y)) q.m[y][x] = !q.m[y][x];
+      format(q.m, q.fn, q.n, k, q.set);
+      const s = penalti(q.m, q.n);
+      if(!terbaik || s < terbaik.s) terbaik = { s: s, m: q.m, n: q.n };
+    }
+    return terbaik;
+  }
+
+  /* SVG dengan zona sunyi 4 modul; teks (opsional) di bawah untuk versi cetak */
+  function svg(teks, judul){
+    const q = modul(teks), n = q.n, z = 4, w = n + z * 2, h = w + (judul ? 5 : 0);
+    let d = '';
+    for(let y = 0; y < n; y++) for(let x = 0; x < n; x++) if(q.m[y][x]) d += 'M' + (x + z) + ' ' + (y + z) + 'h1v1h-1z';
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + h + '" shape-rendering="crispEdges">' +
+      '<rect width="' + w + '" height="' + h + '" fill="#FFFFFF"/><path fill="#000000" d="' + d + '"/>' +
+      (judul ? '<text x="' + (w / 2) + '" y="' + (w + 1.6) + '" text-anchor="middle" font-family="Poppins,Arial,sans-serif" font-size="2.2" font-weight="600" fill="#222222">' + esc(judul) + '</text>' : '') +
+      '</svg>';
+  }
+  window.KolavoQR = function(teks, judul){ return svg(teks, judul); };
+
+  /* ---------- popup Bagikan ---------- */
+  const el = id => document.getElementById(id);
+  const bgk = el('bgk');
+  const toast = t => { if(window.KolavoToast) window.KolavoToast(t); };
+  let kini = null, pemicu = null;
+
+  let unduhan = null;
+  if(window.claude && typeof window.claude.use === 'function'){
+    window.claude.use('downloads').then(function(d){ unduhan = d; }, function(){});
+  }
+
+  window.KolavoBagikan = function(nama, url){
+    kini = { nama: nama || 'Komunitas', url: url };
+    pemicu = document.activeElement;
+    el('bgkQr').innerHTML = svg(url);
+    el('bgkNm').textContent = kini.nama;
+    el('bgkUrl').textContent = url.replace(/^https:\/\//, '');
+    el('bgkShare').hidden = !navigator.share;
+    bgk.hidden = false;
+    document.body.classList.add('lgn-open');
+    document.documentElement.style.overflow = 'hidden';
+    requestAnimationFrame(() => bgk.classList.add('on'));
+    setTimeout(() => bgk.classList.add('on'), 60);   /* cadangan bila rAF mati di tab tersembunyi */
+  };
+  function tutup(){
+    bgk.classList.remove('on');
+    document.body.classList.remove('lgn-open');
+    document.documentElement.style.overflow = '';
+    setTimeout(() => { bgk.hidden = true; }, 170);
+    if(pemicu && pemicu.focus) pemicu.focus({ preventScroll: true });
+  }
+
+  function unduh(){
+    const nama = 'qr-' + kini.nama.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.svg';
+    const isi = svg(kini.url, kini.nama);
+    if(unduhan){
+      unduhan.save({ filename: nama, data: isi }).then(function(){ toast('QR disimpan sebagai ' + nama + '.'); }, function(err){
+        if(err && err.code === 'declined') return;
+        toast('Unduhan tidak tersedia di tampilan ini. Klik kanan atau tahan gambar QR untuk menyimpan.');
+      });
+      return;
+    }
+    try{
+      const u = URL.createObjectURL(new Blob([isi], { type: 'image/svg+xml' }));
+      const a = document.createElement('a');
+      a.href = u; a.download = nama;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(u), 1000);
+      /* di pratinjau ber-sandbox unduhan bisa diblokir diam-diam — jangan menjanjikan berhasil */
+      toast('Mengunduh ' + nama + '. Kalau tidak muncul, tahan atau klik kanan gambar QR.');
+    }catch(err){ toast('Unduhan diblokir di pratinjau ini. Tahan atau klik kanan gambar QR untuk menyimpan.'); }
+  }
+
+  document.addEventListener('click', function(e){
+    if(bgk.hidden) return;
+    if(e.target.closest('[data-bgk-tutup]')){ tutup(); return; }
+    if(e.target.closest('#bgkUnduh')){ unduh(); return; }
+    if(e.target.closest('#bgkShare')){
+      navigator.share({ title: kini.nama, text: 'Gabung ke ' + kini.nama + ' di Kolavo', url: kini.url }).catch(function(){});
+      return;
+    }
+    const s = e.target.closest('#bgkSalin');
+    if(s){
+      const label = s.textContent, beres = () => { s.textContent = 'Tersalin ✓'; setTimeout(() => { s.textContent = label; }, 2200); };
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(kini.url).then(beres, beres);
+        else beres();
+      }catch(err){ beres(); }
+    }
+  });
+  document.addEventListener('keydown', function(e){ if(!bgk.hidden && e.key === 'Escape') tutup(); });
 })();
 </script>
 <script>
@@ -6144,7 +6411,9 @@ function hitung(){}
     const slug = founder ? (((window.KolavoApp || {}).dibuat || {}).slug || '') : String(kini.kelas || '').replace(/^l-/, '');
     return 'https://kolavo.app/k/' + (slug || 'komunitas');
   }
+  /* A5a: satu popup Bagikan (tautan + QR) untuk semua pemicu — lihat 50-js-qr */
   function bagikan(){
+    if(window.KolavoBagikan){ window.KolavoBagikan(kini && kini.nama, alamatKini()); return; }
     const url = alamatKini(), pendek = url.replace(/^https:\/\//, '');
     const toast = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
     const salin = function(){
@@ -7999,7 +8268,7 @@ function hitung(){}
     el('bkDoneH').textContent = 'Halaman ' + nama + ' sudah jadi.';
     el('bkDoneNm').textContent = nama;
     el('bkDoneMeta').textContent = [dibuat.bentuk, dibuat.kota, 'belum ada anggota'].filter(Boolean).join(' · ');
-    el('bkDoneLink').textContent = 'kolavo.app/' + slug;
+    el('bkDoneLink').textContent = 'kolavo.app/k/' + slug;
     const petak = el('bkDoneLogo');
     petak.textContent = logo ? '' : dibuat.inisial;
     petak.style.backgroundImage = logo ? 'url("' + logo + '")' : '';
@@ -8029,12 +8298,16 @@ function hitung(){}
   }
 
   el('bkSalin').addEventListener('click', function(){
-    salin('https://kolavo.app/' + (dibuat ? dibuat.slug : ''), this, 'Tersalin ✓');
+    salin('https://kolavo.app/k/' + (dibuat ? dibuat.slug : ''), this, 'Tersalin ✓');
+  });
+  /* A5a: QR tautan komunitas, siap dicetak atau dipindai di pertemuan */
+  el('bkQr').addEventListener('click', function(){
+    if(window.KolavoBagikan) window.KolavoBagikan(dibuat ? dibuat.nama : 'Komunitas', 'https://kolavo.app/k/' + (dibuat ? dibuat.slug : ''));
   });
 
   el('bkWa').addEventListener('click', function(){
     const teks = 'Halaman ' + (dibuat ? dibuat.nama : 'komunitas kita') + ' sudah ada di Kolavo. ' +
-                 'Daftar di sini biar kita bisa saling kenal: https://kolavo.app/' + (dibuat ? dibuat.slug : '');
+                 'Daftar di sini biar kita bisa saling kenal: https://kolavo.app/k/' + (dibuat ? dibuat.slug : '');
     salin(teks, this, 'Ajakan tersalin ✓');
     if(window.KolavoToast) window.KolavoToast('Di produk, tombol ini langsung membuka WhatsApp.');
   });

@@ -388,6 +388,13 @@ body.m-tab .nav-in{position:relative}
 .app-kosong{padding:18px;border:1px dashed var(--line);border-radius:13px;background:var(--card);font-size:14px;color:var(--ink-2)}
 #dasborList{margin-top:24px}
 .dsb-buat{margin-top:16px}
+/* popup Bagikan + QR (A5a). Kotak QR tetap putih di kedua tema — kamera butuh
+   gelap di atas terang; warnanya ada di SVG, bukan di CSS tema */
+.bgk-box{max-width:420px}
+.bgk-qr{width:220px;margin:18px auto 0;border-radius:13px;overflow:hidden;border:1px solid var(--line)}
+.bgk-qr svg{display:block;width:100%;height:auto}
+.bgk-nm{margin:10px 0 16px;font-size:14px;font-weight:600;color:var(--ink)}
+.bgk-aksi{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
 /* tombol demo pengurus hanya relevan di tab Dashboard */
 body:not([data-layar="scrDasbor"]) #demoAngkat{display:none}
 /* layar sempit: tab pindah ke bilah bawah, label kecil tampil */

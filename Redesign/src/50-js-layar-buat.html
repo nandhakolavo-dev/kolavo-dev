@@ -408,7 +408,7 @@
     el('bkDoneH').textContent = 'Halaman ' + nama + ' sudah jadi.';
     el('bkDoneNm').textContent = nama;
     el('bkDoneMeta').textContent = [dibuat.bentuk, dibuat.kota, 'belum ada anggota'].filter(Boolean).join(' · ');
-    el('bkDoneLink').textContent = 'kolavo.app/' + slug;
+    el('bkDoneLink').textContent = 'kolavo.app/k/' + slug;
     const petak = el('bkDoneLogo');
     petak.textContent = logo ? '' : dibuat.inisial;
     petak.style.backgroundImage = logo ? 'url("' + logo + '")' : '';
@@ -438,12 +438,16 @@
   }
 
   el('bkSalin').addEventListener('click', function(){
-    salin('https://kolavo.app/' + (dibuat ? dibuat.slug : ''), this, 'Tersalin ✓');
+    salin('https://kolavo.app/k/' + (dibuat ? dibuat.slug : ''), this, 'Tersalin ✓');
+  });
+  /* A5a: QR tautan komunitas, siap dicetak atau dipindai di pertemuan */
+  el('bkQr').addEventListener('click', function(){
+    if(window.KolavoBagikan) window.KolavoBagikan(dibuat ? dibuat.nama : 'Komunitas', 'https://kolavo.app/k/' + (dibuat ? dibuat.slug : ''));
   });
 
   el('bkWa').addEventListener('click', function(){
     const teks = 'Halaman ' + (dibuat ? dibuat.nama : 'komunitas kita') + ' sudah ada di Kolavo. ' +
-                 'Daftar di sini biar kita bisa saling kenal: https://kolavo.app/' + (dibuat ? dibuat.slug : '');
+                 'Daftar di sini biar kita bisa saling kenal: https://kolavo.app/k/' + (dibuat ? dibuat.slug : '');
     salin(teks, this, 'Ajakan tersalin ✓');
     if(window.KolavoToast) window.KolavoToast('Di produk, tombol ini langsung membuka WhatsApp.');
   });

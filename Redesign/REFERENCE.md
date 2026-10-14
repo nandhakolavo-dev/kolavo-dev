@@ -1286,3 +1286,15 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
     `scrKelola` diawali "Dashboard ›". Pemilih komunitas di dalam `scrKelola` ditunda sampai
     ada lebih dari satu dashboard nyata.
   - Modul baru `50-js-app` (`KolavoGambarApp`), dipanggil router saat dua layar ini digambar.
+- **A5a · popup Bagikan + QR** (modul baru `50-js-qr`, setelah `50-js-ikon`).
+  `KolavoQR(teks, judul?)` → SVG: pembuat QR inline (mode byte, koreksi galat M, versi 1–6
+  ≤ 106 byte, mask dipilih lewat skor penalti). Terverifikasi dengan `BarcodeDetector`
+  Chrome untuk URL 24–100 karakter (versi 2–6): semua terbaca persis. `KolavoBagikan(nama,
+  url)` membuka popup: QR, nama komunitas, tautan + Salin, **Unduh QR** (berkas SVG berisi
+  nama di bawah QR, siap cetak; lewat kapabilitas `downloads` bila ada, cadangan tautan Blob
+  + toast yang tidak menjanjikan berhasil), **Bagikan…** bila `navigator.share` ada.
+  Dipakai: tombol bagikan di halaman komunitas (`bagikan()`), dan tombol baru **Tampilkan
+  QR** di layar sukses Buat. Warna QR hitam/putih ditulis di SVG (bukan token tema) karena
+  harus sama di kedua tema; prompt sempat menyebut `--qr-fg/--qr-bg`, tidak diperlukan.
+  Tautan layar sukses diseragamkan ke `kolavo.app/k/<slug>` (sebelumnya `kolavo.app/<slug>`,
+  beda dengan halaman komunitas).
