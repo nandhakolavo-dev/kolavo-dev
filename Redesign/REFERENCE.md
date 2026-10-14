@@ -1468,3 +1468,12 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   (mati bila `prefers-reduced-motion`). Lingkaran sudut (`::after`) diganti latar gradasi
   135° `--card → wash` warna khas (`.hs-i.hs-biru` dst. — kekhususan dinaikkan karena
   `.sek-stat-i{background}` ditulis lebih belakang).
+- **"Perlu Tindakan" → "Tindak Lanjut"**, tampil sebagai satu panel bergaya kotak masuk
+  (`.ha-panel`): baris `.ha-i` dipisah garis tipis, garis aksen 3px warna jenis di tepi kiri,
+  ikon bulat berwarna, label jenis kecil kapital (**Kenalan** oranye · **Pendaftaran** biru ·
+  **Pengajuan** biru muda · **Profil** hijau), judul + keterangan, tombol aksi di kanan (di HP
+  turun ke bawah teks). Kosong → baris hijau "Semua sudah ditindaklanjuti". Judul ketiga
+  bagian Home kini berikon dalam kotak berwarna (`judulSek`): Tindak Lanjut (bendera, oranye,
+  + jumlah), Rekomendasi Kenalan (orang, hijau), Kabar Komunitas (toa, biru). Kalimat:
+  "Sekar ingin berkenalan denganmu", "keputusan ada di pengurus", "Pengurus perlu memastikan
+  identitasmu sebelum menyetujui."

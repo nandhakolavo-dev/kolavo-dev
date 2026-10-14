@@ -444,14 +444,37 @@ button.hs-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 /* kartu kenalan Home: foto + teks di atas, tombol selebar kartu di bawah */
 .ob-orang.hn-i{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px 12px;padding:14px}
 .hn-i .btn{grid-column:1 / -1;width:100%;justify-content:center}
-/* Perlu tindakanmu: satu kolom, ikon + teks + aksi di kolom tetap */
-#homeAksi .ha-list{grid-template-columns:1fr}
-.pf-item.ha-i{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px}
-.ha-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink)}
-.ha-ic svg{width:19px;height:19px}
-.ha-aksi{display:flex;gap:8px}
+/* judul bagian Home: ikon berwarna + teks + jumlah */
+.hsek-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.hsek-h h2{font-size:18px;font-weight:600;margin:0}
+#scrHome .app-sek > .hsek-h + .app-sub{margin-top:-4px}
+.hsek-ic{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;flex:none}
+.hsek-ic svg{width:17px;height:17px}
+.hsek-ic.biru,.ha-biru .ha-ic{background:var(--blue-wash);color:var(--blue-ink)}
+.hsek-ic.hijau,.ha-hijau .ha-ic,.ha-beres .ha-ic{background:var(--green-wash);color:var(--green)}
+.hsek-ic.oranye,.ha-oranye .ha-ic{background:var(--orange-wash);color:var(--orange-ink)}
+.ha-ungu .ha-ic{background:var(--blue-tint);color:var(--blue)}
+.hsek-n{min-width:24px;height:24px;padding:0 8px;border-radius:100px;display:grid;place-items:center;font-size:12px;font-weight:600;background:var(--orange);color:var(--btn-ink)}
+/* Tindak Lanjut: satu panel bergaya kotak masuk, baris dipisah garis tipis */
+.ha-panel{background:var(--card);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+.ha-i{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;padding:16px 18px}
+.ha-i + .ha-i{border-top:1px solid var(--line)}
+/* garis aksen warna jenis di tepi kiri */
+.ha-i::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0}
+.ha-biru::before{background:var(--blue)}
+.ha-hijau::before{background:var(--green)}
+.ha-oranye::before{background:var(--orange)}
+.ha-ungu::before{background:var(--blue-ink)}
+.ha-ic{display:grid;place-items:center;width:42px;height:42px;border-radius:100px}
+.ha-ic svg{width:20px;height:20px}
+.ha-i .t,.ha-beres .t{min-width:0}
+.ha-jenis{display:block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
+.ha-i .n,.ha-beres .n{font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.35}
 .ha-i .n b{font-weight:600}
-@media(max-width:560px){.pf-item.ha-i{grid-template-columns:auto minmax(0,1fr)}.ha-aksi{grid-column:2}}
+.ha-i .s,.ha-beres .s{font-size:12.5px;color:var(--ink-3);line-height:1.4;margin-top:2px}
+.ha-aksi{display:flex;gap:8px}
+.ha-beres{display:flex;align-items:center;gap:14px;padding:18px}
+@media(max-width:560px){.ha-i{grid-template-columns:auto minmax(0,1fr)}.ha-aksi{grid-column:2}}
 /* Kabar dari komunitasmu */
 .hk-chips{display:flex;flex-wrap:wrap;gap:8px;margin:-2px 0 14px}
 .hk-list{display:grid;gap:12px}

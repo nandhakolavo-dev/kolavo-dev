@@ -487,14 +487,37 @@ button.hs-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 /* kartu kenalan Home: foto + teks di atas, tombol selebar kartu di bawah */
 .ob-orang.hn-i{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px 12px;padding:14px}
 .hn-i .btn{grid-column:1 / -1;width:100%;justify-content:center}
-/* Perlu tindakanmu: satu kolom, ikon + teks + aksi di kolom tetap */
-#homeAksi .ha-list{grid-template-columns:1fr}
-.pf-item.ha-i{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px}
-.ha-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink)}
-.ha-ic svg{width:19px;height:19px}
-.ha-aksi{display:flex;gap:8px}
+/* judul bagian Home: ikon berwarna + teks + jumlah */
+.hsek-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.hsek-h h2{font-size:18px;font-weight:600;margin:0}
+#scrHome .app-sek > .hsek-h + .app-sub{margin-top:-4px}
+.hsek-ic{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;flex:none}
+.hsek-ic svg{width:17px;height:17px}
+.hsek-ic.biru,.ha-biru .ha-ic{background:var(--blue-wash);color:var(--blue-ink)}
+.hsek-ic.hijau,.ha-hijau .ha-ic,.ha-beres .ha-ic{background:var(--green-wash);color:var(--green)}
+.hsek-ic.oranye,.ha-oranye .ha-ic{background:var(--orange-wash);color:var(--orange-ink)}
+.ha-ungu .ha-ic{background:var(--blue-tint);color:var(--blue)}
+.hsek-n{min-width:24px;height:24px;padding:0 8px;border-radius:100px;display:grid;place-items:center;font-size:12px;font-weight:600;background:var(--orange);color:var(--btn-ink)}
+/* Tindak Lanjut: satu panel bergaya kotak masuk, baris dipisah garis tipis */
+.ha-panel{background:var(--card);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+.ha-i{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;padding:16px 18px}
+.ha-i + .ha-i{border-top:1px solid var(--line)}
+/* garis aksen warna jenis di tepi kiri */
+.ha-i::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0}
+.ha-biru::before{background:var(--blue)}
+.ha-hijau::before{background:var(--green)}
+.ha-oranye::before{background:var(--orange)}
+.ha-ungu::before{background:var(--blue-ink)}
+.ha-ic{display:grid;place-items:center;width:42px;height:42px;border-radius:100px}
+.ha-ic svg{width:20px;height:20px}
+.ha-i .t,.ha-beres .t{min-width:0}
+.ha-jenis{display:block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
+.ha-i .n,.ha-beres .n{font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.35}
 .ha-i .n b{font-weight:600}
-@media(max-width:560px){.pf-item.ha-i{grid-template-columns:auto minmax(0,1fr)}.ha-aksi{grid-column:2}}
+.ha-i .s,.ha-beres .s{font-size:12.5px;color:var(--ink-3);line-height:1.4;margin-top:2px}
+.ha-aksi{display:flex;gap:8px}
+.ha-beres{display:flex;align-items:center;gap:14px;padding:18px}
+@media(max-width:560px){.ha-i{grid-template-columns:auto minmax(0,1fr)}.ha-aksi{grid-column:2}}
 /* Kabar dari komunitasmu */
 .hk-chips{display:flex;flex-wrap:wrap;gap:8px;margin:-2px 0 14px}
 .hk-list{display:grid;gap:12px}
@@ -2814,7 +2837,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       <p>Ringkasan aktivitas dan koneksimu di seluruh komunitas.</p>
     </header>
     <div class="home-stat" id="homeRingkas" aria-label="Ringkasan pribadi"></div>
-    <section class="app-sek" id="homeAksi" aria-label="Perlu tindakan"></section>
+    <section class="app-sek" id="homeAksi" aria-label="Tindak lanjut"></section>
     <section class="app-sek" id="homeKenal" aria-label="Rekomendasi kenalan"></section>
     <section class="app-sek" id="homeKabar" aria-label="Kabar komunitas"></section>
   </div>
@@ -11651,16 +11674,29 @@ function hitung(){}
   }
 
   /* ---------- Perlu tindakanmu ---------- */
-  function kartuAksi(ikon, judul, sub, aksi){
-    return '<div class="pf-item ha-i"><span class="ha-ic" aria-hidden="true">' + ic(ikon) + '</span>' +
-      '<div class="t"><div class="n">' + judul + '</div>' + (sub ? '<div class="s">' + sub + '</div>' : '') + '</div>' +
+  /* judul bagian Home: ikon dalam kotak berwarna + teks (+ jumlah bila ada) */
+  function judulSek(ikon, teks, warna, n){
+    return '<div class="hsek-h"><span class="hsek-ic ' + warna + '" aria-hidden="true">' + ic(ikon) + '</span>' +
+      '<h2>' + teks + '</h2>' + (n ? '<span class="hsek-n">' + n + '</span>' : '') + '</div>';
+  }
+  /* satu baris Tindak Lanjut: jenis menentukan warna ikon & label */
+  const JENIS = {
+    kenalan:  { label: 'Kenalan',    ikon: 'tangan',      warna: 'oranye' },
+    daftar:   { label: 'Pendaftaran', ikon: 'tambahOrang', warna: 'biru' },
+    ajuan:    { label: 'Pengajuan',  ikon: 'jam',         warna: 'ungu' },
+    profil:   { label: 'Profil',     ikon: 'profil',      warna: 'hijau' }
+  };
+  function barisAksi(jenis, judul, sub, aksi){
+    const j = JENIS[jenis];
+    return '<div class="ha-i ha-' + j.warna + '"><span class="ha-ic" aria-hidden="true">' + ic(j.ikon) + '</span>' +
+      '<div class="t"><span class="ha-jenis">' + j.label + '</span><div class="n">' + judul + '</div>' + (sub ? '<div class="s">' + sub + '</div>' : '') + '</div>' +
       (aksi ? '<div class="ha-aksi">' + aksi + '</div>' : '') + '</div>';
   }
   function gambarAksi(){
     const a = App(), item = [];
     kenalanMasuk().forEach(function(o, i){
       const pg = o.nama.split(' ')[0];
-      item.push(kartuAksi('tangan', '<b>' + esc(pg) + '</b> ingin berkenalan',
+      item.push(barisAksi('kenalan', '<b>' + esc(pg) + '</b> ingin berkenalan denganmu',
         esc([o.kerja, o.kota].filter(Boolean).join(' · ')) + ' · ' + esc(info(o.kelas).nama),
         '<button type="button" class="btn sm" data-home-kenal-terima="' + i + '">Terima</button>' +
         '<button type="button" class="btn outline sm" data-home-kenal-tolak="' + i + '">Tolak</button>'));
@@ -11672,27 +11708,28 @@ function hitung(){}
       if(!kom || !window.KolavoRingkasMinta) return;
       const r = window.KolavoRingkasMinta(kom);
       if(!r || !r.n || !r.bisa) return;
-      item.push(kartuAksi('tambahOrang', r.n + ' pendaftar menunggu persetujuanmu', esc(kom.nama),
+      item.push(barisAksi('daftar', r.n + ' pendaftar menunggu persetujuanmu', esc(kom.nama),
         '<button type="button" class="btn sm" data-home-tinjau="' + x[1] + '">Tinjau</button>'));
     });
     const dj = a.diajukan || {};
     Object.keys(dj).filter(function(k){ return dj[k] === 'menunggu'; }).forEach(function(k){
-      item.push(kartuAksi('jam', 'Pengajuan bergabung sedang ditinjau', esc(info(k).nama) + ' · pengurusnya yang memutuskan', ''));
+      item.push(barisAksi('ajuan', 'Pengajuan bergabung sedang ditinjau', esc(info(k).nama) + ' · keputusan ada di pengurus', ''));
     });
     if(!a.lengkap){
-      item.push(kartuAksi('profil', 'Lengkapi profilmu', 'Pengurus perlu memastikan kamu orang asli sebelum menyetujui.',
+      item.push(barisAksi('profil', 'Lengkapi profilmu', 'Pengurus perlu memastikan identitasmu sebelum menyetujui.',
         '<button type="button" class="btn sm" data-ke="scrLengkapi">Lengkapi profil</button>'));
     }
-    el('homeAksi').innerHTML = '<h2>Perlu Tindakan</h2>' + (item.length
-      ? '<div class="pf-list ha-list">' + item.join('') + '</div>'
-      : '<p class="app-kosong">Semua beres. Belum ada yang memerlukan tindakan.</p>');
+    el('homeAksi').innerHTML = judulSek('bendera', 'Tindak Lanjut', 'oranye', item.length) + (item.length
+      ? '<div class="ha-panel">' + item.join('') + '</div>'
+      : '<div class="ha-panel ha-beres"><span class="ha-ic" aria-hidden="true">' + ic('terimaOrang') + '</span>' +
+        '<div class="t"><div class="n">Semua sudah ditindaklanjuti</div><div class="s">Tidak ada permintaan atau persetujuan yang menunggumu.</div></div></div>');
   }
 
   /* ---------- Kabar dari komunitasmu ---------- */
   function gambarKabar(){
     const w = el('homeKabar'), kom = diterima();
     if(!kom.length){
-      w.innerHTML = '<h2>Kabar Komunitas</h2><div class="empty">' +
+      w.innerHTML = judulSek('toa', 'Kabar Komunitas', 'biru') + '<div class="empty">' +
         '<div class="empty-ic">' + ic('orang') + '</div>' +
         '<h3>Kabar muncul setelah kamu diterima di komunitas</h3>' +
         '<p>Cari komunitasmu lalu ajukan gabung. Punya tautan undangan dari pengurus? Buka tautannya untuk langsung bergabung.</p>' +
@@ -11708,7 +11745,7 @@ function hitung(){}
     const list = semua.filter(function(x){ return saring === 'semua' || x.kelas === saring; })
       .sort(function(a, b){ return (b.p.sematkan ? 1 : 0) - (a.p.sematkan ? 1 : 0) || b.p.waktu - a.p.waktu; });
     const chip = function(k, label){ return '<button type="button" class="chip' + (saring === k ? ' on' : '') + '" data-home-saring="' + k + '">' + esc(label) + '</button>'; };
-    w.innerHTML = '<h2>Kabar Komunitas</h2>' +
+    w.innerHTML = judulSek('toa', 'Kabar Komunitas', 'biru') +
       (punya.length > 1 ? '<div class="hk-chips">' + chip('semua', 'Semua') + punya.map(function(k){ return chip(k, info(k).nama); }).join('') + '</div>' : '') +
       (list.length
         ? '<div class="hk-list">' + list.slice(0, tampil).map(function(x){
@@ -11750,7 +11787,7 @@ function hitung(){}
     if(!w) return;
     const list = saranKenal();
     if(!list.length){ w.innerHTML = ''; return; }   /* kosong: bagian disembunyikan */
-    w.innerHTML = '<h2>Rekomendasi Kenalan</h2>' +
+    w.innerHTML = judulSek('orang', 'Rekomendasi Kenalan', 'hijau') +
       '<p class="app-sub">Anggota di komunitasmu dengan latar yang serupa.</p>' +
       '<div class="ob-orang-list hn-grid">' + list.map(function(x, j){
         const o = x.o, pg = o.pg || o.n.split(' ')[0];
