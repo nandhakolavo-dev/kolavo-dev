@@ -1,0 +1,102 @@
+<!-- ============================================================
+     Kredit kenalan (15 Okt 2026): saldo per pengguna, berlaku di semua komunitas.
+     Tiap ajakan kenalan memotong 10 kredit; habis → top up berbayar
+     100 kredit = Rp50.000. Pembayaran di prototipe disimulasikan.
+     ============================================================ -->
+<div class="lgn" id="krd" hidden>
+  <div class="lgn-scrim" data-krd-tutup></div>
+  <div class="lgn-box krd-box" role="dialog" aria-modal="true" aria-labelledby="krdH">
+    <button class="lgn-x" type="button" data-krd-tutup aria-label="Tutup">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <span class="krd-koin" aria-hidden="true"><i data-ic="koin"></i></span>
+    <h2 class="lgn-head" id="krdH">Top up kredit kenalan</h2>
+    <p class="lgn-sub" id="krdSub"></p>
+    <div class="krd-saldo">Saldo saat ini <b id="krdSaldo">0 kredit</b></div>
+    <div class="krd-paket" role="radio" aria-checked="true">
+      <div><b>100 kredit</b><span>Cukup untuk 10 ajakan kenalan</span></div>
+      <strong>Rp50.000</strong>
+    </div>
+    <button type="button" class="btn md krd-bayar" id="krdBayar">Bayar Rp50.000</button>
+    <p class="krd-catat">Setiap ajakan kenalan memakai 10 kredit. Kredit berlaku di semua komunitas yang kamu ikuti dan tidak hangus. Prototipe: pembayaran disimulasikan.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const BIAYA = 10, PAKET = 100, HARGA = 'Rp50.000';
+  /* saldo awal pengguna baru — asumsi prototipe, belum diputuskan (lihat REFERENCE.md) */
+  const AWAL = 20;
+  const App = function(){ const a = window.KolavoApp || (window.KolavoApp = {}); if(a.kreditSaldo == null) a.kreditSaldo = AWAL; return a; };
+  const el = function(id){ return document.getElementById(id); };
+  const toast = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
+  const krd = el('krd');
+  let pemicu = null, timer = null;
+
+  /* semua tampilan saldo (nav, Home, profil) disegarkan dari sini */
+  function segar(){
+    const s = App().kreditSaldo;
+    document.querySelectorAll('[data-kredit-saldo]').forEach(function(e){ e.textContent = s; });
+    if(window.KolavoGambarHome && document.getElementById('scrHome') && !document.getElementById('scrHome').hidden) window.KolavoGambarHome();
+    if(window.KolavoIsiProfil) window.KolavoIsiProfil();
+  }
+
+  function buka(alasan){
+    pemicu = document.activeElement;
+    const s = App().kreditSaldo;
+    el('krdSub').textContent = alasan || 'Tambah kredit untuk mengajak lebih banyak anggota berkenalan.';
+    el('krdSaldo').textContent = s + ' kredit';
+    el('krdBayar').disabled = false; el('krdBayar').textContent = 'Bayar ' + HARGA;
+    if(window.KolavoIkonIsi) window.KolavoIkonIsi(krd);
+    krd.hidden = false;
+    document.body.classList.add('lgn-open');
+    requestAnimationFrame(function(){ krd.classList.add('on'); });
+    setTimeout(function(){ krd.classList.add('on'); }, 60);
+  }
+  function tutup(){
+    clearTimeout(timer);
+    krd.classList.remove('on');
+    document.body.classList.remove('lgn-open');
+    setTimeout(function(){ krd.hidden = true; }, 170);
+    if(pemicu && pemicu.focus) pemicu.focus({ preventScroll: true });
+  }
+
+  window.KolavoKredit = {
+    BIAYA: BIAYA, PAKET: PAKET, HARGA: HARGA,
+    saldo: function(){ return App().kreditSaldo; },
+    /* gerbang tunggal ajakan kenalan: potong kredit, atau buka top up bila kurang */
+    pakai: function(nama){
+      const a = App();
+      if(a.kreditSaldo < BIAYA){
+        buka('Kreditmu ' + a.kreditSaldo + '. Mengajak ' + String(nama || '').split(' ')[0] + ' berkenalan butuh ' + BIAYA + ' kredit.');
+        return false;
+      }
+      a.kreditSaldo -= BIAYA;
+      setTimeout(segar, 0);
+      return true;
+    },
+    /* ajakan yang dibatalkan sebelum dijawab: kredit dikembalikan */
+    kembalikan: function(){ App().kreditSaldo += BIAYA; setTimeout(segar, 0); },
+    bukaTopUp: buka
+  };
+
+  document.addEventListener('click', function(e){
+    if(e.target.closest('[data-kredit-topup]')){ e.preventDefault(); buka(); return; }
+    if(krd.hidden) return;
+    if(e.target.closest('[data-krd-tutup]')){ tutup(); return; }
+    const b = e.target.closest('#krdBayar');
+    if(b){
+      b.disabled = true;
+      b.innerHTML = '<span class="gspin"></span> Memproses pembayaran…';
+      timer = setTimeout(function(){
+        App().kreditSaldo += PAKET;
+        tutup();
+        segar();
+        toast('Top up berhasil: +' + PAKET + ' kredit. Saldo ' + App().kreditSaldo + ' kredit.');
+      }, 1100);
+    }
+  });
+  document.addEventListener('keydown', function(e){ if(!krd.hidden && e.key === 'Escape') tutup(); });
+  App(); segar();
+})();
+</script>

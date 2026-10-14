@@ -480,13 +480,55 @@ button.hs-i{cursor:pointer;transition:border-color .15s ease,box-shadow .15s eas
 button.hs-i:hover{border-color:var(--blue);box-shadow:var(--sh-sm)}
 button.hs-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 #scrHome .app-sek:empty{display:none}
-.hn-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-.hn-i .t{min-width:0;flex:1;display:flex;flex-direction:column}
-.hn-i .t span{font-size:12.5px;color:var(--ink-2);line-height:1.4}
-.hn-i .t .hn-kom{font-size:11.5px;color:var(--ink-3)}
-/* kartu kenalan Home: foto + teks di atas, tombol selebar kartu di bawah */
-.ob-orang.hn-i{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px 12px;padding:14px}
-.hn-i .btn{grid-column:1 / -1;width:100%;justify-content:center}
+/* Rekomendasi Kenalan: kartu dengan alasan cocok yang jelas + profil bisa dibuka */
+.hn-kepala{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hn-kepala .hsek-h{margin-bottom:12px}
+.hn-saldo{display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;padding:6px 6px 6px 12px;border:1px solid var(--line);border-radius:100px;background:var(--card);font:inherit;font-size:13px;color:var(--ink-2);cursor:pointer}
+.hn-saldo svg{width:16px;height:16px;color:var(--orange)}
+.hn-saldo b{color:var(--ink);font-weight:600}
+.hn-saldo em{font-style:normal;font-weight:600;font-size:12px;color:var(--blue-ink);background:var(--blue-wash);padding:4px 10px;border-radius:100px}
+.hn-saldo:hover{border-color:var(--blue)}
+.hn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.hn-i{display:flex;flex-direction:column;gap:14px;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:13px}
+.hn-orang{display:flex;align-items:center;gap:12px;padding:0;border:0;background:none;font:inherit;text-align:left;color:inherit;cursor:pointer}
+.hn-orang .av{width:52px;height:52px;flex:none}
+.hn-orang .t{display:flex;flex-direction:column;min-width:0}
+.hn-orang b{font-size:15.5px;font-weight:600;color:var(--ink)}
+.hn-orang:hover b{color:var(--blue-ink)}
+.hn-orang .t > span{font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.hn-orang .hn-kom{display:inline-flex;align-items:center;gap:6px;margin-top:3px;font-size:11.5px;color:var(--ink-3)}
+.hn-kom .logo-sq{width:16px;height:16px;border-radius:5px;border:0;font-size:8px}
+.hn-alasan{padding:10px 12px;border-radius:11px;background:var(--bg-alt)}
+.hn-lbl{display:block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.hn-chips{display:flex;flex-wrap:wrap;gap:6px}
+.hn-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:4px 10px;border-radius:100px;background:var(--card);border:1px solid var(--line);color:var(--ink-2)}
+.hn-chip.cocok{background:var(--green-wash);border-color:transparent;color:var(--green)}
+.hn-chip svg{width:13px;height:13px}
+.hn-aksi{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
+.hn-aksi .btn{justify-content:center}
+.hn-aksi .btn small{margin-left:6px;font-size:11px;font-weight:500;opacity:.8}
+/* saldo kredit di navbar app */
+.nav-kredit[hidden]{display:none}
+.nav-kredit{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px 0 10px;border:1px solid var(--line);border-radius:100px;background:var(--card);font:inherit;font-size:13px;color:var(--ink-2);cursor:pointer}
+.nav-kredit svg{width:18px;height:18px;color:var(--orange)}
+.nav-kredit b{font-weight:600;color:var(--ink)}
+.nav-kredit:hover{border-color:var(--blue)}
+@media(max-width:767px){.nav-kredit span{display:none}.nav-kredit{padding:0 12px 0 9px}}
+/* profil anggota: saldo di bawah tombol ajak */
+.ag-kenal-kredit{margin-top:8px;font-size:12.5px;color:var(--ink-3)}
+.ag-kenal-kredit button{font:inherit;color:var(--blue-ink);background:none;border:0;padding:0;cursor:pointer;font-weight:600}
+/* popup top up kredit */
+.krd-box{max-width:400px}
+.krd-koin{display:grid;place-items:center;width:56px;height:56px;margin:4px auto 12px;border-radius:100px;background:var(--orange-wash);color:var(--orange)}
+.krd-koin svg{width:28px;height:28px}
+.krd-saldo{margin-top:14px;font-size:13px;color:var(--ink-2)}
+.krd-saldo b{color:var(--ink)}
+.krd-paket{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:14px 16px;border:2px solid var(--blue);border-radius:13px;background:var(--blue-wash);text-align:left}
+.krd-paket b{display:block;font-size:15px;color:var(--ink)}
+.krd-paket span{font-size:12.5px;color:var(--ink-2)}
+.krd-paket strong{font-size:17px;color:var(--blue-ink)}
+.krd-bayar{width:100%;margin-top:16px;justify-content:center}
+.krd-catat{margin-top:12px;font-size:12px;color:var(--ink-3);line-height:1.5}
 /* judul bagian Home: ikon berwarna + teks + jumlah */
 .hsek-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .hsek-h h2{font-size:18px;font-weight:600;margin:0}
@@ -2423,6 +2465,9 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       Masuk
     </a>
 
+    <!-- saldo kredit kenalan (mode app) — klik untuk top up -->
+    <button type="button" class="nav-kredit" id="navKredit" data-kredit-topup aria-label="Kredit kenalan, klik untuk top up" hidden><i data-ic="koin"></i><b data-kredit-saldo>0</b><span>kredit</span></button>
+
     <!-- notifikasi pengguna: tampil bersama menu akun (router), isinya digambar 50-js-notifikasi -->
     <div class="notif" id="notif" hidden>
       <button type="button" class="notif-btn" id="notifBtn" aria-expanded="false" aria-haspopup="true" aria-controls="notifPanel" aria-label="Notifikasi">
@@ -3838,7 +3883,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
    akun notif tagihan akses tambahOrang orang pengurus kartuId serah
    riwayat terimaOrang tolakOrang dokumen naik turun bagikan pensil
    sampah kalender jam bendera tangan toa profil cari rumah
-   beranda komunitas panel (set nav app, versi duotone)
+   beranda komunitas panel (set nav app, versi duotone) koin
    ============================================================ */
 (function(){
   const P = {
@@ -3879,6 +3924,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
     beranda:     '<path d="M4 10.6 12 4l8 6.6V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/>',
     komunitas:   '<circle cx="12" cy="8" r="3.2"/><path d="M6.4 19.5a5.6 5.6 0 0 1 11.2 0z"/><circle cx="5.2" cy="10.2" r="2.2"/><path d="M1.8 18.2a3.6 3.6 0 0 1 4.2-3.5"/><circle cx="18.8" cy="10.2" r="2.2"/><path d="M22.2 18.2a3.6 3.6 0 0 0-4.2-3.5"/>',
     panel:       '<rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8.5 16v-3.5M12 16V8.5M15.5 16v-5"/>',
+    koin:        '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M14.6 9.4c-.5-.8-1.5-1.3-2.6-1.3-1.5 0-2.6.8-2.6 1.9 0 2.6 5.4 1.4 5.4 4 0 1.1-1.2 1.9-2.8 1.9-1.2 0-2.2-.5-2.7-1.4"/>',
     rumah:       '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9"/>',
     bendera:     '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
     tangan:      '<path d="M7 11V6a1.5 1.5 0 0 1 3 0v4M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V12M16 9a1.5 1.5 0 0 1 3 0v4a8 8 0 0 1-8 8h-.5A6.5 6.5 0 0 1 5 16.8L3.4 13a1.5 1.5 0 0 1 2.6-1.4L7 13"/>'
@@ -4152,6 +4198,108 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
     }
   });
   document.addEventListener('keydown', function(e){ if(!bgk.hidden && e.key === 'Escape') tutup(); });
+})();
+</script>
+<!-- ============================================================
+     Kredit kenalan (15 Okt 2026): saldo per pengguna, berlaku di semua komunitas.
+     Tiap ajakan kenalan memotong 10 kredit; habis → top up berbayar
+     100 kredit = Rp50.000. Pembayaran di prototipe disimulasikan.
+     ============================================================ -->
+<div class="lgn" id="krd" hidden>
+  <div class="lgn-scrim" data-krd-tutup></div>
+  <div class="lgn-box krd-box" role="dialog" aria-modal="true" aria-labelledby="krdH">
+    <button class="lgn-x" type="button" data-krd-tutup aria-label="Tutup">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <span class="krd-koin" aria-hidden="true"><i data-ic="koin"></i></span>
+    <h2 class="lgn-head" id="krdH">Top up kredit kenalan</h2>
+    <p class="lgn-sub" id="krdSub"></p>
+    <div class="krd-saldo">Saldo saat ini <b id="krdSaldo">0 kredit</b></div>
+    <div class="krd-paket" role="radio" aria-checked="true">
+      <div><b>100 kredit</b><span>Cukup untuk 10 ajakan kenalan</span></div>
+      <strong>Rp50.000</strong>
+    </div>
+    <button type="button" class="btn md krd-bayar" id="krdBayar">Bayar Rp50.000</button>
+    <p class="krd-catat">Setiap ajakan kenalan memakai 10 kredit. Kredit berlaku di semua komunitas yang kamu ikuti dan tidak hangus. Prototipe: pembayaran disimulasikan.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const BIAYA = 10, PAKET = 100, HARGA = 'Rp50.000';
+  /* saldo awal pengguna baru — asumsi prototipe, belum diputuskan (lihat REFERENCE.md) */
+  const AWAL = 20;
+  const App = function(){ const a = window.KolavoApp || (window.KolavoApp = {}); if(a.kreditSaldo == null) a.kreditSaldo = AWAL; return a; };
+  const el = function(id){ return document.getElementById(id); };
+  const toast = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
+  const krd = el('krd');
+  let pemicu = null, timer = null;
+
+  /* semua tampilan saldo (nav, Home, profil) disegarkan dari sini */
+  function segar(){
+    const s = App().kreditSaldo;
+    document.querySelectorAll('[data-kredit-saldo]').forEach(function(e){ e.textContent = s; });
+    if(window.KolavoGambarHome && document.getElementById('scrHome') && !document.getElementById('scrHome').hidden) window.KolavoGambarHome();
+    if(window.KolavoIsiProfil) window.KolavoIsiProfil();
+  }
+
+  function buka(alasan){
+    pemicu = document.activeElement;
+    const s = App().kreditSaldo;
+    el('krdSub').textContent = alasan || 'Tambah kredit untuk mengajak lebih banyak anggota berkenalan.';
+    el('krdSaldo').textContent = s + ' kredit';
+    el('krdBayar').disabled = false; el('krdBayar').textContent = 'Bayar ' + HARGA;
+    if(window.KolavoIkonIsi) window.KolavoIkonIsi(krd);
+    krd.hidden = false;
+    document.body.classList.add('lgn-open');
+    requestAnimationFrame(function(){ krd.classList.add('on'); });
+    setTimeout(function(){ krd.classList.add('on'); }, 60);
+  }
+  function tutup(){
+    clearTimeout(timer);
+    krd.classList.remove('on');
+    document.body.classList.remove('lgn-open');
+    setTimeout(function(){ krd.hidden = true; }, 170);
+    if(pemicu && pemicu.focus) pemicu.focus({ preventScroll: true });
+  }
+
+  window.KolavoKredit = {
+    BIAYA: BIAYA, PAKET: PAKET, HARGA: HARGA,
+    saldo: function(){ return App().kreditSaldo; },
+    /* gerbang tunggal ajakan kenalan: potong kredit, atau buka top up bila kurang */
+    pakai: function(nama){
+      const a = App();
+      if(a.kreditSaldo < BIAYA){
+        buka('Kreditmu ' + a.kreditSaldo + '. Mengajak ' + String(nama || '').split(' ')[0] + ' berkenalan butuh ' + BIAYA + ' kredit.');
+        return false;
+      }
+      a.kreditSaldo -= BIAYA;
+      setTimeout(segar, 0);
+      return true;
+    },
+    /* ajakan yang dibatalkan sebelum dijawab: kredit dikembalikan */
+    kembalikan: function(){ App().kreditSaldo += BIAYA; setTimeout(segar, 0); },
+    bukaTopUp: buka
+  };
+
+  document.addEventListener('click', function(e){
+    if(e.target.closest('[data-kredit-topup]')){ e.preventDefault(); buka(); return; }
+    if(krd.hidden) return;
+    if(e.target.closest('[data-krd-tutup]')){ tutup(); return; }
+    const b = e.target.closest('#krdBayar');
+    if(b){
+      b.disabled = true;
+      b.innerHTML = '<span class="gspin"></span> Memproses pembayaran…';
+      timer = setTimeout(function(){
+        App().kreditSaldo += PAKET;
+        tutup();
+        segar();
+        toast('Top up berhasil: +' + PAKET + ' kredit. Saldo ' + App().kreditSaldo + ' kredit.');
+      }, 1100);
+    }
+  });
+  document.addEventListener('keydown', function(e){ if(!krd.hidden && e.key === 'Escape') tutup(); });
+  App(); segar();
 })();
 </script>
 <script>
@@ -4974,6 +5122,8 @@ function hitung(){}
     document.body.classList.toggle('m-tab', ada);
     const tab = document.getElementById('navTab');
     if(tab) tab.hidden = !ada;
+    const kredit = document.getElementById('navKredit');
+    if(kredit) kredit.hidden = !ada;
     document.querySelectorAll('#navTab .nt').forEach(function(t){
       const on = ada && t.dataset.tab === TAB[id];
       t.classList.toggle('on', on);
@@ -5252,14 +5402,14 @@ function hitung(){}
       });
     }
 
-    /* V4: kredit kenalan — satu kali beli, berlaku di semua komunitas */
+    /* kredit kenalan (15 Okt 2026): saldo, 10 kredit per ajakan, top up 100 kredit = Rp50.000 */
     const kr = document.getElementById('pfKredit');
     if(kr){
-      kr.innerHTML = '<div class="pf-item"><span class="pf-kredit-ic" aria-hidden="true">' + (window.KolavoIkon ? window.KolavoIkon('orang') : '') + '</span>' +
-        '<div class="t"><div class="n">Kredit kenalan</div>' +
-        '<div class="s">Membuka nomor WhatsApp dan akun media sosial anggota yang menerima ajakan kenalanmu. Beli satu kali, berlaku di semua komunitas yang kamu ikuti.</div></div>' +
-        (App.kredit ? '<span class="status anggota">Aktif</span>'
-                    : '<div class="pf-item-aksi"><span class="pf-harga">Rp XXXX</span><button type="button" class="btn sm" data-kredit-beli>Beli kredit kenalan</button></div>') + '</div>';
+      const K = window.KolavoKredit;
+      kr.innerHTML = '<div class="pf-item"><span class="pf-kredit-ic" aria-hidden="true">' + (window.KolavoIkon ? window.KolavoIkon('koin') : '') + '</span>' +
+        '<div class="t"><div class="n">Kredit kenalan · <span data-kredit-saldo>' + (K ? K.saldo() : 0) + '</span> kredit</div>' +
+        '<div class="s">Setiap ajakan kenalan memakai 10 kredit dan berlaku di semua komunitasmu. Begitu ajakan diterima, nomor WhatsApp dan media sosial kalian saling terbuka.</div></div>' +
+        '<div class="pf-item-aksi"><span class="pf-harga">100 kredit · Rp50.000</span><button type="button" class="btn sm" data-kredit-topup>Top up kredit</button></div></div>';
     }
 
     if(list){
@@ -5311,11 +5461,6 @@ function hitung(){}
     /* V4: komunitas yang diikuti sebagai anggota bisa dibuka dari "Komunitas saya" */
     if(e.target.closest('[data-komunitas-anggota]') && App.kartu && window.KolavoLihatKomunitas){
       e.preventDefault(); window.KolavoLihatKomunitas(App.kartu); return;
-    }
-    if(e.target.closest('[data-kredit-beli]')){
-      App.kredit = true; isiProfil();
-      if(window.KolavoToast) window.KolavoToast('Kredit kenalan aktif di semua komunitasmu. Mode demo — belum ada pembayaran.');
-      return;
     }
 
     if(e.target.closest('#kirim')){
@@ -6088,6 +6233,8 @@ function hitung(){}
     const App = window.KolavoApp || {};
     App.kenalan = App.kenalan || {};
     if(App.kenalan[nama]) return;
+    /* gerbang kredit: 10 kredit per ajakan, kurang → top up */
+    if(window.KolavoKredit && !window.KolavoKredit.pakai(nama)) return;
     App.kenalan[nama] = 'menunggu';
     tandaiDemo();
     segarKenal();
@@ -6228,14 +6375,10 @@ function hitung(){}
       wadah.className = 'ag-kenal buka';
       wadah.innerHTML =
         '<p class="ag-kenal-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.4 2.4 2.4 4.6-5"/></svg>Kalian sudah kenalan</p>' +
-        ((window.KolavoApp || {}).kredit
-          ? '<p class="ag-kenal-s">' + panggil + ' menerima ajakanmu, jadi nomor dan akun media sosialnya kebuka buat kamu — dan punyamu kebuka buat dia.</p>' +
-            '<div class="ag-wa"><span class="ag-wa-n">' + (o.wa || '—') + '</span>' +
-            '<button type="button" class="btn sm" id="agKenalChat">Chat di WhatsApp</button></div>'
-          /* V4: kontak dibuka dengan kredit kenalan — beli sekali, berlaku di semua komunitas */
-          : '<p class="ag-kenal-s">' + panggil + ' menerima ajakanmu. Nomor WhatsApp dan akun media sosialnya kebuka dengan <b>kredit kenalan</b> — beli satu kali, berlaku di semua komunitas yang kamu ikuti.</p>' +
-            '<div class="ag-wa"><span class="ag-wa-n">Rp XXXX · sekali beli</span>' +
-            '<button type="button" class="btn sm" id="agKredit">Buka dengan kredit kenalan</button></div>');
+        /* kredit sudah terpakai saat mengajak — begitu diterima, kontak langsung terbuka */
+        '<p class="ag-kenal-s">' + panggil + ' menerima ajakanmu, jadi nomor dan akun media sosialnya kebuka buat kamu — dan punyamu kebuka buat dia.</p>' +
+        '<div class="ag-wa"><span class="ag-wa-n">' + (o.wa || '—') + '</span>' +
+        '<button type="button" class="btn sm" id="agKenalChat">Chat di WhatsApp</button></div>';
       return;
     }
 
@@ -6252,7 +6395,8 @@ function hitung(){}
     wadah.innerHTML =
       '<p class="ag-kenal-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Nomor WhatsApp belum kebuka</p>' +
       '<p class="ag-kenal-s">Sesama anggota tidak otomatis saling pegang nomor. Ajak ' + panggil + ' kenalan — kalau dia setuju, nomor kalian kebuka dua-duanya.</p>' +
-      '<button type="button" class="btn sm" id="agKenalMinta">Ajak kenalan</button>';
+      '<button type="button" class="btn sm" id="agKenalMinta">Ajak kenalan · 10 kredit</button>' +
+      '<p class="ag-kenal-kredit">Saldo <b data-kredit-saldo>' + (window.KolavoKredit ? window.KolavoKredit.saldo() : 0) + '</b> kredit · <button type="button" data-kredit-topup>Top up</button></p>';
   }
 
   /* dipakai langkah Kenalan di onboarding: ajak tanpa membuka profil dulu */
@@ -6260,9 +6404,10 @@ function hitung(){}
     const App = window.KolavoApp || {};
     App.kenalan = App.kenalan || {};
     if(App.kenalan[nama]) return;
+    if(window.KolavoKredit && !window.KolavoKredit.pakai(nama)) return;
     App.kenalan[nama] = 'menunggu';
     tandaiDemo();
-    if(window.KolavoToast) window.KolavoToast('Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + '.');
+    if(window.KolavoToast) window.KolavoToast('Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + ' · ' + (window.KolavoKredit ? window.KolavoKredit.BIAYA + ' kredit terpakai.' : ''));
   };
 
   window.KolavoTerimaKenalan = function(){
@@ -6848,27 +6993,26 @@ function hitung(){}
       window.KolavoTerimaKenalan();
       return;
     }
-    if(e.target.closest('#agKredit')){
-      (window.KolavoApp || {}).kredit = true;
-      gambarAnggota(el('agNm').dataset.nm);
-      if(window.KolavoIsiProfil) window.KolavoIsiProfil();
-      if(window.KolavoToast) window.KolavoToast('Kredit kenalan aktif di semua komunitasmu. Mode demo — belum ada pembayaran.');
-      return;
-    }
     if(e.target.closest('#agKenalMinta') || e.target.closest('#agKenalBatal')){
       const nama = el('agNm').dataset.nm;
       const App = window.KolavoApp || {};
       App.kenalan = App.kenalan || {};
       const minta = !!e.target.closest('#agKenalMinta');
-      if(minta) App.kenalan[nama] = 'menunggu';
-      else delete App.kenalan[nama];
+      if(minta){
+        if(window.KolavoKredit && !window.KolavoKredit.pakai(nama)) return;
+        App.kenalan[nama] = 'menunggu';
+      } else {
+        delete App.kenalan[nama];
+        /* dibatalkan sebelum dijawab: kredit dikembalikan */
+        if(window.KolavoKredit) window.KolavoKredit.kembalikan();
+      }
       tandaiDemo();
       gambarAnggota(nama);
       segarKenal();
       if(window.KolavoToast){
         window.KolavoToast(minta
-          ? 'Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + '.'
-          : 'Ajakan kenalan dibatalkan.');
+          ? 'Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + ' · 10 kredit terpakai.'
+          : 'Ajakan kenalan dibatalkan. 10 kredit dikembalikan.');
       }
       return;
     }
@@ -11787,21 +11931,30 @@ function hitung(){}
     if(!w) return;
     const list = saranKenal();
     if(!list.length){ w.innerHTML = ''; return; }   /* kosong: bagian disembunyikan */
-    w.innerHTML = judulSek('orang', 'Rekomendasi Kenalan', 'hijau') +
-      '<p class="app-sub">Anggota di komunitasmu dengan latar yang serupa.</p>' +
-      '<div class="ob-orang-list hn-grid">' + list.map(function(x, j){
+    const K = window.KolavoKredit;
+    w.innerHTML = '<div class="hn-kepala">' + judulSek('orang', 'Rekomendasi Kenalan', 'hijau') +
+        '<button type="button" class="hn-saldo" data-kredit-topup>' + ic('koin') + '<span>Saldo <b data-kredit-saldo>' + (K ? K.saldo() : 0) + '</b> kredit</span><em>Top up</em></button></div>' +
+      '<p class="app-sub">Anggota komunitasmu yang paling dekat denganmu. Lihat profilnya dulu, lalu ajak berkenalan — setiap ajakan memakai 10 kredit.</p>' +
+      '<div class="hn-grid">' + list.map(function(x, j){
         const o = x.o, pg = o.pg || o.n.split(' ')[0];
         /* nama panggilan saja — nama lengkap termasuk data pribadi */
         const av = o.f ? '<span class="av photo ' + o.f + '" role="img" aria-label="Foto profil ' + esc(pg) + ' — gambar AI"></span>'
                        : '<span class="av ' + 'abc'[j % 3] + '" aria-hidden="true">' + esc(o.n.split(' ').map(function(w){ return w[0]; }).join('').slice(0, 2)) + '</span>';
-        return '<div class="ob-orang hn-i">' + av + '<div class="t"><b>' + esc(pg) + '</b><span>' + esc(x.alasan.join(' · ')) + '</span>' +
-          '<span class="hn-kom">' + esc(info(x.kelas).nama) + '</span></div>' +
-          '<button type="button" class="btn outline sm" data-home-ajak="' + esc(o.n) + '">Ajak kenalan</button></div>';
+        const profil = ' data-home-profil="' + esc(o.n) + '" data-kelas="' + x.kelas + '"';
+        /* alasan cocok sebagai chip ber-centang; konteks tambahan (angkatan) chip netral */
+        const chip = x.alasan.map(function(t){ return '<span class="hn-chip cocok">' + ic('terimaOrang') + esc(t) + '</span>'; }).join('') +
+          (o.a ? '<span class="hn-chip">Angkatan ' + esc(o.a) + '</span>' : '');
+        return '<article class="hn-i">' +
+          '<button type="button" class="hn-orang"' + profil + ' title="Lihat profil ' + esc(pg) + '">' + av +
+            '<span class="t"><b>' + esc(pg) + '</b><span>' + esc([o.k, o.d].filter(function(v){ return v && v !== '—'; }).join(' · ')) + '</span>' +
+            '<span class="hn-kom">' + info(x.kelas).logo + esc(info(x.kelas).nama) + '</span></span></button>' +
+          '<div class="hn-alasan"><span class="hn-lbl">Kenapa cocok</span><div class="hn-chips">' + chip + '</div></div>' +
+          '<div class="hn-aksi"><button type="button" class="btn outline sm"' + profil + '>Lihat profil</button>' +
+            '<button type="button" class="btn sm" data-home-ajak="' + esc(o.n) + '">Ajak kenalan<small>10 kredit</small></button></div>' +
+        '</article>';
       }).join('') + '</div>';
   }
 
-  /* ---------- sapaan + ringkasan pribadi ----------
-     Komponen kartu statistik sama dengan dashboard pengurus (.sek-stat-i). */
   /* ---------- visual kartu ringkasan ----------
      Bukan ikon generik: gambar dari datanya sendiri (logo komunitas, foto/inisial
      orang) bertumpuk. Kalau kosong, ikon dalam lingkaran berwarna khas kartunya. */
@@ -11877,6 +12030,14 @@ function hitung(){}
     }
     if((b = t.closest('[data-home-tinjau]'))){
       window.KolavoBukaDashboard('minta', b.dataset.homeTinjau === 'diangkat' ? window.KolavoKomDiangkat() : null);
+      return;
+    }
+    if((b = t.closest('[data-home-profil]'))){
+      /* buka profil anggota di komunitasnya: siapkan konteks komunitas dulu, tanpa pindah layar */
+      const kelas = b.dataset.kelas, nama = b.dataset.homeProfil;
+      if(kelas === 'l-dibuat'){ if(window.KolavoBukaKomunitasDibuat) window.KolavoBukaKomunitasDibuat(); }
+      else { const k = kartu(kelas); if(k && window.KolavoBukaKomunitas) window.KolavoBukaKomunitas(k); }
+      if(window.KolavoBukaAnggota) window.KolavoBukaAnggota(nama);
       return;
     }
     if((b = t.closest('[data-home-ajak]'))){

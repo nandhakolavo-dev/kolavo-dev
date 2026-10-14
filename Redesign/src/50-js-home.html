@@ -174,21 +174,30 @@
     if(!w) return;
     const list = saranKenal();
     if(!list.length){ w.innerHTML = ''; return; }   /* kosong: bagian disembunyikan */
-    w.innerHTML = judulSek('orang', 'Rekomendasi Kenalan', 'hijau') +
-      '<p class="app-sub">Anggota di komunitasmu dengan latar yang serupa.</p>' +
-      '<div class="ob-orang-list hn-grid">' + list.map(function(x, j){
+    const K = window.KolavoKredit;
+    w.innerHTML = '<div class="hn-kepala">' + judulSek('orang', 'Rekomendasi Kenalan', 'hijau') +
+        '<button type="button" class="hn-saldo" data-kredit-topup>' + ic('koin') + '<span>Saldo <b data-kredit-saldo>' + (K ? K.saldo() : 0) + '</b> kredit</span><em>Top up</em></button></div>' +
+      '<p class="app-sub">Anggota komunitasmu yang paling dekat denganmu. Lihat profilnya dulu, lalu ajak berkenalan — setiap ajakan memakai 10 kredit.</p>' +
+      '<div class="hn-grid">' + list.map(function(x, j){
         const o = x.o, pg = o.pg || o.n.split(' ')[0];
         /* nama panggilan saja — nama lengkap termasuk data pribadi */
         const av = o.f ? '<span class="av photo ' + o.f + '" role="img" aria-label="Foto profil ' + esc(pg) + ' — gambar AI"></span>'
                        : '<span class="av ' + 'abc'[j % 3] + '" aria-hidden="true">' + esc(o.n.split(' ').map(function(w){ return w[0]; }).join('').slice(0, 2)) + '</span>';
-        return '<div class="ob-orang hn-i">' + av + '<div class="t"><b>' + esc(pg) + '</b><span>' + esc(x.alasan.join(' · ')) + '</span>' +
-          '<span class="hn-kom">' + esc(info(x.kelas).nama) + '</span></div>' +
-          '<button type="button" class="btn outline sm" data-home-ajak="' + esc(o.n) + '">Ajak kenalan</button></div>';
+        const profil = ' data-home-profil="' + esc(o.n) + '" data-kelas="' + x.kelas + '"';
+        /* alasan cocok sebagai chip ber-centang; konteks tambahan (angkatan) chip netral */
+        const chip = x.alasan.map(function(t){ return '<span class="hn-chip cocok">' + ic('terimaOrang') + esc(t) + '</span>'; }).join('') +
+          (o.a ? '<span class="hn-chip">Angkatan ' + esc(o.a) + '</span>' : '');
+        return '<article class="hn-i">' +
+          '<button type="button" class="hn-orang"' + profil + ' title="Lihat profil ' + esc(pg) + '">' + av +
+            '<span class="t"><b>' + esc(pg) + '</b><span>' + esc([o.k, o.d].filter(function(v){ return v && v !== '—'; }).join(' · ')) + '</span>' +
+            '<span class="hn-kom">' + info(x.kelas).logo + esc(info(x.kelas).nama) + '</span></span></button>' +
+          '<div class="hn-alasan"><span class="hn-lbl">Kenapa cocok</span><div class="hn-chips">' + chip + '</div></div>' +
+          '<div class="hn-aksi"><button type="button" class="btn outline sm"' + profil + '>Lihat profil</button>' +
+            '<button type="button" class="btn sm" data-home-ajak="' + esc(o.n) + '">Ajak kenalan<small>10 kredit</small></button></div>' +
+        '</article>';
       }).join('') + '</div>';
   }
 
-  /* ---------- sapaan + ringkasan pribadi ----------
-     Komponen kartu statistik sama dengan dashboard pengurus (.sek-stat-i). */
   /* ---------- visual kartu ringkasan ----------
      Bukan ikon generik: gambar dari datanya sendiri (logo komunitas, foto/inisial
      orang) bertumpuk. Kalau kosong, ikon dalam lingkaran berwarna khas kartunya. */
@@ -264,6 +273,14 @@
     }
     if((b = t.closest('[data-home-tinjau]'))){
       window.KolavoBukaDashboard('minta', b.dataset.homeTinjau === 'diangkat' ? window.KolavoKomDiangkat() : null);
+      return;
+    }
+    if((b = t.closest('[data-home-profil]'))){
+      /* buka profil anggota di komunitasnya: siapkan konteks komunitas dulu, tanpa pindah layar */
+      const kelas = b.dataset.kelas, nama = b.dataset.homeProfil;
+      if(kelas === 'l-dibuat'){ if(window.KolavoBukaKomunitasDibuat) window.KolavoBukaKomunitasDibuat(); }
+      else { const k = kartu(kelas); if(k && window.KolavoBukaKomunitas) window.KolavoBukaKomunitas(k); }
+      if(window.KolavoBukaAnggota) window.KolavoBukaAnggota(nama);
       return;
     }
     if((b = t.closest('[data-home-ajak]'))){

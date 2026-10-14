@@ -437,13 +437,55 @@ button.hs-i{cursor:pointer;transition:border-color .15s ease,box-shadow .15s eas
 button.hs-i:hover{border-color:var(--blue);box-shadow:var(--sh-sm)}
 button.hs-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 #scrHome .app-sek:empty{display:none}
-.hn-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-.hn-i .t{min-width:0;flex:1;display:flex;flex-direction:column}
-.hn-i .t span{font-size:12.5px;color:var(--ink-2);line-height:1.4}
-.hn-i .t .hn-kom{font-size:11.5px;color:var(--ink-3)}
-/* kartu kenalan Home: foto + teks di atas, tombol selebar kartu di bawah */
-.ob-orang.hn-i{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px 12px;padding:14px}
-.hn-i .btn{grid-column:1 / -1;width:100%;justify-content:center}
+/* Rekomendasi Kenalan: kartu dengan alasan cocok yang jelas + profil bisa dibuka */
+.hn-kepala{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hn-kepala .hsek-h{margin-bottom:12px}
+.hn-saldo{display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;padding:6px 6px 6px 12px;border:1px solid var(--line);border-radius:100px;background:var(--card);font:inherit;font-size:13px;color:var(--ink-2);cursor:pointer}
+.hn-saldo svg{width:16px;height:16px;color:var(--orange)}
+.hn-saldo b{color:var(--ink);font-weight:600}
+.hn-saldo em{font-style:normal;font-weight:600;font-size:12px;color:var(--blue-ink);background:var(--blue-wash);padding:4px 10px;border-radius:100px}
+.hn-saldo:hover{border-color:var(--blue)}
+.hn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.hn-i{display:flex;flex-direction:column;gap:14px;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:13px}
+.hn-orang{display:flex;align-items:center;gap:12px;padding:0;border:0;background:none;font:inherit;text-align:left;color:inherit;cursor:pointer}
+.hn-orang .av{width:52px;height:52px;flex:none}
+.hn-orang .t{display:flex;flex-direction:column;min-width:0}
+.hn-orang b{font-size:15.5px;font-weight:600;color:var(--ink)}
+.hn-orang:hover b{color:var(--blue-ink)}
+.hn-orang .t > span{font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.hn-orang .hn-kom{display:inline-flex;align-items:center;gap:6px;margin-top:3px;font-size:11.5px;color:var(--ink-3)}
+.hn-kom .logo-sq{width:16px;height:16px;border-radius:5px;border:0;font-size:8px}
+.hn-alasan{padding:10px 12px;border-radius:11px;background:var(--bg-alt)}
+.hn-lbl{display:block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.hn-chips{display:flex;flex-wrap:wrap;gap:6px}
+.hn-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:4px 10px;border-radius:100px;background:var(--card);border:1px solid var(--line);color:var(--ink-2)}
+.hn-chip.cocok{background:var(--green-wash);border-color:transparent;color:var(--green)}
+.hn-chip svg{width:13px;height:13px}
+.hn-aksi{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
+.hn-aksi .btn{justify-content:center}
+.hn-aksi .btn small{margin-left:6px;font-size:11px;font-weight:500;opacity:.8}
+/* saldo kredit di navbar app */
+.nav-kredit[hidden]{display:none}
+.nav-kredit{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px 0 10px;border:1px solid var(--line);border-radius:100px;background:var(--card);font:inherit;font-size:13px;color:var(--ink-2);cursor:pointer}
+.nav-kredit svg{width:18px;height:18px;color:var(--orange)}
+.nav-kredit b{font-weight:600;color:var(--ink)}
+.nav-kredit:hover{border-color:var(--blue)}
+@media(max-width:767px){.nav-kredit span{display:none}.nav-kredit{padding:0 12px 0 9px}}
+/* profil anggota: saldo di bawah tombol ajak */
+.ag-kenal-kredit{margin-top:8px;font-size:12.5px;color:var(--ink-3)}
+.ag-kenal-kredit button{font:inherit;color:var(--blue-ink);background:none;border:0;padding:0;cursor:pointer;font-weight:600}
+/* popup top up kredit */
+.krd-box{max-width:400px}
+.krd-koin{display:grid;place-items:center;width:56px;height:56px;margin:4px auto 12px;border-radius:100px;background:var(--orange-wash);color:var(--orange)}
+.krd-koin svg{width:28px;height:28px}
+.krd-saldo{margin-top:14px;font-size:13px;color:var(--ink-2)}
+.krd-saldo b{color:var(--ink)}
+.krd-paket{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:14px 16px;border:2px solid var(--blue);border-radius:13px;background:var(--blue-wash);text-align:left}
+.krd-paket b{display:block;font-size:15px;color:var(--ink)}
+.krd-paket span{font-size:12.5px;color:var(--ink-2)}
+.krd-paket strong{font-size:17px;color:var(--blue-ink)}
+.krd-bayar{width:100%;margin-top:16px;justify-content:center}
+.krd-catat{margin-top:12px;font-size:12px;color:var(--ink-3);line-height:1.5}
 /* judul bagian Home: ikon berwarna + teks + jumlah */
 .hsek-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .hsek-h h2{font-size:18px;font-weight:600;margin:0}

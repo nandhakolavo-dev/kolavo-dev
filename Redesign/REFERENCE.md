@@ -1477,3 +1477,25 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   + jumlah), Rekomendasi Kenalan (orang, hijau), Kabar Komunitas (toa, biru). Kalimat:
   "Sekar ingin berkenalan denganmu", "keputusan ada di pengurus", "Pengurus perlu memastikan
   identitasmu sebelum menyetujui."
+
+## Kredit kenalan (15 Okt 2026)
+
+- **Model baru** menggantikan "kredit kenalan sekali beli" (`App.kredit`, `Rp XXXX`):
+  saldo `App.kreditSaldo`, gerbang tunggal `KolavoKredit.pakai(nama)` dipanggil oleh ketiga
+  pintu ajak — `KolavoAjakKenal` (feed), `KolavoAjakKenalan` (onboarding, Home), tombol
+  `#agKenalMinta` (profil anggota). Biaya 10 kredit per ajakan; kurang → popup top up
+  (`#krd`) dengan alasannya dan ajakan tidak terkirim. Batal sebelum dijawab →
+  `kembalikan()` (+10). Top up: satu paket **100 kredit = Rp50.000** (cukup 10 ajakan),
+  pembayaran disimulasikan. Begitu ajakan diterima, kontak langsung terbuka (tidak ada
+  pembelian kedua).
+- **Saldo tampil di**: chip navbar app (`#navKredit`, ikon `koin`, klik = top up; di HP angka
+  saja), kepala Rekomendasi Kenalan di Home, bawah tombol ajak di profil anggota, dan kartu
+  "Kredit kenalan" di Profil saya. Semua elemen `[data-kredit-saldo]` disegarkan bersama;
+  semua `[data-kredit-topup]` membuka popup.
+- **Belum diputuskan**: saldo awal pengguna baru (prototipe: 20 = 2 ajakan); apakah kredit
+  dikembalikan bila ajakan ditolak; paket top up lain selain 100.
+- **Rekomendasi Kenalan dirapikan**: kartu `.hn-i` — foto 52px + nama panggilan + pekerjaan ·
+  kota + logo & nama komunitas (klik → profil), kotak **"Kenapa cocok"** berisi chip hijau
+  ber-centang (alasan dari `KolavoCocokkan`) + chip netral angkatan, tombol **Lihat profil**
+  (buka `scrAnggota` dalam konteks komunitasnya lewat `KolavoBukaKomunitas` tanpa pindah
+  layar) dan **Ajak kenalan · 10 kredit**. Pengantar menjelaskan biaya kredit.

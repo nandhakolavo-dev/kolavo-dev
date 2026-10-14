@@ -455,6 +455,8 @@
     const App = window.KolavoApp || {};
     App.kenalan = App.kenalan || {};
     if(App.kenalan[nama]) return;
+    /* gerbang kredit: 10 kredit per ajakan, kurang → top up */
+    if(window.KolavoKredit && !window.KolavoKredit.pakai(nama)) return;
     App.kenalan[nama] = 'menunggu';
     tandaiDemo();
     segarKenal();
@@ -595,14 +597,10 @@
       wadah.className = 'ag-kenal buka';
       wadah.innerHTML =
         '<p class="ag-kenal-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.4 2.4 2.4 4.6-5"/></svg>Kalian sudah kenalan</p>' +
-        ((window.KolavoApp || {}).kredit
-          ? '<p class="ag-kenal-s">' + panggil + ' menerima ajakanmu, jadi nomor dan akun media sosialnya kebuka buat kamu — dan punyamu kebuka buat dia.</p>' +
-            '<div class="ag-wa"><span class="ag-wa-n">' + (o.wa || '—') + '</span>' +
-            '<button type="button" class="btn sm" id="agKenalChat">Chat di WhatsApp</button></div>'
-          /* V4: kontak dibuka dengan kredit kenalan — beli sekali, berlaku di semua komunitas */
-          : '<p class="ag-kenal-s">' + panggil + ' menerima ajakanmu. Nomor WhatsApp dan akun media sosialnya kebuka dengan <b>kredit kenalan</b> — beli satu kali, berlaku di semua komunitas yang kamu ikuti.</p>' +
-            '<div class="ag-wa"><span class="ag-wa-n">Rp XXXX · sekali beli</span>' +
-            '<button type="button" class="btn sm" id="agKredit">Buka dengan kredit kenalan</button></div>');
+        /* kredit sudah terpakai saat mengajak — begitu diterima, kontak langsung terbuka */
+        '<p class="ag-kenal-s">' + panggil + ' menerima ajakanmu, jadi nomor dan akun media sosialnya kebuka buat kamu — dan punyamu kebuka buat dia.</p>' +
+        '<div class="ag-wa"><span class="ag-wa-n">' + (o.wa || '—') + '</span>' +
+        '<button type="button" class="btn sm" id="agKenalChat">Chat di WhatsApp</button></div>';
       return;
     }
 
@@ -619,7 +617,8 @@
     wadah.innerHTML =
       '<p class="ag-kenal-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Nomor WhatsApp belum kebuka</p>' +
       '<p class="ag-kenal-s">Sesama anggota tidak otomatis saling pegang nomor. Ajak ' + panggil + ' kenalan — kalau dia setuju, nomor kalian kebuka dua-duanya.</p>' +
-      '<button type="button" class="btn sm" id="agKenalMinta">Ajak kenalan</button>';
+      '<button type="button" class="btn sm" id="agKenalMinta">Ajak kenalan · 10 kredit</button>' +
+      '<p class="ag-kenal-kredit">Saldo <b data-kredit-saldo>' + (window.KolavoKredit ? window.KolavoKredit.saldo() : 0) + '</b> kredit · <button type="button" data-kredit-topup>Top up</button></p>';
   }
 
   /* dipakai langkah Kenalan di onboarding: ajak tanpa membuka profil dulu */
@@ -627,9 +626,10 @@
     const App = window.KolavoApp || {};
     App.kenalan = App.kenalan || {};
     if(App.kenalan[nama]) return;
+    if(window.KolavoKredit && !window.KolavoKredit.pakai(nama)) return;
     App.kenalan[nama] = 'menunggu';
     tandaiDemo();
-    if(window.KolavoToast) window.KolavoToast('Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + '.');
+    if(window.KolavoToast) window.KolavoToast('Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + ' · ' + (window.KolavoKredit ? window.KolavoKredit.BIAYA + ' kredit terpakai.' : ''));
   };
 
   window.KolavoTerimaKenalan = function(){
@@ -1215,27 +1215,26 @@
       window.KolavoTerimaKenalan();
       return;
     }
-    if(e.target.closest('#agKredit')){
-      (window.KolavoApp || {}).kredit = true;
-      gambarAnggota(el('agNm').dataset.nm);
-      if(window.KolavoIsiProfil) window.KolavoIsiProfil();
-      if(window.KolavoToast) window.KolavoToast('Kredit kenalan aktif di semua komunitasmu. Mode demo — belum ada pembayaran.');
-      return;
-    }
     if(e.target.closest('#agKenalMinta') || e.target.closest('#agKenalBatal')){
       const nama = el('agNm').dataset.nm;
       const App = window.KolavoApp || {};
       App.kenalan = App.kenalan || {};
       const minta = !!e.target.closest('#agKenalMinta');
-      if(minta) App.kenalan[nama] = 'menunggu';
-      else delete App.kenalan[nama];
+      if(minta){
+        if(window.KolavoKredit && !window.KolavoKredit.pakai(nama)) return;
+        App.kenalan[nama] = 'menunggu';
+      } else {
+        delete App.kenalan[nama];
+        /* dibatalkan sebelum dijawab: kredit dikembalikan */
+        if(window.KolavoKredit) window.KolavoKredit.kembalikan();
+      }
       tandaiDemo();
       gambarAnggota(nama);
       segarKenal();
       if(window.KolavoToast){
         window.KolavoToast(minta
-          ? 'Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + '.'
-          : 'Ajakan kenalan dibatalkan.');
+          ? 'Ajakan kenalan dikirim ke ' + nama.split(' ')[0] + ' · 10 kredit terpakai.'
+          : 'Ajakan kenalan dibatalkan. 10 kredit dikembalikan.');
       }
       return;
     }

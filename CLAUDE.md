@@ -176,5 +176,9 @@ anggota, peninjau Rp 15.000 + Rp 3.000 tiap tambahan · diskon 5% (6–12 bulan)
 (langsung 2 tahun) · **Big Organization** di atas 1.000 anggota lewat "Hubungi kami".
 Di halaman ditulis FREE, bukan "Gratis", dan hanya untuk batas Esensial — jangan menjanjikan
 Kolavo gratis secara umum. Kredit kenalan anggota tidak ditampilkan di bagian harga beranda.
+**Kredit kenalan (15 Okt 2026):** saldo per pengguna, berlaku di semua komunitas; tiap ajakan
+kenalan memotong **10 kredit** (dikembalikan bila dibatalkan sebelum dijawab); top up berbayar
+**100 kredit = Rp50.000**. Rumus & gerbang di `src/50-js-kredit.html` (`window.KolavoKredit`).
+Saldo awal pengguna baru (20) masih asumsi prototipe — belum diputuskan.
 Panel Tagihan dashboard masih `Rp XXXX` (belum diselaraskan). `archive/ReDesign_Kolavo_1.html` sengaja dibiarkan sebagai arsip.
 Jangan tulis ulang kata itu tanpa keputusan harga.

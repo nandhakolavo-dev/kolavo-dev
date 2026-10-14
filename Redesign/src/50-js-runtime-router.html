@@ -89,6 +89,8 @@
     document.body.classList.toggle('m-tab', ada);
     const tab = document.getElementById('navTab');
     if(tab) tab.hidden = !ada;
+    const kredit = document.getElementById('navKredit');
+    if(kredit) kredit.hidden = !ada;
     document.querySelectorAll('#navTab .nt').forEach(function(t){
       const on = ada && t.dataset.tab === TAB[id];
       t.classList.toggle('on', on);
@@ -367,14 +369,14 @@
       });
     }
 
-    /* V4: kredit kenalan — satu kali beli, berlaku di semua komunitas */
+    /* kredit kenalan (15 Okt 2026): saldo, 10 kredit per ajakan, top up 100 kredit = Rp50.000 */
     const kr = document.getElementById('pfKredit');
     if(kr){
-      kr.innerHTML = '<div class="pf-item"><span class="pf-kredit-ic" aria-hidden="true">' + (window.KolavoIkon ? window.KolavoIkon('orang') : '') + '</span>' +
-        '<div class="t"><div class="n">Kredit kenalan</div>' +
-        '<div class="s">Membuka nomor WhatsApp dan akun media sosial anggota yang menerima ajakan kenalanmu. Beli satu kali, berlaku di semua komunitas yang kamu ikuti.</div></div>' +
-        (App.kredit ? '<span class="status anggota">Aktif</span>'
-                    : '<div class="pf-item-aksi"><span class="pf-harga">Rp XXXX</span><button type="button" class="btn sm" data-kredit-beli>Beli kredit kenalan</button></div>') + '</div>';
+      const K = window.KolavoKredit;
+      kr.innerHTML = '<div class="pf-item"><span class="pf-kredit-ic" aria-hidden="true">' + (window.KolavoIkon ? window.KolavoIkon('koin') : '') + '</span>' +
+        '<div class="t"><div class="n">Kredit kenalan · <span data-kredit-saldo>' + (K ? K.saldo() : 0) + '</span> kredit</div>' +
+        '<div class="s">Setiap ajakan kenalan memakai 10 kredit dan berlaku di semua komunitasmu. Begitu ajakan diterima, nomor WhatsApp dan media sosial kalian saling terbuka.</div></div>' +
+        '<div class="pf-item-aksi"><span class="pf-harga">100 kredit · Rp50.000</span><button type="button" class="btn sm" data-kredit-topup>Top up kredit</button></div></div>';
     }
 
     if(list){
@@ -426,11 +428,6 @@
     /* V4: komunitas yang diikuti sebagai anggota bisa dibuka dari "Komunitas saya" */
     if(e.target.closest('[data-komunitas-anggota]') && App.kartu && window.KolavoLihatKomunitas){
       e.preventDefault(); window.KolavoLihatKomunitas(App.kartu); return;
-    }
-    if(e.target.closest('[data-kredit-beli]')){
-      App.kredit = true; isiProfil();
-      if(window.KolavoToast) window.KolavoToast('Kredit kenalan aktif di semua komunitasmu. Mode demo — belum ada pembayaran.');
-      return;
     }
 
     if(e.target.closest('#kirim')){

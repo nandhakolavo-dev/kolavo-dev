@@ -17,6 +17,7 @@
 40-footer.html
 50-js-ikon.html
 50-js-qr.html
+50-js-kredit.html
 50-js-direktori-filter.html
 50-js-harga.html
 50-js-hero.html
