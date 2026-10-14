@@ -1311,7 +1311,7 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   **Buka Kolavo** (`#btnApp` → `scrApp`). Semua pemicu masuk (`data-login`, tombol Gabung
   lewat `KolavoBukaModal`) kini ke `scrMasuk` lewat `KolavoKeMasuk(niat)` /
   `App.niatMasuk` (varian copy pengurus/nav tetap dari `isi()`); Gabung untuk pengunjung →
-  varian undangan. Modal `#lgn` tidak lagi dipicu (markup dibiarkan sebagai cadangan).
+  varian undangan. Modal `#lgn` tidak lagi dipicu (lalu dibuang di akhir A7).
   Bagian **etalase** (`#etalase`) menggantikan direktori: 3 kartu disalin dari `#direktori`
   oleh 50-js-app (satu sumber data), tombol "Lihat profil" → `KolavoBukaTautan` (halaman
   masuk varian undangan → profil komunitas). Hero "Lihat komunitas" → `#etalase`.
@@ -1324,4 +1324,8 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   buatan. Satu regresi ditemukan & diperbaiki: tab Dashboard membuka `scrKelola` lewat
   `KolavoKe` tanpa membangun keadaan (judul kosong, `D.gambar()` error) — kini lewat
   `KolavoBukaDashboard()`. Tidak ada error konsol lain. 375px: tanpa luapan horizontal.
-  Sisa: modal masuk `#lgn` tidak lagi dipicu (markup cadangan, boleh dibuang).
+  Modal masuk `#lgn` lalu **dibuang** (markup di 50-js-pemilih-lokasi, JS buka/tutup/fokus di
+  50-js-modal-masuk, CSS `.lgn-note`/`.lgn-grab`). `isi()`, `tiles()`, ikon Google tetap —
+  dipakai `scrMasuk`. Kelas `.lgn`/`.lgn-box`/`.lgn-head` tetap: wadah popup Bagikan,
+  Legal, Onboarding, Sekretariat. `KolavoBukaModal` dipertahankan namanya (dipanggil tombol
+  Gabung), isinya ke `scrMasuk`.

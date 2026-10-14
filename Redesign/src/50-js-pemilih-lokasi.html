@@ -106,39 +106,3 @@
   clear.addEventListener('click', function(e){ e.stopPropagation(); doReset(); });
 })();
 </script>
-
-<!-- ============================================================
-     MODAL MASUK — dipicu oleh tombol "Masuk" di nav, "Lihat" pada
-     kartu komunitas, dan "Buat Halaman Komunitas" di bagian pengurus.
-     Copy-nya mengikuti niat pemicunya, bukan satu copy untuk semua.
-     ============================================================ -->
-<div class="lgn" id="lgn" hidden>
-  <div class="lgn-scrim" id="lgnScrim"></div>
-  <div class="lgn-box" role="dialog" aria-modal="true" aria-labelledby="lgnHead" aria-describedby="lgnSub">
-    <div class="lgn-grab"></div>
-    <button class="lgn-x" id="lgnX" type="button" aria-label="Tutup">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-    </button>
-
-    <div class="lgn-proof" id="lgnProof"></div>
-    <h2 class="lgn-head" id="lgnHead"></h2>
-    <p class="lgn-sub" id="lgnSub"></p>
-
-    <div class="lgn-cta">
-      <button class="gbtn" id="lgnG" type="button"></button>
-    </div>
-    <p class="lgn-alt">Belum punya akun Kolavo? <b>Tombol yang sama sekaligus bikin akunmu.</b></p>
-
-    <div class="lgn-note" id="lgnNote" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
-      <span id="lgnNoteTxt"></span>
-    </div>
-
-    <div class="lgn-trust">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6.5v5c0 4.6 3.4 8.4 8 9.5 4.6-1.1 8-4.9 8-9.5v-5L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
-      <span>Kolavo cuma menerima nama, email, dan foto profil Google-mu. Kami tidak bisa membaca isi emailmu atau memposting apa pun di akunmu.
-      <button type="button" data-legal="privasi">Kebijakan Privasi</button> · <button type="button" data-legal="tnc">Ketentuan Layanan</button></span>
-    </div>
-  </div>
-</div>
-

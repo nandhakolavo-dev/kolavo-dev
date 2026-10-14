@@ -1,6 +1,6 @@
 <script>
-/* Modal masuk lewat Google. Copy-nya mengikuti niat pemicunya:
-   "anggota" (dari tombol Gabung), "pengurus", atau "nav". */
+/* Masuk lewat Google di halaman scrMasuk. Copy-nya mengikuti niat pemicunya:
+   "anggota"/"undangan" (Gabung, tautan/QR), "pengurus", atau "nav". */
 (function(){
   const G = '<svg class="gmark" viewBox="0 0 48 48" aria-hidden="true">'+
     '<path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>'+
@@ -13,18 +13,8 @@
   const PENDEK = {'l-forpastara':'Forpastara','l-iapnj':'IA PNJ TIK',
                   'l-iasman52':'IA SMAN 52','l-ppiju':'PPI Jakarta Utara'};
 
-  const lgn   = document.getElementById('lgn'),
-        box   = lgn.querySelector('.lgn-box'),
-        proof = document.getElementById('lgnProof'),
-        head  = document.getElementById('lgnHead'),
-        sub   = document.getElementById('lgnSub'),
-        gbtn  = document.getElementById('lgnG'),
-        note  = document.getElementById('lgnNote'),
-        noteT = document.getElementById('lgnNoteTxt');
-  /* niat & kartunya disimpan sebagai nilai, bukan dibaca ulang dari atribut DOM:
-     tombol Gabung di halaman komunitas tidak punya data-login dan tidak berada
-     di dalam .ccard, jadi pembacaan lewat DOM jatuh ke varian umum */
-  let pemicu = null, pemicuNiat = null, pemicuKartu = null, timer = null, tutupTimer = null;
+  /* A6: modal masuk #lgn dibuang — semua pintu masuk lewat halaman scrMasuk.
+     isi() & tiles() tetap dipakai halaman itu. */
 
   function tiles(){
     const kelas = [...document.querySelectorAll('.ccard .logo-sq')]
@@ -74,54 +64,18 @@
     };
   }
 
-  function buka(trigger, kartu, el){
-    clearTimeout(tutupTimer);          /* batalkan sisa animasi tutup sebelumnya */
-    const v = isi(trigger, kartu);
-    proof.innerHTML = v.proof + `<div class="lgn-cap">${v.cap}</div>`;
-    head.textContent = v.head;
-    sub.textContent  = v.sub;
-    reset();
-    pemicu = el || null;
-    pemicuNiat = trigger || 'nav';
-    pemicuKartu = kartu || null;
-    lgn.hidden = false;
-    document.body.classList.add("lgn-open");
-    requestAnimationFrame(() => lgn.classList.add('on'));
-    /* cadangan: rAF tidak jalan kalau tab sedang tidak terlihat */
-    setTimeout(() => lgn.classList.add('on'), 60);
-    document.documentElement.style.overflow = 'hidden';
-    document.getElementById('lgnX').focus({preventScroll:true});
-  }
-
-  function reset(){
-    clearTimeout(timer);
-    gbtn.disabled = false;
-    gbtn.innerHTML = G + ' Lanjutkan dengan Google';
-    note.hidden = true;
-  }
-
-  function tutup(){
-    lgn.classList.remove('on');
-    document.documentElement.style.overflow = '';
-    document.body.classList.remove("lgn-open");
-    tutupTimer = setTimeout(() => { lgn.hidden = true; reset(); }, 170);
-    if(pemicu) pemicu.focus({preventScroll:true});
-  }
-
   /* pemicu: nav "Masuk", "Lihat" di kartu, "Buat Halaman Komunitas" */
   document.addEventListener('click', e => {
     const t = e.target.closest('[data-login]');
     if(!t) return;
     e.preventDefault();
-    /* "Lihat" di kartu komunitas tidak lagi minta masuk — halamannya publik.
-       Modal masuk baru muncul di tombol Gabung, di dalam halaman itu. */
     const kartu = t.closest('.ccard');
     if(kartu && window.KolavoLihatKomunitas){
       window.KolavoLihatKomunitas(kartu);
       return;
     }
     /* sudah masuk: tidak perlu ditanya lagi. Alurnya langsung diteruskan ke
-       layar yang dituju pemicunya — modal masuk kedua kali cuma jalan buntu. */
+       layar yang dituju pemicunya — halaman masuk kedua kali cuma jalan buntu. */
     if((window.KolavoApp || {}).masuk && window.KolavoMasuk){
       window.KolavoMasuk(t.dataset.login, kartu);
       return;
@@ -130,10 +84,8 @@
     window.KolavoKeMasuk(t.dataset.login);
   });
 
-  /* dipakai tombol Gabung di halaman komunitas, yang tidak punya .ccard di dekatnya */
-  /* A6: pemicu lama (tombol Gabung di halaman komunitas) juga diarahkan ke halaman
-     masuk penuh — kartu komunitasnya tampil sebagai varian undangan. Modal #lgn
-     dibiarkan sebagai cadangan, tidak lagi dipicu. */
+  /* tombol Gabung di halaman komunitas (pengunjung belum masuk): nama lama
+     dipertahankan; kini ke halaman masuk varian undangan dengan kartunya */
   window.KolavoBukaModal = function(trigger, kartu){
     if(trigger === 'anggota' && kartu && window.KolavoBukaTautan){ window.KolavoBukaTautan(kartu); return; }
     window.KolavoKeMasuk(trigger);
@@ -175,38 +127,6 @@
     mTimer = setTimeout(() => { mReset(); window.KolavoMasuk(mNiat, mKartu); }, 1100);
   });
 
-  document.getElementById('lgnX').addEventListener('click', tutup);
-  document.getElementById('lgnScrim').addEventListener('click', tutup);
-
-  document.addEventListener('keydown', e => {
-    if(lgn.hidden) return;
-    if(e.key === 'Escape'){ tutup(); return; }
-    if(e.key !== 'Tab') return;
-    /* fokus keyboard dikunci di dalam modal selama terbuka */
-    const f = [...box.querySelectorAll('button:not([disabled]), a[href]')];
-    if(!f.length) return;
-    const first = f[0], last = f[f.length - 1];
-    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-    else if(!box.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
-  });
-
-  /* demo state memuat — prototipe, tidak benar-benar ke Google */
-  gbtn.addEventListener('click', () => {
-    gbtn.disabled = true;
-    gbtn.innerHTML = '<span class="gspin"></span> Menghubungkan ke Google…';
-    note.hidden = true;
-    /* prototipe: tidak benar-benar ke Google, tapi alurnya diteruskan
-       supaya layar berikutnya bisa dicoba. Lihat penanda "Demo" di pojok. */
-    timer = setTimeout(() => {
-      const niat = pemicuNiat || 'nav';
-      const kartu = pemicuKartu;
-      tutup();
-      gbtn.disabled = false;
-      gbtn.innerHTML = G + ' Lanjutkan dengan Google';
-      window.KolavoMasuk(niat, kartu);
-    }, 1100);
-  });
 })();
 </script>
 
