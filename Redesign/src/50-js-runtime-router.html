@@ -58,6 +58,7 @@
     document.body.classList.toggle('m-app', App.mode === 'app');
     /* halaman masuk berdiri sendiri, tanpa nav */
     document.body.classList.toggle('m-masuk', id === 'scrMasuk');
+    tabNav(id);
     if(id === 'scrMasuk' && window.KolavoIsiMasuk){
       window.KolavoIsiMasuk(App.undangan ? 'undangan' : 'nav', App.undangan || null);
     }
@@ -68,6 +69,24 @@
     });
     window.scrollTo(0, 0);
     if(id === 'scrProfil') isiProfil();
+  }
+
+  /* ---------- tab nav Kolavo App (A3) ----------
+     Tab aktif mengikuti layar, bukan klik terakhir: layar yang dibuka lewat
+     tautan lain (kartu, notifikasi) tetap menyalakan tab induknya. */
+  const TAB = { scrApp: 'komunitas', scrKomunitas: 'komunitas', scrAnggota: 'komunitas',
+                scrProfil: 'profil', scrLengkapi: 'profil', scrKelola: 'dashboard', scrBuat: 'dashboard' };
+  function tabNav(id){
+    const ada = App.mode === 'app' && App.masuk && id !== 'scrMasuk';
+    document.body.classList.toggle('m-tab', ada);
+    const tab = document.getElementById('navTab'), cari = document.getElementById('navCari');
+    if(tab) tab.hidden = !ada;
+    if(cari) cari.hidden = !ada;
+    document.querySelectorAll('#navTab .nt').forEach(function(t){
+      const on = ada && t.dataset.tab === TAB[id];
+      t.classList.toggle('on', on);
+      if(on) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current');
+    });
   }
 
   /* ---------- keadaan masuk di nav ---------- */

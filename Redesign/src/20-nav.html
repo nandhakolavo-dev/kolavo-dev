@@ -3,7 +3,18 @@
 <nav>
   <div class="shell nav-in">
     <div class="logo">Kolavo Beta</div>
+
+    <!-- nav Kolavo App (A3): tab ikon ala Facebook web. Hanya di mode app & sudah masuk
+         (router: body.m-tab). < 768px pindah ke bilah bawah. Komunitas sementara ke
+         'Komunitas saya' di profil — A4 menggantinya dengan beranda app. -->
+    <a class="nav-cari" id="navCari" href="#0" data-ke="scrProfil" data-anchor="pfKomunitas" aria-label="Cari komunitas" hidden><i data-ic="cari"></i><span>Cari komunitas</span></a>
+    <div class="nav-tab" id="navTab" role="navigation" aria-label="Menu Kolavo" hidden>
+      <a class="nt" href="#0" data-tab="komunitas" data-ke="scrProfil" data-anchor="pfKomunitas" title="Komunitas"><i data-ic="orang"></i><b>Komunitas</b></a>
+      <a class="nt" href="#0" data-tab="profil" data-ke="scrProfil" title="Profil"><i data-ic="profil"></i><b>Profil</b></a>
+      <a class="nt" href="#0" data-tab="dashboard" data-ke="scrKelola" title="Dashboard"><i data-ic="kelompok"></i><b>Dashboard</b></a>
+    </div>
     <div class="nav-sp"></div>
+    <a class="nav-lnk" href="#harga" data-ke="scrBeranda" data-anchor="harga">Harga</a>
     <a class="btn secondary md" href="#pengurus" data-ke="scrBeranda" data-anchor="pengurus" id="navPengurus">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
       Halaman Komunitas
@@ -49,12 +60,12 @@
           Profil saya
           <span class="pill" id="acctPill">Belum lengkap</span>
         </a>
-        <a class="acct-i" href="#0">
+        <a class="acct-i" href="#0" data-ke="scrProfil" data-anchor="pfKomunitas">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
           Komunitas saya
           <span class="num">2</span>
         </a>
-        <a class="acct-i" href="#0">
+        <a class="acct-i" href="#0" data-ke="scrProfil" data-anchor="pfAkun">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.7 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.56V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9v.09a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1.03Z"/></svg>
           Pengaturan akun
         </a>

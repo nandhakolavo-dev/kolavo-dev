@@ -1254,3 +1254,16 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   lama tetap untuk pemicu di landing & tombol Gabung (diputuskan di A6).
   Catatan: `peta.py` hanya mengenali `<div class="scr" id=…>` persis — kelas tambahan
   layar ditaruh di pembungkus dalam.
+- **A3 · nav Kolavo App** (`20-nav` `#navTab` + `#navCari`). Tiga tab ikon — Komunitas
+  (`orang`), Profil (`profil`, baru), Dashboard (`kelompok`) — di tengah bar (absolut 50%),
+  tab aktif biru + garis bawah 3px, label hanya untuk pembaca layar. Tampil bila mode app
+  **dan** sudah masuk (`body.m-tab`, `tabNav()` di router); tab aktif dihitung dari layar
+  (`TAB` di router), bukan klik terakhir. Mode app menyembunyikan tautan jualan (Harga,
+  Halaman Komunitas). < 768px: tab jadi bilah bawah 60px + safe-area, label 11px tampil,
+  bar atas tinggal logo + lonceng + avatar; demo & toast naik di atasnya. Tombol cari
+  pil di ≥1181px, ikon bulat di bawahnya. Sementara Komunitas & Cari menuju "Komunitas
+  saya" di profil — A4 mengganti dengan `scrApp`. Dashboard ikut penjaga lama (`scrBuat`
+  bila belum punya komunitas) sampai A4.
+  Sekalian: `.nav-in` kini hanya `padding-top/bottom` (temuan audit `.shell` vs `.nav-in`
+  beres), dan **meta viewport ditambahkan** di `00-preamble` — sebelumnya tidak ada,
+  sehingga di HP sungguhan halaman dirender selebar 980px.
