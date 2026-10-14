@@ -7,19 +7,15 @@
 <div class="scr" id="scrHome" hidden>
  <div class="app-pg">
   <div class="shell">
+    <!-- satu kolom selebar halaman lain (Komunitas, Dashboard): ringkasan pribadi dulu -->
     <header class="app-hd">
-      <h1>Home</h1>
-      <p>Kabar terbaru dan hal yang perlu kamu lakukan di semua komunitasmu.</p>
+      <h1 id="homeSapa">Home</h1>
+      <p>Ringkasan aktivitasmu di semua komunitas.</p>
     </header>
-    <div class="home-grid">
-      <div class="home-utama">
-        <section class="app-sek" id="homeAksi" aria-label="Perlu tindakanmu"></section>
-        <section class="app-sek" id="homeKabar" aria-label="Kabar dari komunitasmu"></section>
-      </div>
-      <aside class="home-samping">
-        <section class="app-sek" id="homeKenal" aria-label="Orang yang mungkin kamu kenal"></section>
-      </aside>
-    </div>
+    <div class="home-stat" id="homeRingkas" aria-label="Ringkasan pribadi"></div>
+    <section class="app-sek" id="homeAksi" aria-label="Perlu tindakanmu"></section>
+    <section class="app-sek" id="homeKenal" aria-label="Orang yang mungkin kamu kenal"></section>
+    <section class="app-sek" id="homeKabar" aria-label="Kabar dari komunitasmu"></section>
   </div>
  </div>
 </div>

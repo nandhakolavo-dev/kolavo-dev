@@ -134,7 +134,7 @@
   /* ---------- Orang yang mungkin kamu kenal (H3) ----------
      Pencocokan memakai KolavoCocokkan (fungsi yang sama dengan langkah Kenalan di
      onboarding). Urutan: paling banyak kesamaan dulu, lalu urutan daftar asal. */
-  function saranKenal(){
+  function saranKenal(semua){
     if(!window.KolavoCocokkan || !window.KolavoAnggotaKomunitas) return [];
     const a = App(), kn = a.kenalan || {};
     const aku = window.KolavoProfilKu ? window.KolavoProfilKu() : {};
@@ -153,7 +153,7 @@
       });
     });
     return urut.map(function(n, i){ return Object.assign({ i: i }, peta[n]); })
-      .sort(function(x, y){ return y.alasan.length - x.alasan.length || x.i - y.i; }).slice(0, 5);
+      .sort(function(x, y){ return y.alasan.length - x.alasan.length || x.i - y.i; }).slice(0, semua ? undefined : 5);
   }
   function gambarKenal(){
     const w = el('homeKenal');
@@ -162,7 +162,7 @@
     if(!list.length){ w.innerHTML = ''; return; }   /* kosong: bagian disembunyikan */
     w.innerHTML = '<h2>Orang yang mungkin kamu kenal</h2>' +
       '<p class="app-sub">Anggota komunitasmu yang punya kesamaan denganmu.</p>' +
-      '<div class="ob-orang-list">' + list.map(function(x, j){
+      '<div class="ob-orang-list hn-grid">' + list.map(function(x, j){
         const o = x.o, pg = o.pg || o.n.split(' ')[0];
         /* nama panggilan saja — nama lengkap termasuk data pribadi */
         const av = o.f ? '<span class="av photo ' + o.f + '" role="img" aria-label="Foto profil ' + esc(pg) + ' — gambar AI"></span>'
@@ -173,8 +173,43 @@
       }).join('') + '</div>';
   }
 
+  /* ---------- sapaan + ringkasan pribadi ----------
+     Komponen kartu statistik sama dengan dashboard pengurus (.sek-stat-i). */
+  function gambarRingkas(){
+    const a = App(), kn = a.kenalan || {}, dj = a.diajukan || {};
+    const nm = (el('pfNm') && el('pfNm').textContent.trim()) || '';
+    if(el('homeSapa')) el('homeSapa').textContent = nm ? 'Halo, ' + nm.split(' ')[0] : 'Home';
+    const hitung = function(o, v){ return Object.keys(o).filter(function(k){ return o[k] === v; }).length; };
+    const kelola = (a.dibuat && !a.dibuat.arsip ? 1 : 0) + (a.diangkat ? 1 : 0);
+    const komIkut = diterima();
+    /* anggota lain di komunitas yang menerimamu (tanpa dirimu, tanpa nama ganda) */
+    const orang = {};
+    komIkut.forEach(function(k){
+      (window.KolavoAnggotaKomunitas ? window.KolavoAnggotaKomunitas(k) : []).forEach(function(o){ if(!o.aku && o.n !== nm) orang[o.n] = 1; });
+    });
+    const kotak = function(angka, ket, ikon, ke, warn){
+      const isi = '<div class="sek-stat-h"><b>' + angka + '</b><i class="sek-stat-ic">' + ic(ikon) + '</i></div><span>' + ket + '</span>';
+      return ke ? '<button type="button" class="sek-stat-i hs-i' + (warn ? ' warn' : '') + '" data-ke="' + ke + '">' + isi + '</button>'
+                : '<div class="sek-stat-i hs-i' + (warn ? ' warn' : '') + '">' + isi + '</div>';
+    };
+    const masuk = kenalanMasuk().length;   /* siapkan dulu ajakan contoh sebelum dihitung */
+    el('homeRingkas').innerHTML =
+      '<p class="sek-judul-k">Pertemanan</p><div class="sek-stat">' +
+        kotak(hitung(kn, 'terhubung'), 'Kenalan terhubung', 'tangan', '') +
+        kotak(masuk, 'Ajakan kenalan masuk', 'tambahOrang', '', masuk > 0) +
+        kotak(hitung(kn, 'menunggu'), 'Ajakanmu menunggu jawaban', 'jam', '') +
+        kotak(saranKenal(true).length, 'Orang yang cocok denganmu', 'orang', '') +
+      '</div><p class="sek-judul-k">Komunitas</p><div class="sek-stat">' +
+        kotak(komIkut.length, 'Komunitas yang kamu ikuti', 'komunitas', 'scrApp') +
+        kotak(Object.keys(orang).length, 'Anggota yang bisa kamu kenal', 'orang', '') +
+        kotak(hitung(dj, 'menunggu'), 'Pengajuan gabung menunggu', 'jam', '', hitung(dj, 'menunggu') > 0) +
+        kotak(kelola, 'Komunitas yang kamu kelola', 'panel', 'scrDasbor') +
+      '</div>';
+  }
+
   window.KolavoGambarHome = function(){
     if(!el('homeAksi')) return;
+    gambarRingkas();
     gambarAksi();
     gambarKabar();
     gambarKenal();
@@ -188,6 +223,7 @@
       const a = App(), o = a.kenalanMasuk.splice(+b.dataset.homeKenalTerima, 1)[0];
       a.kenalan = a.kenalan || {}; a.kenalan[o.nama] = 'terhubung';
       toast('Kamu dan ' + o.nama.split(' ')[0] + ' sekarang saling kenal.');
+      gambarKenal();
       segar(); return;
     }
     if((b = t.closest('[data-home-kenal-tolak]'))){
@@ -201,7 +237,7 @@
     }
     if((b = t.closest('[data-home-ajak]'))){
       if(window.KolavoAjakKenalan) window.KolavoAjakKenalan(b.dataset.homeAjak);
-      gambarKenal(); return;
+      gambarKenal(); gambarRingkas(); return;
     }
     if((b = t.closest('[data-home-saring]'))){ saring = b.dataset.homeSaring; tampil = BATAS; gambarKabar(); return; }
     if(t.closest('[data-home-lagi]')){ tampil += BATAS; gambarKabar(); return; }

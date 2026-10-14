@@ -1433,3 +1433,13 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
 - **Nav app: label di bawah ikon di semua lebar.** `.nt` kini kolom (ikon 24px + label 11.5px)
   di desktop juga, sama dengan bilah bawah HP (label 11px). Sebelumnya label desktop hanya
   untuk pembaca layar.
+- **Home dirapikan jadi ringkasan pribadi (menggantikan tata letak 2 kolom H3).** Satu kolom
+  selebar halaman lain (`.shell` 1160 — sama dengan Komunitas/Dashboard). Urutan: sapaan
+  "Halo, {nama depan}" → **Ringkasan** (`#homeRingkas`, kartu `.sek-stat-i` yang sama dengan
+  dashboard pengurus, 4 kolom / 2 kolom di HP) dalam dua kelompok: *Pertemanan* — kenalan
+  terhubung · ajakan kenalan masuk · ajakanmu menunggu jawaban · orang yang cocok denganmu
+  (`saranKenal(true)`, tanpa batas 5); *Komunitas* — komunitas diikuti (→ tab Komunitas) ·
+  anggota yang bisa kamu kenal (anggota unik di komunitas yang menerimamu) · pengajuan gabung
+  menunggu · komunitas dikelola (→ Dashboard). Angka oranye bila ada yang menunggu tindakan.
+  → Perlu tindakanmu → Orang yang mungkin kamu kenal (grid kartu ≥ 260px; foto + teks di
+  atas, tombol Ajak selebar kartu) → Kabar. Ringkasan digambar ulang sesudah Ajak/Terima.
