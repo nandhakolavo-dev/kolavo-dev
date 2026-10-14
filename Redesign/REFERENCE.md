@@ -1305,3 +1305,13 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   (onboarding Advance seperti biasa); sudah masuk → langsung `scrKomunitas`; sudah anggota →
   halaman menampilkan "Kamu anggota di sini". Pemicu prototipe: tombol demo **Buka tautan
   undangan**, hanya di landing & `scrMasuk`, bergiliran antar 4 komunitas contoh.
+- **A6 · landing jadi halaman jualan.** Nav landing: Untuk siapa (`#untuk`) · Cara kerja
+  (`#pengurus`) · Harga · **Buat komunitas** (`data-login="pengurus"`) · **Masuk**; tautan teks
+  hilang < 960px. Sudah masuk di landing: akun & lonceng disembunyikan, diganti tombol
+  **Buka Kolavo** (`#btnApp` → `scrApp`). Semua pemicu masuk (`data-login`, tombol Gabung
+  lewat `KolavoBukaModal`) kini ke `scrMasuk` lewat `KolavoKeMasuk(niat)` /
+  `App.niatMasuk` (varian copy pengurus/nav tetap dari `isi()`); Gabung untuk pengunjung →
+  varian undangan. Modal `#lgn` tidak lagi dipicu (markup dibiarkan sebagai cadangan).
+  Bagian **etalase** (`#etalase`) menggantikan direktori: 3 kartu disalin dari `#direktori`
+  oleh 50-js-app (satu sumber data), tombol "Lihat profil" → `KolavoBukaTautan` (halaman
+  masuk varian undangan → profil komunitas). Hero "Lihat komunitas" → `#etalase`.

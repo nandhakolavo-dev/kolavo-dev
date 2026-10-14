@@ -361,7 +361,11 @@ body.m-app footer{display:none}
 /* halaman masuk penuh (A2): berdiri sendiri, tanpa nav */
 body.m-masuk nav{display:none}
 /* nav Kolavo App (A3): tab ikon di tengah ala Facebook web, tautan jualan disembunyikan */
-body.m-app .nav-lnk,body.m-app #navPengurus{display:none}
+body.m-app .nav-lnk,body.m-app #navPengurus,body.m-app #btnApp{display:none}
+/* landing = halaman jualan: akun & notifikasi hanya di dalam app (A6) */
+body:not(.m-app) #acct,body:not(.m-app) #notif{display:none}
+#scrBeranda > #etalase{padding-bottom:30px}
+@media(max-width:960px){.nav-in .nav-lnk{display:none}}
 body.m-tab .nav-in{position:relative}
 .nav-tab[hidden],.nav-cari[hidden]{display:none}
 .nav-tab{position:absolute;left:50%;top:0;bottom:0;transform:translateX(-50%);display:flex;gap:4px}

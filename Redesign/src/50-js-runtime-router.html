@@ -61,7 +61,7 @@
     document.body.dataset.layar = id;
     tabNav(id);
     if(id === 'scrMasuk' && window.KolavoIsiMasuk){
-      window.KolavoIsiMasuk(App.undangan ? 'undangan' : 'nav', App.undangan || null);
+      window.KolavoIsiMasuk(App.undangan ? 'undangan' : (App.niatMasuk || 'nav'), App.undangan || null);
     }
 
     LAYAR.forEach(function(n){
@@ -98,6 +98,8 @@
           warn  = document.querySelector('.acct-warn'),
           pill  = document.getElementById('acctPill');
     if(masuk) masuk.hidden = App.masuk;
+    const bukaApp = document.getElementById('btnApp');
+    if(bukaApp) bukaApp.hidden = !App.masuk;
     if(acct)  acct.hidden  = !App.masuk;
     const notif = document.getElementById('notif');
     if(notif) notif.hidden = !App.masuk;

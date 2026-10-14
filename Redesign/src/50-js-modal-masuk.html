@@ -126,11 +126,24 @@
       window.KolavoMasuk(t.dataset.login, kartu);
       return;
     }
-    buka(t.dataset.login, kartu, t);
+    /* A6: belum masuk → halaman masuk penuh, bukan modal */
+    window.KolavoKeMasuk(t.dataset.login);
   });
 
   /* dipakai tombol Gabung di halaman komunitas, yang tidak punya .ccard di dekatnya */
-  window.KolavoBukaModal = function(trigger, kartu, el){ buka(trigger, kartu, el); };
+  /* A6: pemicu lama (tombol Gabung di halaman komunitas) juga diarahkan ke halaman
+     masuk penuh — kartu komunitasnya tampil sebagai varian undangan. Modal #lgn
+     dibiarkan sebagai cadangan, tidak lagi dipicu. */
+  window.KolavoBukaModal = function(trigger, kartu){
+    if(trigger === 'anggota' && kartu && window.KolavoBukaTautan){ window.KolavoBukaTautan(kartu); return; }
+    window.KolavoKeMasuk(trigger);
+  };
+  window.KolavoKeMasuk = function(niat){
+    const A = window.KolavoApp || {};
+    A.undangan = null;
+    A.niatMasuk = niat || 'nav';
+    window.KolavoKe('scrMasuk');
+  };
 
   /* ---------- halaman masuk penuh scrMasuk (A2) ----------
      Copy & logika Google sama dengan modal (isi() yang sama), hanya wadahnya
@@ -152,6 +165,7 @@
     mSub.textContent = v.sub;
     /* setelah masuk, undangan diperlakukan seperti tombol Gabung di kartunya */
     mNiat = trigger === 'undangan' ? 'anggota' : (trigger || 'nav');
+    if(window.KolavoApp) window.KolavoApp.niatMasuk = null;
     mKartu = kartu || null;
     mReset();
   };

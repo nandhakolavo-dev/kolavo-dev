@@ -86,6 +86,21 @@
   };
   let demoKe = 0;
 
+  /* ---------- etalase landing (A6) ----------
+     salinan kartu #direktori (satu sumber data), tombolnya diganti "Lihat profil" */
+  (function(){
+    const w = document.getElementById('etalaseGrid');
+    if(!w) return;
+    document.querySelectorAll('#direktori .ccard').forEach(function(k, i){
+      if(i > 2) return;   /* satu baris penuh di grid 3 kolom */
+      const c = k.cloneNode(true);
+      c.removeAttribute('id');
+      const b = c.querySelector('[data-gabung-kartu]');
+      if(b){ b.removeAttribute('data-gabung-kartu'); b.setAttribute('data-etalase', kelasKartu(k)); b.textContent = 'Lihat profil'; }
+      w.appendChild(c);
+    });
+  })();
+
   function bukaDasbor(jenis){
     if(jenis === 'dibuat'){ window.KolavoKe('scrKelola'); return; }
     toast('Prototipe: dashboard komunitas yang mengangkatmu memakai tampilan yang sama, belum disimulasikan.');
@@ -99,6 +114,12 @@
       /* belum diajukan: langsung buka formulir gabung di halaman komunitasnya */
       const b = !st && document.getElementById('komGabungBtn');
       if(b) b.click();
+      return;
+    }
+    const et = e.target.closest('[data-etalase]');
+    if(et){
+      const asli = document.querySelector('#direktori .ccard .logo-sq.' + et.dataset.etalase);
+      if(asli) window.KolavoBukaTautan(asli.closest('.ccard'));
       return;
     }
     const d = e.target.closest('[data-dasbor-buka]');

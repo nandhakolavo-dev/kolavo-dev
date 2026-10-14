@@ -404,7 +404,11 @@ body.m-app footer{display:none}
 /* halaman masuk penuh (A2): berdiri sendiri, tanpa nav */
 body.m-masuk nav{display:none}
 /* nav Kolavo App (A3): tab ikon di tengah ala Facebook web, tautan jualan disembunyikan */
-body.m-app .nav-lnk,body.m-app #navPengurus{display:none}
+body.m-app .nav-lnk,body.m-app #navPengurus,body.m-app #btnApp{display:none}
+/* landing = halaman jualan: akun & notifikasi hanya di dalam app (A6) */
+body:not(.m-app) #acct,body:not(.m-app) #notif{display:none}
+#scrBeranda > #etalase{padding-bottom:30px}
+@media(max-width:960px){.nav-in .nav-lnk{display:none}}
 body.m-tab .nav-in{position:relative}
 .nav-tab[hidden],.nav-cari[hidden]{display:none}
 .nav-tab{position:absolute;left:50%;top:0;bottom:0;transform:translateX(-50%);display:flex;gap:4px}
@@ -2266,11 +2270,15 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       <a class="nt" href="#0" data-tab="dashboard" data-ke="scrDasbor" title="Dashboard"><i data-ic="kelompok"></i><b>Dashboard</b></a>
     </div>
     <div class="nav-sp"></div>
+    <!-- nav jualan (A6): hanya di landing; mode app menyembunyikannya -->
+    <a class="nav-lnk" href="#untuk" data-ke="scrBeranda" data-anchor="untuk">Untuk siapa</a>
+    <a class="nav-lnk" href="#pengurus" data-ke="scrBeranda" data-anchor="pengurus">Cara kerja</a>
     <a class="nav-lnk" href="#harga" data-ke="scrBeranda" data-anchor="harga">Harga</a>
-    <a class="btn secondary md" href="#pengurus" data-ke="scrBeranda" data-anchor="pengurus" id="navPengurus">
+    <a class="btn secondary md" href="#0" data-login="pengurus" id="navPengurus">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-      Halaman Komunitas
+      Buat komunitas
     </a>
+    <a class="btn md" href="#0" data-ke="scrApp" id="btnApp" hidden>Buka Kolavo</a>
     <a class="btn md" href="#0" data-login="nav" id="btnMasuk">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
       Masuk
@@ -2342,7 +2350,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       <p class="sub">Kolavo memperkenalkan siapa saja anggota komunitasmu. Kamu jadi lebih kenal mereka, dari karier sampai pendidikannya, lebih mudah menyusun program, dan orang luar pun tertarik mengenal komunitasmu.</p>
       <div class="cta">
         <a class="btn lead" href="#pengurus" data-login="pengurus">Buat Halaman Komunitas</a>
-        <a class="btn outline" href="#0" data-ke="scrApp">Lihat komunitas di Kolavo</a>
+        <a class="btn outline" href="#etalase">Lihat komunitas di Kolavo</a>
       </div>
       <ul class="hero-poin">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Satu link pendaftaran, pendataan anggota jadi mudah</li>
@@ -2454,7 +2462,19 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   </div>
 </section>
 
-<!-- A4: direktori + filter pindah ke tab Komunitas Kolavo App (30-layer-scrApp). -->
+<!-- A6: etalase — direktori lengkap + filter ada di tab Komunitas (30-layer-scrApp).
+     Kartu disalin dari #direktori oleh 50-js-app, tombolnya membuka alur tautan
+     undangan (halaman masuk -> profil komunitas). -->
+<section id="etalase">
+  <div class="shell">
+    <div class="sec-tengah">
+      <div class="kicker">Komunitas yang sudah join Kolavo</div>
+      <h2>Lihat profil komunitas lain.</h2>
+      <p class="sec-lede">Beberapa komunitas yang sudah memperkenalkan orang-orangnya lewat Kolavo.</p>
+    </div>
+    <div class="grid" id="etalaseGrid"></div>
+  </div>
+</section>
 
 <!-- V4: cara mulai — kepala rata tengah, empat langkah sebagai kartu sejajar, tiap kartu
      punya gambar kecil (tiruan UI dari komponen, aria-hidden) supaya langkahnya terlihat,
@@ -4451,11 +4471,24 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       window.KolavoMasuk(t.dataset.login, kartu);
       return;
     }
-    buka(t.dataset.login, kartu, t);
+    /* A6: belum masuk → halaman masuk penuh, bukan modal */
+    window.KolavoKeMasuk(t.dataset.login);
   });
 
   /* dipakai tombol Gabung di halaman komunitas, yang tidak punya .ccard di dekatnya */
-  window.KolavoBukaModal = function(trigger, kartu, el){ buka(trigger, kartu, el); };
+  /* A6: pemicu lama (tombol Gabung di halaman komunitas) juga diarahkan ke halaman
+     masuk penuh — kartu komunitasnya tampil sebagai varian undangan. Modal #lgn
+     dibiarkan sebagai cadangan, tidak lagi dipicu. */
+  window.KolavoBukaModal = function(trigger, kartu){
+    if(trigger === 'anggota' && kartu && window.KolavoBukaTautan){ window.KolavoBukaTautan(kartu); return; }
+    window.KolavoKeMasuk(trigger);
+  };
+  window.KolavoKeMasuk = function(niat){
+    const A = window.KolavoApp || {};
+    A.undangan = null;
+    A.niatMasuk = niat || 'nav';
+    window.KolavoKe('scrMasuk');
+  };
 
   /* ---------- halaman masuk penuh scrMasuk (A2) ----------
      Copy & logika Google sama dengan modal (isi() yang sama), hanya wadahnya
@@ -4477,6 +4510,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
     mSub.textContent = v.sub;
     /* setelah masuk, undangan diperlakukan seperti tombol Gabung di kartunya */
     mNiat = trigger === 'undangan' ? 'anggota' : (trigger || 'nav');
+    if(window.KolavoApp) window.KolavoApp.niatMasuk = null;
     mKartu = kartu || null;
     mReset();
   };
@@ -4846,7 +4880,7 @@ function hitung(){}
     document.body.dataset.layar = id;
     tabNav(id);
     if(id === 'scrMasuk' && window.KolavoIsiMasuk){
-      window.KolavoIsiMasuk(App.undangan ? 'undangan' : 'nav', App.undangan || null);
+      window.KolavoIsiMasuk(App.undangan ? 'undangan' : (App.niatMasuk || 'nav'), App.undangan || null);
     }
 
     LAYAR.forEach(function(n){
@@ -4883,6 +4917,8 @@ function hitung(){}
           warn  = document.querySelector('.acct-warn'),
           pill  = document.getElementById('acctPill');
     if(masuk) masuk.hidden = App.masuk;
+    const bukaApp = document.getElementById('btnApp');
+    if(bukaApp) bukaApp.hidden = !App.masuk;
     if(acct)  acct.hidden  = !App.masuk;
     const notif = document.getElementById('notif');
     if(notif) notif.hidden = !App.masuk;
@@ -11273,6 +11309,21 @@ function hitung(){}
   };
   let demoKe = 0;
 
+  /* ---------- etalase landing (A6) ----------
+     salinan kartu #direktori (satu sumber data), tombolnya diganti "Lihat profil" */
+  (function(){
+    const w = document.getElementById('etalaseGrid');
+    if(!w) return;
+    document.querySelectorAll('#direktori .ccard').forEach(function(k, i){
+      if(i > 2) return;   /* satu baris penuh di grid 3 kolom */
+      const c = k.cloneNode(true);
+      c.removeAttribute('id');
+      const b = c.querySelector('[data-gabung-kartu]');
+      if(b){ b.removeAttribute('data-gabung-kartu'); b.setAttribute('data-etalase', kelasKartu(k)); b.textContent = 'Lihat profil'; }
+      w.appendChild(c);
+    });
+  })();
+
   function bukaDasbor(jenis){
     if(jenis === 'dibuat'){ window.KolavoKe('scrKelola'); return; }
     toast('Prototipe: dashboard komunitas yang mengangkatmu memakai tampilan yang sama, belum disimulasikan.');
@@ -11286,6 +11337,12 @@ function hitung(){}
       /* belum diajukan: langsung buka formulir gabung di halaman komunitasnya */
       const b = !st && document.getElementById('komGabungBtn');
       if(b) b.click();
+      return;
+    }
+    const et = e.target.closest('[data-etalase]');
+    if(et){
+      const asli = document.querySelector('#direktori .ccard .logo-sq.' + et.dataset.etalase);
+      if(asli) window.KolavoBukaTautan(asli.closest('.ccard'));
       return;
     }
     const d = e.target.closest('[data-dasbor-buka]');

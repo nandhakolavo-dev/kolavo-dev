@@ -9,7 +9,7 @@
       <p class="sub">Kolavo memperkenalkan siapa saja anggota komunitasmu. Kamu jadi lebih kenal mereka, dari karier sampai pendidikannya, lebih mudah menyusun program, dan orang luar pun tertarik mengenal komunitasmu.</p>
       <div class="cta">
         <a class="btn lead" href="#pengurus" data-login="pengurus">Buat Halaman Komunitas</a>
-        <a class="btn outline" href="#0" data-ke="scrApp">Lihat komunitas di Kolavo</a>
+        <a class="btn outline" href="#etalase">Lihat komunitas di Kolavo</a>
       </div>
       <ul class="hero-poin">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Satu link pendaftaran, pendataan anggota jadi mudah</li>
@@ -121,7 +121,19 @@
   </div>
 </section>
 
-<!-- A4: direktori + filter pindah ke tab Komunitas Kolavo App (30-layer-scrApp). -->
+<!-- A6: etalase — direktori lengkap + filter ada di tab Komunitas (30-layer-scrApp).
+     Kartu disalin dari #direktori oleh 50-js-app, tombolnya membuka alur tautan
+     undangan (halaman masuk -> profil komunitas). -->
+<section id="etalase">
+  <div class="shell">
+    <div class="sec-tengah">
+      <div class="kicker">Komunitas yang sudah join Kolavo</div>
+      <h2>Lihat profil komunitas lain.</h2>
+      <p class="sec-lede">Beberapa komunitas yang sudah memperkenalkan orang-orangnya lewat Kolavo.</p>
+    </div>
+    <div class="grid" id="etalaseGrid"></div>
+  </div>
+</section>
 
 <!-- V4: cara mulai — kepala rata tengah, empat langkah sebagai kartu sejajar, tiap kartu
      punya gambar kecil (tiruan UI dari komponen, aria-hidden) supaya langkahnya terlihat,
