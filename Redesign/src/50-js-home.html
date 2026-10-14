@@ -185,13 +185,13 @@
                        : '<span class="av ' + 'abc'[j % 3] + '" aria-hidden="true">' + esc(o.n.split(' ').map(function(w){ return w[0]; }).join('').slice(0, 2)) + '</span>';
         const profil = ' data-home-profil="' + esc(o.n) + '" data-kelas="' + x.kelas + '"';
         /* alasan cocok sebagai chip ber-centang; konteks tambahan (angkatan) chip netral */
-        const chip = x.alasan.map(function(t){ return '<span class="hn-chip cocok">' + ic('terimaOrang') + esc(t) + '</span>'; }).join('') +
+        const chip = x.alasan.map(function(t){ return '<span class="hn-chip cocok">' + ic('centang') + esc(t) + '</span>'; }).join('') +
           (o.a ? '<span class="hn-chip">Angkatan ' + esc(o.a) + '</span>' : '');
         return '<article class="hn-i">' +
           '<button type="button" class="hn-orang"' + profil + ' title="Lihat profil ' + esc(pg) + '">' + av +
             '<span class="t"><b>' + esc(pg) + '</b><span>' + esc([o.k, o.d].filter(function(v){ return v && v !== '—'; }).join(' · ')) + '</span>' +
             '<span class="hn-kom">' + info(x.kelas).logo + esc(info(x.kelas).nama) + '</span></span></button>' +
-          '<div class="hn-alasan"><span class="hn-lbl">Kenapa cocok</span><div class="hn-chips">' + chip + '</div></div>' +
+          '<div class="hn-alasan"><span class="hn-lbl">Kesamaan profil</span><div class="hn-chips">' + chip + '</div></div>' +
           '<div class="hn-aksi"><button type="button" class="btn outline sm"' + profil + '>Lihat profil</button>' +
             '<button type="button" class="btn sm" data-home-ajak="' + esc(o.n) + '">Ajak kenalan<small>10 kredit</small></button></div>' +
         '</article>';

@@ -1499,3 +1499,7 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   ber-centang (alasan dari `KolavoCocokkan`) + chip netral angkatan, tombol **Lihat profil**
   (buka `scrAnggota` dalam konteks komunitasnya lewat `KolavoBukaKomunitas` tanpa pindah
   layar) dan **Ajak kenalan · 10 kredit**. Pengantar menjelaskan biaya kredit.
+- **"Kenapa cocok" → "Kesamaan profil"**, berbentuk checklist: chip hijau dengan ikon
+  `centang` (baru) berisi nilainya langsung ("Apoteker", "Depok") tanpa "Sama-sama".
+  `KolavoCocokkan` kini mengisi `alasan` dengan nilai polos; label saringan onboarding
+  ("Sama pekerjaan · …") tidak berubah.

@@ -114,9 +114,9 @@
   function cocokkan(aku, orang, c){
     c = c || { kerja: true, kota: true };
     const saringan = [];
-    if(c.kerja && aku.kerja) saringan.push({ id: 'kerja', label: 'Sama pekerjaan · ' + aku.kerja, alasan: 'Sama-sama ' + aku.kerja, uji: function(o){ return samakan(o.k) === samakan(aku.kerja); } });
-    if(c.kota && aku.kota) saringan.push({ id: 'kota', label: 'Sama domisili · ' + aku.kota, alasan: 'Sama-sama di ' + aku.kota, uji: function(o){ return samakan(o.d) === samakan(aku.kota); } });
-    if(c.kelompok && aku.kelompok) saringan.push({ id: 'kelompok', label: 'Sama kelompok · ' + aku.kelompok, alasan: 'Sama-sama ' + aku.kelompok, uji: function(o){ return o['g:kerja'] === aku.kelompok; } });
+    if(c.kerja && aku.kerja) saringan.push({ id: 'kerja', label: 'Sama pekerjaan · ' + aku.kerja, alasan: aku.kerja, uji: function(o){ return samakan(o.k) === samakan(aku.kerja); } });
+    if(c.kota && aku.kota) saringan.push({ id: 'kota', label: 'Sama domisili · ' + aku.kota, alasan: aku.kota, uji: function(o){ return samakan(o.d) === samakan(aku.kota); } });
+    if(c.kelompok && aku.kelompok) saringan.push({ id: 'kelompok', label: 'Sama kelompok · ' + aku.kelompok, alasan: aku.kelompok, uji: function(o){ return o['g:kerja'] === aku.kelompok; } });
     saringan.forEach(function(s){ s.hasil = orang.filter(s.uji); });
     return saringan;
   }
