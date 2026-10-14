@@ -464,6 +464,32 @@ button.hs-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .hn-aksi{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
 .hn-aksi .btn{justify-content:center}
 .hn-aksi .btn small{margin-left:6px;font-size:11px;font-weight:500;opacity:.8}
+/* daftar kenalan (scrKenalan) — seperti daftar teman */
+.kn-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.kn-cari{display:flex;align-items:center;gap:8px;width:min(320px,100%);height:44px;padding:0 14px;border:1px solid var(--line);border-radius:100px;background:var(--card)}
+.kn-cari svg{width:17px;height:17px;color:var(--ink-3);flex:none}
+.kn-cari input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:14px;color:var(--ink)}
+.kn-cari:focus-within{border-color:var(--blue)}
+.kn-tab{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 16px}
+.kn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.kn-i{display:flex;flex-direction:column;gap:14px;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:13px}
+.kn-atas{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.kn-orang{display:flex;align-items:center;gap:12px;min-width:0;padding:0;border:0;background:none;font:inherit;text-align:left;color:inherit}
+button.kn-orang{cursor:pointer}
+button.kn-orang:hover b{color:var(--blue-ink)}
+.kn-orang .av{width:56px;height:56px;flex:none}
+.kn-orang .t{display:flex;flex-direction:column;min-width:0}
+.kn-orang b{font-size:15.5px;font-weight:600;color:var(--ink)}
+.kn-orang .t > span{font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.kn-orang .hn-kom{display:inline-flex;align-items:center;gap:6px;margin-top:3px;font-size:11.5px;color:var(--ink-3)}
+.kn-orang .kn-nama{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.kn-st{flex:none;font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;white-space:nowrap}
+.kn-st.ok{background:var(--green-wash);color:var(--green)}
+.kn-st.masuk{background:var(--orange-wash);color:var(--orange-ink)}
+.kn-st.tunggu{background:var(--bg-alt);color:var(--ink-2)}
+.kn-aksi{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
+.kn-aksi .btn{justify-content:center}
+.kn-aksi .btn:only-child{grid-column:1 / -1}
 /* saldo kredit di navbar app */
 .nav-kredit[hidden]{display:none}
 .nav-kredit{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px 0 10px;border:1px solid var(--line);border-radius:100px;background:var(--card);font:inherit;font-size:13px;color:var(--ink-2);cursor:pointer}

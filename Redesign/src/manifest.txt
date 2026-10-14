@@ -6,6 +6,7 @@
 30-layer-scrBeranda.html
 30-layer-scrMasuk.html
 30-layer-scrHome.html
+30-layer-scrKenalan.html
 30-layer-scrApp.html
 30-layer-scrDasbor.html
 30-layer-scrLengkapi.html

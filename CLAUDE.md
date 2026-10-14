@@ -179,6 +179,6 @@ Kolavo gratis secara umum. Kredit kenalan anggota tidak ditampilkan di bagian ha
 **Kredit kenalan (15 Okt 2026):** saldo per pengguna, berlaku di semua komunitas; tiap ajakan
 kenalan memotong **10 kredit** (dikembalikan bila dibatalkan sebelum dijawab); top up berbayar
 **100 kredit = Rp50.000**. Rumus & gerbang di `src/50-js-kredit.html` (`window.KolavoKredit`).
-Saldo awal pengguna baru (20) masih asumsi prototipe — belum diputuskan.
+Saldo awal pengguna baru **100 kredit** (= 10 ajakan).
 Panel Tagihan dashboard masih `Rp XXXX` (belum diselaraskan). `archive/ReDesign_Kolavo_1.html` sengaja dibiarkan sebagai arsip.
 Jangan tulis ulang kata itu tanpa keputusan harga.

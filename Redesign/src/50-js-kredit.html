@@ -25,8 +25,8 @@
 <script>
 (function(){
   const BIAYA = 10, PAKET = 100, HARGA = 'Rp50.000';
-  /* saldo awal pengguna baru — asumsi prototipe, belum diputuskan (lihat REFERENCE.md) */
-  const AWAL = 20;
+  /* saldo awal pengguna baru: 100 kredit = 10 ajakan (keputusan 15 Okt 2026) */
+  const AWAL = 100;
   const App = function(){ const a = window.KolavoApp || (window.KolavoApp = {}); if(a.kreditSaldo == null) a.kreditSaldo = AWAL; return a; };
   const el = function(id){ return document.getElementById(id); };
   const toast = function(t){ if(window.KolavoToast) window.KolavoToast(t); };

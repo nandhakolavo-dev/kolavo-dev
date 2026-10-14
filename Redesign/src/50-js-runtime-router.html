@@ -19,7 +19,7 @@
      dibuka dari data: URL dan iframe ber-sandbox, tempat hash tidak selalu
      bisa ditulis — di sana routing berbasis hash diam-diam tidak jalan.
      Anchor dalam halaman (#direktori, #pengurus) tetap seperti biasa. */
-  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrHome', 'scrApp', 'scrDasbor', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
+  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrHome', 'scrKenalan', 'scrApp', 'scrDasbor', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
   /* Dua pintu (PROMPT-APP): scrBeranda = landing jualan; layar lain = Kolavo App.
      Tab app: Komunitas (scrApp) · Profil · Dashboard (scrDasbor). Layar terlindung
      tanpa akun → scrMasuk + App.tujuan. Halaman komunitas sendiri tetap tanpa
@@ -27,7 +27,7 @@
      undangan (KolavoBukaTautan) yang meminta masuk dulu. */
   /* detail anggota cuma bisa dicapai dari daftar yang sudah terbuka, tapi
      penjaganya tetap dipasang supaya tidak bisa dibuka lewat KolavoKe langsung */
-  const perluMasuk = { scrHome: true, scrApp: true, scrDasbor: true, scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
+  const perluMasuk = { scrHome: true, scrKenalan: true, scrApp: true, scrDasbor: true, scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
   let sekarang = 'scrBeranda';
 
   window.KolavoKe = function(id, anchor){ ke(id, anchor); };
@@ -75,6 +75,7 @@
     });
     window.scrollTo(0, 0);
     if(id === 'scrProfil') isiProfil();
+    if(id === 'scrKenalan' && window.KolavoGambarKenalan) window.KolavoGambarKenalan();
     if((id === 'scrBeranda' || id === 'scrHome' || id === 'scrApp' || id === 'scrDasbor') && window.KolavoGambarApp) window.KolavoGambarApp(id);
   }
 
@@ -82,7 +83,7 @@
      Tab aktif mengikuti layar, bukan klik terakhir: layar yang dibuka lewat
      tautan lain (kartu, notifikasi) tetap menyalakan tab induknya. */
   /* Profil & Lengkapi dibuka dari avatar — tidak menyalakan tab mana pun (PROMPT-HOME H1) */
-  const TAB = { scrHome: 'home', scrApp: 'komunitas', scrKomunitas: 'komunitas', scrAnggota: 'komunitas',
+  const TAB = { scrHome: 'home', scrKenalan: 'home', scrApp: 'komunitas', scrKomunitas: 'komunitas', scrAnggota: 'komunitas',
                 scrDasbor: 'dashboard', scrKelola: 'dashboard', scrBuat: 'dashboard' };
   function tabNav(id){
     const ada = App.mode === 'app' && App.masuk && id !== 'scrMasuk';

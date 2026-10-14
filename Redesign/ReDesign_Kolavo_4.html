@@ -507,6 +507,32 @@ button.hs-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .hn-aksi{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
 .hn-aksi .btn{justify-content:center}
 .hn-aksi .btn small{margin-left:6px;font-size:11px;font-weight:500;opacity:.8}
+/* daftar kenalan (scrKenalan) — seperti daftar teman */
+.kn-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.kn-cari{display:flex;align-items:center;gap:8px;width:min(320px,100%);height:44px;padding:0 14px;border:1px solid var(--line);border-radius:100px;background:var(--card)}
+.kn-cari svg{width:17px;height:17px;color:var(--ink-3);flex:none}
+.kn-cari input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:14px;color:var(--ink)}
+.kn-cari:focus-within{border-color:var(--blue)}
+.kn-tab{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 16px}
+.kn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.kn-i{display:flex;flex-direction:column;gap:14px;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:13px}
+.kn-atas{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.kn-orang{display:flex;align-items:center;gap:12px;min-width:0;padding:0;border:0;background:none;font:inherit;text-align:left;color:inherit}
+button.kn-orang{cursor:pointer}
+button.kn-orang:hover b{color:var(--blue-ink)}
+.kn-orang .av{width:56px;height:56px;flex:none}
+.kn-orang .t{display:flex;flex-direction:column;min-width:0}
+.kn-orang b{font-size:15.5px;font-weight:600;color:var(--ink)}
+.kn-orang .t > span{font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.kn-orang .hn-kom{display:inline-flex;align-items:center;gap:6px;margin-top:3px;font-size:11.5px;color:var(--ink-3)}
+.kn-orang .kn-nama{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.kn-st{flex:none;font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;white-space:nowrap}
+.kn-st.ok{background:var(--green-wash);color:var(--green)}
+.kn-st.masuk{background:var(--orange-wash);color:var(--orange-ink)}
+.kn-st.tunggu{background:var(--bg-alt);color:var(--ink-2)}
+.kn-aksi{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
+.kn-aksi .btn{justify-content:center}
+.kn-aksi .btn:only-child{grid-column:1 / -1}
 /* saldo kredit di navbar app */
 .nav-kredit[hidden]{display:none}
 .nav-kredit{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px 0 10px;border:1px solid var(--line);border-radius:100px;background:var(--card);font:inherit;font-size:13px;color:var(--ink-2);cursor:pointer}
@@ -2889,6 +2915,34 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
  </div>
 </div>
 <!-- ============================================================
+     Kolavo App · daftar kenalan (15 Okt 2026) — seperti daftar teman.
+     Dibuka dari kartu ringkasan Home. Tab: Terhubung · Permintaan · Terkirim.
+     Digambar 50-js-home (KolavoGambarKenalan).
+     ============================================================ -->
+<div class="scr" id="scrKenalan" hidden>
+ <div class="app-pg">
+  <div class="shell">
+    <p class="kom-jalur">
+      <button type="button" data-ke="scrHome">Home</button>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      <span class="kini">Kenalan</span>
+    </p>
+    <header class="app-hd kn-hd">
+      <div>
+        <h1>Kenalan</h1>
+        <p>Orang yang terhubung denganmu di seluruh komunitas. Kontak WhatsApp terbuka untuk kenalan yang sudah terhubung.</p>
+      </div>
+      <label class="kn-cari">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="knCari" placeholder="Cari nama, pekerjaan, atau kota" aria-label="Cari kenalan">
+      </label>
+    </header>
+    <div class="kn-tab" id="knTab" role="tablist" aria-label="Jenis kenalan"></div>
+    <div id="knList"></div>
+  </div>
+ </div>
+</div>
+<!-- ============================================================
      Kolavo App · tab Komunitas (A4) — beranda sesudah masuk.
      Komunitasku: digambar 50-js-app (sumber sama dengan daftar di Profil).
      Jelajahi: direktori + filter yang dulu di landing, dipindah utuh —
@@ -4228,8 +4282,8 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 <script>
 (function(){
   const BIAYA = 10, PAKET = 100, HARGA = 'Rp50.000';
-  /* saldo awal pengguna baru — asumsi prototipe, belum diputuskan (lihat REFERENCE.md) */
-  const AWAL = 20;
+  /* saldo awal pengguna baru: 100 kredit = 10 ajakan (keputusan 15 Okt 2026) */
+  const AWAL = 100;
   const App = function(){ const a = window.KolavoApp || (window.KolavoApp = {}); if(a.kreditSaldo == null) a.kreditSaldo = AWAL; return a; };
   const el = function(id){ return document.getElementById(id); };
   const toast = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
@@ -5053,7 +5107,7 @@ function hitung(){}
      dibuka dari data: URL dan iframe ber-sandbox, tempat hash tidak selalu
      bisa ditulis — di sana routing berbasis hash diam-diam tidak jalan.
      Anchor dalam halaman (#direktori, #pengurus) tetap seperti biasa. */
-  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrHome', 'scrApp', 'scrDasbor', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
+  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrHome', 'scrKenalan', 'scrApp', 'scrDasbor', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
   /* Dua pintu (PROMPT-APP): scrBeranda = landing jualan; layar lain = Kolavo App.
      Tab app: Komunitas (scrApp) · Profil · Dashboard (scrDasbor). Layar terlindung
      tanpa akun → scrMasuk + App.tujuan. Halaman komunitas sendiri tetap tanpa
@@ -5061,7 +5115,7 @@ function hitung(){}
      undangan (KolavoBukaTautan) yang meminta masuk dulu. */
   /* detail anggota cuma bisa dicapai dari daftar yang sudah terbuka, tapi
      penjaganya tetap dipasang supaya tidak bisa dibuka lewat KolavoKe langsung */
-  const perluMasuk = { scrHome: true, scrApp: true, scrDasbor: true, scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
+  const perluMasuk = { scrHome: true, scrKenalan: true, scrApp: true, scrDasbor: true, scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
   let sekarang = 'scrBeranda';
 
   window.KolavoKe = function(id, anchor){ ke(id, anchor); };
@@ -5109,6 +5163,7 @@ function hitung(){}
     });
     window.scrollTo(0, 0);
     if(id === 'scrProfil') isiProfil();
+    if(id === 'scrKenalan' && window.KolavoGambarKenalan) window.KolavoGambarKenalan();
     if((id === 'scrBeranda' || id === 'scrHome' || id === 'scrApp' || id === 'scrDasbor') && window.KolavoGambarApp) window.KolavoGambarApp(id);
   }
 
@@ -5116,7 +5171,7 @@ function hitung(){}
      Tab aktif mengikuti layar, bukan klik terakhir: layar yang dibuka lewat
      tautan lain (kartu, notifikasi) tetap menyalakan tab induknya. */
   /* Profil & Lengkapi dibuka dari avatar — tidak menyalakan tab mana pun (PROMPT-HOME H1) */
-  const TAB = { scrHome: 'home', scrApp: 'komunitas', scrKomunitas: 'komunitas', scrAnggota: 'komunitas',
+  const TAB = { scrHome: 'home', scrKenalan: 'home', scrApp: 'komunitas', scrKomunitas: 'komunitas', scrAnggota: 'komunitas',
                 scrDasbor: 'dashboard', scrKelola: 'dashboard', scrBuat: 'dashboard' };
   function tabNav(id){
     const ada = App.mode === 'app' && App.masuk && id !== 'scrMasuk';
@@ -11990,8 +12045,8 @@ function hitung(){}
     const masuk = kenalanMasuk().map(function(o){ return o.nama; });   /* siapkan dulu ajakan contoh */
     const saran = saranKenal(true).map(function(x){ return x.o.n; });
     /* empat angka saja; tiap kartu membawa ke bagian yang relevan */
-    const kotak = function(angka, ket, varian, vis, ikon, ke, jangkar, warn){
-      return '<button type="button" class="sek-stat-i hs-i hs-' + varian + (warn ? ' warn' : '') + '" data-ke="' + ke + '"' + (jangkar ? ' data-anchor="' + jangkar + '"' : '') + '>' +
+    const kotak = function(angka, ket, varian, vis, ikon, ke, jangkar, warn, tabKenal){
+      return '<button type="button" class="sek-stat-i hs-i hs-' + varian + (warn ? ' warn' : '') + '" data-ke="' + ke + '"' + (jangkar ? ' data-anchor="' + jangkar + '"' : '') + (tabKenal ? ' data-kenal-buka="' + tabKenal + '"' : '') + '>' +
         /* ikon raksasa transparan di pojok sebagai watermark dekoratif */
         '<i class="hs-wm" aria-hidden="true">' + ic(ikon) + '</i>' +
         '<span class="hs-vis">' + (vis || '<i class="hs-ic">' + ic(ikon) + '</i>') + '</span>' +
@@ -11999,11 +12054,72 @@ function hitung(){}
     };
     el('homeRingkas').innerHTML = '<div class="sek-stat">' +
       kotak(kom.length, 'Komunitas Diikuti', 'biru', kom.length ? tumpukKom(kom) : '', 'komunitas', 'scrApp', '') +
-      kotak(terhubung.length, 'Kenalan Terhubung', 'hijau', terhubung.length ? tumpukOrang(terhubung, foto) : '', 'tangan', 'scrHome', 'homeKenal') +
-      kotak(masuk.length, 'Permintaan Kenalan', 'oranye', masuk.length ? tumpukOrang(masuk, foto) : '', 'tambahOrang', 'scrHome', 'homeAksi', masuk.length > 0) +
+      kotak(terhubung.length, 'Kenalan Terhubung', 'hijau', terhubung.length ? tumpukOrang(terhubung, foto) : '', 'tangan', 'scrKenalan', '', false, 'terhubung') +
+      kotak(masuk.length, 'Permintaan Kenalan', 'oranye', masuk.length ? tumpukOrang(masuk, foto) : '', 'tambahOrang', 'scrKenalan', '', masuk.length > 0, 'masuk') +
       kotak(saran.length, 'Rekomendasi Kenalan', 'ungu', saran.length ? tumpukOrang(saran, foto) : '', 'orang', 'scrHome', 'homeKenal') +
       '</div>';
   }
+
+  /* ---------- daftar kenalan (scrKenalan) — seperti daftar teman ---------- */
+  let knTab = 'terhubung', knCari = '';
+  /* data orang dari komunitas mana pun yang memuatnya (foto, pekerjaan, kota, komunitas) */
+  function cariOrang(nama){
+    const kelasSemua = [...document.querySelectorAll('#direktori .grid .ccard .logo-sq')]
+      .map(function(l){ return [...l.classList].find(function(c){ return c.indexOf('l-') === 0; }); }).filter(Boolean);
+    if(App().dibuat) kelasSemua.unshift('l-dibuat');
+    const urut = diterima().concat(kelasSemua);
+    for(let i = 0; i < urut.length; i++){
+      const o = (window.KolavoAnggotaKomunitas ? window.KolavoAnggotaKomunitas(urut[i]) : []).filter(function(x){ return x.n === nama; })[0];
+      if(o) return { o: o, kelas: urut[i] };
+    }
+    return { o: { n: nama }, kelas: '' };
+  }
+  function kartuKenalan(nama, jenis, j, extra){
+    const d = cariOrang(nama), o = d.o, pg = nama.split(' ')[0];
+    const av = o.f ? '<span class="av photo ' + o.f + '" role="img" aria-label="Foto profil ' + esc(pg) + ' — gambar AI"></span>'
+                   : '<span class="av ' + 'abc'[j % 3] + '" aria-hidden="true">' + esc(nama.split(' ').map(function(w){ return w[0]; }).join('').slice(0, 2)) + '</span>';
+    const profil = d.kelas ? ' data-home-profil="' + esc(nama) + '" data-kelas="' + d.kelas + '"' : '';
+    const sub = [extra && extra.kerja || o.k, extra && extra.kota || o.d].filter(function(v){ return v && v !== '—'; }).join(' · ');
+    let aksi = '';
+    if(jenis === 'terhubung') aksi = '<button type="button" class="btn sm" data-kn-wa="' + esc(nama) + '">Chat WhatsApp</button>' + (profil ? '<button type="button" class="btn outline sm"' + profil + '>Lihat profil</button>' : '');
+    if(jenis === 'masuk') aksi = '<button type="button" class="btn sm" data-home-kenal-terima="' + j + '">Terima</button><button type="button" class="btn outline sm" data-home-kenal-tolak="' + j + '">Tolak</button>';
+    if(jenis === 'terkirim') aksi = '<button type="button" class="btn outline sm" data-kn-batal="' + esc(nama) + '">Batalkan ajakan</button>' + (profil ? '<button type="button" class="btn outline sm"' + profil + '>Lihat profil</button>' : '');
+    const status = { terhubung: '<span class="kn-st ok">Terhubung</span>', masuk: '<span class="kn-st masuk">Ingin berkenalan</span>', terkirim: '<span class="kn-st tunggu">Menunggu jawaban</span>' }[jenis];
+    return '<article class="kn-i"><div class="kn-atas">' +
+        (profil ? '<button type="button" class="kn-orang"' + profil + '>' : '<div class="kn-orang">') + av +
+        '<span class="t"><span class="kn-nama"><b>' + esc(pg) + '</b>' + status + '</span><span>' + esc(sub || 'Anggota komunitas') + '</span>' +
+        (d.kelas ? '<span class="hn-kom">' + info(d.kelas).logo + esc(info(d.kelas).nama) + '</span>' : '') + '</span>' +
+        (profil ? '</button>' : '</div>') + '</div>' +
+      '<div class="kn-aksi">' + aksi + '</div></article>';
+  }
+  window.KolavoGambarKenalan = function(){
+    const a = App(), kn = a.kenalan || {};
+    const daftar = {
+      terhubung: Object.keys(kn).filter(function(n){ return kn[n] === 'terhubung'; }).map(function(n){ return { n: n }; }),
+      masuk: kenalanMasuk().map(function(o){ return { n: o.nama, x: o }; }),
+      terkirim: Object.keys(kn).filter(function(n){ return kn[n] === 'menunggu'; }).map(function(n){ return { n: n }; })
+    };
+    const LABEL = { terhubung: 'Terhubung', masuk: 'Permintaan masuk', terkirim: 'Terkirim' };
+    el('knTab').innerHTML = Object.keys(LABEL).map(function(k){
+      return '<button type="button" role="tab" class="chip' + (knTab === k ? ' on' : '') + '" aria-selected="' + (knTab === k) + '" data-kn-tab="' + k + '">' +
+        LABEL[k] + '<span class="cnt">' + daftar[k].length + '</span></button>';
+    }).join('');
+    const q = knCari.toLowerCase();
+    const isi = daftar[knTab].map(function(x, j){ return { x: x, j: j }; }).filter(function(y){
+      if(!q) return true;
+      const o = cariOrang(y.x.n).o;
+      return [y.x.n, o.k, o.d, y.x.x && y.x.x.kerja, y.x.x && y.x.x.kota].join(' ').toLowerCase().indexOf(q) >= 0;
+    });
+    const KOSONG = {
+      terhubung: ['Belum ada kenalan terhubung', 'Ajak anggota yang punya kesamaan denganmu. Begitu ajakan diterima, kontak kalian saling terbuka.'],
+      masuk: ['Tidak ada permintaan masuk', 'Permintaan kenalan dari anggota lain akan muncul di sini.'],
+      terkirim: ['Tidak ada ajakan yang menunggu', 'Ajakan yang belum dijawab akan muncul di sini. Membatalkan ajakan mengembalikan 10 kredit.']
+    }[knTab];
+    el('knList').innerHTML = isi.length
+      ? '<div class="kn-grid">' + isi.map(function(y){ return kartuKenalan(y.x.n, knTab, y.j, y.x.x); }).join('') + '</div>'
+      : '<div class="empty"><div class="empty-ic">' + ic('orang') + '</div><h3>' + (q ? 'Tidak ada yang cocok dengan pencarianmu' : KOSONG[0]) + '</h3><p>' + (q ? 'Coba kata kunci lain.' : KOSONG[1]) + '</p>' +
+        (knTab !== 'masuk' && !q ? '<div class="empty-cta"><button type="button" class="btn" data-ke="scrHome" data-anchor="homeKenal">Lihat rekomendasi kenalan</button></div>' : '') + '</div>';
+  };
 
   window.KolavoGambarHome = function(){
     if(!el('homeAksi')) return;
@@ -12014,6 +12130,9 @@ function hitung(){}
   };
   const segar = function(){ window.KolavoGambarHome(); };
 
+  document.addEventListener('input', function(e){
+    if(e.target.id === 'knCari'){ knCari = e.target.value.trim(); window.KolavoGambarKenalan(); }
+  });
   document.addEventListener('click', function(e){
     const t = e.target;
     let b;
@@ -12022,16 +12141,27 @@ function hitung(){}
       a.kenalan = a.kenalan || {}; a.kenalan[o.nama] = 'terhubung';
       toast('Kamu dan ' + o.nama.split(' ')[0] + ' sekarang saling kenal.');
       gambarKenal();
+      if(!el('scrKenalan').hidden) window.KolavoGambarKenalan();
       segar(); return;
     }
     if((b = t.closest('[data-home-kenal-tolak]'))){
       const o = App().kenalanMasuk.splice(+b.dataset.homeKenalTolak, 1)[0];
       toast('Ajakan ' + o.nama.split(' ')[0] + ' ditolak. Dia tidak diberi tahu alasannya.');
+      if(!el('scrKenalan').hidden) window.KolavoGambarKenalan();
       segar(); return;
     }
     if((b = t.closest('[data-home-tinjau]'))){
       window.KolavoBukaDashboard('minta', b.dataset.homeTinjau === 'diangkat' ? window.KolavoKomDiangkat() : null);
       return;
+    }
+    if((b = t.closest('[data-kn-tab]'))){ knTab = b.dataset.knTab; window.KolavoGambarKenalan(); return; }
+    if((b = t.closest('[data-kenal-buka]'))){ knTab = b.dataset.kenalBuka; knCari = ''; if(el('knCari')) el('knCari').value = ''; window.KolavoGambarKenalan(); return; }
+    if((b = t.closest('[data-kn-wa]'))){ toast('Prototipe: di produk, ini membuka WhatsApp ke ' + b.dataset.knWa.split(' ')[0] + '.'); return; }
+    if((b = t.closest('[data-kn-batal]'))){
+      const a = App(); delete (a.kenalan || {})[b.dataset.knBatal];
+      if(window.KolavoKredit) window.KolavoKredit.kembalikan();
+      toast('Ajakan ke ' + b.dataset.knBatal.split(' ')[0] + ' dibatalkan. 10 kredit dikembalikan.');
+      window.KolavoGambarKenalan(); return;
     }
     if((b = t.closest('[data-home-profil]'))){
       /* buka profil anggota di komunitasnya: siapkan konteks komunitas dulu, tanpa pindah layar */

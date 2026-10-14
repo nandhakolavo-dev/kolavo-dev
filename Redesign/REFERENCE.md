@@ -1492,8 +1492,8 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   saja), kepala Rekomendasi Kenalan di Home, bawah tombol ajak di profil anggota, dan kartu
   "Kredit kenalan" di Profil saya. Semua elemen `[data-kredit-saldo]` disegarkan bersama;
   semua `[data-kredit-topup]` membuka popup.
-- **Belum diputuskan**: saldo awal pengguna baru (prototipe: 20 = 2 ajakan); apakah kredit
-  dikembalikan bila ajakan ditolak; paket top up lain selain 100.
+- **Saldo awal 100 kredit** (= 10 ajakan; keputusan 15 Okt 2026). **Belum diputuskan**:
+  apakah kredit dikembalikan bila ajakan ditolak; paket top up lain selain 100.
 - **Rekomendasi Kenalan dirapikan**: kartu `.hn-i` — foto 52px + nama panggilan + pekerjaan ·
   kota + logo & nama komunitas (klik → profil), kotak **"Kenapa cocok"** berisi chip hijau
   ber-centang (alasan dari `KolavoCocokkan`) + chip netral angkatan, tombol **Lihat profil**
@@ -1503,3 +1503,11 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   `centang` (baru) berisi nilainya langsung ("Apoteker", "Depok") tanpa "Sama-sama".
   `KolavoCocokkan` kini mengisi `alasan` dengan nilai polos; label saringan onboarding
   ("Sama pekerjaan · …") tidak berubah.
+- **Daftar kenalan `scrKenalan`** (layar ke-12, perluMasuk, menyalakan tab Home), seperti
+  daftar teman. Dibuka dari kartu ringkasan Home: *Kenalan Terhubung* → tab Terhubung,
+  *Permintaan Kenalan* → tab Permintaan masuk (`data-kenal-buka`). Remah Home › Kenalan,
+  kolom cari (nama/pekerjaan/kota), tab chip dengan jumlah: **Terhubung** (Chat WhatsApp
+  [simulasi] · Lihat profil), **Permintaan masuk** (Terima · Tolak — handler yang sama dengan
+  Home), **Terkirim** (Batalkan ajakan → +10 kredit · Lihat profil). Kartu grid ≥ 300px: foto
+  56px, nama panggilan + label status, pekerjaan · kota, logo & nama komunitas. Data orang
+  dicari di semua komunitas (`cariOrang`). Kosong → ajakan ke Rekomendasi Kenalan.

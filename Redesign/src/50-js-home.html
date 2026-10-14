@@ -232,8 +232,8 @@
     const masuk = kenalanMasuk().map(function(o){ return o.nama; });   /* siapkan dulu ajakan contoh */
     const saran = saranKenal(true).map(function(x){ return x.o.n; });
     /* empat angka saja; tiap kartu membawa ke bagian yang relevan */
-    const kotak = function(angka, ket, varian, vis, ikon, ke, jangkar, warn){
-      return '<button type="button" class="sek-stat-i hs-i hs-' + varian + (warn ? ' warn' : '') + '" data-ke="' + ke + '"' + (jangkar ? ' data-anchor="' + jangkar + '"' : '') + '>' +
+    const kotak = function(angka, ket, varian, vis, ikon, ke, jangkar, warn, tabKenal){
+      return '<button type="button" class="sek-stat-i hs-i hs-' + varian + (warn ? ' warn' : '') + '" data-ke="' + ke + '"' + (jangkar ? ' data-anchor="' + jangkar + '"' : '') + (tabKenal ? ' data-kenal-buka="' + tabKenal + '"' : '') + '>' +
         /* ikon raksasa transparan di pojok sebagai watermark dekoratif */
         '<i class="hs-wm" aria-hidden="true">' + ic(ikon) + '</i>' +
         '<span class="hs-vis">' + (vis || '<i class="hs-ic">' + ic(ikon) + '</i>') + '</span>' +
@@ -241,11 +241,72 @@
     };
     el('homeRingkas').innerHTML = '<div class="sek-stat">' +
       kotak(kom.length, 'Komunitas Diikuti', 'biru', kom.length ? tumpukKom(kom) : '', 'komunitas', 'scrApp', '') +
-      kotak(terhubung.length, 'Kenalan Terhubung', 'hijau', terhubung.length ? tumpukOrang(terhubung, foto) : '', 'tangan', 'scrHome', 'homeKenal') +
-      kotak(masuk.length, 'Permintaan Kenalan', 'oranye', masuk.length ? tumpukOrang(masuk, foto) : '', 'tambahOrang', 'scrHome', 'homeAksi', masuk.length > 0) +
+      kotak(terhubung.length, 'Kenalan Terhubung', 'hijau', terhubung.length ? tumpukOrang(terhubung, foto) : '', 'tangan', 'scrKenalan', '', false, 'terhubung') +
+      kotak(masuk.length, 'Permintaan Kenalan', 'oranye', masuk.length ? tumpukOrang(masuk, foto) : '', 'tambahOrang', 'scrKenalan', '', masuk.length > 0, 'masuk') +
       kotak(saran.length, 'Rekomendasi Kenalan', 'ungu', saran.length ? tumpukOrang(saran, foto) : '', 'orang', 'scrHome', 'homeKenal') +
       '</div>';
   }
+
+  /* ---------- daftar kenalan (scrKenalan) — seperti daftar teman ---------- */
+  let knTab = 'terhubung', knCari = '';
+  /* data orang dari komunitas mana pun yang memuatnya (foto, pekerjaan, kota, komunitas) */
+  function cariOrang(nama){
+    const kelasSemua = [...document.querySelectorAll('#direktori .grid .ccard .logo-sq')]
+      .map(function(l){ return [...l.classList].find(function(c){ return c.indexOf('l-') === 0; }); }).filter(Boolean);
+    if(App().dibuat) kelasSemua.unshift('l-dibuat');
+    const urut = diterima().concat(kelasSemua);
+    for(let i = 0; i < urut.length; i++){
+      const o = (window.KolavoAnggotaKomunitas ? window.KolavoAnggotaKomunitas(urut[i]) : []).filter(function(x){ return x.n === nama; })[0];
+      if(o) return { o: o, kelas: urut[i] };
+    }
+    return { o: { n: nama }, kelas: '' };
+  }
+  function kartuKenalan(nama, jenis, j, extra){
+    const d = cariOrang(nama), o = d.o, pg = nama.split(' ')[0];
+    const av = o.f ? '<span class="av photo ' + o.f + '" role="img" aria-label="Foto profil ' + esc(pg) + ' — gambar AI"></span>'
+                   : '<span class="av ' + 'abc'[j % 3] + '" aria-hidden="true">' + esc(nama.split(' ').map(function(w){ return w[0]; }).join('').slice(0, 2)) + '</span>';
+    const profil = d.kelas ? ' data-home-profil="' + esc(nama) + '" data-kelas="' + d.kelas + '"' : '';
+    const sub = [extra && extra.kerja || o.k, extra && extra.kota || o.d].filter(function(v){ return v && v !== '—'; }).join(' · ');
+    let aksi = '';
+    if(jenis === 'terhubung') aksi = '<button type="button" class="btn sm" data-kn-wa="' + esc(nama) + '">Chat WhatsApp</button>' + (profil ? '<button type="button" class="btn outline sm"' + profil + '>Lihat profil</button>' : '');
+    if(jenis === 'masuk') aksi = '<button type="button" class="btn sm" data-home-kenal-terima="' + j + '">Terima</button><button type="button" class="btn outline sm" data-home-kenal-tolak="' + j + '">Tolak</button>';
+    if(jenis === 'terkirim') aksi = '<button type="button" class="btn outline sm" data-kn-batal="' + esc(nama) + '">Batalkan ajakan</button>' + (profil ? '<button type="button" class="btn outline sm"' + profil + '>Lihat profil</button>' : '');
+    const status = { terhubung: '<span class="kn-st ok">Terhubung</span>', masuk: '<span class="kn-st masuk">Ingin berkenalan</span>', terkirim: '<span class="kn-st tunggu">Menunggu jawaban</span>' }[jenis];
+    return '<article class="kn-i"><div class="kn-atas">' +
+        (profil ? '<button type="button" class="kn-orang"' + profil + '>' : '<div class="kn-orang">') + av +
+        '<span class="t"><span class="kn-nama"><b>' + esc(pg) + '</b>' + status + '</span><span>' + esc(sub || 'Anggota komunitas') + '</span>' +
+        (d.kelas ? '<span class="hn-kom">' + info(d.kelas).logo + esc(info(d.kelas).nama) + '</span>' : '') + '</span>' +
+        (profil ? '</button>' : '</div>') + '</div>' +
+      '<div class="kn-aksi">' + aksi + '</div></article>';
+  }
+  window.KolavoGambarKenalan = function(){
+    const a = App(), kn = a.kenalan || {};
+    const daftar = {
+      terhubung: Object.keys(kn).filter(function(n){ return kn[n] === 'terhubung'; }).map(function(n){ return { n: n }; }),
+      masuk: kenalanMasuk().map(function(o){ return { n: o.nama, x: o }; }),
+      terkirim: Object.keys(kn).filter(function(n){ return kn[n] === 'menunggu'; }).map(function(n){ return { n: n }; })
+    };
+    const LABEL = { terhubung: 'Terhubung', masuk: 'Permintaan masuk', terkirim: 'Terkirim' };
+    el('knTab').innerHTML = Object.keys(LABEL).map(function(k){
+      return '<button type="button" role="tab" class="chip' + (knTab === k ? ' on' : '') + '" aria-selected="' + (knTab === k) + '" data-kn-tab="' + k + '">' +
+        LABEL[k] + '<span class="cnt">' + daftar[k].length + '</span></button>';
+    }).join('');
+    const q = knCari.toLowerCase();
+    const isi = daftar[knTab].map(function(x, j){ return { x: x, j: j }; }).filter(function(y){
+      if(!q) return true;
+      const o = cariOrang(y.x.n).o;
+      return [y.x.n, o.k, o.d, y.x.x && y.x.x.kerja, y.x.x && y.x.x.kota].join(' ').toLowerCase().indexOf(q) >= 0;
+    });
+    const KOSONG = {
+      terhubung: ['Belum ada kenalan terhubung', 'Ajak anggota yang punya kesamaan denganmu. Begitu ajakan diterima, kontak kalian saling terbuka.'],
+      masuk: ['Tidak ada permintaan masuk', 'Permintaan kenalan dari anggota lain akan muncul di sini.'],
+      terkirim: ['Tidak ada ajakan yang menunggu', 'Ajakan yang belum dijawab akan muncul di sini. Membatalkan ajakan mengembalikan 10 kredit.']
+    }[knTab];
+    el('knList').innerHTML = isi.length
+      ? '<div class="kn-grid">' + isi.map(function(y){ return kartuKenalan(y.x.n, knTab, y.j, y.x.x); }).join('') + '</div>'
+      : '<div class="empty"><div class="empty-ic">' + ic('orang') + '</div><h3>' + (q ? 'Tidak ada yang cocok dengan pencarianmu' : KOSONG[0]) + '</h3><p>' + (q ? 'Coba kata kunci lain.' : KOSONG[1]) + '</p>' +
+        (knTab !== 'masuk' && !q ? '<div class="empty-cta"><button type="button" class="btn" data-ke="scrHome" data-anchor="homeKenal">Lihat rekomendasi kenalan</button></div>' : '') + '</div>';
+  };
 
   window.KolavoGambarHome = function(){
     if(!el('homeAksi')) return;
@@ -256,6 +317,9 @@
   };
   const segar = function(){ window.KolavoGambarHome(); };
 
+  document.addEventListener('input', function(e){
+    if(e.target.id === 'knCari'){ knCari = e.target.value.trim(); window.KolavoGambarKenalan(); }
+  });
   document.addEventListener('click', function(e){
     const t = e.target;
     let b;
@@ -264,16 +328,27 @@
       a.kenalan = a.kenalan || {}; a.kenalan[o.nama] = 'terhubung';
       toast('Kamu dan ' + o.nama.split(' ')[0] + ' sekarang saling kenal.');
       gambarKenal();
+      if(!el('scrKenalan').hidden) window.KolavoGambarKenalan();
       segar(); return;
     }
     if((b = t.closest('[data-home-kenal-tolak]'))){
       const o = App().kenalanMasuk.splice(+b.dataset.homeKenalTolak, 1)[0];
       toast('Ajakan ' + o.nama.split(' ')[0] + ' ditolak. Dia tidak diberi tahu alasannya.');
+      if(!el('scrKenalan').hidden) window.KolavoGambarKenalan();
       segar(); return;
     }
     if((b = t.closest('[data-home-tinjau]'))){
       window.KolavoBukaDashboard('minta', b.dataset.homeTinjau === 'diangkat' ? window.KolavoKomDiangkat() : null);
       return;
+    }
+    if((b = t.closest('[data-kn-tab]'))){ knTab = b.dataset.knTab; window.KolavoGambarKenalan(); return; }
+    if((b = t.closest('[data-kenal-buka]'))){ knTab = b.dataset.kenalBuka; knCari = ''; if(el('knCari')) el('knCari').value = ''; window.KolavoGambarKenalan(); return; }
+    if((b = t.closest('[data-kn-wa]'))){ toast('Prototipe: di produk, ini membuka WhatsApp ke ' + b.dataset.knWa.split(' ')[0] + '.'); return; }
+    if((b = t.closest('[data-kn-batal]'))){
+      const a = App(); delete (a.kenalan || {})[b.dataset.knBatal];
+      if(window.KolavoKredit) window.KolavoKredit.kembalikan();
+      toast('Ajakan ke ' + b.dataset.knBatal.split(' ')[0] + ' dibatalkan. 10 kredit dikembalikan.');
+      window.KolavoGambarKenalan(); return;
     }
     if((b = t.closest('[data-home-profil]'))){
       /* buka profil anggota di komunitasnya: siapkan konteks komunitas dulu, tanpa pindah layar */
