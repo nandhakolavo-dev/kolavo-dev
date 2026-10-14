@@ -87,9 +87,8 @@
   function tabNav(id){
     const ada = App.mode === 'app' && App.masuk && id !== 'scrMasuk';
     document.body.classList.toggle('m-tab', ada);
-    const tab = document.getElementById('navTab'), cari = document.getElementById('navCari');
+    const tab = document.getElementById('navTab');
     if(tab) tab.hidden = !ada;
-    if(cari) cari.hidden = !ada;
     document.querySelectorAll('#navTab .nt').forEach(function(t){
       const on = ada && t.dataset.tab === TAB[id];
       t.classList.toggle('on', on);

@@ -154,11 +154,6 @@
     }
     const d = e.target.closest('[data-dasbor-buka]');
     if(d){ bukaDasbor(d.dataset.dasborBuka); return; }
-    /* cari di nav: router sudah pindah ke scrApp#direktori, tinggal fokus ke kolom cari */
-    if(e.target.closest('#navCari')){
-      setTimeout(function(){ const q = document.getElementById('q'); if(q) q.focus({ preventScroll: true }); }, 400);
-      return;
-    }
     if(e.target.closest('#demoTautan')){
       /* bergiliran antar komunitas contoh, supaya Esensial & Advance sama-sama bisa dicoba */
       const kartu = document.querySelectorAll('#direktori .ccard')[demoKe++ % 4];

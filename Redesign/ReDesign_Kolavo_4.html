@@ -410,7 +410,7 @@ body:not(.m-app) #acct,body:not(.m-app) #notif{display:none}
 #scrBeranda > #etalase{padding-bottom:30px}
 @media(max-width:960px){.nav-in .nav-lnk{display:none}}
 body.m-tab .nav-in{position:relative}
-.nav-tab[hidden],.nav-cari[hidden]{display:none}
+.nav-tab[hidden]{display:none}
 .nav-tab{position:absolute;left:50%;top:0;bottom:0;transform:translateX(-50%);display:flex;gap:4px}
 .nt{position:relative;display:flex;align-items:center;justify-content:center;width:104px;color:var(--ink-2);text-decoration:none}
 .nt::before{content:"";position:absolute;inset:6px 4px;border-radius:13px;background:transparent;transition:background .15s ease}
@@ -421,10 +421,6 @@ body.m-tab .nav-in{position:relative}
 .nt.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--blue)}
 .nt.on:hover::before{background:transparent}
 .nt:focus-visible{outline:3px solid var(--ring);outline-offset:-6px;border-radius:13px}
-.nav-cari{display:flex;align-items:center;gap:8px;height:40px;padding:0 16px 0 12px;border-radius:100px;background:var(--line-2);color:var(--ink-2);font-size:14px;text-decoration:none}
-.nav-cari svg{width:18px;height:18px}
-.nav-cari:hover{color:var(--ink)}
-@media(max-width:1180px){.nav-cari{width:40px;padding:0;justify-content:center}.nav-cari span{display:none}}
 /* isi tab app (A4): Komunitas & Dashboard */
 .app-pg{padding:30px 0 72px;background:var(--bg-alt);min-height:calc(100vh - 77px)}
 .app-hd h1{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
@@ -508,7 +504,7 @@ body:not([data-layar="scrBeranda"]):not([data-layar="scrMasuk"]) #demoTautan{dis
   body.m-tab .demo{bottom:76px}
   body.m-tab .toast{bottom:86px}
   /* bar atas cukup logo + lonceng + avatar; cari ada di tab Komunitas */
-  body.m-tab .nav-cari,body.m-tab #acctChip,body.m-tab .acct-btn .chev{display:none}
+  body.m-tab #acctChip,body.m-tab .acct-btn .chev{display:none}
 }
 .msk{min-height:100vh;padding:clamp(32px,10vh,96px) 16px 64px;background:var(--bg-alt)}
 .msk-in{max-width:440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:22px}
@@ -2306,7 +2302,6 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 
     <!-- nav Kolavo App (A3): tab ikon ala Facebook web. Hanya di mode app & sudah masuk
          (router: body.m-tab). < 768px pindah ke bilah bawah. -->
-    <a class="nav-cari" id="navCari" href="#0" data-ke="scrApp" data-anchor="direktori" aria-label="Cari komunitas" hidden><i data-ic="cari"></i><span>Cari komunitas</span></a>
     <div class="nav-tab" id="navTab" role="navigation" aria-label="Menu Kolavo" hidden>
       <a class="nt" href="#0" data-tab="home" data-ke="scrHome" title="Home"><i data-ic="rumah"></i><b>Home</b></a>
       <a class="nt" href="#0" data-tab="komunitas" data-ke="scrApp" title="Komunitas"><i data-ic="orang"></i><b>Komunitas</b></a>
@@ -4859,9 +4854,8 @@ function hitung(){}
   function tabNav(id){
     const ada = App.mode === 'app' && App.masuk && id !== 'scrMasuk';
     document.body.classList.toggle('m-tab', ada);
-    const tab = document.getElementById('navTab'), cari = document.getElementById('navCari');
+    const tab = document.getElementById('navTab');
     if(tab) tab.hidden = !ada;
-    if(cari) cari.hidden = !ada;
     document.querySelectorAll('#navTab .nt').forEach(function(t){
       const on = ada && t.dataset.tab === TAB[id];
       t.classList.toggle('on', on);
@@ -11429,11 +11423,6 @@ function hitung(){}
     }
     const d = e.target.closest('[data-dasbor-buka]');
     if(d){ bukaDasbor(d.dataset.dasborBuka); return; }
-    /* cari di nav: router sudah pindah ke scrApp#direktori, tinggal fokus ke kolom cari */
-    if(e.target.closest('#navCari')){
-      setTimeout(function(){ const q = document.getElementById('q'); if(q) q.focus({ preventScroll: true }); }, 400);
-      return;
-    }
     if(e.target.closest('#demoTautan')){
       /* bergiliran antar komunitas contoh, supaya Esensial & Advance sama-sama bisa dicoba */
       const kartu = document.querySelectorAll('#direktori .ccard')[demoKe++ % 4];

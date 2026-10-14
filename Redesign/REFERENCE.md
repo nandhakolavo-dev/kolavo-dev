@@ -1389,3 +1389,7 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   Regresi tertangkap & diperbaiki: penjaga router `scrKelola` (butuh `App.dibuat`) memantulkan
   pengguna **tanpa komunitas buatan** dari dashboard komunitas yang mengangkatnya — kini lolos
   bila dashboard aktif adalah komunitas diangkat dan `App.diangkat` masih menyala.
+- **Cari komunitas di navbar dihapus** (`#navCari` + CSS `.nav-cari` + handler fokus kolom
+  cari). Bar atas app kini: logo · tab Home/Komunitas/Dashboard (tetap tepat di tengah) ·
+  lonceng · avatar. Pencarian komunitas tetap di tab Komunitas › Jelajahi. Ikon `cari` di
+  `50-js-ikon` dibiarkan (tidak dipakai, aman).

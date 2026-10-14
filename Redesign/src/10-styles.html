@@ -367,7 +367,7 @@ body:not(.m-app) #acct,body:not(.m-app) #notif{display:none}
 #scrBeranda > #etalase{padding-bottom:30px}
 @media(max-width:960px){.nav-in .nav-lnk{display:none}}
 body.m-tab .nav-in{position:relative}
-.nav-tab[hidden],.nav-cari[hidden]{display:none}
+.nav-tab[hidden]{display:none}
 .nav-tab{position:absolute;left:50%;top:0;bottom:0;transform:translateX(-50%);display:flex;gap:4px}
 .nt{position:relative;display:flex;align-items:center;justify-content:center;width:104px;color:var(--ink-2);text-decoration:none}
 .nt::before{content:"";position:absolute;inset:6px 4px;border-radius:13px;background:transparent;transition:background .15s ease}
@@ -378,10 +378,6 @@ body.m-tab .nav-in{position:relative}
 .nt.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--blue)}
 .nt.on:hover::before{background:transparent}
 .nt:focus-visible{outline:3px solid var(--ring);outline-offset:-6px;border-radius:13px}
-.nav-cari{display:flex;align-items:center;gap:8px;height:40px;padding:0 16px 0 12px;border-radius:100px;background:var(--line-2);color:var(--ink-2);font-size:14px;text-decoration:none}
-.nav-cari svg{width:18px;height:18px}
-.nav-cari:hover{color:var(--ink)}
-@media(max-width:1180px){.nav-cari{width:40px;padding:0;justify-content:center}.nav-cari span{display:none}}
 /* isi tab app (A4): Komunitas & Dashboard */
 .app-pg{padding:30px 0 72px;background:var(--bg-alt);min-height:calc(100vh - 77px)}
 .app-hd h1{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
@@ -465,7 +461,7 @@ body:not([data-layar="scrBeranda"]):not([data-layar="scrMasuk"]) #demoTautan{dis
   body.m-tab .demo{bottom:76px}
   body.m-tab .toast{bottom:86px}
   /* bar atas cukup logo + lonceng + avatar; cari ada di tab Komunitas */
-  body.m-tab .nav-cari,body.m-tab #acctChip,body.m-tab .acct-btn .chev{display:none}
+  body.m-tab #acctChip,body.m-tab .acct-btn .chev{display:none}
 }
 .msk{min-height:100vh;padding:clamp(32px,10vh,96px) 16px 64px;background:var(--bg-alt)}
 .msk-in{max-width:440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:22px}
