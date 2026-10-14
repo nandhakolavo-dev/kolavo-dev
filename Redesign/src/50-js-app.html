@@ -1,0 +1,107 @@
+<script>
+/* ============================================================
+   Kolavo App (A4): isi tab Komunitas (scrApp) dan Dashboard (scrDasbor).
+   Router memanggil KolavoGambarApp(id) setiap layar ini digambar.
+   ============================================================ */
+(function(){
+  const App = function(){ return window.KolavoApp || {}; };
+  const toast = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function kelasKartu(k){ return [...k.querySelector('.logo-sq').classList].find(function(c){ return c.indexOf('l-') === 0; }); }
+
+  /* contoh komunitas orang lain yang mengangkatmu jadi pengurus — dimunculkan
+     tombol demo "Angkat saya jadi pengurus", supaya daftar dua jenis bisa dicoba */
+  const DIANGKAT = { kelas: 'l-iasman52', nama: 'Ikatan Alumni SMAN 52', jabatan: 'Sekretaris', jumlah: '6 anggota' };
+
+  /* ---------- tab Komunitas ---------- */
+  function gambarKu(){
+    const w = document.getElementById('appKu');
+    if(!w) return;
+    const html = window.KolavoKomunitasKu ? window.KolavoKomunitasKu() : '';
+    w.className = html ? 'pf-list' : '';
+    w.innerHTML = html || '<p class="app-kosong">Belum ada. Pilih komunitas di bawah, lalu ajukan gabung.</p>';
+  }
+  /* tombol kartu mengikuti status pengajuan: belum → Minta gabung, sudah → Buka */
+  function gambarKartu(){
+    const dj = App().diajukan || {};
+    document.querySelectorAll('#direktori [data-gabung-kartu]').forEach(function(b){
+      const st = dj[kelasKartu(b.closest('.ccard'))];
+      b.textContent = st === 'anggota' ? 'Buka' : st === 'menunggu' ? 'Menunggu' : 'Minta gabung';
+      b.classList.toggle('outline', !!st);
+    });
+  }
+
+  /* ---------- tab Dashboard ---------- */
+  function baris(logo, nama, sub, lencana, jenis){
+    return '<div class="pf-item dsb-i"><div class="pf-open" data-dasbor-buka="' + jenis + '" role="button" tabindex="0" title="Buka dashboard">' + logo +
+      '<div class="t"><div class="n">' + esc(nama) + '</div><div class="s">' + esc(sub) + '</div></div></div>' +
+      '<span class="status pengurus">' + esc(lencana) + '</span>' +
+      '<button type="button" class="btn sm" data-dasbor-buka="' + jenis + '">Buka dashboard</button></div>';
+  }
+  function gambarDasbor(){
+    const w = document.getElementById('dasborList');
+    if(!w) return;
+    const a = App(), d = a.dibuat, item = [];
+    if(d){
+      const gaya = d.logo ? ' style="background-image:url(' + d.logo + ')"' : '';
+      item.push(baris('<span class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' + (d.logo ? '' : esc(d.inisial || '')) + '</span>',
+        d.nama, [d.bentuk, d.kota].filter(Boolean).join(' · '), d.arsip ? 'Diarsipkan' : 'Pembuat', 'dibuat'));
+    }
+    if(a.diangkat){
+      item.push(baris('<span class="logo-sq ' + DIANGKAT.kelas + '" role="img" aria-label="Logo komunitas"></span>',
+        DIANGKAT.nama, DIANGKAT.jumlah, DIANGKAT.jabatan, 'diangkat'));
+    }
+    if(!item.length){
+      w.innerHTML = '<div class="empty">' +
+        '<div class="empty-ic">' + (window.KolavoIkon ? window.KolavoIkon('kelompok') : '') + '</div>' +
+        '<h3>Kamu belum mengelola komunitas</h3>' +
+        '<p>Dashboard muncul untuk komunitas yang kamu buat sendiri, atau yang mengangkatmu jadi pengurus.</p>' +
+        '<div class="empty-cta"><button type="button" class="btn" data-ke="scrBuat">Buat komunitas</button></div></div>';
+      return;
+    }
+    /* prototipe menyimpan satu komunitas buatan; tombol buat hanya bila belum ada */
+    w.innerHTML = '<div class="pf-list">' + item.join('') + '</div>' +
+      (d ? '' : '<div class="dsb-buat"><button type="button" class="btn outline" data-ke="scrBuat">Buat komunitas</button></div>');
+  }
+
+  window.KolavoGambarApp = function(id){
+    if(id === 'scrApp'){ gambarKu(); gambarKartu(); }
+    else gambarDasbor();
+  };
+
+  function bukaDasbor(jenis){
+    if(jenis === 'dibuat'){ window.KolavoKe('scrKelola'); return; }
+    toast('Prototipe: dashboard komunitas yang mengangkatmu memakai tampilan yang sama, belum disimulasikan.');
+  }
+
+  document.addEventListener('click', function(e){
+    const g = e.target.closest('[data-gabung-kartu]');
+    if(g){
+      const kartu = g.closest('.ccard'), st = (App().diajukan || {})[kelasKartu(kartu)];
+      window.KolavoLihatKomunitas(kartu);
+      /* belum diajukan: langsung buka formulir gabung di halaman komunitasnya */
+      const b = !st && document.getElementById('komGabungBtn');
+      if(b) b.click();
+      return;
+    }
+    const d = e.target.closest('[data-dasbor-buka]');
+    if(d){ bukaDasbor(d.dataset.dasborBuka); return; }
+    /* cari di nav: router sudah pindah ke scrApp#direktori, tinggal fokus ke kolom cari */
+    if(e.target.closest('#navCari')){
+      setTimeout(function(){ const q = document.getElementById('q'); if(q) q.focus({ preventScroll: true }); }, 400);
+      return;
+    }
+    if(e.target.closest('#demoAngkat')){
+      const a = App();
+      a.diangkat = !a.diangkat;
+      toast(a.diangkat ? 'Kamu diangkat jadi Sekretaris di ' + DIANGKAT.nama + '.' : 'Jabatan pengurus dicabut.');
+      gambarDasbor();
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter' && e.key !== ' ') return;
+    const d = e.target.closest && e.target.closest('div[data-dasbor-buka]');
+    if(d){ e.preventDefault(); bukaDasbor(d.dataset.dasborBuka); }
+  });
+})();
+</script>

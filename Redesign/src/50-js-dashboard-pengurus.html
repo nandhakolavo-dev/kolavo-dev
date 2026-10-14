@@ -49,7 +49,7 @@
     /* daftar jabatan — satu sumber untuk pemilih jabatan dan tabel Siapa boleh apa */
     jabatan: JABATAN,
     /* penomoran anggota */
-    nomorMode: 'auto', kode: 'KOMU', tahun: new Date().getFullYear(), urut: 0, idUbahFor: null
+    nomorMode: 'manual', kode: 'KOMU', tahun: new Date().getFullYear(), urut: 0, idUbahFor: null
   };
   window.KolavoDashboard = D;
   /* kait buat modul yang menempel ke dashboard (50-js-sekretariat) */
@@ -157,7 +157,7 @@
     D.akuKerja = nilaiProfil('kerja') || 'Pengurus';
     D.akuKota = nilaiProfil('kota') || kom.kota || '';
     /* penomoran anggota: mode + kode awalan ditetapkan saat halaman dibuat */
-    D.nomorMode = kom.nomorMode || 'auto';
+    D.nomorMode = kom.nomorMode || 'manual';
     D.kode = (kom.kode || (kom.slug || '').toUpperCase().replace(/[^0-9A-Z]/g, '') || 'KOMU');
     D.tahun = new Date().getFullYear();
     D.urut = 0;
@@ -167,9 +167,9 @@
     D.mem[D.aku] = { nama: D.aku, kerja: D.akuKerja, kota: D.akuKota, panggil: 'Kamu', aku: true };
     /* pembuat halaman anggota pertama — dapat nomor 001 kalau penomoran otomatis */
     if(D.nomorMode === 'auto'){ D.urut = 1; D.mem[D.aku].id = fmtId(1); }
-    /* pembuat halaman belum tentu ketua — defaultnya Community Builder
+    /* pembuat halaman belum tentu ketua — defaultnya Community Creator
        sampai diberi jabatan sungguhan lewat menu Struktur Kepengurusan */
-    D.pengurus = [{ nama: D.aku, jabatan: 'Community Builder', aku: true }];
+    D.pengurus = [{ nama: D.aku, jabatan: 'Community Creator', aku: true }];
     JABATAN.length = 0; Array.prototype.push.apply(JABATAN, JABATAN_AWAL);
     D.jabatanTeks = ''; D.jabEdit = null; D.jabEditTeks = ''; D.jabHapus = null;
     /* peninjau pendaftaran boleh lebih dari satu — daftar nama, bukan satu orang.
@@ -312,7 +312,7 @@
       const catatan = bisa
         ? '<div class="kl-req-catatan"><label class="kl-info-k" for="kat-' + r.id + '">Catatan keputusan<span class="kl-wajib" aria-hidden="true">*</span></label>' +
           '<input class="inp" id="kat-' + r.id + '" type="text" data-catatan maxlength="140" required aria-required="true" aria-describedby="katn-' + r.id + '" placeholder="Mis. alumni angkatan 2014, dikenal pengurus">' +
-          '<p class="kl-req-catatan-note" id="katn-' + r.id + '">Tulis alasannya dulu, baru bisa setujui atau tolak. Catatan ini tersimpan di Riwayat supaya pengurus lain paham.</p></div>'
+          '<p class="kl-req-catatan-note" id="katn-' + r.id + '">Tulis alasannya dulu, baru bisa setujui atau tolak. Catatan ini tersimpan di tab Anggota supaya pengurus lain paham.</p></div>'
         : '';
 
       const aksi = bisa
@@ -369,7 +369,7 @@
       const m = D.mem[p.nama] || { nama: p.nama, kerja: '', kota: '' };
       const kanan = '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' + (p.aku ? '<span class="tag hi">Kamu</span>' : '');
       const t = tombolNomor(p.nama, m);
-      html += baris(m, kanan, t ? '<div class="kl-row-aksi">' + t + '</div>' : '') + editNomor(p.nama, m);
+      html += baris(m, kanan, t ? '<div class="kl-row-aksi">' + t + '</div>' : '', putusan(p.nama)) + editNomor(p.nama, m);
     });
 
     D.anggotaBiasa.forEach(function(nama){
@@ -379,7 +379,7 @@
         aksi = '<div class="kl-row-aksi">' + tombolNomor(nama, m) +
           (modeAdvance() ? '<button type="button" class="btn outline sm" data-angkat="' + lolos(nama) + '">Angkat jadi pengurus</button>' : '') + '</div>';
       }
-      html += baris(m, '', aksi) + editNomor(nama, m);
+      html += baris(m, '', aksi, putusan(nama)) + editNomor(nama, m);
       if(D.angkatFor === nama){
         html += '<div class="kl-angkat">' +
             '<span class="kl-angkat-lbl">Jadikan ' + lolos((m.panggil && m.panggil !== 'Kamu') ? m.panggil : nama.split(' ')[0]) + ':</span>' +
@@ -395,7 +395,7 @@
     wadah.innerHTML = html;
   }
 
-  function baris(m, kanan, aksi){
+  function baris(m, kanan, aksi, bawah){
     const av = '<div class="av ' + 'abc'[(m.nama.length) % 3] + '" aria-hidden="true">' + inisial(m.nama) + '</div>';
     const sub = [m.kerja, m.kota].filter(Boolean).join(' · ');
     /* nomor anggota ditaruh kecil di atas nama, bukan menyamping — baris jadi
@@ -403,8 +403,19 @@
     const idAtas = (pakaiNomor() && m && m.id) ? '<div class="mem-id">' + lolos(m.id) + '</div>' : '';
     return '<div class="kl-row">' + av +
       '<div class="t">' + idAtas + '<div class="kl-row-nm">' + lolos(m.nama) + (kanan || '') + '</div>' +
-      (sub ? '<div class="kl-row-sub">' + lolos(sub) + '</div>' : '') + '</div>' +
+      (sub ? '<div class="kl-row-sub">' + lolos(sub) + '</div>' : '') + (bawah || '') + '</div>' +
       (aksi || '') + '</div>';
+  }
+  /* V4: tab Riwayat dilebur ke tab Anggota — keputusan penerimaan ikut di baris
+     anggotanya, terlipat supaya daftar tetap ringkas */
+  function olehSiapa(r){
+    return r.otomatis ? 'diterima otomatis' : 'oleh ' + (r.oleh === D.aku ? 'kamu' : lolos(r.oleh.split(' ')[0]));
+  }
+  function putusan(nama){
+    const r = D.riwayat.filter(function(x){ return x.nama === nama && x.status === 'diterima'; })[0];
+    if(!r) return '';
+    return '<details class="kl-putus"><summary>Diterima ' + olehSiapa(r) + ' · ' + lolos(r.waktu) + '</summary>' +
+      '<p>' + (r.catatan ? lolos(r.catatan) : (r.otomatis ? 'Diterima otomatis sesuai aturan penerimaan otomatis.' : 'Tidak ada catatan.')) + '</p></details>';
   }
 
   /* ---------- panel: kepengurusan ---------- */
@@ -446,7 +457,7 @@
   function gambarPengurusAdvance(){
     const wadah = el('klPengurusList');
     const satuPeninjau = D.peninjau.length <= 1;
-    wadah.innerHTML = '<p class="kl-sub">Pengurus bisa saling berbagi tugas. Hak menyetujui pendaftaran dipegang <b>peninjau pendaftaran</b> — boleh beberapa orang sekaligus, dan bisa kamu tambah atau lepas kapan saja. Selalu ada minimal satu peninjau.</p>' + D.pengurus.map(function(p){
+    wadah.innerHTML = '<p class="kl-sub">Semua pengurus bisa melihat struktur ini dan menyunting perkenalannya sendiri. Hak menyetujui pendaftaran dipegang <b>peninjau pendaftaran</b> — boleh beberapa orang sekaligus, dan bisa kamu tambah atau lepas kapan saja. Selalu ada minimal satu peninjau.</p>' + D.pengurus.map(function(p){
       const m = D.mem[p.nama] || { nama: p.nama, kerja: '', kota: '' };
       const ini = adaPeninjau(p.nama);
       const nm = lolos(p.nama) + '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' +
@@ -554,34 +565,29 @@
     }
 
     wadah.innerHTML =
-      '<div class="kl-tier"><b>Paket Esensial · Community Builder.</b> Kamu satu-satunya pengurus. Yang bisa diatur di sini: siapa yang meninjau pendaftaran yang masuk.</div>' +
+      '<div class="kl-tier"><b>Paket Esensial · Community Creator.</b> Di paket ini belum ada susunan pengurus. Yang diatur di sini: siapa saja <b>peninjau</b> yang menerima atau menolak pendaftaran.</div>' +
       '<div class="kl-seksi-h">Peninjau pendaftaran</div>' +
       '<p class="kl-cb-hint">Merekalah yang menerima atau menolak pendaftaran. Selalu ada minimal satu.</p>' +
       list + tambah +
       '<div class="kl-upsell">' +
         '<div class="kl-upsell-h">Butuh susunan pengurus?</div>' +
-        '<p>Ketua, wakil ketua, sekretaris, bendahara — dengan menu kepengurusan sendiri untuk mengangkat anggota jadi pengurus dan mengatur jabatan. Ada di paket <b>Advance</b>.</p>' +
+        '<p>Ketua, wakil ketua, sekretaris, bendahara, dengan nama jabatan yang bisa kamu atur sendiri dan tampil di halaman komunitas — dengan menu kepengurusan sendiri untuk mengangkat anggota jadi pengurus dan mengatur jabatan. Ada di paket <b>Advance</b>.</p>' +
         '<button type="button" class="btn outline sm" data-mode="advance">' + (D.sekAktif ? 'Buka Advance' : 'Lihat Advance') + '</button>' +
       '</div>';
   }
 
   /* ---------- panel: riwayat keputusan ---------- */
   function gambarRiwayat(){
-    el('klRiwayatN').textContent = D.riwayat.length;
+    /* hanya yang ditolak — keputusan diterima sudah ikut di baris anggotanya */
     const wadah = el('klRiwayatList');
-    if(!D.riwayat.length){
-      wadah.innerHTML =
-        '<div class="empty">' +
-          '<div class="empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>' +
-          '<h3>Belum ada keputusan</h3>' +
-          '<p>Setiap pendaftaran yang kamu atau pengurus lain terima atau tolak tercatat di sini, supaya semua pengurus tahu siapa yang sudah ditinjau.</p>' +
-        '</div>';
-      return;
-    }
-    wadah.innerHTML = D.riwayat.map(function(r, i){
+    const lain = D.riwayat.filter(function(r){ return r.status !== 'diterima'; });
+    if(!lain.length){ wadah.innerHTML = ''; return; }
+    wadah.innerHTML = '<div class="kl-seksi-h kl-seksi-jarak">Pendaftaran yang ditolak</div>' +
+      '<p class="kl-cb-hint">Tidak jadi anggota. Catatan keputusannya dilihat semua peninjau.</p>' +
+      lain.map(function(r, i){
       const av = '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(r.nama) + '</div>';
       const diterima = r.status === 'diterima';
-      const oleh = r.otomatis ? 'diterima otomatis' : 'oleh ' + (r.oleh === D.aku ? 'kamu' : lolos(r.oleh.split(' ')[0]));
+      const oleh = olehSiapa(r);
       /* nomor anggota dibaca dari data anggota (bukan snapshot) supaya kalau
          diperbaiki di tab Anggota, riwayatnya ikut betul */
       const mem = D.mem[r.nama];
@@ -636,6 +642,8 @@
     gambarPengurus();
     gambarRiwayat();
     D.onGambar.forEach(function(f){ f(); });
+    const lp = el('klTabPengurusL'); if(lp) lp.textContent = modeAdvance() ? 'Struktur Kepengurusan' : 'Peninjau';
+    if(D.tab === 'riwayat') D.tab = 'anggota';
     pilihTab(D.tab);
   }
 
@@ -753,7 +761,7 @@
     if(e.target.closest('[data-jab-tambah]')){
       const nama = D.jabatanTeks.trim().replace(/\s+/g, ' ');
       if(!nama){ toast('Tulis nama jabatannya dulu.'); return; }
-      const sama = JABATAN.concat(['Community Builder']).filter(function(j){ return j.toLowerCase() === nama.toLowerCase(); })[0];
+      const sama = JABATAN.concat(['Community Creator']).filter(function(j){ return j.toLowerCase() === nama.toLowerCase(); })[0];
       if(sama){ toast('Jabatan “' + sama + '” sudah ada.'); return; }
       JABATAN.push(nama); D.jabatanTeks = '';
       gambar();
@@ -773,7 +781,7 @@
       const lama = D.jabEdit, baru = D.jabEditTeks.trim().replace(/\s+/g, ' ');
       if(!baru){ toast('Nama jabatan tidak boleh kosong.'); return; }
       if(baru !== lama){
-        const sama = JABATAN.concat(['Community Builder']).filter(function(j){ return j !== lama && j.toLowerCase() === baru.toLowerCase(); })[0];
+        const sama = JABATAN.concat(['Community Creator']).filter(function(j){ return j !== lama && j.toLowerCase() === baru.toLowerCase(); })[0];
         if(sama){ toast('Jabatan “' + sama + '” sudah ada.'); return; }
         JABATAN[JABATAN.indexOf(lama)] = baru;
         D.pengurus.forEach(function(p){ if(p.jabatan === lama) p.jabatan = baru; });

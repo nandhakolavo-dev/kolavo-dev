@@ -87,7 +87,9 @@
     render();
   };
 
-  invite.addEventListener('click', function(){
+  /* V4: tombol 'ajak pengurusmu' dicabut dari keadaan kosong — beranda sekarang bicara
+     ke pengurus. Handlernya dibiarkan dan dijaga kalau tombolnya dikembalikan. */
+  if(invite) invite.addEventListener('click', function(){
     var teks = 'Halo pengurus! Yuk bikin halaman komunitas kita di Kolavo biar anggota bisa saling kenal: https://kolavo.app';
     var label = invite.textContent;
     function selesai(){

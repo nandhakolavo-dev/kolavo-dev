@@ -176,6 +176,11 @@ function hitung(){}
     var n = document.getElementById('bioN');
     if(n) n.textContent = bio.value.length;
   });
+  var beri = document.getElementById('beri');
+  if(beri) beri.addEventListener('input', function(){
+    var n = document.getElementById('beriN');
+    if(n) n.textContent = beri.value.length;
+  });
 
   hitung();
 })();

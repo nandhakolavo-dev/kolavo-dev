@@ -1,0 +1,17 @@
+<script>
+/* ============================================================
+   Kata berotasi di judul hero (V4): komunitasmu → organisasimu → ...
+   Kata ada di baris sendiri supaya pergantiannya tidak menggeser tata letak.
+   Mati kalau pengguna meminta gerak dikurangi.
+   ============================================================ */
+(function(){
+  const el = document.getElementById('heroRot');
+  if(!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const kata = ['komunitasmu', 'organisasimu', 'asosiasimu', 'alumnimu', 'himpunanmu'];
+  let i = 0;
+  setInterval(function(){
+    el.style.opacity = '0';
+    setTimeout(function(){ i = (i + 1) % kata.length; el.textContent = kata[i]; el.style.opacity = '1'; }, 300);
+  }, 2800);
+})();
+</script>

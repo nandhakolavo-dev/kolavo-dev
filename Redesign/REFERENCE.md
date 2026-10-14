@@ -1267,3 +1267,22 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   Sekalian: `.nav-in` kini hanya `padding-top/bottom` (temuan audit `.shell` vs `.nav-in`
   beres), dan **meta viewport ditambahkan** di `00-preamble` — sebelumnya tidak ada,
   sehingga di HP sungguhan halaman dirender selebar 980px.
+- **A4 · isi tab app.** Dua layar baru (total 10):
+  - `scrApp` (tab Komunitas, beranda sesudah masuk — default `KolavoMasuk`, simpan Lengkapi,
+    dan `scrMasuk`): **Komunitasku** (`#appKu`, dari `KolavoKomunitasKu()` — satu sumber
+    dengan daftar di Profil lewat `itemIkut()` di router) + **Jelajahi komunitas publik**:
+    blok cari/filter/kartu landing **dipindah utuh** ke sini, id `#direktori` dipertahankan
+    (feed, notifikasi, layar komunitas membaca `#direktori .ccard`). Tombol kartu kini
+    `data-gabung-kartu` "Minta gabung" → buka komunitasnya + langsung buka formulir gabung;
+    label mengikuti status (Menunggu / Buka). Landing kehilangan bagian direktori sampai A6
+    (etalase); tombol hero "Lihat komunitas" → `scrApp` (minta masuk). Remah "Komunitas" di
+    `scrKomunitas`/`scrAnggota` → `scrApp`.
+  - `scrDasbor` (tab Dashboard, terbuka untuk semua): daftar komunitas yang dikelola —
+    `App.dibuat` (lencana Pembuat/Diarsipkan) dan `App.diangkat` (contoh IA SMAN 52 ·
+    Sekretaris, dinyalakan tombol demo **Angkat saya jadi pengurus**, hanya tampil di
+    layar ini lewat `body[data-layar]`). Kosong → ajakan Buat komunitas. Dashboard komunitas
+    orang lain **belum disimulasikan** (toast) karena mesin dashboard hanya memegang satu
+    komunitas buatan. `scrKelola` tanpa komunitas → `scrDasbor` (dulu `scrBuat`); remah
+    `scrKelola` diawali "Dashboard ›". Pemilih komunitas di dalam `scrKelola` ditunda sampai
+    ada lebih dari satu dashboard nyata.
+  - Modul baru `50-js-app` (`KolavoGambarApp`), dipanggil router saat dua layar ini digambar.

@@ -19,12 +19,12 @@
      dibuka dari data: URL dan iframe ber-sandbox, tempat hash tidak selalu
      bisa ditulis — di sana routing berbasis hash diam-diam tidak jalan.
      Anchor dalam halaman (#direktori, #pengurus) tetap seperti biasa. */
-  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
+  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrApp', 'scrDasbor', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
   /* Halaman komunitas sengaja tidak perlu masuk — di kolavo.app pun publik.
      Orang boleh menjelajah dulu; login baru diminta saat menekan Gabung. */
   /* detail anggota cuma bisa dicapai dari daftar yang sudah terbuka, tapi
      penjaganya tetap dipasang supaya tidak bisa dibuka lewat KolavoKe langsung */
-  const perluMasuk = { scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
+  const perluMasuk = { scrApp: true, scrDasbor: true, scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
   let sekarang = 'scrBeranda';
 
   window.KolavoKe = function(id, anchor){ ke(id, anchor); };
@@ -42,7 +42,7 @@
     let id = sekarang;
     /* penjaga: layar yang butuh akun tidak bisa dibuka sebelum masuk */
     /* sudah masuk: halaman masuk tidak relevan lagi, teruskan ke tujuannya */
-    if(id === 'scrMasuk' && App.masuk){ id = App.tujuan || 'scrProfil'; App.tujuan = null; }
+    if(id === 'scrMasuk' && App.masuk){ id = App.tujuan || 'scrApp'; App.tujuan = null; }
     /* belum masuk: layar terlindung diganti halaman masuk penuh (bukan modal),
        tujuannya diingat supaya sesudah masuk langsung ke sana */
     if(perluMasuk[id] && !App.masuk){ App.tujuan = id; id = 'scrMasuk'; }
@@ -50,7 +50,7 @@
        pengurusnya orang asli, bukan akun kosong */
     if((id === 'scrProfil' || id === 'scrBuat') && !App.lengkap) id = 'scrLengkapi';
     /* dashboard pengurus baru ada setelah komunitasnya dibuat */
-    if(id === 'scrKelola' && !App.dibuat) id = App.lengkap ? 'scrBuat' : 'scrLengkapi';
+    if(id === 'scrKelola' && !App.dibuat) id = 'scrDasbor';
     sekarang = id;
     /* dua pintu: landing untuk jualan ke pengurus, app untuk yang sudah punya akun.
        Nav & footer membaca kelas body ini, bukan memeriksa layar satu per satu. */
@@ -58,6 +58,7 @@
     document.body.classList.toggle('m-app', App.mode === 'app');
     /* halaman masuk berdiri sendiri, tanpa nav */
     document.body.classList.toggle('m-masuk', id === 'scrMasuk');
+    document.body.dataset.layar = id;
     tabNav(id);
     if(id === 'scrMasuk' && window.KolavoIsiMasuk){
       window.KolavoIsiMasuk(App.undangan ? 'undangan' : 'nav', App.undangan || null);
@@ -69,13 +70,14 @@
     });
     window.scrollTo(0, 0);
     if(id === 'scrProfil') isiProfil();
+    if((id === 'scrApp' || id === 'scrDasbor') && window.KolavoGambarApp) window.KolavoGambarApp(id);
   }
 
   /* ---------- tab nav Kolavo App (A3) ----------
      Tab aktif mengikuti layar, bukan klik terakhir: layar yang dibuka lewat
      tautan lain (kartu, notifikasi) tetap menyalakan tab induknya. */
   const TAB = { scrApp: 'komunitas', scrKomunitas: 'komunitas', scrAnggota: 'komunitas',
-                scrProfil: 'profil', scrLengkapi: 'profil', scrKelola: 'dashboard', scrBuat: 'dashboard' };
+                scrProfil: 'profil', scrLengkapi: 'profil', scrDasbor: 'dashboard', scrKelola: 'dashboard', scrBuat: 'dashboard' };
   function tabNav(id){
     const ada = App.mode === 'app' && App.masuk && id !== 'scrMasuk';
     document.body.classList.toggle('m-tab', ada);
@@ -147,7 +149,7 @@
     } else if(App.tujuan){
       const t = App.tujuan; App.tujuan = null; ke(t);
     } else {
-      ke('scrProfil');
+      ke('scrApp');
     }
   };
 
@@ -293,6 +295,21 @@
     return pertama;
   }
 
+  /* komunitas yang diikuti — satu sumber untuk Profil dan tab Komunitas (A4) */
+  function itemIkut(){
+    if(!App.komunitas) return '';
+    return '<div class="pf-item"><div class="pf-open" data-komunitas-anggota role="button" tabindex="0" title="Buka halaman komunitas">' +
+      '<span class="logo-sq ' + App.komunitas.kelas + '" role="img" aria-label="Logo komunitas"></span>' +
+      '<div class="t"><div class="n">' + App.komunitas.nama + '</div>' +
+      '<div class="s">' + [App.komunitas.jumlah].concat(window.KolavoJawaban()).join(' · ') + '</div></div></div>' +
+      ((App.diajukan || {})[App.komunitas.kelas] === 'anggota'
+        ? '<span class="status anggota">Anggota</span></div>'
+        : '<span class="status tunggu">Menunggu persetujuan</span></div>');
+  }
+  window.KolavoKomunitasKu = function(){
+    return (window.KolavoDibuatItem ? window.KolavoDibuatItem() : '') + itemIkut();
+  };
+
   function isiProfil(){
     const nilai = function(id){ const e = document.getElementById(id); return e ? e.value : ''; };
     const nm = document.getElementById('pfNm'),
@@ -360,15 +377,9 @@
       const buat = window.KolavoDibuatItem ? window.KolavoDibuatItem() : '';
       list.classList.toggle('pf-list', !!(App.komunitas || buat));
       if(buat) list.insertAdjacentHTML('beforeend', buat);
-      if(App.komunitas){
-        list.insertAdjacentHTML('beforeend',
-          '<div class="pf-item"><div class="pf-open" data-komunitas-anggota role="button" tabindex="0" title="Buka halaman komunitas">' +
-          '<span class="logo-sq ' + App.komunitas.kelas + '" role="img" aria-label="Logo komunitas"></span>' +
-          '<div class="t"><div class="n">' + App.komunitas.nama + '</div>' +
-          '<div class="s">' + [App.komunitas.jumlah].concat(window.KolavoJawaban()).join(' · ') + '</div></div></div>' +
-          ((App.diajukan || {})[App.komunitas.kelas] === 'anggota'
-            ? '<span class="status anggota">Anggota</span></div>'
-            : '<span class="status tunggu">Menunggu</span></div>'));
+      const ikut = itemIkut();
+      if(ikut){
+        list.insertAdjacentHTML('beforeend', ikut);
       } else if(!buat){
         /* keadaan kosong memakai komponen .empty yang sudah ada di kit —
            satu kalimat dengan tautan teks terlalu mudah terlewat di sini */
@@ -378,7 +389,7 @@
             '<h3>Belum gabung ke komunitas mana pun</h3>' +
             '<p>Profilmu sudah siap. Yang belum, komunitasnya — cari yang pengurusnya sudah bikin halaman, lalu minta gabung.</p>' +
             '<div class="empty-cta">' +
-              '<button type="button" class="btn" data-ke="scrBeranda" data-anchor="direktori">Cari komunitasku</button>' +
+              '<button type="button" class="btn" data-ke="scrApp" data-anchor="direktori">Cari komunitasku</button>' +
               '<button type="button" class="btn outline" data-ke="scrBuat">Bikin halaman komunitas</button>' +
             '</div>' +
             '<p class="empty-note">Kalau pengurusmu belum bikin halaman, kamu yang bisa mulai.</p>' +
@@ -448,7 +459,7 @@
         const t = App.tujuan; App.tujuan = null; ke(t);
         toast('Profil kamu sudah lengkap.');
       } else {
-        ke('scrProfil');
+        ke('scrApp');
         toast('Profil kamu sudah lengkap.');
       }
       return;

@@ -1,0 +1,144 @@
+<!-- ============================================================
+     Kolavo App · tab Komunitas (A4) — beranda sesudah masuk.
+     Komunitasku: digambar 50-js-app (sumber sama dengan daftar di Profil).
+     Jelajahi: direktori + filter yang dulu di landing, dipindah utuh —
+     id #direktori dipertahankan karena banyak modul membaca
+     '#direktori .ccard' untuk logo komunitas.
+     ============================================================ -->
+<div class="scr" id="scrApp" hidden>
+ <div class="app-pg">
+  <div class="shell">
+    <header class="app-hd">
+      <h1>Komunitas</h1>
+      <p>Komunitas yang kamu ikuti, dan komunitas publik yang bisa kamu ajukan untuk bergabung.</p>
+    </header>
+
+    <section class="app-sek" aria-labelledby="appKuH">
+      <h2 id="appKuH">Komunitasku</h2>
+      <div id="appKu"></div>
+    </section>
+
+    <section class="app-sek" id="direktori" aria-labelledby="appJelH">
+      <h2 id="appJelH">Jelajahi komunitas publik</h2>
+      <p class="app-sub">Ajukan gabung. Pengurusnya yang memutuskan diterima atau tidak.</p>
+    <div class="search">
+      <div class="q">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="q" placeholder="Cari nama komunitas, organisasi, atau ikatan alumni" aria-label="Cari komunitas">
+      </div>
+      <span class="sep" aria-hidden="true"></span>
+      <div class="locwrap">
+        <button type="button" class="locbtn" id="locbtn" aria-expanded="false" aria-haspopup="dialog">
+          <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span id="loclabel">Semua lokasi</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <button type="button" class="locclear" id="locclear" hidden aria-label="Hapus filter lokasi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+
+        <div class="locpanel" id="locpanel" role="dialog" aria-label="Pilih lokasi">
+          <button type="button" class="locopt" id="locnear">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.4"/><path d="M12 1.5v3M12 19.5v3M22.5 12h-3M4.5 12h-3"/></svg></span>
+            <span><b>Di sekitar saya</b><em>Kolavo akan minta izin lokasi dari browser</em></span>
+          </button>
+
+          <div class="locdiv"><span>atau pilih manual</span></div>
+
+          <div class="locfield">
+            <label for="fNegara">Negara</label>
+            <select id="fNegara"><option value="">Pilih negara</option></select>
+          </div>
+          <div class="locfield">
+            <label for="fProvinsi">Provinsi</label>
+            <select id="fProvinsi" disabled><option value="">Pilih negara dulu</option></select>
+            <em class="hint" id="hProvinsi">Aktif setelah negara dipilih</em>
+          </div>
+          <div class="locfield">
+            <label for="fKota">Kota atau kabupaten</label>
+            <select id="fKota" disabled><option value="">Pilih provinsi dulu</option></select>
+            <em class="hint" id="hKota">Aktif setelah provinsi dipilih</em>
+          </div>
+
+          <div class="locfoot">
+            <button type="button" class="lnk" id="locreset">Reset</button>
+            <button type="button" class="btn sm" id="locapply" disabled>Terapkan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <span class="lbl">Bentuk Komunitas:</span>
+      <button type="button" class="chip on" data-bentuk="">Semua<span class="cnt">4</span></button>
+      <button type="button" class="chip" data-bentuk="Organisasi">Organisasi<span class="cnt">1</span></button>
+      <button type="button" class="chip" data-bentuk="Asosiasi">Asosiasi<span class="cnt">0</span></button>
+      <button type="button" class="chip" data-bentuk="Ikatan Alumni">Ikatan Alumni<span class="cnt">2</span></button>
+      <button type="button" class="chip" data-bentuk="Himpunan">Himpunan<span class="cnt">1</span></button>
+    </div>
+
+
+    <div class="grid">
+      <article data-premium="1" class="ccard c-forpastara" data-alias="Forpastara" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Angkatan Paskibra", "tanya": "Tahun berapa kamu jadi Paskibra?", "tipe": "tahun", "wajib": false}]' data-bentuk="Himpunan" data-negara="Indonesia" data-provinsi="Jawa Barat" data-kota="Kabupaten Bekasi">
+        <div class="loc">Kabupaten Bekasi, Jawa Barat</div>
+        <div class="logo-sq l-forpastara" role="img" aria-label="Logo komunitas"></div>
+        <h3>Forum Paskibra Tarumajaya <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></h3>
+        <p class="desc">Yukk Kakak, Akang, Teteh semua, kita gabung di Komunitas Forpastara</p>
+        <div class="row">
+          <div><div class="mem">6 anggota</div>
+            <div class="stack"><span style="background:var(--blue-wash);color:var(--blue-ink)">RS</span><span style="background:var(--orange-wash);color:var(--orange-ink)">BP</span><span style="background:var(--green-wash);color:var(--green)">AL</span><span>19+</span></div></div>
+          <button type="button" class="btn sm" data-gabung-kartu>Minta gabung</button>
+        </div>
+      </article>
+
+      <article class="ccard c-iapnj" data-alias="IKA TIK PNJ" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Angkatan", "tanya": "Angkatan berapa kamu masuk PNJ?", "tipe": "tahun", "wajib": false}, {"id": "prodi", "judul": "Program Studi", "tanya": "Prodi apa yang kamu ambil?", "tipe": "teks", "wajib": false}]' data-bentuk="Ikatan Alumni" data-negara="Indonesia" data-provinsi="" data-kota="">
+        <div class="loc">Indonesia</div>
+        <div class="logo-sq l-iapnj" role="img" aria-label="Logo komunitas"></div>
+        <h3>Ikatan Alumni PNJ (UI) Teknik Informatika dan Komputer</h3>
+        <p class="desc">Alumni PNJ(UI) TIK, silakan gabung 👩🏻‍💻🧑🏻‍💻</p>
+        <div class="row">
+          <div><div class="mem">6 anggota</div>
+            <div class="stack"><span style="background:var(--green-wash);color:var(--green)">DW</span><span style="background:var(--blue-wash);color:var(--blue-ink)">HP</span><span style="background:var(--orange-wash);color:var(--orange-ink)">SN</span><span>6+</span></div></div>
+          <button type="button" class="btn sm" data-gabung-kartu>Minta gabung</button>
+        </div>
+      </article>
+
+      <article data-premium="1" class="ccard c-iasman52" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Lulus", "tanya": "Kamu lulus tahun berapa?", "tipe": "tahun", "wajib": true}]' data-bentuk="Ikatan Alumni" data-negara="Indonesia" data-provinsi="DKI Jakarta" data-kota="Jakarta Utara">
+        <div class="loc">Jakarta Utara, DKI Jakarta</div>
+        <div class="logo-sq l-iasman52" role="img" aria-label="Logo komunitas"></div>
+        <h3>Ikatan Alumni SMAN 52 <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></h3>
+        <p class="desc">Alumni SMAN 52 Jakarta, yuk gabung. 🏫</p>
+        <div class="row">
+          <div><div class="mem">6 anggota</div>
+            <div class="stack"><span style="background:var(--orange-wash);color:var(--orange-ink)">FN</span><span style="background:var(--blue-wash);color:var(--blue-ink)">TA</span><span style="background:var(--green-wash);color:var(--green)">RM</span><span>14+</span></div></div>
+          <button type="button" class="btn sm" data-gabung-kartu>Minta gabung</button>
+        </div>
+      </article>
+
+      <article class="ccard c-ppiju" data-alias="PPI Jakut" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Pengukuhan", "tanya": "Kapan kamu dikukuhkan jadi Purna Paskibraka?", "tipe": "tahun", "wajib": false}, {"id": "satuan", "judul": "Satuan", "tanya": "Kamu bertugas di satuan mana?", "tipe": "teks", "wajib": false}]' data-bentuk="Organisasi" data-negara="Indonesia" data-provinsi="DKI Jakarta" data-kota="Jakarta Utara">
+        <div class="loc">Jakarta Utara, DKI Jakarta</div>
+        <div class="logo-sq l-ppiju" role="img" aria-label="Logo komunitas"></div>
+        <h3>Purna Paskibraka Indonesia Jakarta Utara</h3>
+        <p class="desc">Ayo gabung ke PPIJU, Kakak-Kakak.. 🫡</p>
+        <div class="row">
+          <div><div class="mem">6 anggota</div>
+            <div class="stack"><span style="background:var(--blue-wash);color:var(--blue-ink)">YA</span><span style="background:var(--green-wash);color:var(--green)">NK</span><span style="background:var(--orange-wash);color:var(--orange-ink)">BS</span><span>17+</span></div></div>
+          <button type="button" class="btn sm" data-gabung-kartu>Minta gabung</button>
+        </div>
+      </article>
+    </div>
+
+    <p class="resultbar" id="resultbar">Menampilkan <b>4</b> dari 4 komunitas</p>
+
+    <div class="empty" id="empty" hidden>
+      <div class="empty-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8.5 11h5"/></svg>
+      </div>
+      <h3>Belum ada komunitas yang cocok</h3>
+      <p id="emptymsg">Tidak ada komunitas yang cocok dengan pencarianmu.</p>
+      <p class="empty-lede">Komunitas sepertimu belum punya halaman di Kolavo. Kamu bisa jadi yang pertama membuatnya.</p>
+      <div class="empty-cta">
+        <button type="button" class="btn" data-ke="scrBuat">Buat Halaman Komunitas</button>
+        <button type="button" class="btn outline" id="emptyreset">Hapus semua filter</button>
+      </div>
+    </div>
+    </section>
+  </div>
+ </div>
+</div>

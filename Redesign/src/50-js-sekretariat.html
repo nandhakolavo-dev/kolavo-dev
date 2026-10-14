@@ -70,7 +70,9 @@
     serah: { judul: 'Serah terima',    ringkas: 'ganti kepengurusan tanpa kehilangan data dan akses.' }
   };
   /* yang ditawarkan di pop up langganan */
-  const URUT = ['dasbor', 'info', 'broadcast', 'onboard', 'jawab', 'email', 'akses', 'serah'];
+  /* V4: Broadcast dan Serah terima ditahan (feedback V3) — panelnya masih ada di kode,
+     tapi tab dan tawarannya dicabut sampai mobile app / modul pergantian pengurus ada */
+  const URUT = ['dasbor', 'info', 'onboard', 'jawab', 'email', 'akses'];
 
   /* contoh kelompok jawaban. Alumni/himpunan punya kolom jurusan; bentuk lain
      punya cabang. Satu kelompok sengaja meragukan — mesin boleh mengusulkan,
@@ -112,7 +114,7 @@
     /* template diisi saat panelnya pertama digambar (TMPL_AWAL didefinisikan di bawah) */
     S.tmpl = null; S.tmplDraf = null; S.tmplJenis = 'terima'; S.tmplAktif = { terima: true, tolak: true }; S.tmplFokus = 'sekTmplIsi';
     S.akun = { email: emailAku(), langkah: 0, baru: '', kode: '' };
-    S.notif = { jenis: { baru: true, lama: true, putus: false, keluar: false }, ke: [emailAku()], email: '', hari: [1], jam: '09.00' };
+    S.notif = { jenis: { baru: true, putus: false }, ke: [emailAku()], email: '', pemicu: 'hari', jumlah: 10, hari: 1, jam: '09.00' };
     S.tagihan = { alamat: { nama: (D.kom && D.kom.nama) || '', email: emailAku(), jalan: '', kota: (D.kom && D.kom.kota) || '', pos: '', npwp: '' },
       ubahAlamat: false, draf: {}, metode: 'va', draftMetode: 'va' };
     S.jejak = [];
@@ -300,15 +302,6 @@
         }).join('') + '</ul>' +
         '<div class="sek-plot" id="sekPlot"></div>' +
         '<details class="sek-rinci"><summary>Lihat sebagai tabel</summary>' + tabel + '</details>' +
-      '</div>' +
-      '<div class="sek-blok">' +
-        '<div class="sek-baris atas">' +
-          '<div><div class="sek-blok-h">Rangkuman mingguan ke WhatsApp</div>' +
-          '<div class="sek-blok-sub">Tiap Senin 08.00 ke para peninjau: ' + lolos(peninjau.join(', ')) + '.</div></div>' +
-          '<label class="sw"><input type="checkbox" data-sek-rangkuman' + (S.rangkuman ? ' checked' : '') + '><i></i>' + (S.rangkuman ? 'Aktif' : 'Mati') + '</label>' +
-        '</div>' +
-        (S.rangkuman ? '<p class="sek-kecil jarak">Contoh isi: “Minggu ini ' + daft[11] + ' pendaftar, ' + trm[11] + ' diterima, ' + tlk[11] +
-          ' ditolak. Buka dashboard: kolavo.app/k/' + lolos(D.kom.slug) + '/dashboard”</p>' : '') +
       '</div>';
     gambarGrafik();
     /* gambarSemua jalan sebelum panel ditampilkan (lebar 0) — gambar lagi sesudahnya */
@@ -568,7 +561,7 @@
     return {
       aktif: true,
       langkah: {
-        sambutan: { aktif: true, judul: t.judul, pesan: t.pesan, pengirim: D.aku + ', ' + D.jabatanAku() },
+        sambutan: { aktif: true, judul: t.judul, pesan: t.pesan, pengirim: D.aku + ', ' + D.jabatanAku(), foto: fotoAku() || '' },
         kenal: { aktif: true, sejarah: t.sejarah, visi: t.visi, misi: t.misi },
         aturan: { aktif: true, ringkas: t.ringkas },
         alat: { aktif: true, ket: t.ket },
@@ -635,10 +628,8 @@
   /* ---------- setting: akun, notifikasi, tagihan ---------- */
   const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const NOTIF = [
-    { k: 'baru',   h: 'Pendaftaran baru',             sub: 'Tiap ada yang minta gabung.' },
-    { k: 'lama',   h: 'Pengingat pendaftar',          sub: 'Dikirim di hari dan jam yang kamu pilih, selama masih ada pendaftar yang belum ditinjau.' },
-    { k: 'putus',  h: 'Keputusan pengurus lain',      sub: 'Saat pendaftar diterima atau ditolak oleh pengurus lain.' },
-    { k: 'keluar', h: 'Anggota keluar',               sub: 'Saat anggota meninggalkan komunitas.' }
+    { k: 'baru',   h: 'Pendaftaran baru',             sub: 'Dirangkum jadi satu email, bukan satu email per pendaftar. Pilih pemicunya: jumlah pendaftar atau hari pengingat.' },
+    { k: 'putus',  h: 'Keputusan pengurus lain',      sub: 'Rangkuman pendaftar yang diterima atau ditolak pengurus lain. Dikirim seminggu sekali.' }
   ];
   const BAYAR = [
     { k: 'va',    h: 'Transfer virtual account', sub: 'BCA, Mandiri, BNI, BRI. Nomor VA dikirim bersama tagihan.' },
@@ -680,14 +671,11 @@
       '<div class="sek-blok"><div class="sek-blok-h">Email pemilik</div>' +
         '<div class="sek-nilai"><code>' + lolos(a.email) + '</code><span class="sek-status pemilik">Pemilik langganan</span></div>' +
         ganti +
-      '</div>' +
-      '<div class="sek-blok"><div class="sek-blok-h">Pindah ke pengurus lain?</div>' +
-        '<div class="sek-blok-sub">Mengganti email tidak memindahkan kepemilikan. Untuk menyerahkan langganan ke ketua berikutnya, pakai Serah terima.</div>' +
-        '<div class="sek-baris"><button type="button" class="btn outline sm" data-sek-ke="serah">Buka Serah terima</button></div>' +
       '</div>';
   }
 
-  /* pengingat pendaftar: hari bebas dipilih (boleh lebih dari satu), urutan Senin dulu */
+  /* email pendaftaran digabung (V4): satu pemicu — jumlah pendaftar (minimal 10)
+     ATAU satu hari pengingat per minggu. Tidak ada lagi email per pendaftar. */
   const HARI = [[1, 'Sen', 'Senin'], [2, 'Sel', 'Selasa'], [3, 'Rab', 'Rabu'], [4, 'Kam', 'Kamis'], [5, 'Jum', 'Jumat'], [6, 'Sab', 'Sabtu'], [0, 'Min', 'Minggu']];
   const JAM = ['07.00', '08.00', '09.00', '10.00', '12.00', '13.00', '15.00', '17.00', '19.00', '20.00'];
   function ringkasHari(h){
@@ -696,16 +684,26 @@
     if(nama.length === 5 && h.indexOf(0) < 0 && h.indexOf(6) < 0) return 'Tiap hari kerja (Senin–Jumat)';
     return 'Tiap ' + (nama.length > 1 ? nama.slice(0, -1).join(', ') + ' & ' + nama[nama.length - 1] : nama[0]);
   }
+  const JUMLAH = [10, 15, 20, 30, 50];
+  function namaHari(h){ return HARI.filter(function(x){ return x[0] === h; })[0][2]; }
   function pengingat(n){
-    return '<div class="sek-ingat">' +
+    const pemicu = '<div class="sek-ingat-pemicu">' + segmen('Pemicu email pendaftaran', 'data-sek-pemicu', [['jumlah', 'Jumlah pendaftar'], ['hari', 'Hari pengingat']], n.pemicu) + '</div>';
+    if(n.pemicu === 'jumlah'){
+      return '<div class="sek-ingat">' + pemicu +
+        '<div class="sek-ingat-jam"><label class="sek-lbl" for="sekIngatJumlah">Kirim setelah terkumpul</label>' +
+          '<select class="sel" id="sekIngatJumlah">' + JUMLAH.map(function(j){ return '<option value="' + j + '"' + (j === n.jumlah ? ' selected' : '') + '>' + j + ' pendaftar</option>'; }).join('') + '</select></div>' +
+        '<p class="sek-ingat-ringkas">' + window.KolavoIkon('kalender') + '<span>Satu email tiap ' + n.jumlah + ' pendaftar baru menunggu ditinjau (minimal 10)</span></p>' +
+      '</div>';
+    }
+    return '<div class="sek-ingat">' + pemicu +
       '<div><div class="sek-lbl" id="sekIngatHariL">Hari pengingat</div>' +
-      '<div class="sek-ingat-hari" role="group" aria-labelledby="sekIngatHariL">' + HARI.map(function(h){
-        const on = n.hari.indexOf(h[0]) >= 0;
-        return '<button type="button" class="chip' + (on ? ' on' : '') + '" data-sek-hari="' + h[0] + '" aria-pressed="' + on + '" aria-label="' + h[2] + '">' + h[1] + '</button>';
+      '<div class="sek-ingat-hari" role="radiogroup" aria-labelledby="sekIngatHariL">' + HARI.map(function(h){
+        const on = n.hari === h[0];
+        return '<button type="button" class="chip' + (on ? ' on' : '') + '" role="radio" data-sek-hari="' + h[0] + '" aria-checked="' + on + '" aria-label="' + h[2] + '">' + h[1] + '</button>';
       }).join('') + '</div></div>' +
       '<div class="sek-ingat-jam"><label class="sek-lbl" for="sekIngatJam">Jam</label>' +
         '<select class="sel" id="sekIngatJam">' + JAM.map(function(j){ return '<option' + (j === n.jam ? ' selected' : '') + '>' + j + '</option>'; }).join('') + '</select></div>' +
-      '<p class="sek-ingat-ringkas">' + window.KolavoIkon('kalender') + '<span>' + ringkasHari(n.hari) + ', pukul ' + n.jam + ' WIB</span></p>' +
+      '<p class="sek-ingat-ringkas">' + window.KolavoIkon('kalender') + '<span>Seminggu sekali, tiap ' + namaHari(n.hari) + ' pukul ' + n.jam + ' WIB — hanya kalau ada pendaftar yang belum ditinjau</span></p>' +
     '</div>';
   }
 
@@ -717,7 +715,8 @@
         '<div class="sek-daftar">' + NOTIF.map(function(x){
           const baris = '<div class="sek-baris atas"><div><div class="sek-opsi-h">' + x.h + '</div><div class="sek-blok-sub">' + x.sub + '</div></div>' +
             sw('data-sek-notif="' + x.k + '"', n.jenis[x.k], x.h) + '</div>';
-          return '<div class="sek-garis-b">' + baris + (x.k === 'lama' && n.jenis.lama ? pengingat(n) : '') + '</div>';
+          return '<div class="sek-garis-b">' + baris + (x.k === 'baru' && n.jenis.baru ? pengingat(n) : '') +
+            (x.k === 'putus' && n.jenis.putus ? '<p class="sek-ingat-ringkas sek-jarak">' + window.KolavoIkon('kalender') + '<span>Seminggu sekali, tiap ' + namaHari(n.hari) + ' pukul ' + n.jam + ' WIB</span></p>' : '') + '</div>';
         }).join('') + '</div>' +
       '</div>' +
       '<div class="sek-blok"><div class="sek-baris atas"><div class="sek-blok-h">Penerima</div><span class="sek-kuota">' + n.ke.length + ' / 3</span></div>' +
@@ -1123,7 +1122,6 @@
     ['dasbor', 'Lihat Dashboard & daftar anggota'],
     ['kontak', 'Lihat WhatsApp & email anggota'],
     ['rapi',   'Kelola jawaban pendaftar & template email'],
-    ['broadcast', 'Kirim broadcast ke feed'],
     ['notif',  'Ubah notifikasi'],
     ['undang', 'Undang pengurus & atur hak']
   ];
@@ -1140,7 +1138,7 @@
     return peta[j];
   }
   function ringkasHak(j){
-    if(j === 'Community Builder') return 'semua hak (pemilik)';
+    if(j === 'Community Creator') return 'semua hak (pemilik)';
     const h = hakJabatan(S.hak, j);
     return h.length ? HAK.filter(function(x){ return h.indexOf(x[0]) >= 0; }).map(function(x){ return x[1].replace(/^Lihat /, ''); }).join(' · ') : 'belum ada hak';
   }
@@ -1163,7 +1161,7 @@
       }
       return '<div class="kl-row">' + av(p.nama) + '<div class="t"><div class="kl-row-nm">' + lolos(p.nama) +
         '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' + kanan + '</div>' +
-        '<div class="kl-row-sub">Boleh: ' + ringkasHak(p.aku ? 'Community Builder' : p.jabatan) + '</div></div>' +
+        '<div class="kl-row-sub">Boleh: ' + ringkasHak(p.aku ? 'Community Creator' : p.jabatan) + '</div></div>' +
         (aksi ? '<div class="kl-row-aksi">' + aksi + '</div>' : '') + '</div>';
     }).join('') +
     S.undangan.map(function(u, i){
@@ -1185,6 +1183,9 @@
         '<div class="sek-blok-sub">Centang hak untuk tiap jabatan, lalu simpan. Berlaku untuk semua pemegang jabatan itu.</div>' +
         '<div class="sek-tabel-w"><table class="sek-tabel sek-hak"><thead><tr><th>Hak</th>' +
           D.jabatan.map(function(j){ return '<th>' + lolos(j) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          '<tr><td>Lihat Struktur Kepengurusan & tulis perkenalan sendiri</td>' + D.jabatan.map(function(j){
+            return '<td><input type="checkbox" checked disabled aria-label="' + lolos(j) + ': selalu boleh"></td>';
+          }).join('') + '</tr>' +
           HAK.map(function(h){
             return '<tr><td>' + h[1] + '</td>' + D.jabatan.map(function(j){
               const on = S.hakDraf[j].indexOf(h[0]) >= 0;
@@ -1197,7 +1198,7 @@
         '<div class="sek-baris"><button type="button" class="btn sm" data-sek-hak-simpan' + (ubah ? '' : ' disabled') + '>Simpan perubahan</button>' +
           '<button type="button" class="btn outline sm" data-sek-hak-urung' + (ubah ? '' : ' disabled') + '>Kembalikan</button>' +
           (ubah ? '<span class="sek-kecil">Ada perubahan yang belum disimpan.</span>' : '') + '</div>' +
-        '<p class="sek-kecil jarak">Menyetujui pendaftaran tetap mengikuti <b>peninjau pendaftaran</b> di menu Struktur Kepengurusan. Serah terima dan langganan hanya oleh pemilik langganan.</p>' +
+        '<p class="sek-kecil jarak">Setiap pengurus selalu bisa melihat Struktur Kepengurusan dan menyunting perkenalannya sendiri. Menyetujui pendaftaran tetap mengikuti <b>peninjau pendaftaran</b> di menu Struktur Kepengurusan. Langganan hanya oleh pemilik langganan.</p>' +
       '</div>' +
       '<div class="sek-blok"><div class="sek-blok-h">Undang pengurus yang belum ada di sini</div>' +
         '<div class="sek-blok-sub">Kalau dia belum jadi anggota, dia diminta mendaftar dulu — pendaftarannya langsung diterima.</div>' +
@@ -1208,6 +1209,13 @@
           '<button type="button" class="btn sm" data-sek-undang>Kirim undangan</button></div>' +
         '<div class="sek-link"><code>' + lolos(link) + '</code><button type="button" class="btn outline xs" data-sek-salin="' + lolos(link) + '">Salin link</button></div>' +
         '<p class="sek-kecil jarak">Atau bagikan link ke grup pengurus. Berlaku 7 hari; yang membukanya masuk sebagai Pengurus sampai jabatannya kamu ubah.</p>' +
+        '<details class="sek-rinci"><summary>Lihat email undangan yang diterima pengurus</summary>' +
+          '<div class="sek-surat sek-jarak"><div class="sek-surat-h"><span>Subjek</span><b>' + lolos(D.aku) + ' mengundangmu jadi pengurus ' + lolos(D.kom.nama) + '</b></div>' +
+          '<div class="sek-surat-isi">Halo,<br><br>' + lolos(D.aku) + ' mengundangmu ikut mengurus <b>' + lolos(D.kom.nama) + '</b> di Kolavo sebagai <b>' + lolos(S.emailJabatan || 'Pengurus') + '</b>.<br><br>' +
+            'Masuk dengan akun Google di alamat email ini, tanpa password baru. Kalau kamu belum jadi anggota, kamu diminta melengkapi profil dulu dan pendaftaranmu langsung diterima.<br><br>' +
+            '<span class="sek-surat-tombol">Terima undangan</span><br><br>' +
+            'Atau buka: ' + lolos(link) + '<br>Undangan berlaku 7 hari. Kalau kamu tidak merasa mengenal pengirimnya, abaikan saja email ini.</div></div>' +
+        '</details>' +
       '</div>' +
       '<div class="sek-blok"><div class="sek-blok-h">Jejak aktivitas</div>' +
         (S.jejak.length ? '<ul class="sek-jejak">' + S.jejak.slice(0, 8).map(function(j){
@@ -1227,7 +1235,7 @@
       ['Pengurus', ['Indra Saputra', 'Wulan Sari']]] }
   ];
   function susunanKini(){
-    const urut = ['Community Builder'].concat(D.jabatan);
+    const urut = ['Community Creator'].concat(D.jabatan);
     const peta = {};
     D.pengurus.forEach(function(p){ (peta[p.jabatan] = peta[p.jabatan] || []).push(p.nama); });
     return urut.filter(function(j){ return peta[j]; }).map(function(j){ return [j, peta[j]]; });
@@ -1365,11 +1373,17 @@
     const mode = e.target.closest('[data-mode]');
     if(mode){ pilihMode(mode.dataset.mode); return; }
 
+    const pemicu = e.target.closest('[data-sek-pemicu]');
+    if(pemicu){
+      S.notif.pemicu = pemicu.dataset.sekPemicu;
+      catat('Kamu mengubah pemicu email pendaftaran ke ' + (S.notif.pemicu === 'jumlah' ? 'jumlah pendaftar' : 'hari pengingat'));
+      gambarNotif();
+      return;
+    }
     const hari = e.target.closest('[data-sek-hari]');
     if(hari){
-      const h = +hari.dataset.sekHari, daftar = S.notif.hari, i = daftar.indexOf(h);
-      if(i >= 0 && daftar.length === 1){ toast('Pilih minimal satu hari.'); return; }
-      if(i >= 0) daftar.splice(i, 1); else daftar.push(h);
+      const h = +hari.dataset.sekHari;
+      S.notif.hari = h;
       gambarNotif();
       const b = scr.querySelector('[data-sek-hari="' + h + '"]'); if(b) b.focus();
       return;
@@ -1738,6 +1752,7 @@
       return;
     }
     if(t.matches('[data-sek-tmpl-aktif]')){ S.tmplAktif[t.dataset.sekTmplAktif] = t.checked; gambarEmail(); return; }
+    if(t.id === 'sekIngatJumlah'){ S.notif.jumlah = +t.value; gambarNotif(); const f = el('sekIngatJumlah'); if(f) f.focus(); return; }
     if(t.id === 'sekIngatJam'){ S.notif.jam = t.value; gambarNotif(); const f = el('sekIngatJam'); if(f) f.focus(); return; }
     if(t.matches('[data-sek-notif]')){
       S.notif.jenis[t.dataset.sekNotif] = t.checked;

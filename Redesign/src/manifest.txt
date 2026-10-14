@@ -5,6 +5,8 @@
 20-nav.html
 30-layer-scrBeranda.html
 30-layer-scrMasuk.html
+30-layer-scrApp.html
+30-layer-scrDasbor.html
 30-layer-scrLengkapi.html
 30-layer-scrProfil.html
 30-layer-scrKomunitas.html
@@ -31,4 +33,5 @@
 50-js-layar-buat.html
 50-js-dashboard-pengurus.html
 50-js-sekretariat.html
+50-js-app.html
 90-tail.html

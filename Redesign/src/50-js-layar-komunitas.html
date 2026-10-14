@@ -172,6 +172,19 @@
   }
 
   /* satu blok per sumbu persebaran: [{ nama, data: [[label, jumlah], ...] }] */
+  /* V4: persebaran per pendidikan — kredensial komunitas untuk pengunjung.
+     Komunitas contoh belum punya datanya, jadi dibagi dari jumlah anggota
+     dengan proporsi tetap supaya totalnya selalu cocok. */
+  function didikAgg(a){
+    if(a && a.didik) return a.didik;
+    const n = angkaKini();
+    if(!n) return [];
+    const bagi = [['Sarjana (S1)', .5], ['Magister (S2)', .17], ['SMA / SMK sederajat', .17], ['Diploma (D1–D4)', .1]];
+    let sisa = n;
+    const hasil = bagi.map(function(b){ const x = Math.min(sisa, Math.round(n * b[1])); sisa -= x; return [b[0], x]; });
+    hasil[0][1] += sisa;
+    return hasil.filter(function(b){ return b[1] > 0; });
+  }
   function gambarAgg(daftar){
     const w = el('aggWadah');
     w.innerHTML = '';
@@ -346,6 +359,8 @@
       f: kelasFoto || 'p-bagas',
       a: tahun ? Number(tahun) : undefined,
       bio: nilaiProfil('bio'),
+      beri: nilaiProfil('beri'),
+      didik: [nilaiProfil('didik'), nilaiProfil('didikDi')].filter(Boolean).join(' · '),
       /* jawaban ke pengurus melekat ke keanggotaan, jadi di sinilah tempatnya —
          tag yang sama dengan yang dipakai baris anggota lain */
       j: jawab,
@@ -573,9 +588,14 @@
       wadah.className = 'ag-kenal buka';
       wadah.innerHTML =
         '<p class="ag-kenal-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.4 2.4 2.4 4.6-5"/></svg>Kalian sudah kenalan</p>' +
-        '<p class="ag-kenal-s">' + panggil + ' menerima ajakanmu, jadi nomornya kebuka buat kamu — dan nomormu kebuka buat dia.</p>' +
-        '<div class="ag-wa"><span class="ag-wa-n">' + (o.wa || '—') + '</span>' +
-        '<button type="button" class="btn sm" id="agKenalChat">Chat di WhatsApp</button></div>';
+        ((window.KolavoApp || {}).kredit
+          ? '<p class="ag-kenal-s">' + panggil + ' menerima ajakanmu, jadi nomor dan akun media sosialnya kebuka buat kamu — dan punyamu kebuka buat dia.</p>' +
+            '<div class="ag-wa"><span class="ag-wa-n">' + (o.wa || '—') + '</span>' +
+            '<button type="button" class="btn sm" id="agKenalChat">Chat di WhatsApp</button></div>'
+          /* V4: kontak dibuka dengan kredit kenalan — beli sekali, berlaku di semua komunitas */
+          : '<p class="ag-kenal-s">' + panggil + ' menerima ajakanmu. Nomor WhatsApp dan akun media sosialnya kebuka dengan <b>kredit kenalan</b> — beli satu kali, berlaku di semua komunitas yang kamu ikuti.</p>' +
+            '<div class="ag-wa"><span class="ag-wa-n">Rp XXXX · sekali beli</span>' +
+            '<button type="button" class="btn sm" id="agKredit">Buka dengan kredit kenalan</button></div>');
       return;
     }
 
@@ -664,7 +684,8 @@
     el('agTags').innerHTML =
       '<span class="tag hi">' + o.k + '</span>' +
       (o.a && !(o.j || []).length ? '<span class="tag">Angkatan ' + o.a + '</span>' : '') +
-      (o.j || []).map(function(v){ return '<span class="tag">' + v + '</span>'; }).join('');
+      (o.j || []).map(function(v){ return '<span class="tag">' + v + '</span>'; }).join('') +
+      (o.didik ? '<span class="tag">' + esc(o.didik) + '</span>' : '');
 
     const sejak = o.aku ? 'Baru bergabung' : (o.s ? 'Anggota sejak ' + o.s : '');
     el('agMeta').innerHTML =
@@ -674,8 +695,11 @@
     gambarKenal(nama, o);
 
     const bio = el('agBio');
-    bio.textContent = o.bio || '';
-    bio.hidden = !o.bio;
+    /* V4: memberi & mengambil — profil sendiri punya dua jawaban berlabel */
+    if(o.beri){
+      bio.innerHTML = '<b>Bisa dibagikan:</b> ' + esc(o.beri) + (o.bio ? '<br><b>Yang dicari:</b> ' + esc(o.bio) : '');
+    } else bio.textContent = o.bio || '';
+    bio.hidden = !(o.bio || o.beri);
 
     /* Di profil orang lain komunitas yang sedang dibuka disembunyikan — sudah
        jelas dia anggota di sini, itu sebabnya kamu melihatnya dari daftar ini.
@@ -704,8 +728,8 @@
   function gambarDaftar(terbuka){
     el('komKunci').hidden = terbuka;
     el('komBuka').hidden = !terbuka;
-    /* bagian Pengurus baru muncul setelah diterima jadi anggota */
-    el('komPengSec').hidden = !terbuka;
+    /* V4: bagian Pengurus tampil untuk semua pengunjung — kredensial komunitas */
+    el('komPengSec').hidden = false;
     el('komKunciSub').textContent = terbuka
       ? 'Kebuka karena kamu anggota di sini. Dari luar, halaman ini tetap tertutup.'
       : 'Kebuka setelah pengurus menyetujui pendaftaranmu.';
@@ -713,7 +737,7 @@
        dari "yang akan menilai kamu" ke "yang mengurus tempat ini" */
     el('komPengSub').textContent = terbuka
       ? 'Mereka yang mengurus komunitas ini.'
-      : 'Mereka yang akan meninjau pendaftaranmu.';
+      : 'Mereka yang mengurus komunitas ini dan meninjau pendaftaranmu. Klik untuk membaca perkenalannya.';
     if(!terbuka) return;
 
     const orang = daftarOrang();
@@ -847,7 +871,8 @@
     w.hidden = false;
     w.innerHTML =
       (info.pengumuman ? '<div class="kom-umum" role="note"><span class="kom-umum-ic">' + IK_INFO.toa + '</span>' +
-        '<div><p class="kom-umum-h">Pengumuman pengurus</p><p class="kom-umum-t">' + esc(info.pengumuman) + '</p></div></div>' : '') +
+        '<div><p class="kom-umum-h">Pengumuman pengurus</p><p class="kom-umum-t">' + esc(info.pengumuman) + '</p></div>' +
+        (founder ? '<button type="button" class="btn outline xs kom-umum-ubah" data-info-advance>Ubah</button>' : '') + '</div>' : '') +
       (boleh && !founder && window.KolavoAdaOnboarding && window.KolavoAdaOnboarding()
         ? '<button type="button" class="kom-ob-lagi" data-ob-lagi>Buka lagi perkenalan komunitas</button>' : '') +
       (tautan.length ? '<div class="kom-tautan">' + tautan.map(function(t){
@@ -897,6 +922,7 @@
     const anggota = !founder && (window.KolavoApp.diajukan || {})[kini.kelas] === 'anggota';
     baris.insertAdjacentHTML('beforeend',
       (anggota ? tombolIkon('pensil', 'Edit data pendaftaran', 'id="komEdit"') : '') +
+      (founder ? tombolIkon('pensil', 'Sunting halaman komunitas', 'data-kom-sunting') : '') +
       tombolIkon('bagikan', 'Bagikan tautan', 'data-kom-bagikan'));
   }
   function isiAksi(){
@@ -1016,15 +1042,19 @@
          (Esensial, komunitas contoh): pekerjaan + domisili. */
       const sebaran = (founder && kini.premium && window.KolavoSumbuPersebaran) ? window.KolavoSumbuPersebaran() : null;
       if(sebaran && sebaran.length) gambarAgg(sebaran);
-      else if(founder || pratinjau) gambarAgg([{ nama: 'Pekerjaan & keahlian', data: a.profesi }, { nama: 'Domisili', data: a.kota }]);
+      else if(founder || pratinjau) gambarAgg([{ nama: 'Pekerjaan & keahlian', data: a.profesi }, { nama: 'Pendidikan', data: didikAgg(a) }, { nama: 'Domisili', data: a.kota }]);
       else gambarAgg([{ nama: 'Pekerjaan & keahlian', data: komposisi(a.profesi, nilaiProfil('kerja')) },
+                      { nama: 'Pendidikan', data: didikAgg(a) },
                       { nama: 'Domisili', data: komposisi(a.kota, nilaiProfil('kota')) }]);
       /* Bagas Prakoso dilepas dari daftar pengurus: dia pengguna demonya sendiri,
          dan sebelumnya orang mendaftar ke komunitas yang mencantumkan namanya
          sendiri sebagai Sekretaris. Penggantinya tanpa foto — cuma empat wajah
          hasil AI yang boleh dipakai. */
-      pengKini = a.pengurus;
-      el('komPengurus').innerHTML = a.pengurus.map(function(p, i){
+      /* V4: Esensial hanya menampilkan pembuat halaman (Community Creator);
+         susunan pengurus dengan nama jabatan sendiri adalah fitur Advance */
+      pengKini = kini.premium ? a.pengurus
+        : a.pengurus.slice(0, 1).map(function(p){ return Object.assign({}, p, { j: 'Community Creator' }); });
+      el('komPengurus').innerHTML = pengKini.map(function(p, i){
         return '<button type="button" class="peng-i" data-peng="' + i + '" aria-haspopup="dialog">' + avPeng(p, i) +
                '<div><div class="peng-nm">' + esc(p.n) + '</div><div class="peng-j">' + esc(p.j) + '</div></div></button>';
       }).join('');
@@ -1103,6 +1133,7 @@
   document.addEventListener('click', function(e){
     if(e.target.closest('[data-kom-bagikan]')){ bagikan(); return; }
     if(e.target.closest('[data-ob-lagi]')){ if(window.KolavoBukaOnboarding) window.KolavoBukaOnboarding(); return; }
+    if(e.target.closest('[data-kom-sunting]')){ if(window.KolavoSuntingDibuat) window.KolavoSuntingDibuat(); return; }
     if(e.target.closest('[data-info-advance]')){ if(window.KolavoBukaInfoKomunitas) window.KolavoBukaInfoKomunitas(); return; }
     const infoBuka = e.target.closest('[data-info-buka]');
     if(infoBuka && kini){
@@ -1173,6 +1204,13 @@
     }
     if(e.target.closest('#demoKenal')){
       window.KolavoTerimaKenalan();
+      return;
+    }
+    if(e.target.closest('#agKredit')){
+      (window.KolavoApp || {}).kredit = true;
+      gambarAnggota(el('agNm').dataset.nm);
+      if(window.KolavoIsiProfil) window.KolavoIsiProfil();
+      if(window.KolavoToast) window.KolavoToast('Kredit kenalan aktif di semua komunitasmu. Mode demo — belum ada pembayaran.');
       return;
     }
     if(e.target.closest('#agKenalMinta') || e.target.closest('#agKenalBatal')){

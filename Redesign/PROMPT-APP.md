@@ -87,7 +87,7 @@ A3 dan A6 tidak saling sentuh selain `20-nav` — kerjakan A3 dulu supaya nav ap
   (→ `scrBuat`). Tombol Buat komunitas juga ada di bawah daftar. Semua menu dashboard lama
   (Advance, Kelola, Sekretariat, Onboarding, dst.) tidak berubah.
 - `scrKomunitas`, `scrAnggota`, `scrBuat`, `scrLengkapi` tetap layar sendiri di bawah nav app.
-**Lolos:** 9 layar; tiap ikon nav membuka layar yang benar; user tanpa komunitas kelolaan
+**Lolos:** 10 layar (scrApp + scrDasbor); tiap ikon nav membuka layar yang benar; user tanpa komunitas kelolaan
 melihat keadaan kosong; `KolavoBukaDashboard` tetap jalan.
 
 ### A5a · QR untuk tautan bagikan

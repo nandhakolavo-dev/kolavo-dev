@@ -1,199 +1,291 @@
 <div class="scr" id="scrBeranda">
+<!-- V4: hero tidak lagi membandingkan dengan grup chat — prospek jadi mengira Kolavo
+     aplikasi chat. Sekarang yang dijual: profil komunitas yang menunjukkan orang-orangnya. -->
 <div class="hero">
   <div class="shell hero-grid">
     <div>
       <div class="brandline">Basecamp digital komunitasmu</div>
-      <h1>Di WAG cuma ada nomornya.<br>Di Kolavo ada orangnya.</h1>
-      <p class="sub">Grup chat bagus buat ngobrol, tapi buruk buat kenalan. Perkenalan tenggelam dalam tiga hari, dan yang tersisa cuma daftar nomor tanpa wajah.</p>
-      <p class="sub">Kolavo membantu kamu mengenal anggota komunitas tanpa harus memulai dari perkenalan di grup WhatsApp.</p>
+      <h1>Kenali anggotamu.<br>Kenalkan<br><span class="hero-rot" id="heroRot">komunitasmu</span>.</h1>
+      <p class="sub">Kolavo memperkenalkan siapa saja anggota komunitasmu. Kamu jadi lebih kenal mereka, dari karier sampai pendidikannya, lebih mudah menyusun program, dan orang luar pun tertarik mengenal komunitasmu.</p>
       <div class="cta">
-        <a class="btn lead" href="#direktori">Cari komunitasku</a>
-        <a class="btn outline" href="#pengurus">Buat Halaman Komunitas</a>
+        <a class="btn lead" href="#pengurus" data-login="pengurus">Buat Halaman Komunitas</a>
+        <a class="btn outline" href="#0" data-ke="scrApp">Lihat komunitas di Kolavo</a>
       </div>
+      <ul class="hero-poin">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Satu link pendaftaran, pendataan anggota jadi mudah</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Profil komunitas yang mudah ditemukan banyak orang</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Nama dan kontak anggota tetap tertutup untuk publik</li>
+      </ul>
     </div>
 
+    <!-- visual hero V4: susunan bertumpuk seperti V3 (.hba), dibuat lebih hidup:
+         belakang = profil komunitas (sampul warna + terverifikasi + tumpukan wajah),
+         depan = persebaran anggota (angka besar + batang tiga warna),
+         melayang = profil anggota + keping "ajakan kenalan diterima".
+         Kelas .hba-wag/.hba-kolavo dipakai ulang sebagai lapis belakang/depan. -->
     <div class="hero-art" aria-hidden="true">
       <div class="hba">
+        <span class="hp-sinar"></span>
         <div class="hba-wag">
-          <div class="ba-card">
-            <div class="ba-label">Grup WhatsApp</div>
-            <div class="bub"><span class="who">+62 813-•••-4471</span>Halo semua, perkenalkan saya Fajar, angkatan 2009 🙏</div>
-            <div class="bub"><span class="who">+62 878-•••-1102</span>Maaf, tadi yang kontraktor siapa ya?</div>
+          <div class="ba-card hp-kom">
+            <div class="hp-sampul"></div>
+            <div class="hp-kepala">
+              <span class="logo-sq l-iasman52"></span>
+              <div><div class="hp-nm">Ikatan Alumni SMAN 52 <span class="verif"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="var(--card)" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></div><div class="hp-meta">Ikatan Alumni · Jakarta Utara</div></div>
+            </div>
+            <div class="hp-wajah">
+              <div class="stack"><span class="av photo p-fajar"></span><span class="av photo p-ayu"></span><span class="av photo p-rani"></span><span class="av photo p-bagas"></span><span>82+</span></div>
+              <span class="hp-meta">Fajar (Ketua), Ayu (Humas), dan 84 anggota lain</span>
+            </div>
           </div>
         </div>
         <div class="hba-kolavo">
           <div class="panel">
-            <div class="panel-bar"><span class="t">Daftar Anggota</span><span class="c">22 anggota</span></div>
-            <div class="panel-filters">
-              <span class="chip on">Semua</span><span class="chip">Keahlian</span><span class="chip">Domisili</span><span class="chip">Angkatan</span>
+            <div class="panel-bar"><span class="t">Siapa saja di dalamnya</span><span class="c">Profil publik</span></div>
+            <div class="hp-angka">
+              <div><b>86</b><span>anggota</span></div>
+              <div><b>14</b><span>profesi</span></div>
+              <div><b>9</b><span>kota</span></div>
             </div>
-            <div>
-              <div class="m"><div class="av photo p-rani" role="img" aria-label="Foto profil Rani Setiawati — gambar AI"></div><div><div class="nm">Rani Setiawati</div>
-              <div class="tags"><span class="tag hi">Desainer Produk</span><span class="tag">Jakarta Selatan</span><span class="tag">Angkatan 2014</span></div></div></div>
-              <div class="m"><div class="av photo p-bagas" role="img" aria-label="Foto profil Bagas Prakoso — gambar AI"></div><div><div class="nm">Bagas Prakoso</div>
-              <div class="tags"><span class="tag">Guru SMA</span><span class="tag">Bekasi</span><span class="tag">Angkatan 2011</span></div></div></div>
-              <div class="m"><div class="av photo p-ayu" role="img" aria-label="Foto profil Ayu Lestari — gambar AI"></div><div><div class="nm">Ayu Lestari</div>
-              <div class="tags"><span class="tag">Apoteker</span><span class="tag">Depok</span><span class="tag">Angkatan 2016</span></div></div></div>
-              <div class="m"><div class="av photo p-fajar" role="img" aria-label="Foto profil Fajar Nugroho — gambar AI"></div><div><div class="nm">Fajar Nugroho</div>
-              <div class="tags"><span class="tag hi">Kontraktor</span><span class="tag">Jakarta Utara</span><span class="tag">Angkatan 2009</span></div></div></div>
+            <div class="hp-blok">
+              <p class="agg-lbl">Karier</p>
+              <div class="agg-baris"><div class="agg-item"><span class="nm">Karyawan swasta</span><span class="agg-bar"><i style="width:33%"></i></span><span class="n">28</span></div><div class="agg-item"><span class="nm">Wiraswasta</span><span class="agg-bar"><i style="width:20%"></i></span><span class="n">17</span></div><div class="agg-item"><span class="nm">Guru &amp; dosen</span><span class="agg-bar"><i style="width:14%"></i></span><span class="n">12</span></div></div>
             </div>
-            <div class="panel-foot">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-              Halaman ini cuma kelihatan sama sesama anggota
+            <div class="hp-blok oranye">
+              <p class="agg-lbl">Pendidikan</p>
+              <div class="agg-baris"><div class="agg-item"><span class="nm">Sarjana (S1)</span><span class="agg-bar"><i style="width:55%"></i></span><span class="n">47</span></div><div class="agg-item"><span class="nm">Magister (S2)</span><span class="agg-bar"><i style="width:16%"></i></span><span class="n">14</span></div></div>
             </div>
           </div>
+        </div>
+        <div class="hp-keping">
+          <div class="hp-keping-isi">
+            <span class="av photo p-rani"></span>
+            <div>
+              <div class="hp-nm">Rani Setiawati</div>
+              <div class="tags"><span class="tag hi">Desainer Produk</span><span class="tag">Sarjana (S1)</span><span class="tag">Jakarta Selatan</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="hp-chip">
+          <span class="hp-chip-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>
+          <span><b>Ajakan kenalan diterima</b><i>Kontak Rani sekarang terbuka</i></span>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<section id="direktori">
+<!-- V4: tiga pilar pendekatan baru — satu per peran di kepengurusan -->
+<section id="untuk" class="sec-alt">
   <div class="shell">
-    <div class="kicker">Sudah jadi anggota?</div>
-    <h2>Cari komunitasmu, lalu minta gabung.</h2>
-    <p class="sec-lede">Kalau pengurusmu sudah bikin halaman, cari namanya di sini. Setelah disetujui, seluruh daftar anggota kebuka buat kamu.</p>
-
-    <div class="search">
-      <div class="q">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input type="search" id="q" placeholder="Cari nama komunitas, organisasi, atau ikatan alumni" aria-label="Cari komunitas">
-      </div>
-      <span class="sep" aria-hidden="true"></span>
-      <div class="locwrap">
-        <button type="button" class="locbtn" id="locbtn" aria-expanded="false" aria-haspopup="dialog">
-          <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span id="loclabel">Semua lokasi</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-        <button type="button" class="locclear" id="locclear" hidden aria-label="Hapus filter lokasi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-
-        <div class="locpanel" id="locpanel" role="dialog" aria-label="Pilih lokasi">
-          <button type="button" class="locopt" id="locnear">
-            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.4"/><path d="M12 1.5v3M12 19.5v3M22.5 12h-3M4.5 12h-3"/></svg></span>
-            <span><b>Di sekitar saya</b><em>Kolavo akan minta izin lokasi dari browser</em></span>
-          </button>
-
-          <div class="locdiv"><span>atau pilih manual</span></div>
-
-          <div class="locfield">
-            <label for="fNegara">Negara</label>
-            <select id="fNegara"><option value="">Pilih negara</option></select>
-          </div>
-          <div class="locfield">
-            <label for="fProvinsi">Provinsi</label>
-            <select id="fProvinsi" disabled><option value="">Pilih negara dulu</option></select>
-            <em class="hint" id="hProvinsi">Aktif setelah negara dipilih</em>
-          </div>
-          <div class="locfield">
-            <label for="fKota">Kota atau kabupaten</label>
-            <select id="fKota" disabled><option value="">Pilih provinsi dulu</option></select>
-            <em class="hint" id="hKota">Aktif setelah provinsi dipilih</em>
-          </div>
-
-          <div class="locfoot">
-            <button type="button" class="lnk" id="locreset">Reset</button>
-            <button type="button" class="btn sm" id="locapply" disabled>Terapkan</button>
-          </div>
-        </div>
-      </div>
+    <div class="sec-tengah">
+      <div class="kicker">Satu platform, tiga kebutuhan</div>
+      <h2>Apa pun peranmu sebagai pengurus, Kolavo meringankan tugasmu.</h2>
+      <p class="sec-lede">Profil komunitas, data anggota, dan pendaftaran yang mudah, semuanya di satu tempat.</p>
     </div>
-
-    <div class="filters">
-      <span class="lbl">Bentuk Komunitas:</span>
-      <button type="button" class="chip on" data-bentuk="">Semua<span class="cnt">4</span></button>
-      <button type="button" class="chip" data-bentuk="Organisasi">Organisasi<span class="cnt">1</span></button>
-      <button type="button" class="chip" data-bentuk="Asosiasi">Asosiasi<span class="cnt">0</span></button>
-      <button type="button" class="chip" data-bentuk="Ikatan Alumni">Ikatan Alumni<span class="cnt">2</span></button>
-      <button type="button" class="chip" data-bentuk="Himpunan">Himpunan<span class="cnt">1</span></button>
-    </div>
-
-
-    <div class="grid">
-      <article data-premium="1" class="ccard c-forpastara" data-alias="Forpastara" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Angkatan Paskibra", "tanya": "Tahun berapa kamu jadi Paskibra?", "tipe": "tahun", "wajib": false}]' data-bentuk="Himpunan" data-negara="Indonesia" data-provinsi="Jawa Barat" data-kota="Kabupaten Bekasi">
-        <div class="loc">Kabupaten Bekasi, Jawa Barat</div>
-        <div class="logo-sq l-forpastara" role="img" aria-label="Logo komunitas"></div>
-        <h3>Forum Paskibra Tarumajaya <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></h3>
-        <p class="desc">Yukk Kakak, Akang, Teteh semua, kita gabung di Komunitas Forpastara</p>
-        <div class="row">
-          <div><div class="mem">6 anggota</div>
-            <div class="stack"><span style="background:var(--blue-wash);color:var(--blue-ink)">RS</span><span style="background:var(--orange-wash);color:var(--orange-ink)">BP</span><span style="background:var(--green-wash);color:var(--green)">AL</span><span>19+</span></div></div>
-          <button type="button" class="btn sm" data-login="anggota">Lihat</button>
-        </div>
+    <div class="pilar">
+      <article class="pilar-i">
+        <span class="pilar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></span>
+        <p class="pilar-untuk">Untuk tim humas</p>
+        <h3>Perkenalkan komunitasmu lewat orang-orangnya</h3>
+        <p>Media sosial menampilkan kegiatan. Profil komunitas di Kolavo menampilkan siapa saja anggotanya.</p>
+        <ul class="pilar-l">
+          <li>Persebaran karier dan pendidikan anggota</li>
+          <li>Pengurus tampil dengan nama dan jabatan</li>
+          <li>Satu tautan untuk dibagikan ke publik</li>
+        </ul>
       </article>
-
-      <article class="ccard c-iapnj" data-alias="IKA TIK PNJ" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Angkatan", "tanya": "Angkatan berapa kamu masuk PNJ?", "tipe": "tahun", "wajib": false}, {"id": "prodi", "judul": "Program Studi", "tanya": "Prodi apa yang kamu ambil?", "tipe": "teks", "wajib": false}]' data-bentuk="Ikatan Alumni" data-negara="Indonesia" data-provinsi="" data-kota="">
-        <div class="loc">Indonesia</div>
-        <div class="logo-sq l-iapnj" role="img" aria-label="Logo komunitas"></div>
-        <h3>Ikatan Alumni PNJ (UI) Teknik Informatika dan Komputer</h3>
-        <p class="desc">Alumni PNJ(UI) TIK, silakan gabung 👩🏻‍💻🧑🏻‍💻</p>
-        <div class="row">
-          <div><div class="mem">6 anggota</div>
-            <div class="stack"><span style="background:var(--green-wash);color:var(--green)">DW</span><span style="background:var(--blue-wash);color:var(--blue-ink)">HP</span><span style="background:var(--orange-wash);color:var(--orange-ink)">SN</span><span>6+</span></div></div>
-          <button type="button" class="btn sm" data-login="anggota">Lihat</button>
-        </div>
+      <article class="pilar-i">
+        <span class="pilar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span>
+        <p class="pilar-untuk">Untuk pengurus komunitas</p>
+        <h3>Kumpulkan data anggota tanpa rekap manual</h3>
+        <p>Data pendaftar langsung tersusun dan siap dipakai pengurus untuk merancang kegiatan.</p>
+        <ul class="pilar-l">
+          <li>Pertanyaan pendaftaran bisa diatur sendiri</li>
+          <li>Kegiatan dirancang sesuai demografi anggota</li>
+          <li>Mudah menemukan anggota untuk diajak kolaborasi</li>
+        </ul>
       </article>
-
-      <article data-premium="1" class="ccard c-iasman52" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Lulus", "tanya": "Kamu lulus tahun berapa?", "tipe": "tahun", "wajib": true}]' data-bentuk="Ikatan Alumni" data-negara="Indonesia" data-provinsi="DKI Jakarta" data-kota="Jakarta Utara">
-        <div class="loc">Jakarta Utara, DKI Jakarta</div>
-        <div class="logo-sq l-iasman52" role="img" aria-label="Logo komunitas"></div>
-        <h3>Ikatan Alumni SMAN 52 <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></h3>
-        <p class="desc">Alumni SMAN 52 Jakarta, yuk gabung. 🏫</p>
-        <div class="row">
-          <div><div class="mem">6 anggota</div>
-            <div class="stack"><span style="background:var(--orange-wash);color:var(--orange-ink)">FN</span><span style="background:var(--blue-wash);color:var(--blue-ink)">TA</span><span style="background:var(--green-wash);color:var(--green)">RM</span><span>14+</span></div></div>
-          <button type="button" class="btn sm" data-login="anggota">Lihat</button>
-        </div>
+      <article class="pilar-i">
+        <span class="pilar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+        <p class="pilar-untuk">Untuk anggota</p>
+        <h3>Mudahkan anggotamu bergabung dan saling kenal</h3>
+        <p>Anggota mendaftar lewat satu link, lalu bisa saling mencari dan berkenalan di daftar anggota.</p>
+        <ul class="pilar-l">
+          <li>Daftar anggota hanya untuk sesama anggota</li>
+          <li>Kontak terbuka setelah ajakan kenalan diterima</li>
+          <li>Satu profil untuk banyak komunitas</li>
+        </ul>
       </article>
-
-      <article class="ccard c-ppiju" data-alias="PPI Jakut" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Pengukuhan", "tanya": "Kapan kamu dikukuhkan jadi Purna Paskibraka?", "tipe": "tahun", "wajib": false}, {"id": "satuan", "judul": "Satuan", "tanya": "Kamu bertugas di satuan mana?", "tipe": "teks", "wajib": false}]' data-bentuk="Organisasi" data-negara="Indonesia" data-provinsi="DKI Jakarta" data-kota="Jakarta Utara">
-        <div class="loc">Jakarta Utara, DKI Jakarta</div>
-        <div class="logo-sq l-ppiju" role="img" aria-label="Logo komunitas"></div>
-        <h3>Purna Paskibraka Indonesia Jakarta Utara</h3>
-        <p class="desc">Ayo gabung ke PPIJU, Kakak-Kakak.. 🫡</p>
-        <div class="row">
-          <div><div class="mem">6 anggota</div>
-            <div class="stack"><span style="background:var(--blue-wash);color:var(--blue-ink)">YA</span><span style="background:var(--green-wash);color:var(--green)">NK</span><span style="background:var(--orange-wash);color:var(--orange-ink)">BS</span><span>17+</span></div></div>
-          <button type="button" class="btn sm" data-login="anggota">Lihat</button>
-        </div>
-      </article>
-    </div>
-
-    <p class="resultbar" id="resultbar">Menampilkan <b>4</b> dari 4 komunitas</p>
-
-    <div class="empty" id="empty" hidden>
-      <div class="empty-ic">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8.5 11h5"/></svg>
-      </div>
-      <h3>Komunitasmu belum ketemu</h3>
-      <p id="emptymsg">Tidak ada komunitas yang cocok dengan pencarianmu.</p>
-      <p class="empty-lede">Kemungkinan besar bukan salah ketik — pengurusmu memang belum bikin halamannya di Kolavo. Halaman ini baru diisi komunitas yang pengurusnya sudah mendaftar.</p>
-      <div class="empty-cta">
-        <button type="button" class="btn" id="emptyinvite">Ajak pengurusmu bikin halaman</button>
-        <button type="button" class="btn outline" id="emptyreset">Hapus semua filter</button>
-      </div>
-      <p class="empty-note">Salin satu link, kirim ke grup komunitasmu. Pengurus yang bikin halamannya, kamu tinggal minta gabung.</p>
     </div>
   </div>
 </section>
 
+<!-- A4: direktori + filter pindah ke tab Komunitas Kolavo App (30-layer-scrApp). -->
+
+<!-- V4: cara mulai — kepala rata tengah, empat langkah sebagai kartu sejajar, tiap kartu
+     punya gambar kecil (tiruan UI dari komponen, aria-hidden) supaya langkahnya terlihat,
+     bukan cuma terbaca. Ajakan + catatan privasi di bawahnya. -->
 <section id="pengurus" class="sec-alt">
   <div class="shell">
-    <div class="band">
-      <div>
-        <div class="kicker">Buat pengurus</div>
-        <h2>Komunitasmu belum ada di sini?</h2>
-        <p class="sec-lede">Bikin halamannya sekali, anggotamu yang mengisi profilnya sendiri. Kamu tinggal menyetujui.</p>
-        <div class="privacy">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-          <div>Profil komunitas boleh dilihat publik, tapi <strong>daftar anggotanya cuma kebuka buat sesama anggota</strong> — seperti akun Instagram yang di-private.</div>
+    <div class="sec-tengah">
+      <div class="kicker">Cara mulai</div>
+      <h2>Empat langkah, profil komunitasmu siap.</h2>
+      <p class="sec-lede">Cukup buat halaman, bagikan link, dan setujui pendaftar. Profil komunitasmu siap ditampilkan.</p>
+    </div>
+    <ol class="langkah">
+      <li class="langkah-i">
+        <div class="lk-gbr" aria-hidden="true">
+          <div class="lk-form">
+            <span class="lk-lbl">Nama komunitas</span>
+            <span class="lk-inp">Ikatan Alumni SMAN 52</span>
+            <span class="lk-chips"><i class="on">Ikatan Alumni</i><i>Asosiasi</i></span>
+          </div>
         </div>
-        <div class="cta"><a class="btn" href="#0" data-login="pengurus">Buat Halaman Komunitas</a><a class="btn outline" href="#0" data-contoh>Lihat contoh halaman</a></div>
+        <span class="langkah-no">1</span>
+        <h3>Buat halaman komunitas</h3>
+        <p>Isi nama, bentuk, lokasi, dan satu kalimat ajakan.</p>
+      </li>
+      <li class="langkah-i">
+        <div class="lk-gbr" aria-hidden="true">
+          <div class="lk-link">
+            <span class="lk-url"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>kolavo.app/k/sman52</span>
+            <span class="lk-salin">Link tersalin</span>
+          </div>
+        </div>
+        <span class="langkah-no">2</span>
+        <h3>Sebar satu link</h3>
+        <p>Bagikan ke grup komunitasmu.</p>
+      </li>
+      <li class="langkah-i">
+        <div class="lk-gbr" aria-hidden="true">
+          <div class="lk-minta">
+            <span class="lk-orang"><span class="av photo p-rani"></span><span><b>Rani Setiawati</b><i>Desainer Produk · 2014</i></span></span>
+            <span class="lk-aksi"><i class="ya">Setujui</i><i>Tolak</i></span>
+          </div>
+        </div>
+        <span class="langkah-no">3</span>
+        <h3>Setujui pendaftar</h3>
+        <p>Tinjau siapa yang mendaftar, lalu terima.</p>
+      </li>
+      <li class="langkah-i">
+        <div class="lk-gbr" aria-hidden="true">
+          <div class="lk-profil">
+            <span class="lk-angka"><b>86</b> anggota · <b>14</b> profesi</span>
+            <span class="lk-bar"><i style="width:78%"></i></span>
+            <span class="lk-bar oranye"><i style="width:55%"></i></span>
+            <span class="lk-bar hijau"><i style="width:36%"></i></span>
+          </div>
+        </div>
+        <span class="langkah-no">4</span>
+        <h3>Profil komunitas terisi</h3>
+        <p>Persebaran anggota tampil di halaman publik.</p>
+      </li>
+    </ol>
+    <div class="sec-cta">
+      <a class="btn" href="#0" data-login="pengurus">Buat Halaman Komunitas</a>
+      <a class="btn outline" href="#0" data-contoh>Lihat contoh halaman</a>
+    </div>
+    <p class="sec-catatan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      Profil komunitas terbuka untuk publik. Daftar anggota hanya untuk sesama anggota.
+    </p>
+  </div>
+</section>
+
+<!-- V4: harga — aturan lengkap di Redesign/PROMPT-HARGA.md. Esensial FREE (20 anggota,
+     1 peninjau) · Advance per kelipatan 10 anggota (30–1.000) + peninjau · Big Organization
+     di atas 1.000 anggota. Kalkulator dihitung 50-js-harga. Kredit kenalan tidak ditampilkan. -->
+<section id="harga">
+  <div class="shell">
+    <div class="sec-tengah">
+      <div class="kicker">Harga</div>
+      <h2>Mulai gratis, naik paket saat komunitasmu tumbuh.</h2>
+      <p class="sec-lede">Pilih paket sesuai jumlah anggota dan pengurusmu.</p>
+    </div>
+
+    <div class="harga-grid">
+      <article class="harga-i dasar">
+        <p class="harga-nm">Esensial</p>
+        <p class="harga-rp"><b>FREE</b></p>
+        <p class="harga-batas">1 peninjau · 20 anggota</p>
+        <p class="harga-ket">Untuk komunitas yang baru mulai, diurus satu orang.</p>
+        <ul class="pilar-l">
+          <li>Halaman komunitas publik dengan persebaran anggota</li>
+          <li>Formulir pendaftaran dengan pertanyaan sendiri</li>
+          <li>Satu peninjau pendaftaran</li>
+          <li>Daftar anggota tertutup, hingga 20 anggota</li>
+        </ul>
+        <a class="btn outline" href="#0" data-login="pengurus">Buat Halaman Komunitas</a>
+      </article>
+      <article class="harga-i utama">
+        <p class="harga-nm">Advance</p>
+        <p class="harga-rp"><b>Rp 199</b></p>
+        <p class="harga-batas">per anggota / bulan · 30 sampai 1.000 anggota</p>
+        <p class="harga-ket">Peninjau pertama Rp 15.000, tiap tambahan Rp 3.000 per bulan. Semua yang ada di Esensial, ditambah:</p>
+        <ul class="pilar-l">
+          <li>Struktur kepengurusan dengan nama jabatan sendiri</li>
+          <li>Akses dashboard untuk tiap pengurus</li>
+          <li>Dashboard pertumbuhan anggota</li>
+          <li>Pengumuman, tautan grup, dan dokumen komunitas</li>
+          <li>Onboarding anggota baru</li>
+          <li>Jawaban pendaftar dikelompokkan jadi persebaran pilihanmu</li>
+        </ul>
+        <a class="btn" href="#0" data-login="pengurus">Buat Halaman Komunitas</a>
+      </article>
+      <article class="harga-i besar">
+        <p class="harga-nm">Big Organization</p>
+        <p class="harga-rp"><b>Hubungi kami</b></p>
+        <p class="harga-batas">di atas 1.000 anggota</p>
+        <p class="harga-ket">Untuk komunitas besar, atau yang butuh pendampingan. Semua yang ada di Advance, ditambah:</p>
+        <ul class="pilar-l">
+          <li>Harga spesial untuk lebih dari 1.000 anggota</li>
+          <li>Konsultasi pengembangan komunitas</li>
+          <li>Pendampingan langsung dari tim Kolavo</li>
+        </ul>
+        <button type="button" class="btn outline" data-hubungi>Hubungi kami</button>
+      </article>
+    </div>
+
+    <div class="kalk">
+      <div class="kalk-in">
+        <div>
+          <label class="kalk-l" for="kalkN"><span class="kalk-lt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Jumlah anggota</span><b id="kalkNV">200</b></label>
+          <input type="range" id="kalkN" min="30" max="1000" step="10" value="200">
+          <div class="kalk-skala"><span>30</span><span>1.000</span></div>
+        </div>
+        <div class="kalk-dua">
+          <div>
+            <span class="kalk-l"><span class="kalk-lt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg><span id="kalkPL">Jumlah peninjau</span><span class="kalk-infow" id="kalkInfoW"><button type="button" class="kalk-info" id="kalkInfo" aria-label="Apa itu peninjau?" aria-expanded="false" aria-describedby="kalkTip">i</button><span class="kalk-tip" id="kalkTip" role="tooltip">Peninjau adalah pengurus yang memeriksa pendaftaran anggota baru, lalu menerima atau menolaknya. Tambah peninjau supaya tugas ini bisa dibagi.</span></span></span></span>
+            <div class="kalk-step" role="group" aria-labelledby="kalkPL">
+              <button type="button" id="kalkPMin" aria-label="Kurangi peninjau">−</button>
+              <b id="kalkP" aria-live="polite">1</b>
+              <button type="button" id="kalkPPlus" aria-label="Tambah peninjau">+</button>
+            </div>
+          </div>
+          <div>
+            <span class="kalk-l"><span class="kalk-lt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span id="kalkBL">Durasi langganan</span></span></span>
+            <div class="kalk-durasi" id="kalkBulan" role="radiogroup" aria-labelledby="kalkBL">
+              <button type="button" class="chip on" role="radio" aria-checked="true" data-bulan="1">1 bulan</button>
+              <button type="button" class="chip" role="radio" aria-checked="false" data-bulan="6">6 bulan</button>
+              <button type="button" class="chip" role="radio" aria-checked="false" data-bulan="12">12 bulan</button>
+              <button type="button" class="chip" role="radio" aria-checked="false" data-bulan="24">2 tahun</button>
+            </div>
+          </div>
+        </div>
+        <p class="kalk-c">Diskon 5% untuk 6–12 bulan, 10% untuk langsung 2 tahun. Berlaku untuk pembelian pertama.</p>
       </div>
-      <ul class="steps">
-        <li class="step"><span class="no">1</span><div><strong>Bikin halaman komunitas</strong><p>Nama, bentuk, lokasi, dan satu kalimat ajakan. Lima menit.</p></div></li>
-        <li class="step"><span class="no">2</span><div><strong>Sebar satu link ke grup</strong><p>Tidak perlu kumpulkan data lewat Google Form lagi.</p></div></li>
-        <li class="step"><span class="no">3</span><div><strong>Setujui yang mendaftar</strong><p>Anggota mengisi profilnya sendiri — kamu cukup menyetujui.</p></div></li>
-        <li class="step"><span class="no">4</span><div><strong>Daftar anggota kebuka</strong><p>Semua anggota bisa saling cari, filter, dan kenal.</p></div></li>
-      </ul>
+      <div class="kalk-out" aria-live="polite">
+        <p class="kalk-k">Perkiraan tagihan Advance</p>
+        <dl class="kalk-rinci">
+          <div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span id="kalkAL">200 anggota × Rp 199</span></dt><dd id="kalkA">—</dd></div>
+          <div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg><span id="kalkRL">1 peninjau</span></dt><dd id="kalkR">—</dd></div>
+          <div class="kalk-sub"><dt>Per bulan</dt><dd id="kalkBln">—</dd></div>
+          <div id="kalkDW" hidden><dt id="kalkDL">Diskon</dt><dd id="kalkD">—</dd></div>
+        </dl>
+        <p class="kalk-v"><span id="kalkTL">Total 1 bulan</span><b id="kalkT">—</b></p>
+        <p class="kalk-c" id="kalkBesar" hidden>Lebih dari 1.000 anggota? Pilih paket Big Organization.</p>
+      </div>
     </div>
   </div>
 </section>

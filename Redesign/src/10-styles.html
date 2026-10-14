@@ -378,6 +378,18 @@ body.m-tab .nav-in{position:relative}
 .nav-cari svg{width:18px;height:18px}
 .nav-cari:hover{color:var(--ink)}
 @media(max-width:1180px){.nav-cari{width:40px;padding:0;justify-content:center}.nav-cari span{display:none}}
+/* isi tab app (A4): Komunitas & Dashboard */
+.app-pg{padding:30px 0 72px;background:var(--bg-alt);min-height:calc(100vh - 77px)}
+.app-hd h1{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+.app-hd p{margin-top:6px;font-size:15px;color:var(--ink-2);max-width:620px}
+.app-sek{margin-top:32px}
+.app-sek > h2{font-size:18px;font-weight:600;margin-bottom:12px}
+.app-sub{margin:-6px 0 16px;font-size:14px;color:var(--ink-2)}
+.app-kosong{padding:18px;border:1px dashed var(--line);border-radius:13px;background:var(--card);font-size:14px;color:var(--ink-2)}
+#dasborList{margin-top:24px}
+.dsb-buat{margin-top:16px}
+/* tombol demo pengurus hanya relevan di tab Dashboard */
+body:not([data-layar="scrDasbor"]) #demoAngkat{display:none}
 /* layar sempit: tab pindah ke bilah bawah, label kecil tampil */
 @media(max-width:767px){
   .nav-tab{position:fixed;top:auto;left:0;right:0;bottom:0;transform:none;z-index:40;gap:0;height:calc(60px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:var(--bg);border-top:1px solid var(--line)}

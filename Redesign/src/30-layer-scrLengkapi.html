@@ -197,10 +197,34 @@
         <p class="f-why">Dipilih dari daftar biar anggota lain gampang menyaring dan menemukanmu. Tidak ketemu? Pilih “Lainnya — tulis sendiri”.</p>
       </div>
 
+      <!-- V4: pendidikan — dipakai profil dan persebaran anggota per pendidikan di halaman komunitas -->
+      <div class="f">
+        <label class="f-lbl" for="didik">Pendidikan terakhir<span class="opt">Opsional</span></label>
+        <div class="didik-grid">
+          <select class="sel" id="didik">
+            <option value="">Pilih jenjang</option>
+            <option>SMA / SMK sederajat</option>
+            <option>Diploma (D1–D4)</option>
+            <option>Sarjana (S1)</option>
+            <option>Magister (S2)</option>
+            <option>Doktor (S3)</option>
+          </select>
+          <input class="inp" id="didikDi" type="text" maxlength="60" placeholder="Jurusan dan kampus atau sekolah — misal Hukum, Unpad" aria-label="Jurusan dan kampus atau sekolah">
+        </div>
+        <p class="f-why">Diisi sekali, dipakai di semua komunitas yang kamu ikuti. Di halaman komunitas hanya tampil sebagai angka persebaran, bukan nama.</p>
+      </div>
+
+      <!-- V4: komunitas itu tempat memberi dan mengambil manfaat — dua pertanyaan, bukan satu -->
+      <div class="f">
+        <label class="f-lbl" for="beri">Apa yang bisa kamu bagikan ke sesama anggota?<span class="opt">Opsional</span></label>
+        <textarea class="ta" id="beri" maxlength="90" placeholder="Bisa bantu baca CV dan nemenin latihan wawancara."></textarea>
+        <p class="hitung"><span id="beriN">0</span>/90</p>
+      </div>
       <div class="f">
         <label class="f-lbl" for="bio">Apa yang ingin kamu dapat dari komunitas?<span class="opt">Opsional</span></label>
         <textarea class="ta" id="bio" maxlength="90" placeholder="Lagi cari partner buat proyek renovasi sekolah."></textarea>
         <p class="hitung"><span id="bioN">0</span>/90</p>
+        <p class="f-why">Dua jawaban ini tampil di profilmu, supaya anggota lain tahu kapan harus menyapamu.</p>
       </div>
 
       <!-- akun media sosial: opsional, baris bisa ditambah/dihapus (50-js-lengkapi-profil) -->
@@ -212,9 +236,27 @@
       </div>
     </section>
 
+    <!-- Persetujuan (UU PDP 27/2022) — centangnya saja, tanpa blok penjelas:
+         naskah lengkapnya sudah satu klik jauhnya lewat tautan di bawah centang.
+         Dua persetujuan sengaja DIPISAH karena tujuannya beda; yang opsional
+         tidak boleh tercentang dari sananya. -->
+      <div class="f" id="fSetuju">
+        <label class="ob-setuju">
+          <input type="checkbox" id="setujuLegal">
+          <span>Saya sudah membaca dan menyetujui <b>Ketentuan Layanan</b> dan <b>Kebijakan Privasi</b> Kolavo, termasuk pemrosesan data pribadi saya seperti dijelaskan di sana.</span>
+        </label>
+        <p class="lgl-baca"><button type="button" class="lnk" data-legal="tnc">Baca Ketentuan Layanan</button> · <button type="button" class="lnk" data-legal="privasi">Baca Kebijakan Privasi</button></p>
+        <p class="f-galat">Persetujuan ini perlu dicentang dulu sebelum profil dikirim.</p>
+
+        <label class="ob-setuju lgl-opsi">
+          <input type="checkbox" id="setujuKabar">
+          <span>Boleh kirimi saya kabar produk dan tips mengelola komunitas lewat e-mail.<span class="opt">Opsional</span></span>
+        </label>
+      </div>
+
     <div class="blk-galat" id="galat" hidden>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
-      <span>Masih ada kolom wajib yang kosong. Yang bertanda merah di atas perlu diisi dulu.</span>
+      <span>Masih ada yang perlu dilengkapi. Yang bertanda merah di atas — termasuk persetujuan di bawah — perlu diisi dulu.</span>
     </div>
 
     <div class="act">

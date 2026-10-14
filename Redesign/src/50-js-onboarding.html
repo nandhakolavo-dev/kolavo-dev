@@ -82,7 +82,7 @@
     return {
       aktif: true,
       langkah: {
-        sambutan: { aktif: true, judul: t.judul, pesan: t.pesan, pengirim: p ? p.n + ', ' + p.j : 'Pengurus ' + kom.nama },
+        sambutan: { aktif: true, judul: t.judul, pesan: t.pesan, pengirim: p ? p.n + ', ' + p.j : 'Pengurus ' + kom.nama, foto: p ? p.f : '' },
         kenal: { aktif: true, sejarah: t.sejarah, visi: t.visi, misi: t.misi },
         aturan: { aktif: true, ringkas: t.ringkas },
         alat: { aktif: true, ket: t.ket },
@@ -166,7 +166,15 @@
     let isi = '';
     if(l[0] === 'sambutan'){
       isi = '<h2 class="ob-judul" id="obJudul">' + lolos(L.judul) + '</h2><p class="ob-teks">' + lolos(L.pesan) + '</p>' +
-        (L.pengirim ? '<p class="ob-ttd">— ' + lolos(L.pengirim) + '</p>' : '');
+        (L.pengirim ? (function(){
+          /* V4: anggota baru perlu kenal ketuanya — foto (atau inisial) di samping tanda tangan */
+          const bagian = String(L.pengirim).split(','), nm = bagian[0].trim(), jab = bagian.slice(1).join(',').trim();
+          const ini = nm.split(' ').slice(0, 2).map(function(k){ return k[0] || ''; }).join('').toUpperCase();
+          return '<div class="ob-ttd">' +
+            (L.foto ? '<span class="av photo ' + lolos(L.foto) + '" role="img" aria-label="Foto ' + lolos(nm) + ' — gambar AI"></span>'
+                    : '<span class="av a" aria-hidden="true">' + lolos(ini) + '</span>') +
+            '<span class="ob-ttd-t"><b>' + lolos(nm) + '</b>' + (jab ? '<i>' + lolos(jab) + '</i>' : '') + '</span></div>';
+        })() : '');
     } else if(l[0] === 'kenal'){
       isi = '<h2 class="ob-judul" id="obJudul">Tentang ' + lolos(ctx.kom.nama) + '</h2>' +
         [['Sejarah singkat', L.sejarah], ['Visi', L.visi], ['Misi & tujuan', L.misi]].filter(function(x){ return x[1]; }).map(function(x){

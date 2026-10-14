@@ -421,6 +421,18 @@ body.m-tab .nav-in{position:relative}
 .nav-cari svg{width:18px;height:18px}
 .nav-cari:hover{color:var(--ink)}
 @media(max-width:1180px){.nav-cari{width:40px;padding:0;justify-content:center}.nav-cari span{display:none}}
+/* isi tab app (A4): Komunitas & Dashboard */
+.app-pg{padding:30px 0 72px;background:var(--bg-alt);min-height:calc(100vh - 77px)}
+.app-hd h1{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+.app-hd p{margin-top:6px;font-size:15px;color:var(--ink-2);max-width:620px}
+.app-sek{margin-top:32px}
+.app-sek > h2{font-size:18px;font-weight:600;margin-bottom:12px}
+.app-sub{margin:-6px 0 16px;font-size:14px;color:var(--ink-2)}
+.app-kosong{padding:18px;border:1px dashed var(--line);border-radius:13px;background:var(--card);font-size:14px;color:var(--ink-2)}
+#dasborList{margin-top:24px}
+.dsb-buat{margin-top:16px}
+/* tombol demo pengurus hanya relevan di tab Dashboard */
+body:not([data-layar="scrDasbor"]) #demoAngkat{display:none}
 /* layar sempit: tab pindah ke bilah bawah, label kecil tampil */
 @media(max-width:767px){
   .nav-tab{position:fixed;top:auto;left:0;right:0;bottom:0;transform:none;z-index:40;gap:0;height:calc(60px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:var(--bg);border-top:1px solid var(--line)}
@@ -2237,13 +2249,12 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
     <div class="logo">Kolavo Beta</div>
 
     <!-- nav Kolavo App (A3): tab ikon ala Facebook web. Hanya di mode app & sudah masuk
-         (router: body.m-tab). < 768px pindah ke bilah bawah. Komunitas sementara ke
-         'Komunitas saya' di profil — A4 menggantinya dengan beranda app. -->
-    <a class="nav-cari" id="navCari" href="#0" data-ke="scrProfil" data-anchor="pfKomunitas" aria-label="Cari komunitas" hidden><i data-ic="cari"></i><span>Cari komunitas</span></a>
+         (router: body.m-tab). < 768px pindah ke bilah bawah. -->
+    <a class="nav-cari" id="navCari" href="#0" data-ke="scrApp" data-anchor="direktori" aria-label="Cari komunitas" hidden><i data-ic="cari"></i><span>Cari komunitas</span></a>
     <div class="nav-tab" id="navTab" role="navigation" aria-label="Menu Kolavo" hidden>
-      <a class="nt" href="#0" data-tab="komunitas" data-ke="scrProfil" data-anchor="pfKomunitas" title="Komunitas"><i data-ic="orang"></i><b>Komunitas</b></a>
+      <a class="nt" href="#0" data-tab="komunitas" data-ke="scrApp" title="Komunitas"><i data-ic="orang"></i><b>Komunitas</b></a>
       <a class="nt" href="#0" data-tab="profil" data-ke="scrProfil" title="Profil"><i data-ic="profil"></i><b>Profil</b></a>
-      <a class="nt" href="#0" data-tab="dashboard" data-ke="scrKelola" title="Dashboard"><i data-ic="kelompok"></i><b>Dashboard</b></a>
+      <a class="nt" href="#0" data-tab="dashboard" data-ke="scrDasbor" title="Dashboard"><i data-ic="kelompok"></i><b>Dashboard</b></a>
     </div>
     <div class="nav-sp"></div>
     <a class="nav-lnk" href="#harga" data-ke="scrBeranda" data-anchor="harga">Harga</a>
@@ -2322,7 +2333,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       <p class="sub">Kolavo memperkenalkan siapa saja anggota komunitasmu. Kamu jadi lebih kenal mereka, dari karier sampai pendidikannya, lebih mudah menyusun program, dan orang luar pun tertarik mengenal komunitasmu.</p>
       <div class="cta">
         <a class="btn lead" href="#pengurus" data-login="pengurus">Buat Halaman Komunitas</a>
-        <a class="btn outline" href="#direktori">Lihat komunitas di Kolavo</a>
+        <a class="btn outline" href="#0" data-ke="scrApp">Lihat komunitas di Kolavo</a>
       </div>
       <ul class="hero-poin">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Satu link pendaftaran, pendataan anggota jadi mudah</li>
@@ -2434,135 +2445,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   </div>
 </section>
 
-<section id="direktori">
-  <div class="shell">
-    <!-- V4: beranda untuk pengurus — bagian ini memamerkan komunitas yang sudah punya
-         halaman (contoh nyata), bukan lagi ajakan anggota mencari komunitasnya -->
-    <div class="sec-tengah">
-      <div class="kicker">Komunitas yang sudah join Kolavo</div>
-      <h2>Lihat profil komunitas lain.</h2>
-      <p class="sec-lede">Jadilah bagian dari komunitas-komunitas pilihan di Kolavo.</p>
-    </div>
-
-    <div class="search">
-      <div class="q">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input type="search" id="q" placeholder="Cari nama komunitas, organisasi, atau ikatan alumni" aria-label="Cari komunitas">
-      </div>
-      <span class="sep" aria-hidden="true"></span>
-      <div class="locwrap">
-        <button type="button" class="locbtn" id="locbtn" aria-expanded="false" aria-haspopup="dialog">
-          <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span id="loclabel">Semua lokasi</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-        <button type="button" class="locclear" id="locclear" hidden aria-label="Hapus filter lokasi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-
-        <div class="locpanel" id="locpanel" role="dialog" aria-label="Pilih lokasi">
-          <button type="button" class="locopt" id="locnear">
-            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.4"/><path d="M12 1.5v3M12 19.5v3M22.5 12h-3M4.5 12h-3"/></svg></span>
-            <span><b>Di sekitar saya</b><em>Kolavo akan minta izin lokasi dari browser</em></span>
-          </button>
-
-          <div class="locdiv"><span>atau pilih manual</span></div>
-
-          <div class="locfield">
-            <label for="fNegara">Negara</label>
-            <select id="fNegara"><option value="">Pilih negara</option></select>
-          </div>
-          <div class="locfield">
-            <label for="fProvinsi">Provinsi</label>
-            <select id="fProvinsi" disabled><option value="">Pilih negara dulu</option></select>
-            <em class="hint" id="hProvinsi">Aktif setelah negara dipilih</em>
-          </div>
-          <div class="locfield">
-            <label for="fKota">Kota atau kabupaten</label>
-            <select id="fKota" disabled><option value="">Pilih provinsi dulu</option></select>
-            <em class="hint" id="hKota">Aktif setelah provinsi dipilih</em>
-          </div>
-
-          <div class="locfoot">
-            <button type="button" class="lnk" id="locreset">Reset</button>
-            <button type="button" class="btn sm" id="locapply" disabled>Terapkan</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="filters">
-      <span class="lbl">Bentuk Komunitas:</span>
-      <button type="button" class="chip on" data-bentuk="">Semua<span class="cnt">4</span></button>
-      <button type="button" class="chip" data-bentuk="Organisasi">Organisasi<span class="cnt">1</span></button>
-      <button type="button" class="chip" data-bentuk="Asosiasi">Asosiasi<span class="cnt">0</span></button>
-      <button type="button" class="chip" data-bentuk="Ikatan Alumni">Ikatan Alumni<span class="cnt">2</span></button>
-      <button type="button" class="chip" data-bentuk="Himpunan">Himpunan<span class="cnt">1</span></button>
-    </div>
-
-
-    <div class="grid">
-      <article data-premium="1" class="ccard c-forpastara" data-alias="Forpastara" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Angkatan Paskibra", "tanya": "Tahun berapa kamu jadi Paskibra?", "tipe": "tahun", "wajib": false}]' data-bentuk="Himpunan" data-negara="Indonesia" data-provinsi="Jawa Barat" data-kota="Kabupaten Bekasi">
-        <div class="loc">Kabupaten Bekasi, Jawa Barat</div>
-        <div class="logo-sq l-forpastara" role="img" aria-label="Logo komunitas"></div>
-        <h3>Forum Paskibra Tarumajaya <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></h3>
-        <p class="desc">Yukk Kakak, Akang, Teteh semua, kita gabung di Komunitas Forpastara</p>
-        <div class="row">
-          <div><div class="mem">6 anggota</div>
-            <div class="stack"><span style="background:var(--blue-wash);color:var(--blue-ink)">RS</span><span style="background:var(--orange-wash);color:var(--orange-ink)">BP</span><span style="background:var(--green-wash);color:var(--green)">AL</span><span>19+</span></div></div>
-          <button type="button" class="btn sm" data-login="anggota">Lihat</button>
-        </div>
-      </article>
-
-      <article class="ccard c-iapnj" data-alias="IKA TIK PNJ" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Angkatan", "tanya": "Angkatan berapa kamu masuk PNJ?", "tipe": "tahun", "wajib": false}, {"id": "prodi", "judul": "Program Studi", "tanya": "Prodi apa yang kamu ambil?", "tipe": "teks", "wajib": false}]' data-bentuk="Ikatan Alumni" data-negara="Indonesia" data-provinsi="" data-kota="">
-        <div class="loc">Indonesia</div>
-        <div class="logo-sq l-iapnj" role="img" aria-label="Logo komunitas"></div>
-        <h3>Ikatan Alumni PNJ (UI) Teknik Informatika dan Komputer</h3>
-        <p class="desc">Alumni PNJ(UI) TIK, silakan gabung 👩🏻‍💻🧑🏻‍💻</p>
-        <div class="row">
-          <div><div class="mem">6 anggota</div>
-            <div class="stack"><span style="background:var(--green-wash);color:var(--green)">DW</span><span style="background:var(--blue-wash);color:var(--blue-ink)">HP</span><span style="background:var(--orange-wash);color:var(--orange-ink)">SN</span><span>6+</span></div></div>
-          <button type="button" class="btn sm" data-login="anggota">Lihat</button>
-        </div>
-      </article>
-
-      <article data-premium="1" class="ccard c-iasman52" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Lulus", "tanya": "Kamu lulus tahun berapa?", "tipe": "tahun", "wajib": true}]' data-bentuk="Ikatan Alumni" data-negara="Indonesia" data-provinsi="DKI Jakarta" data-kota="Jakarta Utara">
-        <div class="loc">Jakarta Utara, DKI Jakarta</div>
-        <div class="logo-sq l-iasman52" role="img" aria-label="Logo komunitas"></div>
-        <h3>Ikatan Alumni SMAN 52 <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></h3>
-        <p class="desc">Alumni SMAN 52 Jakarta, yuk gabung. 🏫</p>
-        <div class="row">
-          <div><div class="mem">6 anggota</div>
-            <div class="stack"><span style="background:var(--orange-wash);color:var(--orange-ink)">FN</span><span style="background:var(--blue-wash);color:var(--blue-ink)">TA</span><span style="background:var(--green-wash);color:var(--green)">RM</span><span>14+</span></div></div>
-          <button type="button" class="btn sm" data-login="anggota">Lihat</button>
-        </div>
-      </article>
-
-      <article class="ccard c-ppiju" data-alias="PPI Jakut" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Pengukuhan", "tanya": "Kapan kamu dikukuhkan jadi Purna Paskibraka?", "tipe": "tahun", "wajib": false}, {"id": "satuan", "judul": "Satuan", "tanya": "Kamu bertugas di satuan mana?", "tipe": "teks", "wajib": false}]' data-bentuk="Organisasi" data-negara="Indonesia" data-provinsi="DKI Jakarta" data-kota="Jakarta Utara">
-        <div class="loc">Jakarta Utara, DKI Jakarta</div>
-        <div class="logo-sq l-ppiju" role="img" aria-label="Logo komunitas"></div>
-        <h3>Purna Paskibraka Indonesia Jakarta Utara</h3>
-        <p class="desc">Ayo gabung ke PPIJU, Kakak-Kakak.. 🫡</p>
-        <div class="row">
-          <div><div class="mem">6 anggota</div>
-            <div class="stack"><span style="background:var(--blue-wash);color:var(--blue-ink)">YA</span><span style="background:var(--green-wash);color:var(--green)">NK</span><span style="background:var(--orange-wash);color:var(--orange-ink)">BS</span><span>17+</span></div></div>
-          <button type="button" class="btn sm" data-login="anggota">Lihat</button>
-        </div>
-      </article>
-    </div>
-
-    <p class="resultbar" id="resultbar">Menampilkan <b>4</b> dari 4 komunitas</p>
-
-    <div class="empty" id="empty" hidden>
-      <div class="empty-ic">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8.5 11h5"/></svg>
-      </div>
-      <h3>Belum ada komunitas yang cocok</h3>
-      <p id="emptymsg">Tidak ada komunitas yang cocok dengan pencarianmu.</p>
-      <p class="empty-lede">Komunitas sepertimu belum punya halaman di Kolavo. Kamu bisa jadi yang pertama membuatnya.</p>
-      <div class="empty-cta">
-        <button type="button" class="btn" data-login="pengurus">Buat Halaman Komunitas</button>
-        <button type="button" class="btn outline" id="emptyreset">Hapus semua filter</button>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- A4: direktori + filter pindah ke tab Komunitas Kolavo App (30-layer-scrApp). -->
 
 <!-- V4: cara mulai — kepala rata tengah, empat langkah sebagai kartu sejajar, tiap kartu
      punya gambar kecil (tiruan UI dari komponen, aria-hidden) supaya langkahnya terlihat,
@@ -2762,6 +2645,166 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       </div>
     </div>
     <p class="msk-foot">Pengurus yang ingin membuat komunitas? <a href="#0" data-ke="scrBeranda">Pelajari Kolavo</a></p>
+  </div>
+ </div>
+</div>
+<!-- ============================================================
+     Kolavo App · tab Komunitas (A4) — beranda sesudah masuk.
+     Komunitasku: digambar 50-js-app (sumber sama dengan daftar di Profil).
+     Jelajahi: direktori + filter yang dulu di landing, dipindah utuh —
+     id #direktori dipertahankan karena banyak modul membaca
+     '#direktori .ccard' untuk logo komunitas.
+     ============================================================ -->
+<div class="scr" id="scrApp" hidden>
+ <div class="app-pg">
+  <div class="shell">
+    <header class="app-hd">
+      <h1>Komunitas</h1>
+      <p>Komunitas yang kamu ikuti, dan komunitas publik yang bisa kamu ajukan untuk bergabung.</p>
+    </header>
+
+    <section class="app-sek" aria-labelledby="appKuH">
+      <h2 id="appKuH">Komunitasku</h2>
+      <div id="appKu"></div>
+    </section>
+
+    <section class="app-sek" id="direktori" aria-labelledby="appJelH">
+      <h2 id="appJelH">Jelajahi komunitas publik</h2>
+      <p class="app-sub">Ajukan gabung. Pengurusnya yang memutuskan diterima atau tidak.</p>
+    <div class="search">
+      <div class="q">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="q" placeholder="Cari nama komunitas, organisasi, atau ikatan alumni" aria-label="Cari komunitas">
+      </div>
+      <span class="sep" aria-hidden="true"></span>
+      <div class="locwrap">
+        <button type="button" class="locbtn" id="locbtn" aria-expanded="false" aria-haspopup="dialog">
+          <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span id="loclabel">Semua lokasi</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <button type="button" class="locclear" id="locclear" hidden aria-label="Hapus filter lokasi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+
+        <div class="locpanel" id="locpanel" role="dialog" aria-label="Pilih lokasi">
+          <button type="button" class="locopt" id="locnear">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.4"/><path d="M12 1.5v3M12 19.5v3M22.5 12h-3M4.5 12h-3"/></svg></span>
+            <span><b>Di sekitar saya</b><em>Kolavo akan minta izin lokasi dari browser</em></span>
+          </button>
+
+          <div class="locdiv"><span>atau pilih manual</span></div>
+
+          <div class="locfield">
+            <label for="fNegara">Negara</label>
+            <select id="fNegara"><option value="">Pilih negara</option></select>
+          </div>
+          <div class="locfield">
+            <label for="fProvinsi">Provinsi</label>
+            <select id="fProvinsi" disabled><option value="">Pilih negara dulu</option></select>
+            <em class="hint" id="hProvinsi">Aktif setelah negara dipilih</em>
+          </div>
+          <div class="locfield">
+            <label for="fKota">Kota atau kabupaten</label>
+            <select id="fKota" disabled><option value="">Pilih provinsi dulu</option></select>
+            <em class="hint" id="hKota">Aktif setelah provinsi dipilih</em>
+          </div>
+
+          <div class="locfoot">
+            <button type="button" class="lnk" id="locreset">Reset</button>
+            <button type="button" class="btn sm" id="locapply" disabled>Terapkan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <span class="lbl">Bentuk Komunitas:</span>
+      <button type="button" class="chip on" data-bentuk="">Semua<span class="cnt">4</span></button>
+      <button type="button" class="chip" data-bentuk="Organisasi">Organisasi<span class="cnt">1</span></button>
+      <button type="button" class="chip" data-bentuk="Asosiasi">Asosiasi<span class="cnt">0</span></button>
+      <button type="button" class="chip" data-bentuk="Ikatan Alumni">Ikatan Alumni<span class="cnt">2</span></button>
+      <button type="button" class="chip" data-bentuk="Himpunan">Himpunan<span class="cnt">1</span></button>
+    </div>
+
+
+    <div class="grid">
+      <article data-premium="1" class="ccard c-forpastara" data-alias="Forpastara" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Angkatan Paskibra", "tanya": "Tahun berapa kamu jadi Paskibra?", "tipe": "tahun", "wajib": false}]' data-bentuk="Himpunan" data-negara="Indonesia" data-provinsi="Jawa Barat" data-kota="Kabupaten Bekasi">
+        <div class="loc">Kabupaten Bekasi, Jawa Barat</div>
+        <div class="logo-sq l-forpastara" role="img" aria-label="Logo komunitas"></div>
+        <h3>Forum Paskibra Tarumajaya <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></h3>
+        <p class="desc">Yukk Kakak, Akang, Teteh semua, kita gabung di Komunitas Forpastara</p>
+        <div class="row">
+          <div><div class="mem">6 anggota</div>
+            <div class="stack"><span style="background:var(--blue-wash);color:var(--blue-ink)">RS</span><span style="background:var(--orange-wash);color:var(--orange-ink)">BP</span><span style="background:var(--green-wash);color:var(--green)">AL</span><span>19+</span></div></div>
+          <button type="button" class="btn sm" data-gabung-kartu>Minta gabung</button>
+        </div>
+      </article>
+
+      <article class="ccard c-iapnj" data-alias="IKA TIK PNJ" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Angkatan", "tanya": "Angkatan berapa kamu masuk PNJ?", "tipe": "tahun", "wajib": false}, {"id": "prodi", "judul": "Program Studi", "tanya": "Prodi apa yang kamu ambil?", "tipe": "teks", "wajib": false}]' data-bentuk="Ikatan Alumni" data-negara="Indonesia" data-provinsi="" data-kota="">
+        <div class="loc">Indonesia</div>
+        <div class="logo-sq l-iapnj" role="img" aria-label="Logo komunitas"></div>
+        <h3>Ikatan Alumni PNJ (UI) Teknik Informatika dan Komputer</h3>
+        <p class="desc">Alumni PNJ(UI) TIK, silakan gabung 👩🏻‍💻🧑🏻‍💻</p>
+        <div class="row">
+          <div><div class="mem">6 anggota</div>
+            <div class="stack"><span style="background:var(--green-wash);color:var(--green)">DW</span><span style="background:var(--blue-wash);color:var(--blue-ink)">HP</span><span style="background:var(--orange-wash);color:var(--orange-ink)">SN</span><span>6+</span></div></div>
+          <button type="button" class="btn sm" data-gabung-kartu>Minta gabung</button>
+        </div>
+      </article>
+
+      <article data-premium="1" class="ccard c-iasman52" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Lulus", "tanya": "Kamu lulus tahun berapa?", "tipe": "tahun", "wajib": true}]' data-bentuk="Ikatan Alumni" data-negara="Indonesia" data-provinsi="DKI Jakarta" data-kota="Jakarta Utara">
+        <div class="loc">Jakarta Utara, DKI Jakarta</div>
+        <div class="logo-sq l-iasman52" role="img" aria-label="Logo komunitas"></div>
+        <h3>Ikatan Alumni SMAN 52 <span class="verif" title="Komunitas premium terverifikasi" aria-label="Terverifikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--blue)" d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"/><path fill="#fff" d="M9.38 16.01L7 13.61c-.39-.39-.39-1.02 0-1.41.39-.39 1.03-.39 1.42 0l1.68 1.68 4.6-4.6c.39-.39 1.03-.39 1.42 0 .39.39.39 1.02 0 1.41l-5.32 5.32c-.38.39-1.02.39-1.42 0z"/></svg></span></h3>
+        <p class="desc">Alumni SMAN 52 Jakarta, yuk gabung. 🏫</p>
+        <div class="row">
+          <div><div class="mem">6 anggota</div>
+            <div class="stack"><span style="background:var(--orange-wash);color:var(--orange-ink)">FN</span><span style="background:var(--blue-wash);color:var(--blue-ink)">TA</span><span style="background:var(--green-wash);color:var(--green)">RM</span><span>14+</span></div></div>
+          <button type="button" class="btn sm" data-gabung-kartu>Minta gabung</button>
+        </div>
+      </article>
+
+      <article class="ccard c-ppiju" data-alias="PPI Jakut" data-tanya='[{"id": "nickname", "judul": "Nama Panggilan", "tanya": "Apa nama panggilan kamu di komunitas ini?", "tipe": "teks", "wajib": true}, {"id": "cohort-year", "judul": "Tahun Pengukuhan", "tanya": "Kapan kamu dikukuhkan jadi Purna Paskibraka?", "tipe": "tahun", "wajib": false}, {"id": "satuan", "judul": "Satuan", "tanya": "Kamu bertugas di satuan mana?", "tipe": "teks", "wajib": false}]' data-bentuk="Organisasi" data-negara="Indonesia" data-provinsi="DKI Jakarta" data-kota="Jakarta Utara">
+        <div class="loc">Jakarta Utara, DKI Jakarta</div>
+        <div class="logo-sq l-ppiju" role="img" aria-label="Logo komunitas"></div>
+        <h3>Purna Paskibraka Indonesia Jakarta Utara</h3>
+        <p class="desc">Ayo gabung ke PPIJU, Kakak-Kakak.. 🫡</p>
+        <div class="row">
+          <div><div class="mem">6 anggota</div>
+            <div class="stack"><span style="background:var(--blue-wash);color:var(--blue-ink)">YA</span><span style="background:var(--green-wash);color:var(--green)">NK</span><span style="background:var(--orange-wash);color:var(--orange-ink)">BS</span><span>17+</span></div></div>
+          <button type="button" class="btn sm" data-gabung-kartu>Minta gabung</button>
+        </div>
+      </article>
+    </div>
+
+    <p class="resultbar" id="resultbar">Menampilkan <b>4</b> dari 4 komunitas</p>
+
+    <div class="empty" id="empty" hidden>
+      <div class="empty-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8.5 11h5"/></svg>
+      </div>
+      <h3>Belum ada komunitas yang cocok</h3>
+      <p id="emptymsg">Tidak ada komunitas yang cocok dengan pencarianmu.</p>
+      <p class="empty-lede">Komunitas sepertimu belum punya halaman di Kolavo. Kamu bisa jadi yang pertama membuatnya.</p>
+      <div class="empty-cta">
+        <button type="button" class="btn" data-ke="scrBuat">Buat Halaman Komunitas</button>
+        <button type="button" class="btn outline" id="emptyreset">Hapus semua filter</button>
+      </div>
+    </div>
+    </section>
+  </div>
+ </div>
+</div>
+<!-- ============================================================
+     Kolavo App · tab Dashboard (A4) — terbuka untuk semua. Isinya daftar
+     komunitas yang dikelola: buatan sendiri (Pembuat) dan yang mengangkatmu
+     jadi pengurus (jabatan). Digambar 50-js-app. Pilih satu -> scrKelola.
+     ============================================================ -->
+<div class="scr" id="scrDasbor" hidden>
+ <div class="app-pg">
+  <div class="shell">
+    <header class="app-hd">
+      <h1>Dashboard</h1>
+      <p>Pilih komunitas yang kamu kelola, baik yang kamu buat sendiri maupun yang mengangkatmu jadi pengurus.</p>
+    </header>
+    <div id="dasborList"></div>
   </div>
  </div>
 </div>
@@ -3089,7 +3132,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   <div class="kom">
     <div class="shell">
       <p class="kom-jalur">
-        <button type="button" data-ke="scrBeranda" data-anchor="direktori">Komunitas</button>
+        <button type="button" data-ke="scrApp" data-anchor="direktori">Komunitas</button>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
         <span class="kini" id="komJalurNm">—</span>
       </p>
@@ -3215,7 +3258,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   <div class="kom">
     <div class="shell">
       <p class="kom-jalur">
-        <button type="button" data-ke="scrBeranda" data-anchor="direktori">Komunitas</button>
+        <button type="button" data-ke="scrApp" data-anchor="direktori">Komunitas</button>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
         <button type="button" id="agBalik" data-ke="scrKomunitas">—</button>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
@@ -3465,6 +3508,8 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   <div class="kom">
     <div class="shell">
       <p class="kom-jalur">
+        <button type="button" data-ke="scrDasbor">Dashboard</button>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
         <button type="button" data-komunitas-dibuat id="klJalurKom">Halaman komunitas</button>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
         <span class="kini" id="klJalurNm">Dashboard pengurus</span>
@@ -4211,6 +4256,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   <span><b>Mode demo</b> · tanpa jaringan</span>
   <button type="button" class="setuju" id="demoSetuju" hidden>Setujui pendaftaran</button>
   <button type="button" class="setuju" id="demoKenal" hidden>Terima ajakan kenalan</button>
+  <button type="button" id="demoAngkat">Angkat saya jadi pengurus</button>
   <button type="button" id="demoReset">Ulangi dari awal</button>
 </div>
 
@@ -4488,12 +4534,12 @@ function hitung(){}
      dibuka dari data: URL dan iframe ber-sandbox, tempat hash tidak selalu
      bisa ditulis — di sana routing berbasis hash diam-diam tidak jalan.
      Anchor dalam halaman (#direktori, #pengurus) tetap seperti biasa. */
-  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
+  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrApp', 'scrDasbor', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
   /* Halaman komunitas sengaja tidak perlu masuk — di kolavo.app pun publik.
      Orang boleh menjelajah dulu; login baru diminta saat menekan Gabung. */
   /* detail anggota cuma bisa dicapai dari daftar yang sudah terbuka, tapi
      penjaganya tetap dipasang supaya tidak bisa dibuka lewat KolavoKe langsung */
-  const perluMasuk = { scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
+  const perluMasuk = { scrApp: true, scrDasbor: true, scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
   let sekarang = 'scrBeranda';
 
   window.KolavoKe = function(id, anchor){ ke(id, anchor); };
@@ -4511,7 +4557,7 @@ function hitung(){}
     let id = sekarang;
     /* penjaga: layar yang butuh akun tidak bisa dibuka sebelum masuk */
     /* sudah masuk: halaman masuk tidak relevan lagi, teruskan ke tujuannya */
-    if(id === 'scrMasuk' && App.masuk){ id = App.tujuan || 'scrProfil'; App.tujuan = null; }
+    if(id === 'scrMasuk' && App.masuk){ id = App.tujuan || 'scrApp'; App.tujuan = null; }
     /* belum masuk: layar terlindung diganti halaman masuk penuh (bukan modal),
        tujuannya diingat supaya sesudah masuk langsung ke sana */
     if(perluMasuk[id] && !App.masuk){ App.tujuan = id; id = 'scrMasuk'; }
@@ -4519,7 +4565,7 @@ function hitung(){}
        pengurusnya orang asli, bukan akun kosong */
     if((id === 'scrProfil' || id === 'scrBuat') && !App.lengkap) id = 'scrLengkapi';
     /* dashboard pengurus baru ada setelah komunitasnya dibuat */
-    if(id === 'scrKelola' && !App.dibuat) id = App.lengkap ? 'scrBuat' : 'scrLengkapi';
+    if(id === 'scrKelola' && !App.dibuat) id = 'scrDasbor';
     sekarang = id;
     /* dua pintu: landing untuk jualan ke pengurus, app untuk yang sudah punya akun.
        Nav & footer membaca kelas body ini, bukan memeriksa layar satu per satu. */
@@ -4527,6 +4573,7 @@ function hitung(){}
     document.body.classList.toggle('m-app', App.mode === 'app');
     /* halaman masuk berdiri sendiri, tanpa nav */
     document.body.classList.toggle('m-masuk', id === 'scrMasuk');
+    document.body.dataset.layar = id;
     tabNav(id);
     if(id === 'scrMasuk' && window.KolavoIsiMasuk){
       window.KolavoIsiMasuk(App.undangan ? 'undangan' : 'nav', App.undangan || null);
@@ -4538,13 +4585,14 @@ function hitung(){}
     });
     window.scrollTo(0, 0);
     if(id === 'scrProfil') isiProfil();
+    if((id === 'scrApp' || id === 'scrDasbor') && window.KolavoGambarApp) window.KolavoGambarApp(id);
   }
 
   /* ---------- tab nav Kolavo App (A3) ----------
      Tab aktif mengikuti layar, bukan klik terakhir: layar yang dibuka lewat
      tautan lain (kartu, notifikasi) tetap menyalakan tab induknya. */
   const TAB = { scrApp: 'komunitas', scrKomunitas: 'komunitas', scrAnggota: 'komunitas',
-                scrProfil: 'profil', scrLengkapi: 'profil', scrKelola: 'dashboard', scrBuat: 'dashboard' };
+                scrProfil: 'profil', scrLengkapi: 'profil', scrDasbor: 'dashboard', scrKelola: 'dashboard', scrBuat: 'dashboard' };
   function tabNav(id){
     const ada = App.mode === 'app' && App.masuk && id !== 'scrMasuk';
     document.body.classList.toggle('m-tab', ada);
@@ -4616,7 +4664,7 @@ function hitung(){}
     } else if(App.tujuan){
       const t = App.tujuan; App.tujuan = null; ke(t);
     } else {
-      ke('scrProfil');
+      ke('scrApp');
     }
   };
 
@@ -4762,6 +4810,21 @@ function hitung(){}
     return pertama;
   }
 
+  /* komunitas yang diikuti — satu sumber untuk Profil dan tab Komunitas (A4) */
+  function itemIkut(){
+    if(!App.komunitas) return '';
+    return '<div class="pf-item"><div class="pf-open" data-komunitas-anggota role="button" tabindex="0" title="Buka halaman komunitas">' +
+      '<span class="logo-sq ' + App.komunitas.kelas + '" role="img" aria-label="Logo komunitas"></span>' +
+      '<div class="t"><div class="n">' + App.komunitas.nama + '</div>' +
+      '<div class="s">' + [App.komunitas.jumlah].concat(window.KolavoJawaban()).join(' · ') + '</div></div></div>' +
+      ((App.diajukan || {})[App.komunitas.kelas] === 'anggota'
+        ? '<span class="status anggota">Anggota</span></div>'
+        : '<span class="status tunggu">Menunggu persetujuan</span></div>');
+  }
+  window.KolavoKomunitasKu = function(){
+    return (window.KolavoDibuatItem ? window.KolavoDibuatItem() : '') + itemIkut();
+  };
+
   function isiProfil(){
     const nilai = function(id){ const e = document.getElementById(id); return e ? e.value : ''; };
     const nm = document.getElementById('pfNm'),
@@ -4829,15 +4892,9 @@ function hitung(){}
       const buat = window.KolavoDibuatItem ? window.KolavoDibuatItem() : '';
       list.classList.toggle('pf-list', !!(App.komunitas || buat));
       if(buat) list.insertAdjacentHTML('beforeend', buat);
-      if(App.komunitas){
-        list.insertAdjacentHTML('beforeend',
-          '<div class="pf-item"><div class="pf-open" data-komunitas-anggota role="button" tabindex="0" title="Buka halaman komunitas">' +
-          '<span class="logo-sq ' + App.komunitas.kelas + '" role="img" aria-label="Logo komunitas"></span>' +
-          '<div class="t"><div class="n">' + App.komunitas.nama + '</div>' +
-          '<div class="s">' + [App.komunitas.jumlah].concat(window.KolavoJawaban()).join(' · ') + '</div></div></div>' +
-          ((App.diajukan || {})[App.komunitas.kelas] === 'anggota'
-            ? '<span class="status anggota">Anggota</span></div>'
-            : '<span class="status tunggu">Menunggu</span></div>'));
+      const ikut = itemIkut();
+      if(ikut){
+        list.insertAdjacentHTML('beforeend', ikut);
       } else if(!buat){
         /* keadaan kosong memakai komponen .empty yang sudah ada di kit —
            satu kalimat dengan tautan teks terlalu mudah terlewat di sini */
@@ -4847,7 +4904,7 @@ function hitung(){}
             '<h3>Belum gabung ke komunitas mana pun</h3>' +
             '<p>Profilmu sudah siap. Yang belum, komunitasnya — cari yang pengurusnya sudah bikin halaman, lalu minta gabung.</p>' +
             '<div class="empty-cta">' +
-              '<button type="button" class="btn" data-ke="scrBeranda" data-anchor="direktori">Cari komunitasku</button>' +
+              '<button type="button" class="btn" data-ke="scrApp" data-anchor="direktori">Cari komunitasku</button>' +
               '<button type="button" class="btn outline" data-ke="scrBuat">Bikin halaman komunitas</button>' +
             '</div>' +
             '<p class="empty-note">Kalau pengurusmu belum bikin halaman, kamu yang bisa mulai.</p>' +
@@ -4917,7 +4974,7 @@ function hitung(){}
         const t = App.tujuan; App.tujuan = null; ke(t);
         toast('Profil kamu sudah lengkap.');
       } else {
-        ke('scrProfil');
+        ke('scrApp');
         toast('Profil kamu sudah lengkap.');
       }
       return;
@@ -10849,6 +10906,113 @@ function hitung(){}
     if(t.id === 'sekNotifEmail'){ S.notif.email = t.value; return; }
     if(t.matches('[data-sek-alamat]')){ S.tagihan.draf[t.dataset.sekAlamat] = t.value; return; }
     if(t.matches('[data-sek-nama]')){ S.namaRapi[t.dataset.sekNama] = t.value; return; }
+  });
+})();
+</script>
+<script>
+/* ============================================================
+   Kolavo App (A4): isi tab Komunitas (scrApp) dan Dashboard (scrDasbor).
+   Router memanggil KolavoGambarApp(id) setiap layar ini digambar.
+   ============================================================ */
+(function(){
+  const App = function(){ return window.KolavoApp || {}; };
+  const toast = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function kelasKartu(k){ return [...k.querySelector('.logo-sq').classList].find(function(c){ return c.indexOf('l-') === 0; }); }
+
+  /* contoh komunitas orang lain yang mengangkatmu jadi pengurus — dimunculkan
+     tombol demo "Angkat saya jadi pengurus", supaya daftar dua jenis bisa dicoba */
+  const DIANGKAT = { kelas: 'l-iasman52', nama: 'Ikatan Alumni SMAN 52', jabatan: 'Sekretaris', jumlah: '6 anggota' };
+
+  /* ---------- tab Komunitas ---------- */
+  function gambarKu(){
+    const w = document.getElementById('appKu');
+    if(!w) return;
+    const html = window.KolavoKomunitasKu ? window.KolavoKomunitasKu() : '';
+    w.className = html ? 'pf-list' : '';
+    w.innerHTML = html || '<p class="app-kosong">Belum ada. Pilih komunitas di bawah, lalu ajukan gabung.</p>';
+  }
+  /* tombol kartu mengikuti status pengajuan: belum → Minta gabung, sudah → Buka */
+  function gambarKartu(){
+    const dj = App().diajukan || {};
+    document.querySelectorAll('#direktori [data-gabung-kartu]').forEach(function(b){
+      const st = dj[kelasKartu(b.closest('.ccard'))];
+      b.textContent = st === 'anggota' ? 'Buka' : st === 'menunggu' ? 'Menunggu' : 'Minta gabung';
+      b.classList.toggle('outline', !!st);
+    });
+  }
+
+  /* ---------- tab Dashboard ---------- */
+  function baris(logo, nama, sub, lencana, jenis){
+    return '<div class="pf-item dsb-i"><div class="pf-open" data-dasbor-buka="' + jenis + '" role="button" tabindex="0" title="Buka dashboard">' + logo +
+      '<div class="t"><div class="n">' + esc(nama) + '</div><div class="s">' + esc(sub) + '</div></div></div>' +
+      '<span class="status pengurus">' + esc(lencana) + '</span>' +
+      '<button type="button" class="btn sm" data-dasbor-buka="' + jenis + '">Buka dashboard</button></div>';
+  }
+  function gambarDasbor(){
+    const w = document.getElementById('dasborList');
+    if(!w) return;
+    const a = App(), d = a.dibuat, item = [];
+    if(d){
+      const gaya = d.logo ? ' style="background-image:url(' + d.logo + ')"' : '';
+      item.push(baris('<span class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' + (d.logo ? '' : esc(d.inisial || '')) + '</span>',
+        d.nama, [d.bentuk, d.kota].filter(Boolean).join(' · '), d.arsip ? 'Diarsipkan' : 'Pembuat', 'dibuat'));
+    }
+    if(a.diangkat){
+      item.push(baris('<span class="logo-sq ' + DIANGKAT.kelas + '" role="img" aria-label="Logo komunitas"></span>',
+        DIANGKAT.nama, DIANGKAT.jumlah, DIANGKAT.jabatan, 'diangkat'));
+    }
+    if(!item.length){
+      w.innerHTML = '<div class="empty">' +
+        '<div class="empty-ic">' + (window.KolavoIkon ? window.KolavoIkon('kelompok') : '') + '</div>' +
+        '<h3>Kamu belum mengelola komunitas</h3>' +
+        '<p>Dashboard muncul untuk komunitas yang kamu buat sendiri, atau yang mengangkatmu jadi pengurus.</p>' +
+        '<div class="empty-cta"><button type="button" class="btn" data-ke="scrBuat">Buat komunitas</button></div></div>';
+      return;
+    }
+    /* prototipe menyimpan satu komunitas buatan; tombol buat hanya bila belum ada */
+    w.innerHTML = '<div class="pf-list">' + item.join('') + '</div>' +
+      (d ? '' : '<div class="dsb-buat"><button type="button" class="btn outline" data-ke="scrBuat">Buat komunitas</button></div>');
+  }
+
+  window.KolavoGambarApp = function(id){
+    if(id === 'scrApp'){ gambarKu(); gambarKartu(); }
+    else gambarDasbor();
+  };
+
+  function bukaDasbor(jenis){
+    if(jenis === 'dibuat'){ window.KolavoKe('scrKelola'); return; }
+    toast('Prototipe: dashboard komunitas yang mengangkatmu memakai tampilan yang sama, belum disimulasikan.');
+  }
+
+  document.addEventListener('click', function(e){
+    const g = e.target.closest('[data-gabung-kartu]');
+    if(g){
+      const kartu = g.closest('.ccard'), st = (App().diajukan || {})[kelasKartu(kartu)];
+      window.KolavoLihatKomunitas(kartu);
+      /* belum diajukan: langsung buka formulir gabung di halaman komunitasnya */
+      const b = !st && document.getElementById('komGabungBtn');
+      if(b) b.click();
+      return;
+    }
+    const d = e.target.closest('[data-dasbor-buka]');
+    if(d){ bukaDasbor(d.dataset.dasborBuka); return; }
+    /* cari di nav: router sudah pindah ke scrApp#direktori, tinggal fokus ke kolom cari */
+    if(e.target.closest('#navCari')){
+      setTimeout(function(){ const q = document.getElementById('q'); if(q) q.focus({ preventScroll: true }); }, 400);
+      return;
+    }
+    if(e.target.closest('#demoAngkat')){
+      const a = App();
+      a.diangkat = !a.diangkat;
+      toast(a.diangkat ? 'Kamu diangkat jadi Sekretaris di ' + DIANGKAT.nama + '.' : 'Jabatan pengurus dicabut.');
+      gambarDasbor();
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter' && e.key !== ' ') return;
+    const d = e.target.closest && e.target.closest('div[data-dasbor-buka]');
+    if(d){ e.preventDefault(); bukaDasbor(d.dataset.dasborBuka); }
   });
 })();
 </script>

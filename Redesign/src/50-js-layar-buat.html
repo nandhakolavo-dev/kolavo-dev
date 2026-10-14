@@ -45,7 +45,7 @@
   let logo   = '';
   let slugKetik = false;
   let dibuat = null;
-  let nomorMode = 'auto';   /* auto | manual | off */
+  let nomorMode = 'manual';   /* manual | auto | off — V4: mulai dari nomor custom, standar ditentukan sambil jalan */
   let kodeKetik = false;    /* pengurus sudah mengetik kode sendiri? */
 
   /* ---------- warna tema ---------- */
@@ -114,7 +114,7 @@
       why.innerHTML = 'Anggota tidak diberi nomor. Bisa diaktifkan lagi nanti dari pengaturan komunitas.';
     } else if(nomorMode === 'manual'){
       wrap.hidden = false;
-      why.innerHTML = 'Pengurus mengisi nomor sendiri saat menerima pendaftaran, dan bisa diperbaiki lagi kalau salah. Awalan yang disarankan: <b>' + contoh + '</b>.';
+      why.innerHTML = 'Pakai format nomor komunitasmu sendiri. Pengurus mengisinya saat menerima pendaftaran, dan bisa diperbaiki lagi kalau salah. Kalau belum punya format, awalan yang disarankan: <b>' + contoh + '</b>.';
     } else {
       wrap.hidden = false;
       why.innerHTML = 'Kolavo memberi nomor otomatis tiap anggota diterima: <b>kode–tahun masuk–urutan</b>. Anggota ke berapa mengikuti urutan penerimaan tahun itu. Contoh: <b>' + contoh + '</b>.';
@@ -184,6 +184,7 @@
             '<div class="pills">' +
               '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="tahun"' + (t.tipe === 'tahun' ? ' checked' : '') + '><span>Pilih tahun</span></label>' +
               '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="teks"' + (t.tipe === 'teks' ? ' checked' : '') + '><span>Jawaban teks</span></label>' +
+              '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="angka"' + (t.tipe === 'angka' ? ' checked' : '') + '><span>Jawaban angka</span></label>' +
             '</div>' +
             '<label class="sw"><input type="checkbox" data-k="wajib"' + (t.wajib ? ' checked' : '') + '><i></i>Wajib diisi</label>' +
           '</div>' +
@@ -492,7 +493,7 @@
     if(wr) wr.checked = true;
     pakaiWarna();
     logo = dibuat.logo || '';
-    nomorMode = dibuat.nomorMode || 'auto';
+    nomorMode = dibuat.nomorMode || 'manual';
     el('bkKode').value = dibuat.kode || ''; kodeKetik = true;
     tanya = (dibuat.tanya || []).filter(function(t){ return t.id !== 'nickname'; }).map(function(t){
       return { id: t.id, judul: t.judul || '', tanya: t.tanya || '', tipe: t.tipe || 'teks', wajib: !!t.wajib, bawaan: false };
