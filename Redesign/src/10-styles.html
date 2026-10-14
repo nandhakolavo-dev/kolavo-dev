@@ -358,6 +358,17 @@ button.chip:disabled:hover{border-color:var(--line);color:var(--ink-2)}
 footer{border-top:1px solid var(--line);padding:40px 0 52px;background:var(--bg-alt)}
 /* mode app (A1): footer jualan hanya milik landing */
 body.m-app footer{display:none}
+/* halaman masuk penuh (A2): berdiri sendiri, tanpa nav */
+body.m-masuk nav{display:none}
+.msk{min-height:100vh;padding:clamp(32px,10vh,96px) 16px 64px;background:var(--bg-alt)}
+.msk-in{max-width:440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:22px}
+.msk-box{width:100%;background:var(--card);border-radius:32px;box-shadow:var(--sh-lg);padding:30px 28px 24px;text-align:center}
+.msk-foot{font-size:13.5px;color:var(--ink-2);text-align:center}
+.msk-foot a{color:var(--blue);font-weight:500}
+.msk-kom{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:13px;text-align:left}
+.msk-kom .logo-sq{width:44px;height:44px;border-radius:12px;flex:none}
+.msk-kom b{display:block;font-size:15px;font-weight:600;color:var(--ink);line-height:1.3}
+.msk-kom span{font-size:12.5px;color:var(--ink-3)}
 .foot{display:flex;flex-wrap:wrap;gap:20px;align-items:center}
 .foot .tag-line{font-size:15px;font-weight:500;color:var(--orange)}
 .foot .links{margin-left:auto;display:flex;gap:20px;font-size:14px;color:var(--ink-3);flex-wrap:wrap}

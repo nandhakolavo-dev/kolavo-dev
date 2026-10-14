@@ -400,6 +400,17 @@ button.chip:disabled:hover{border-color:var(--line);color:var(--ink-2)}
 footer{border-top:1px solid var(--line);padding:40px 0 52px;background:var(--bg-alt)}
 /* mode app (A1): footer jualan hanya milik landing */
 body.m-app footer{display:none}
+/* halaman masuk penuh (A2): berdiri sendiri, tanpa nav */
+body.m-masuk nav{display:none}
+.msk{min-height:100vh;padding:clamp(32px,10vh,96px) 16px 64px;background:var(--bg-alt)}
+.msk-in{max-width:440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:22px}
+.msk-box{width:100%;background:var(--card);border-radius:32px;box-shadow:var(--sh-lg);padding:30px 28px 24px;text-align:center}
+.msk-foot{font-size:13.5px;color:var(--ink-2);text-align:center}
+.msk-foot a{color:var(--blue);font-weight:500}
+.msk-kom{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:13px;text-align:left}
+.msk-kom .logo-sq{width:44px;height:44px;border-radius:12px;flex:none}
+.msk-kom b{display:block;font-size:15px;font-weight:600;color:var(--ink);line-height:1.3}
+.msk-kom span{font-size:12.5px;color:var(--ink-3)}
 .foot{display:flex;flex-wrap:wrap;gap:20px;align-items:center}
 .foot .tag-line{font-size:15px;font-weight:500;color:var(--orange)}
 .foot .links{margin-left:auto;display:flex;gap:20px;font-size:14px;color:var(--ink-3);flex-wrap:wrap}
@@ -2683,6 +2694,34 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
      LAYAR LENGKAPI PROFIL — muncul setelah masuk lewat Google
      saat akun masih berstatus draft.
      ============================================================ -->
+<!-- ============================================================
+     Pintu Kolavo App (A2): halaman masuk penuh. Anggota dan pengurus
+     yang sudah punya alasan datang tidak perlu melewati halaman jualan.
+     Isinya diisi KolavoIsiMasuk (50-js-modal-masuk): varian biasa atau
+     undangan (kartu komunitas pengundang di atas tombol).
+     ============================================================ -->
+<div class="scr" id="scrMasuk" hidden>
+ <div class="msk">
+  <div class="msk-in">
+    <a class="logo" href="#0" data-ke="scrBeranda" aria-label="Kolavo — tentang Kolavo">Kolavo</a>
+    <div class="msk-box">
+      <div class="lgn-proof" id="mskProof"></div>
+      <h1 class="lgn-head" id="mskHead">Masuk ke Kolavo</h1>
+      <p class="lgn-sub" id="mskSub"></p>
+      <div class="lgn-cta">
+        <button class="gbtn" id="mskG" type="button"></button>
+      </div>
+      <p class="lgn-alt">Belum punya akun Kolavo? <b>Tombol yang sama sekaligus bikin akunmu.</b></p>
+      <div class="lgn-trust">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6.5v5c0 4.6 3.4 8.4 8 9.5 4.6-1.1 8-4.9 8-9.5v-5L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span>Kolavo cuma menerima nama, email, dan foto profil Google-mu. Kami tidak bisa membaca isi emailmu atau memposting apa pun di akunmu.
+        <button type="button" data-legal="privasi">Kebijakan Privasi</button> · <button type="button" data-legal="tnc">Ketentuan Layanan</button></span>
+      </div>
+    </div>
+    <p class="msk-foot">Pengurus yang ingin membuat komunitas? <a href="#0" data-ke="scrBeranda">Pelajari Kolavo</a></p>
+  </div>
+ </div>
+</div>
 <div class="scr" id="scrLengkapi" hidden>
 <div class="page">
 <main class="shell wrap">
@@ -3961,6 +4000,18 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   }
 
   function isi(trigger, kartu){
+    /* undangan (A2/A5b): datang dari tautan/QR komunitas — kartunya yang ditonjolkan */
+    if(trigger === 'undangan' && kartu){
+      const kelas  = [...kartu.querySelector('.logo-sq').classList].find(c => c.startsWith('l-')),
+            nama   = kartu.querySelector('h3').textContent.trim(),
+            jumlah = kartu.querySelector('.mem').textContent.trim();
+      return {
+        proof: `<div class="msk-kom"><span class="logo-sq ${kelas}"></span><div><b>${nama}</b><span>${jumlah}</span></div></div>`,
+        cap: 'Kamu diundang bergabung',
+        head: `Gabung ke ${PENDEK[kelas] || nama}`,
+        sub: 'Masuk dengan Google untuk melihat profil komunitasnya dan mengirim permintaan bergabung.'
+      };
+    }
     if(trigger === 'anggota' && kartu){
       const kelas  = [...kartu.querySelector('.logo-sq').classList].find(c => c.startsWith('l-')),
             nama   = kartu.querySelector('h3').textContent.trim(),
@@ -4046,6 +4097,35 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 
   /* dipakai tombol Gabung di halaman komunitas, yang tidak punya .ccard di dekatnya */
   window.KolavoBukaModal = function(trigger, kartu, el){ buka(trigger, kartu, el); };
+
+  /* ---------- halaman masuk penuh scrMasuk (A2) ----------
+     Copy & logika Google sama dengan modal (isi() yang sama), hanya wadahnya
+     satu layar. Dipanggil router setiap kali scrMasuk digambar. */
+  const mProof = document.getElementById('mskProof'),
+        mHead  = document.getElementById('mskHead'),
+        mSub   = document.getElementById('mskSub'),
+        mG     = document.getElementById('mskG');
+  let mNiat = 'nav', mKartu = null, mTimer = null;
+  function mReset(){ clearTimeout(mTimer); mG.disabled = false; mG.innerHTML = G + ' Lanjutkan dengan Google'; }
+  window.KolavoIsiMasuk = function(trigger, kartu){
+    const v = trigger === 'nav' ? {
+      proof: tiles(), cap: 'Komunitas yang sudah punya halaman di Kolavo',
+      head: 'Masuk ke Kolavo',
+      sub: 'Satu akun untuk semua komunitasmu: lihat profil komunitas, kenali sesama anggota, dan kelola komunitas yang kamu urus.'
+    } : isi(trigger, kartu);
+    mProof.innerHTML = v.proof + `<div class="lgn-cap">${v.cap}</div>`;
+    mHead.textContent = v.head;
+    mSub.textContent = v.sub;
+    /* setelah masuk, undangan diperlakukan seperti tombol Gabung di kartunya */
+    mNiat = trigger === 'undangan' ? 'anggota' : (trigger || 'nav');
+    mKartu = kartu || null;
+    mReset();
+  };
+  mG.addEventListener('click', () => {
+    mG.disabled = true;
+    mG.innerHTML = '<span class="gspin"></span> Menghubungkan ke Google…';
+    mTimer = setTimeout(() => { mReset(); window.KolavoMasuk(mNiat, mKartu); }, 1100);
+  });
 
   document.getElementById('lgnX').addEventListener('click', tutup);
   document.getElementById('lgnScrim').addEventListener('click', tutup);
@@ -4363,7 +4443,7 @@ function hitung(){}
      dibuka dari data: URL dan iframe ber-sandbox, tempat hash tidak selalu
      bisa ditulis — di sana routing berbasis hash diam-diam tidak jalan.
      Anchor dalam halaman (#direktori, #pengurus) tetap seperti biasa. */
-  const LAYAR = ['scrBeranda', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
+  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
   /* Halaman komunitas sengaja tidak perlu masuk — di kolavo.app pun publik.
      Orang boleh menjelajah dulu; login baru diminta saat menekan Gabung. */
   /* detail anggota cuma bisa dicapai dari daftar yang sudah terbuka, tapi
@@ -4385,7 +4465,11 @@ function hitung(){}
   function gambar(){
     let id = sekarang;
     /* penjaga: layar yang butuh akun tidak bisa dibuka sebelum masuk */
-    if(perluMasuk[id] && !App.masuk) id = 'scrBeranda';
+    /* sudah masuk: halaman masuk tidak relevan lagi, teruskan ke tujuannya */
+    if(id === 'scrMasuk' && App.masuk){ id = App.tujuan || 'scrProfil'; App.tujuan = null; }
+    /* belum masuk: layar terlindung diganti halaman masuk penuh (bukan modal),
+       tujuannya diingat supaya sesudah masuk langsung ke sana */
+    if(perluMasuk[id] && !App.masuk){ App.tujuan = id; id = 'scrMasuk'; }
     /* buat halaman juga menunggu profil beres — calon anggota perlu lihat
        pengurusnya orang asli, bukan akun kosong */
     if((id === 'scrProfil' || id === 'scrBuat') && !App.lengkap) id = 'scrLengkapi';
@@ -4396,6 +4480,11 @@ function hitung(){}
        Nav & footer membaca kelas body ini, bukan memeriksa layar satu per satu. */
     App.mode = id === 'scrBeranda' ? 'landing' : 'app';
     document.body.classList.toggle('m-app', App.mode === 'app');
+    /* halaman masuk berdiri sendiri, tanpa nav */
+    document.body.classList.toggle('m-masuk', id === 'scrMasuk');
+    if(id === 'scrMasuk' && window.KolavoIsiMasuk){
+      window.KolavoIsiMasuk(App.undangan ? 'undangan' : 'nav', App.undangan || null);
+    }
 
     LAYAR.forEach(function(n){
       const el = document.getElementById(n);
@@ -4434,6 +4523,7 @@ function hitung(){}
   /* ---------- masuk selesai: dipanggil dari modal ---------- */
   window.KolavoMasuk = function(niat, kartu){
     App.masuk = true;
+    App.undangan = null;
     App.niat = niat;
     App.kartu = kartu || null;
     if(kartu){
@@ -4459,6 +4549,8 @@ function hitung(){}
     } else if(kartu && window.KolavoBukaKomunitas){
       window.KolavoBukaKomunitas(kartu);
       ke('scrKomunitas');
+    } else if(App.tujuan){
+      const t = App.tujuan; App.tujuan = null; ke(t);
     } else {
       ke('scrProfil');
     }
@@ -4757,6 +4849,9 @@ function hitung(){}
         window.KolavoBukaKomunitas(App.kartu);
         ke('scrKomunitas');
         toast('Profil kamu sudah lengkap. Tinggal minta gabung.');
+      } else if(App.tujuan){
+        const t = App.tujuan; App.tujuan = null; ke(t);
+        toast('Profil kamu sudah lengkap.');
       } else {
         ke('scrProfil');
         toast('Profil kamu sudah lengkap.');

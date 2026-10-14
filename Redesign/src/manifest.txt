@@ -4,6 +4,7 @@
 10-styles.html
 20-nav.html
 30-layer-scrBeranda.html
+30-layer-scrMasuk.html
 30-layer-scrLengkapi.html
 30-layer-scrProfil.html
 30-layer-scrKomunitas.html
@@ -13,6 +14,8 @@
 40-footer.html
 50-js-ikon.html
 50-js-direktori-filter.html
+50-js-harga.html
+50-js-hero.html
 50-js-pemilih-lokasi.html
 50-js-modal-masuk.html
 50-js-lengkapi-profil.html
@@ -21,6 +24,7 @@
 50-js-sunting-identitas.html
 50-js-layar-komunitas.html
 50-js-notifikasi.html
+50-js-legal.html
 50-js-onboarding.html
 50-js-feed.html
 50-js-tema-komunitas.html

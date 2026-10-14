@@ -1243,3 +1243,14 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   Footer jualan disembunyikan di mode app (`body.m-app footer{display:none}`). Nav app belum
   berubah — isinya diganti di A3. Nama `window.KolavoApp` tetap objek keadaan; "Kolavo App"
   sebagai produk tidak punya objek global sendiri.
+- **A2 · halaman masuk penuh `scrMasuk`** (`30-layer-scrMasuk`, layar ke-8). Tanpa nav
+  (`body.m-masuk`), satu kartu tengah, isi diisi `KolavoIsiMasuk(niat, kartu)` di
+  `50-js-modal-masuk` — memakai `isi()` & tombol Google yang sama dengan modal, bukan salinan.
+  Varian `nav` ("Masuk ke Kolavo") dan `undangan` (kartu `.msk-kom` komunitas pengundang;
+  router memilihnya bila `App.undangan` berisi kartu `.ccard`). Sesudah masuk, undangan
+  diperlakukan seperti Gabung (`niat 'anggota'`). Penjaga router: layar `perluMasuk` →
+  `scrMasuk` + ingat `App.tujuan`; `KolavoMasuk` dan simpan Lengkapi meneruskan ke
+  `App.tujuan`. Sudah masuk lalu ke `scrMasuk` → diteruskan ke tujuan/profil. Modal masuk
+  lama tetap untuk pemicu di landing & tombol Gabung (diputuskan di A6).
+  Catatan: `peta.py` hanya mengenali `<div class="scr" id=…>` persis — kelas tambahan
+  layar ditaruh di pembungkus dalam.

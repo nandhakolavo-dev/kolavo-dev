@@ -19,7 +19,7 @@
      dibuka dari data: URL dan iframe ber-sandbox, tempat hash tidak selalu
      bisa ditulis — di sana routing berbasis hash diam-diam tidak jalan.
      Anchor dalam halaman (#direktori, #pengurus) tetap seperti biasa. */
-  const LAYAR = ['scrBeranda', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
+  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
   /* Halaman komunitas sengaja tidak perlu masuk — di kolavo.app pun publik.
      Orang boleh menjelajah dulu; login baru diminta saat menekan Gabung. */
   /* detail anggota cuma bisa dicapai dari daftar yang sudah terbuka, tapi
@@ -41,7 +41,11 @@
   function gambar(){
     let id = sekarang;
     /* penjaga: layar yang butuh akun tidak bisa dibuka sebelum masuk */
-    if(perluMasuk[id] && !App.masuk) id = 'scrBeranda';
+    /* sudah masuk: halaman masuk tidak relevan lagi, teruskan ke tujuannya */
+    if(id === 'scrMasuk' && App.masuk){ id = App.tujuan || 'scrProfil'; App.tujuan = null; }
+    /* belum masuk: layar terlindung diganti halaman masuk penuh (bukan modal),
+       tujuannya diingat supaya sesudah masuk langsung ke sana */
+    if(perluMasuk[id] && !App.masuk){ App.tujuan = id; id = 'scrMasuk'; }
     /* buat halaman juga menunggu profil beres — calon anggota perlu lihat
        pengurusnya orang asli, bukan akun kosong */
     if((id === 'scrProfil' || id === 'scrBuat') && !App.lengkap) id = 'scrLengkapi';
@@ -52,6 +56,11 @@
        Nav & footer membaca kelas body ini, bukan memeriksa layar satu per satu. */
     App.mode = id === 'scrBeranda' ? 'landing' : 'app';
     document.body.classList.toggle('m-app', App.mode === 'app');
+    /* halaman masuk berdiri sendiri, tanpa nav */
+    document.body.classList.toggle('m-masuk', id === 'scrMasuk');
+    if(id === 'scrMasuk' && window.KolavoIsiMasuk){
+      window.KolavoIsiMasuk(App.undangan ? 'undangan' : 'nav', App.undangan || null);
+    }
 
     LAYAR.forEach(function(n){
       const el = document.getElementById(n);
@@ -90,6 +99,7 @@
   /* ---------- masuk selesai: dipanggil dari modal ---------- */
   window.KolavoMasuk = function(niat, kartu){
     App.masuk = true;
+    App.undangan = null;
     App.niat = niat;
     App.kartu = kartu || null;
     if(kartu){
@@ -115,6 +125,8 @@
     } else if(kartu && window.KolavoBukaKomunitas){
       window.KolavoBukaKomunitas(kartu);
       ke('scrKomunitas');
+    } else if(App.tujuan){
+      const t = App.tujuan; App.tujuan = null; ke(t);
     } else {
       ke('scrProfil');
     }
@@ -413,6 +425,9 @@
         window.KolavoBukaKomunitas(App.kartu);
         ke('scrKomunitas');
         toast('Profil kamu sudah lengkap. Tinggal minta gabung.');
+      } else if(App.tujuan){
+        const t = App.tujuan; App.tujuan = null; ke(t);
+        toast('Profil kamu sudah lengkap.');
       } else {
         ke('scrProfil');
         toast('Profil kamu sudah lengkap.');

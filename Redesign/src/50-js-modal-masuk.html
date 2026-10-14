@@ -34,6 +34,18 @@
   }
 
   function isi(trigger, kartu){
+    /* undangan (A2/A5b): datang dari tautan/QR komunitas — kartunya yang ditonjolkan */
+    if(trigger === 'undangan' && kartu){
+      const kelas  = [...kartu.querySelector('.logo-sq').classList].find(c => c.startsWith('l-')),
+            nama   = kartu.querySelector('h3').textContent.trim(),
+            jumlah = kartu.querySelector('.mem').textContent.trim();
+      return {
+        proof: `<div class="msk-kom"><span class="logo-sq ${kelas}"></span><div><b>${nama}</b><span>${jumlah}</span></div></div>`,
+        cap: 'Kamu diundang bergabung',
+        head: `Gabung ke ${PENDEK[kelas] || nama}`,
+        sub: 'Masuk dengan Google untuk melihat profil komunitasnya dan mengirim permintaan bergabung.'
+      };
+    }
     if(trigger === 'anggota' && kartu){
       const kelas  = [...kartu.querySelector('.logo-sq').classList].find(c => c.startsWith('l-')),
             nama   = kartu.querySelector('h3').textContent.trim(),
@@ -119,6 +131,35 @@
 
   /* dipakai tombol Gabung di halaman komunitas, yang tidak punya .ccard di dekatnya */
   window.KolavoBukaModal = function(trigger, kartu, el){ buka(trigger, kartu, el); };
+
+  /* ---------- halaman masuk penuh scrMasuk (A2) ----------
+     Copy & logika Google sama dengan modal (isi() yang sama), hanya wadahnya
+     satu layar. Dipanggil router setiap kali scrMasuk digambar. */
+  const mProof = document.getElementById('mskProof'),
+        mHead  = document.getElementById('mskHead'),
+        mSub   = document.getElementById('mskSub'),
+        mG     = document.getElementById('mskG');
+  let mNiat = 'nav', mKartu = null, mTimer = null;
+  function mReset(){ clearTimeout(mTimer); mG.disabled = false; mG.innerHTML = G + ' Lanjutkan dengan Google'; }
+  window.KolavoIsiMasuk = function(trigger, kartu){
+    const v = trigger === 'nav' ? {
+      proof: tiles(), cap: 'Komunitas yang sudah punya halaman di Kolavo',
+      head: 'Masuk ke Kolavo',
+      sub: 'Satu akun untuk semua komunitasmu: lihat profil komunitas, kenali sesama anggota, dan kelola komunitas yang kamu urus.'
+    } : isi(trigger, kartu);
+    mProof.innerHTML = v.proof + `<div class="lgn-cap">${v.cap}</div>`;
+    mHead.textContent = v.head;
+    mSub.textContent = v.sub;
+    /* setelah masuk, undangan diperlakukan seperti tombol Gabung di kartunya */
+    mNiat = trigger === 'undangan' ? 'anggota' : (trigger || 'nav');
+    mKartu = kartu || null;
+    mReset();
+  };
+  mG.addEventListener('click', () => {
+    mG.disabled = true;
+    mG.innerHTML = '<span class="gspin"></span> Menghubungkan ke Google…';
+    mTimer = setTimeout(() => { mReset(); window.KolavoMasuk(mNiat, mKartu); }, 1100);
+  });
 
   document.getElementById('lgnX').addEventListener('click', tutup);
   document.getElementById('lgnScrim').addEventListener('click', tutup);
