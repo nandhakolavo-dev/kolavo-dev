@@ -1462,3 +1462,9 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   Jebakan yang tertangkap: `.sek-stat-i span{display:block}` (dashboard) mengenai semua span
   visual → aturan visual ditulis `.hs-i .hs-tumpuk > span`; dan kelas `.kom` sudah dipakai
   pembungkus halaman komunitas — jangan dipakai sebagai pengubah.
+- **Kartu ringkasan Home: watermark ikon oversize.** Tiap kartu memuat ikon kartunya versi
+  raksasa (`.hs-wm`, 128px, garis 1.5, miring −14°, opacity .13, keluar tepi kanan bawah,
+  warna khas kartu) di belakang isi; saat hover miringnya berkurang dan sedikit membesar
+  (mati bila `prefers-reduced-motion`). Lingkaran sudut (`::after`) diganti latar gradasi
+  135° `--card → wash` warna khas (`.hs-i.hs-biru` dst. — kekhususan dinaikkan karena
+  `.sek-stat-i{background}` ditulis lebih belakang).

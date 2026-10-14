@@ -211,6 +211,8 @@
     /* empat angka saja; tiap kartu membawa ke bagian yang relevan */
     const kotak = function(angka, ket, varian, vis, ikon, ke, jangkar, warn){
       return '<button type="button" class="sek-stat-i hs-i hs-' + varian + (warn ? ' warn' : '') + '" data-ke="' + ke + '"' + (jangkar ? ' data-anchor="' + jangkar + '"' : '') + '>' +
+        /* ikon raksasa transparan di pojok sebagai watermark dekoratif */
+        '<i class="hs-wm" aria-hidden="true">' + ic(ikon) + '</i>' +
         '<span class="hs-vis">' + (vis || '<i class="hs-ic">' + ic(ikon) + '</i>') + '</span>' +
         '<b>' + angka + '</b><span>' + ket + '</span></button>';
     };
