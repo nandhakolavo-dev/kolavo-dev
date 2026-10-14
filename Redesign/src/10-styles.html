@@ -371,11 +371,12 @@ body:not(.m-app) #acct,body:not(.m-app) #notif{display:none}
 body.m-tab .nav-in{position:relative}
 .nav-tab[hidden]{display:none}
 .nav-tab{position:absolute;left:50%;top:0;bottom:0;transform:translateX(-50%);display:flex;gap:4px}
-.nt{position:relative;display:flex;align-items:center;justify-content:center;width:104px;color:var(--ink-2);text-decoration:none}
+.nt{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:104px;color:var(--ink-2);text-decoration:none}
 .nt::before{content:"";position:absolute;inset:6px 4px;border-radius:13px;background:transparent;transition:background .15s ease}
 .nt:hover::before{background:var(--line-2)}
-.nt svg{position:relative;width:26px;height:26px}
-.nt b{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.nt svg{position:relative;width:24px;height:24px}
+/* label di bawah ikon, sama dengan bilah bawah versi HP */
+.nt b{position:relative;font-size:11.5px;font-weight:500;line-height:1.2;white-space:nowrap}
 .nt.on{color:var(--blue)}
 /* duotone: tab aktif mengisi bentuknya dengan warna lembut dari currentColor */
 .nt.on svg{stroke-width:2}
@@ -457,10 +458,10 @@ body:not([data-layar="scrBeranda"]):not([data-layar="scrMasuk"]) #demoTautan{dis
 /* layar sempit: tab pindah ke bilah bawah, label kecil tampil */
 @media(max-width:767px){
   .nav-tab{position:fixed;top:auto;left:0;right:0;bottom:0;transform:none;z-index:40;gap:0;height:calc(60px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:var(--bg);border-top:1px solid var(--line)}
-  .nt{flex:1;width:auto;flex-direction:column;gap:3px}
+  .nt{flex:1;width:auto}
   .nt::before{inset:5px 10px}
   .nt svg{width:24px;height:24px}
-  .nt b{position:relative;width:auto;height:auto;overflow:visible;clip:auto;font-size:11px;font-weight:500}
+  .nt b{font-size:11px}
   .nt.on::after{top:-1px;bottom:auto;left:28%;right:28%;border-radius:0 0 3px 3px}
   body.m-tab{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
   body.m-tab .demo{bottom:76px}

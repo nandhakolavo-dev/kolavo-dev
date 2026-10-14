@@ -1430,3 +1430,6 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   Tab tidak aktif = garis luar `--ink-2`; tab aktif = biru + bentuk terisi `currentColor`
   16% + garis 2px (`.nt.on svg :is(path,rect,circle)`). Ikon lama (`rumah`, `orang`,
   `kelompok`) tetap ada — kembali cukup dengan mengganti `data-ic` di `#navTab`.
+- **Nav app: label di bawah ikon di semua lebar.** `.nt` kini kolom (ikon 24px + label 11.5px)
+  di desktop juga, sama dengan bilah bawah HP (label 11px). Sebelumnya label desktop hanya
+  untuk pembaca layar.
