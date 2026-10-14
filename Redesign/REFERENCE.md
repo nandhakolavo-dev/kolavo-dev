@@ -1359,3 +1359,19 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   tab. Tujuan bawaan sesudah masuk, simpan Lengkapi, `scrMasuk`, dan tombol landing "Buka
   Kolavo" → `scrHome`. Menu avatar "Komunitas saya" → tab Komunitas. Tautan/QR undangan tetap
   ke `scrKomunitas`.
+- **H2 · Perlu tindakanmu + Kabar** (modul baru `50-js-home`, `KolavoGambarHome`).
+  *Perlu tindakanmu* (`#homeAksi`, kartu `.ha-i` grid ikon/teks/aksi): ajakan kenalan masuk
+  (Terima → `App.kenalan[nama]='terhubung'`, Tolak → dibuang), pendaftar menunggu per
+  komunitas yang kamu kelola **dan** kamu peninjaunya (`KolavoRingkasMinta(kom)` di
+  dashboard — membaca konteks aktif/tersimpan tanpa berpindah; "Tinjau" →
+  `KolavoBukaDashboard('minta', kom)`), pengajuan gabungmu yang menunggu (info), profil belum
+  lengkap. Kosong → "Tidak ada yang perlu kamu lakukan sekarang."
+  *Ajakan kenalan masuk* tidak ada di model lama (hanya ajakan keluar): contoh satu ajakan
+  dari anggota yang disambut terakhir di komunitas yang menerimamu (`App.kenalanMasuk`,
+  muncul sekali; bukan dirimu sendiri).
+  *Kabar* (`#homeKabar`): gabungan `KolavoFeed` dari komunitas yang menerimamu + komunitas
+  buatan sendiri (bukan yang masih menunggu), disematkan dulu lalu terbaru, chip saring per
+  komunitas (bila >1 komunitas berkabar), 10 + "Lihat lainnya". Momen dirender
+  `KolavoFeedUnitBaca` (versi baca-saja: tanpa tombol kenalan/tautan profil); kepala kartu =
+  logo + nama komunitas (klik → halamannya) + lencana "Disematkan". Belum diterima di mana pun
+  → ajakan Cari komunitas / buka tautan undangan.

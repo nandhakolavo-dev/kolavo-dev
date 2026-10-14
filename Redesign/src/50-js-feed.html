@@ -146,7 +146,8 @@
   function momenSambut(p){
     const orang = { n: p.anggota, f: p.f };
     const sub = [p.kerja, p.kota].filter(function(v){ return v && v !== '—'; }).map(esc).join(' · ');
-    const klik = p.aku ? '' : ' data-feed-orang="' + esc(p.anggota) + '" role="button" tabindex="0"';
+    /* p.baca: tampilan baca-saja (Home) — tanpa tautan ke profil & tanpa tombol kenalan */
+    const klik = (p.aku || p.baca) ? '' : ' data-feed-orang="' + esc(p.anggota) + '" role="button" tabindex="0"';
     return '<li class="fd-i sambut">' +
       '<span class="fd-node ic">' + IK.sambut + '</span>' +
       '<div class="fd-isi-w">' +
@@ -154,7 +155,7 @@
         '<div class="fd-bubble sambut"><span class="fd-orang"' + klik + '>' + avatar(orang, 1) + '</span>' +
           '<div class="t"><b' + klik + '>Selamat datang, ' + (p.aku ? 'kamu' : esc(panggil(p))) + '!</b>' +
           (sub ? '<small>' + sub + '</small>' : '') + '</div>' +
-          (p.aku ? '' : tombolKenal(p.anggota)) +
+          (p.aku || p.baca ? '' : tombolKenal(p.anggota)) +
         '</div></div></li>';
   }
   function momenRombongan(g){
@@ -233,6 +234,10 @@
     return '<ol class="fd-tl">' + momenKabar(Object.assign({ waktu: Date.now() }, post)) + '</ol>';
   };
   window.KolavoFeedKapan = kapan;
+  /* satu momen feed versi baca-saja, dipakai Kabar di Home (PROMPT-HOME H2) */
+  window.KolavoFeedUnitBaca = function(p){
+    return p.jenis === 'broadcast' ? momenKabar(p) : momenSambut(Object.assign({}, p, { baca: true }));
+  };
 
   wadah.addEventListener('click', function(e){
     const kenal = e.target.closest('[data-feed-kenal]');

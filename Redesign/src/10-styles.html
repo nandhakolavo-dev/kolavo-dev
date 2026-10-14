@@ -400,6 +400,25 @@ body.m-tab .nav-in{position:relative}
 .home-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0 28px}
 .home-grid .app-sek:empty{display:none}
 .home-utama,.home-samping{min-width:0}
+/* Perlu tindakanmu: satu kolom, ikon + teks + aksi di kolom tetap */
+#homeAksi .ha-list{grid-template-columns:1fr}
+.pf-item.ha-i{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px}
+.ha-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink)}
+.ha-ic svg{width:19px;height:19px}
+.ha-aksi{display:flex;gap:8px}
+.ha-i .n b{font-weight:600}
+@media(max-width:560px){.pf-item.ha-i{grid-template-columns:auto minmax(0,1fr)}.ha-aksi{grid-column:2}}
+/* Kabar dari komunitasmu */
+.hk-chips{display:flex;flex-wrap:wrap;gap:8px;margin:-2px 0 14px}
+.hk-list{display:grid;gap:12px}
+.hk-i{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 16px 6px}
+.hk-kepala{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.hk-i.pin{border-color:var(--orange)}
+.hk-pin{flex:none;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--orange);background:var(--orange-wash);padding:4px 10px;border-radius:100px}
+.hk-kom{display:inline-flex;align-items:center;gap:8px;min-width:0;padding:0;border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.hk-kom:hover{color:var(--blue-ink)}
+.hk-kom .logo-sq{width:24px;height:24px;border-radius:7px;border:1px solid var(--line);font-size:10px}
+.hk-lagi{margin-top:14px}
 #dasborList .pf-list{grid-template-columns:1fr}
 .pf-item.dsb-i{display:grid;grid-template-columns:minmax(0,1fr) 120px auto;align-items:center;gap:16px}
 .dsb-i .status{justify-self:end}

@@ -36,4 +36,5 @@
 50-js-dashboard-pengurus.html
 50-js-sekretariat.html
 50-js-app.html
+50-js-home.html
 90-tail.html

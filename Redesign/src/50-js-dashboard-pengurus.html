@@ -737,6 +737,17 @@
   /* dipanggil dari halaman komunitas versi pemilik (tombol "Dashboard pengurus")
      dan dari tombol di layar buat. Argumen tab opsional: 'minta' langsung ke
      panel permintaan (dipakai notifikasi "N orang menunggu"). */
+  /* ringkasan permintaan gabung tanpa berpindah konteks — dipakai Home (PROMPT-HOME H2).
+     kom kosong = komunitas buatan sendiri. bisa = kamu termasuk peninjau. */
+  window.KolavoRingkasMinta = function(kom){
+    kom = kom || (window.KolavoApp || {}).dibuat;
+    if(!kom) return null;
+    if(D.built && D.kom && D.kom.slug === kom.slug) return { n: D.minta.length, bisa: akuPeninjau() };
+    const k = KONTEKS[kom.slug];
+    if(k && k.kom === kom) return { n: k.d.minta.length, bisa: k.d.peninjau.indexOf(k.d.aku) >= 0 };
+    return { n: SEED.length, bisa: true };   /* belum pernah dibuka: dibangun dari contoh pendaftar */
+  };
+
   window.KolavoBukaDashboard = function(tab, kom){
     if(!bangun(kom)){
       if(window.KolavoToast) window.KolavoToast('Bikin dulu halaman komunitasmu.');

@@ -443,6 +443,25 @@ body.m-tab .nav-in{position:relative}
 .home-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0 28px}
 .home-grid .app-sek:empty{display:none}
 .home-utama,.home-samping{min-width:0}
+/* Perlu tindakanmu: satu kolom, ikon + teks + aksi di kolom tetap */
+#homeAksi .ha-list{grid-template-columns:1fr}
+.pf-item.ha-i{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px}
+.ha-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink)}
+.ha-ic svg{width:19px;height:19px}
+.ha-aksi{display:flex;gap:8px}
+.ha-i .n b{font-weight:600}
+@media(max-width:560px){.pf-item.ha-i{grid-template-columns:auto minmax(0,1fr)}.ha-aksi{grid-column:2}}
+/* Kabar dari komunitasmu */
+.hk-chips{display:flex;flex-wrap:wrap;gap:8px;margin:-2px 0 14px}
+.hk-list{display:grid;gap:12px}
+.hk-i{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 16px 6px}
+.hk-kepala{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.hk-i.pin{border-color:var(--orange)}
+.hk-pin{flex:none;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--orange);background:var(--orange-wash);padding:4px 10px;border-radius:100px}
+.hk-kom{display:inline-flex;align-items:center;gap:8px;min-width:0;padding:0;border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.hk-kom:hover{color:var(--blue-ink)}
+.hk-kom .logo-sq{width:24px;height:24px;border-radius:7px;border:1px solid var(--line);font-size:10px}
+.hk-lagi{margin-top:14px}
 #dasborList .pf-list{grid-template-columns:1fr}
 .pf-item.dsb-i{display:grid;grid-template-columns:minmax(0,1fr) 120px auto;align-items:center;gap:16px}
 .dsb-i .status{justify-self:end}
@@ -7615,7 +7634,8 @@ function hitung(){}
   function momenSambut(p){
     const orang = { n: p.anggota, f: p.f };
     const sub = [p.kerja, p.kota].filter(function(v){ return v && v !== '—'; }).map(esc).join(' · ');
-    const klik = p.aku ? '' : ' data-feed-orang="' + esc(p.anggota) + '" role="button" tabindex="0"';
+    /* p.baca: tampilan baca-saja (Home) — tanpa tautan ke profil & tanpa tombol kenalan */
+    const klik = (p.aku || p.baca) ? '' : ' data-feed-orang="' + esc(p.anggota) + '" role="button" tabindex="0"';
     return '<li class="fd-i sambut">' +
       '<span class="fd-node ic">' + IK.sambut + '</span>' +
       '<div class="fd-isi-w">' +
@@ -7623,7 +7643,7 @@ function hitung(){}
         '<div class="fd-bubble sambut"><span class="fd-orang"' + klik + '>' + avatar(orang, 1) + '</span>' +
           '<div class="t"><b' + klik + '>Selamat datang, ' + (p.aku ? 'kamu' : esc(panggil(p))) + '!</b>' +
           (sub ? '<small>' + sub + '</small>' : '') + '</div>' +
-          (p.aku ? '' : tombolKenal(p.anggota)) +
+          (p.aku || p.baca ? '' : tombolKenal(p.anggota)) +
         '</div></div></li>';
   }
   function momenRombongan(g){
@@ -7702,6 +7722,10 @@ function hitung(){}
     return '<ol class="fd-tl">' + momenKabar(Object.assign({ waktu: Date.now() }, post)) + '</ol>';
   };
   window.KolavoFeedKapan = kapan;
+  /* satu momen feed versi baca-saja, dipakai Kabar di Home (PROMPT-HOME H2) */
+  window.KolavoFeedUnitBaca = function(p){
+    return p.jenis === 'broadcast' ? momenKabar(p) : momenSambut(Object.assign({}, p, { baca: true }));
+  };
 
   wadah.addEventListener('click', function(e){
     const kenal = e.target.closest('[data-feed-kenal]');
@@ -9143,6 +9167,17 @@ function hitung(){}
   /* dipanggil dari halaman komunitas versi pemilik (tombol "Dashboard pengurus")
      dan dari tombol di layar buat. Argumen tab opsional: 'minta' langsung ke
      panel permintaan (dipakai notifikasi "N orang menunggu"). */
+  /* ringkasan permintaan gabung tanpa berpindah konteks — dipakai Home (PROMPT-HOME H2).
+     kom kosong = komunitas buatan sendiri. bisa = kamu termasuk peninjau. */
+  window.KolavoRingkasMinta = function(kom){
+    kom = kom || (window.KolavoApp || {}).dibuat;
+    if(!kom) return null;
+    if(D.built && D.kom && D.kom.slug === kom.slug) return { n: D.minta.length, bisa: akuPeninjau() };
+    const k = KONTEKS[kom.slug];
+    if(k && k.kom === kom) return { n: k.d.minta.length, bisa: k.d.peninjau.indexOf(k.d.aku) >= 0 };
+    return { n: SEED.length, bisa: true };   /* belum pernah dibuka: dibangun dari contoh pendaftar */
+  };
+
   window.KolavoBukaDashboard = function(tab, kom){
     if(!bangun(kom)){
       if(window.KolavoToast) window.KolavoToast('Bikin dulu halaman komunitasmu.');
@@ -11291,10 +11326,12 @@ function hitung(){}
       (d ? '' : '<div class="dsb-buat"><button type="button" class="btn outline" data-ke="scrBuat">Buat komunitas</button></div>');
   }
 
+  window.KolavoKomDiangkat = function(){ return App().diangkat ? komDiangkat() : null; };
+
   window.KolavoGambarApp = function(id){
     if(id === 'scrApp'){ gambarKu(); gambarKartu(); }
     else if(id === 'scrDasbor') gambarDasbor();
-    /* scrHome: diisi PROMPT-HOME H2 (aksi & kabar) dan H3 (kenalan) */
+    else if(id === 'scrHome' && window.KolavoGambarHome) window.KolavoGambarHome();
   };
 
   /* ---------- tautan / QR undangan (A5b) ----------
@@ -11382,6 +11419,170 @@ function hitung(){}
     if(e.key !== 'Enter' && e.key !== ' ') return;
     const d = e.target.closest && e.target.closest('div[data-dasbor-buka]');
     if(d){ e.preventDefault(); bukaDasbor(d.dataset.dasborBuka); }
+  });
+})();
+</script>
+<script>
+/* ============================================================
+   Home Kolavo App (PROMPT-HOME H2): Perlu tindakanmu + Kabar dari komunitasmu.
+   Semua dibaca dari keadaan yang ada — tidak ada data contoh baru selain
+   satu ajakan kenalan masuk (lihat kenalanMasuk), karena prototipe sebelumnya
+   hanya punya ajakan keluar.
+   ============================================================ */
+(function(){
+  const App = function(){ return window.KolavoApp || {}; };
+  const el = function(id){ return document.getElementById(id); };
+  const toast = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
+  const ic = function(n){ return window.KolavoIkon ? window.KolavoIkon(n) : ''; };
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  const BATAS = 10;
+  let saring = 'semua', tampil = BATAS;
+
+  /* ---------- komunitas ---------- */
+  function kartu(kelas){
+    const l = document.querySelector('#direktori .ccard .logo-sq.' + kelas);
+    return l ? l.closest('.ccard') : null;
+  }
+  function info(kelas){
+    if(kelas === 'l-dibuat'){
+      const d = App().dibuat || {};
+      const gaya = d.logo ? ' style="background-image:url(' + d.logo + ')"' : '';
+      return { nama: d.nama || 'Komunitasmu', logo: '<span class="logo-sq baru"' + gaya + '>' + (d.logo ? '' : esc(d.inisial || '')) + '</span>' };
+    }
+    const k = kartu(kelas), h = k && k.querySelector('h3');
+    return { nama: h ? h.firstChild.textContent.trim() : kelas, logo: '<span class="logo-sq ' + kelas + '"></span>' };
+  }
+  /* komunitas yang sudah menerimamu (+ buatan sendiri, kamu selalu di dalamnya) */
+  function diterima(){
+    const a = App(), dj = a.diajukan || {};
+    const daftar = Object.keys(dj).filter(function(k){ return dj[k] === 'anggota'; });
+    if(a.dibuat && !a.dibuat.arsip) daftar.unshift('l-dibuat');
+    return daftar;
+  }
+  function bukaKom(kelas){
+    if(kelas === 'l-dibuat'){ if(window.KolavoBukaKomunitasDibuat) window.KolavoBukaKomunitasDibuat(); return; }
+    const k = kartu(kelas);
+    if(k) window.KolavoLihatKomunitas(k);
+  }
+
+  /* ---------- ajakan kenalan masuk ----------
+     Contoh: satu anggota yang baru disambut di komunitas yang menerimamu
+     mengajakmu kenalan. Muncul sekali, setelah kamu diterima. */
+  function kenalanMasuk(){
+    const a = App();
+    a.kenalanMasuk = a.kenalanMasuk || [];
+    if(!a.kenalanSeed){
+      diterima().some(function(kelas){
+        const kn = a.kenalan || {};
+        const p = (window.KolavoFeed ? window.KolavoFeed(kelas) : []).filter(function(x){ return x.jenis === 'sambutan' && x.anggota && !x.aku && !kn[x.anggota]; })[0];
+        if(!p) return false;
+        a.kenalanMasuk.push({ nama: p.anggota, kelas: kelas, kerja: p.kerja, kota: p.kota });
+        a.kenalanSeed = true;
+        return true;
+      });
+    }
+    return a.kenalanMasuk;
+  }
+
+  /* ---------- Perlu tindakanmu ---------- */
+  function kartuAksi(ikon, judul, sub, aksi){
+    return '<div class="pf-item ha-i"><span class="ha-ic" aria-hidden="true">' + ic(ikon) + '</span>' +
+      '<div class="t"><div class="n">' + judul + '</div>' + (sub ? '<div class="s">' + sub + '</div>' : '') + '</div>' +
+      (aksi ? '<div class="ha-aksi">' + aksi + '</div>' : '') + '</div>';
+  }
+  function gambarAksi(){
+    const a = App(), item = [];
+    kenalanMasuk().forEach(function(o, i){
+      const pg = o.nama.split(' ')[0];
+      item.push(kartuAksi('tangan', '<b>' + esc(pg) + '</b> mengajakmu kenalan',
+        esc([o.kerja, o.kota].filter(Boolean).join(' · ')) + ' · ' + esc(info(o.kelas).nama),
+        '<button type="button" class="btn sm" data-home-kenal-terima="' + i + '">Terima</button>' +
+        '<button type="button" class="btn outline sm" data-home-kenal-tolak="' + i + '">Tolak</button>'));
+    });
+    /* pendaftar menunggu, hanya di komunitas yang kamu kelola dan kamu peninjaunya */
+    [[a.dibuat && !a.dibuat.arsip ? a.dibuat : null, 'dibuat'],
+     [window.KolavoKomDiangkat ? window.KolavoKomDiangkat() : null, 'diangkat']].forEach(function(x){
+      const kom = x[0];
+      if(!kom || !window.KolavoRingkasMinta) return;
+      const r = window.KolavoRingkasMinta(kom);
+      if(!r || !r.n || !r.bisa) return;
+      item.push(kartuAksi('tambahOrang', r.n + ' pendaftar menunggu persetujuanmu', esc(kom.nama),
+        '<button type="button" class="btn sm" data-home-tinjau="' + x[1] + '">Tinjau</button>'));
+    });
+    const dj = a.diajukan || {};
+    Object.keys(dj).filter(function(k){ return dj[k] === 'menunggu'; }).forEach(function(k){
+      item.push(kartuAksi('jam', 'Pengajuan gabungmu sedang ditinjau', esc(info(k).nama) + ' · pengurusnya yang memutuskan', ''));
+    });
+    if(!a.lengkap){
+      item.push(kartuAksi('profil', 'Profilmu belum lengkap', 'Pengurus perlu memastikan kamu orang asli sebelum menyetujui.',
+        '<button type="button" class="btn sm" data-ke="scrLengkapi">Lengkapi profil</button>'));
+    }
+    el('homeAksi').innerHTML = '<h2>Perlu tindakanmu</h2>' + (item.length
+      ? '<div class="pf-list ha-list">' + item.join('') + '</div>'
+      : '<p class="app-kosong">Tidak ada yang perlu kamu lakukan sekarang.</p>');
+  }
+
+  /* ---------- Kabar dari komunitasmu ---------- */
+  function gambarKabar(){
+    const w = el('homeKabar'), kom = diterima();
+    if(!kom.length){
+      w.innerHTML = '<h2>Kabar dari komunitasmu</h2><div class="empty">' +
+        '<div class="empty-ic">' + ic('orang') + '</div>' +
+        '<h3>Kabar muncul setelah kamu diterima di komunitas</h3>' +
+        '<p>Cari komunitasmu lalu ajukan gabung. Punya tautan undangan dari pengurus? Buka tautannya untuk langsung bergabung.</p>' +
+        '<div class="empty-cta"><button type="button" class="btn" data-ke="scrApp" data-anchor="direktori">Cari komunitas</button></div></div>';
+      return;
+    }
+    let semua = [];
+    kom.forEach(function(k){
+      (window.KolavoFeed ? window.KolavoFeed(k) : []).forEach(function(p){ semua.push({ p: p, kelas: k }); });
+    });
+    const punya = kom.filter(function(k){ return semua.some(function(x){ return x.kelas === k; }); });
+    if(saring !== 'semua' && punya.indexOf(saring) < 0) saring = 'semua';
+    const list = semua.filter(function(x){ return saring === 'semua' || x.kelas === saring; })
+      .sort(function(a, b){ return (b.p.sematkan ? 1 : 0) - (a.p.sematkan ? 1 : 0) || b.p.waktu - a.p.waktu; });
+    const chip = function(k, label){ return '<button type="button" class="chip' + (saring === k ? ' on' : '') + '" data-home-saring="' + k + '">' + esc(label) + '</button>'; };
+    w.innerHTML = '<h2>Kabar dari komunitasmu</h2>' +
+      (punya.length > 1 ? '<div class="hk-chips">' + chip('semua', 'Semua') + punya.map(function(k){ return chip(k, info(k).nama); }).join('') + '</div>' : '') +
+      (list.length
+        ? '<div class="hk-list">' + list.slice(0, tampil).map(function(x){
+            const i = info(x.kelas);
+            return '<div class="hk-i' + (x.p.sematkan ? ' pin' : '') + '"><div class="hk-kepala"><button type="button" class="hk-kom" data-home-kom="' + x.kelas + '">' + i.logo + '<span>' + esc(i.nama) + '</span></button>' +
+              (x.p.sematkan ? '<span class="hk-pin">Disematkan</span>' : '') + '</div>' +
+              '<ol class="fd-tl">' + window.KolavoFeedUnitBaca(x.p) + '</ol></div>';
+          }).join('') + '</div>' +
+          (list.length > tampil ? '<button type="button" class="btn outline sm hk-lagi" data-home-lagi>Lihat lainnya</button>' : '')
+        : '<p class="app-kosong">Komunitasmu belum punya kabar baru. Kabar tampil di komunitas paket Advance.</p>');
+  }
+
+  window.KolavoGambarHome = function(){
+    if(!el('homeAksi')) return;
+    gambarAksi();
+    gambarKabar();
+  };
+  const segar = function(){ window.KolavoGambarHome(); };
+
+  document.addEventListener('click', function(e){
+    const t = e.target;
+    let b;
+    if((b = t.closest('[data-home-kenal-terima]'))){
+      const a = App(), o = a.kenalanMasuk.splice(+b.dataset.homeKenalTerima, 1)[0];
+      a.kenalan = a.kenalan || {}; a.kenalan[o.nama] = 'terhubung';
+      toast('Kamu dan ' + o.nama.split(' ')[0] + ' sekarang saling kenal.');
+      segar(); return;
+    }
+    if((b = t.closest('[data-home-kenal-tolak]'))){
+      const o = App().kenalanMasuk.splice(+b.dataset.homeKenalTolak, 1)[0];
+      toast('Ajakan ' + o.nama.split(' ')[0] + ' ditolak. Dia tidak diberi tahu alasannya.');
+      segar(); return;
+    }
+    if((b = t.closest('[data-home-tinjau]'))){
+      window.KolavoBukaDashboard('minta', b.dataset.homeTinjau === 'diangkat' ? window.KolavoKomDiangkat() : null);
+      return;
+    }
+    if((b = t.closest('[data-home-saring]'))){ saring = b.dataset.homeSaring; tampil = BATAS; gambarKabar(); return; }
+    if(t.closest('[data-home-lagi]')){ tampil += BATAS; gambarKabar(); return; }
+    if((b = t.closest('[data-home-kom]'))){ bukaKom(b.dataset.homeKom); }
   });
 })();
 </script>

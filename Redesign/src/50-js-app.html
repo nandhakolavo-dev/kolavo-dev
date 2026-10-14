@@ -85,10 +85,12 @@
       (d ? '' : '<div class="dsb-buat"><button type="button" class="btn outline" data-ke="scrBuat">Buat komunitas</button></div>');
   }
 
+  window.KolavoKomDiangkat = function(){ return App().diangkat ? komDiangkat() : null; };
+
   window.KolavoGambarApp = function(id){
     if(id === 'scrApp'){ gambarKu(); gambarKartu(); }
     else if(id === 'scrDasbor') gambarDasbor();
-    /* scrHome: diisi PROMPT-HOME H2 (aksi & kabar) dan H3 (kenalan) */
+    else if(id === 'scrHome' && window.KolavoGambarHome) window.KolavoGambarHome();
   };
 
   /* ---------- tautan / QR undangan (A5b) ----------
