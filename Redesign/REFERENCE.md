@@ -1063,6 +1063,44 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
     (`l-dibuat` → editor dashboard; direktori Advance → `kom.onboarding` atau teks
     contoh), tetap dibaca walau langkah Peraturan onboarding dimatikan.
 
+### PDP1–PDP3: persetujuan TnC & Kebijakan Privasi saat membuat profil
+
+Rencana lengkap tujuh tahap ada di `Redesign/PROMPT-PDP.md`; yang di bawah sudah jadi.
+
+- **Naskah** — modul baru `src/50-js-legal.html`, `window.KolavoLegal`:
+  `versi`, `berlaku`, `judul`, `tnc` (11 bagian), `privasi` (12 bagian). Format teks
+  sama dengan peraturan komunitas (`# ` = judul bagian) supaya satu kebiasaan saja
+  yang perlu diingat. Urutan bagian Kebijakan Privasi mengikuti Pasal 21 UU 27/2022:
+  identitas pengendali, jenis data, tujuan, dasar hukum, penerima, retensi, hak
+  subjek data — jangan dipotong sebagian, urutannya yang memenuhi syarat.
+  Identitas pengendali masih placeholder `privasi@kolavo.app`, menunggu badan hukum.
+- **Pop up baca-saja** — `window.KolavoBukaLegal('tnc'|'privasi')`, kerangka `.lgn`
+  `#lglModal` di `40-footer.html`. Meniru `KolavoBukaPeraturan` tapi punya renderer
+  sendiri: naskah digambar sebagai paragraf (`.lgl-h` / `.lgl-p`), bukan daftar
+  bercentang seperti peraturan komunitas — ini dokumen, bukan daftar aturan.
+  Satu pendengar `[data-legal]` melayani seluruh pemicu (footer, modal masuk,
+  blok persetujuan), jadi pemicu baru cukup menambah atribut.
+- **Blok persetujuan** di `scrLengkapi`, sebelum `#galat`: dua centang yang
+  **sengaja dipisah** — `#setujuLegal` (wajib, menggerbangi
+  `#kirim` lewat `periksa()`) dan `#setujuKabar` (opsional, tidak pernah tercentang dari
+  sananya). Menggabungkan keduanya jadi satu centang membuat persetujuannya tidak sah:
+  UU PDP menuntut persetujuan spesifik per tujuan.
+- **Jejak persetujuan** — `App.persetujuan = { legal, versi, kabar, waktu }` disimpan saat
+  kirim berhasil. Versinya ikut dicatat karena akuntabilitas pengendali data menuntut
+  bisa dibuktikan orang menyetujui naskah yang mana, bukan sekadar bahwa dia menyetujui.
+- Tautan "Kebijakan Privasi · Ketentuan Layanan" di `.lgn-trust` (modal masuk, markupnya
+  ada di **ekor `50-js-pemilih-lokasi.html`**, bukan di `50-js-modal-masuk.html`) dan
+  "Privasi" di footer sebelumnya `href="#0"` / `<span>` mati — sekarang keduanya membuka
+  pop up yang sama.
+- Ringkasan transparansi tiga baris ("Yang kami simpan / Siapa yang bisa lihat / Hak
+  kamu") sempat ada di atas centang, lalu **dihapus atas permintaan** — cukup centangnya
+  saja. Naskah lengkapnya tetap satu klik jauhnya lewat tautan di bawah centang, jadi
+  syarat "diberi tahu sebelum menyetujui" tetap terpenuhi tanpa menambah panjang form.
+  Kelas `.lgl-ringkas` ikut dibuang; blok persetujuan sekarang berdiri sendiri tanpa
+  pembungkus `.blk`, dengan `margin-top:20px` supaya iramanya sama dengan section lain.
+- Pil `Opsional` aslinya hanya hidup di `.f-lbl .opt`; di dalam kotak persetujuan
+  latarnya dibalik ke `--card` supaya tidak lebur dengan `--bg-alt` kotaknya.
+
 ## Yang belum terverifikasi
 
 - Setelah berhasil masuk lewat Google, apakah pengguna dikembalikan ke aksi yang tadi
@@ -1072,6 +1110,136 @@ Dibandingkan `/profile/edit` kolavo.app sekarang:
 - Radius kartu komunitas 13 (Design System) sementara kolavo.app memakai 20.
 - Harga langganan di business plan masih `XXXX`, jadi kata "Gratis" di halaman
   belum punya dasar jangka panjang.
+- Naskah TnC & Kebijakan Privasi adalah rancangan produk, **belum ditinjau penasihat
+  hukum**, dan identitas pengendali data (badan hukum, alamat, narahubung) masih
+  placeholder. Jangan dipakai di produksi sebelum keduanya beres.
 - Advance: apakah pengurus mau membayar untuk lima panel ini, dan panel mana yang
   paling dicari — belum pernah ditanyakan ke 5–10 komunitas kurasi. BP sendiri
   memisahkan pergantian kepengurusan sebagai biaya per penggunaan, bukan langganan.
+
+
+---
+
+## V4 — dari "Feedback Redesign Kolavo Prototype V3" (3 Okt 2026)
+
+V3 dibekukan: `archive/ReDesign_Kolavo_3.html` + `archive/src-v3/`. `src/` dan seluruh kit
+sekarang merakit `ReDesign_Kolavo_4.html` (Artifact baru, URL terpisah dari V3).
+
+**Homepage.** Hero WAG-vs-Kolavo dicabut karena prospek mengira Kolavo aplikasi chat.
+Hero baru menjual profil komunitas (kartu `.hp-kartu`: persebaran pekerjaan + pendidikan +
+pengurus). Bagian baru `#untuk` (tiga pilar per peran) dan `#harga` (Esensial, Advance,
+kalkulator `50-js-harga`, kredit kenalan). Semua angka masih `Rp XXXX`.
+
+**Profil pengguna.** Pendidikan (`#didik`, `#didikDi`); memberi & mengambil jadi dua kolom
+(`#beri` + `#bio`); "Komunitas saya" berstatus Anggota bisa diklik; menu akun menaut ke
+`#pfKomunitas` dan `#pfAkun` di satu layar profil (tidak dipisah); kredit kenalan
+(`App.kredit`) dibeli di Pengaturan akun atau di profil anggota, dan menjadi syarat
+terbukanya kontak setelah kenalan diterima.
+
+**Halaman komunitas.** Bagian Pengurus tampil untuk semua pengunjung dan naik ke atas Daftar
+anggota; Esensial hanya Community Creator, Advance susunan penuh. Persebaran dapat sumbu
+Pendidikan (`didikAgg`, proporsi contoh). Pemilik dapat tombol "Sunting halaman komunitas"
+dan "Ubah" di pengumuman (→ Info komunitas). Sambutan onboarding memakai foto ketua.
+Feed "Kabar komunitas" menjadi "Anggota baru": hanya sambutan otomatis.
+
+**Form Buat.** Tipe jawaban `angka`; nomor anggota default `manual` ("Format sendiri").
+
+**Dashboard.** Esensial: tab Riwayat dilebur ke Anggota (`.kl-putus` per baris + daftar
+ditolak), tab Kepengurusan jadi "Peninjau". Advance: Broadcast, Serah terima, Rangkuman
+WhatsApp, dan notifikasi "Anggota keluar" dicabut dari UI (kode panel Broadcast/Serah
+dibiarkan, tinggal kembalikan tab + `URUT`). Notifikasi pendaftaran digabung: pemicu jumlah
+pendaftar (min. 10) atau satu hari per minggu; "Keputusan pengurus lain" mingguan. Akses
+pengurus: pratinjau email undangan + baris hak tetap "lihat Struktur & tulis perkenalan
+sendiri". Istilah "Community Builder" → "Community Creator".
+
+**Belum diputuskan:** angka harga; apakah Esensial ditagih per anggota; standar format
+nomor anggota.
+
+**Revisi hero V4.** Judul jadi "Komunitas berkualitas terlihat dari orang-orangnya." (pilar 1:
+kualitas komunitas dinilai dari anggotanya); sub kedua memuat pilar 2 dan 3. Visual kembali
+ke susunan bertumpuk V3 (`.hba`): kartu "Di media sosial: kegiatannya" miring di belakang,
+panel "Di Kolavo: orang-orangnya" di depan, keping `.hp-keping` "Satu profil, 3 komunitas".
+Foto postingan sengaja placeholder gradien — tidak ada foto kegiatan sungguhan.
+
+**Revisi visual hero V4 (2).** Kartu postingan media sosial dicabut. Tiga lapis sekarang:
+profil komunitas (belakang, miring: logo, nama, pengurus) · persebaran anggota (depan: karier
++ pendidikan) · profil anggota (`.hp-keping`, kiri bawah: foto, tag pekerjaan/pendidikan/
+domisili, "satu profil dipakai di 3 komunitas").
+
+**Revisi hero V4 (3) — "belum menjual".** Judul diganti dari pernyataan ke ajakan yang
+memuji pembacanya: "Tunjukkan orang-orang hebat di balik komunitasmu." (kata terakhir
+berotasi, `50-js-hero`). Satu paragraf manfaat + tiga poin bercentang (`.hero-poin`) di bawah
+CTA. Visual: sampul gradien + lencana terverifikasi + tumpukan wajah di kartu komunitas;
+angka besar 86/14/9 (`.hp-angka`) dan batang tiga warna (biru karier, oranye pendidikan,
+hijau domisili) di panel depan; kartu profil anggota dan keping "Ajakan kenalan diterima"
+melayang pelan (`@keyframes hpApung`, mati di reduced-motion).
+
+**Revisi hero V4 (4) — seimbang + persuasif.** Judul "Kenali anggotamu. Kenalkan
+komunitasmu." (tiga baris tetap; kata berotasi di baris ketiga). Kalimat membanggakan
+("orang-orang hebat", "banggakan") dicabut; paragraf sekarang menjelaskan cara mulai dan dua
+kegunaannya. Kolom hero 1fr 1fr; visual dipendekkan (blok Domisili dan kutipan di kartu
+anggota dicabut) supaya tingginya setara kolom teks (~550 vs ~590 px di lebar 1280).
+
+**Bagian `#untuk` dirapikan + bug padding section (6 Okt 2026).** `section{padding:78px 0}`
+tidak pernah terbaca browser sejak V3: ada `}` nyasar tepat di atasnya (sisa blok hero lama),
+jadi semua bagian beranda menempel tanpa jarak. `}` dibuang dan aturannya dibatasi ke
+`#scrBeranda > section` — kalau dihidupkan global, panel dashboard, form, dan `.kom-sec`
+ikut mendapat padding 78px. Kepala `#untuk` dirata-tengahkan (`.sec-tengah`); tiga kartu
+memakai `grid-template-rows:subgrid` supaya ikon, label, judul, uraian, dan daftar sejajar
+antar-kartu; daftar dipisah garis tipis. Judul dan lede ditulis ulang untuk pengurus.
+
+**`#direktori` jadi etalase untuk pengurus (6 Okt 2026).** Beranda sekarang bicara ke
+pengurus, jadi bagian ini memamerkan komunitas yang sudah punya halaman, bukan mengajak
+anggota mencari komunitasnya: kicker "Sudah ada di Kolavo", judul "Lihat komunitas yang sudah
+punya halamannya.", kepala rata tengah. Keadaan kosong menawarkan "Buat Halaman Komunitas";
+tombol "Ajak pengurusmu bikin halaman" dicabut (handler di `50-js-direktori-filter` dijaga
+`if(invite)`). CTA kedua hero jadi "Lihat komunitas di Kolavo". Jalur anggota mencari
+komunitas tetap ada lewat keadaan kosong di layar Profil.
+
+**`#pengurus` disamakan + jarak antar bagian (6 Okt 2026).** Kartu `.band` dua kolom diganti
+pola yang sama dengan bagian lain: kepala rata tengah (kicker "Cara mulai"), empat langkah
+sebagai kartu sejajar (`.langkah`), lalu ajakan (`.sec-cta`) dan catatan privasi satu baris
+(`.sec-catatan`). Kepala `#harga` ikut dirata-tengahkan. Latar berselang: `#untuk` abu,
+`#direktori` putih, `#pengurus` abu, `#harga` putih. Jarak disamakan: tiap bagian padding
+78px atas-bawah, kepala -> isi 44px di keempat bagian (sebelumnya 44/28/44/34) lewat
+`.sec-tengah{margin-bottom:44px}`.
+
+**Koreksi `#pengurus` (6 Okt 2026).** Susunan empat kartu rata tengah dibatalkan atas
+permintaan: bagian ini kembali ke format `.band` dua kolom dari V3 (teks, catatan privasi,
+dan ajakan di kiri; daftar langkah `.steps` di kanan). Yang dipertahankan dari revisi: isi
+baru (kicker "Cara mulai", judul "Empat langkah, halaman komunitasmu siap.", empat langkah
+yang dipendekkan) dan latar `sec-alt`. Kelas `.langkah*`, `.sec-cta`, `.sec-catatan` dihapus.
+
+**`#pengurus` + tangkapan layar profil (6 Okt 2026).** Kolom kanan `.band` sekarang berisi
+tiruan tangkapan layar profil komunitas dalam bingkai browser (`.ss`, memakai ulang komponen
+hero `.hp-*`); empat langkah pindah ke kolom kiri di bawah pengantar. Sengaja bukan gambar
+bitmap: ikut tema gelap, tajam di semua ukuran, dan tidak menambah base64. Judul jadi "Empat
+langkah, profil komunitasmu siap."; catatan privasi jadi keterangan di bawah tangkapan layar.
+
+**`#pengurus` versi akhir (6 Okt 2026).** Setelah mencoba `.band` dua kolom + tangkapan layar,
+bagian ini kembali ke empat kartu langkah rata tengah (`.langkah`), sekarang tiap kartu punya
+gambar kecil di atasnya (`.lk-gbr`): form nama komunitas, link yang disalin, kartu pendaftar
+dengan tombol Setujui/Tolak, dan ringkasan persebaran. Semuanya tiruan UI dari komponen
+(`aria-hidden`), bukan bitmap. Kelas `.ss*` dihapus; `.band`/`.steps` tidak lagi dipakai di beranda.
+
+**Bagian `#harga` direvisi (6 Okt 2026).** Keputusan harga pertama: Esensial gratis untuk 1
+peninjau + 20 anggota (kata "Gratis" kembali dipakai, khusus untuk ini). Blok "Untuk anggota"
+(kredit kenalan) dan subjudul "Untuk komunitas" dicabut dari beranda; kredit kenalan masih ada
+di Pengaturan akun dan profil anggota. Advance tetap Rp XXXX / anggota / bulan, kalkulator
+tetap mulai 50. BELUM diselaraskan: dashboard Esensial masih mengizinkan lebih dari satu
+peninjau dan tanpa batas 20 anggota.
+
+**Aturan harga Advance terpasang di `#harga` (6 Okt 2026).** Tiga kartu: Esensial (hijau,
+FREE), Advance (biru, Rp 199 — awalnya Rp 1.191, diubah 14 Okt 2026), Big Organization (oranye, "Hubungi kami"). Kalkulator
+(`50-js-harga`, `window.KolavoHarga`) punya tiga masukan — anggota 30–1.000 per 10, peninjau,
+durasi 1/6/12 bulan/2 tahun — dan merinci biaya anggota, peninjau, per bulan, diskon, total.
+Aturan + uji angka: `PROMPT-HARGA.md`.
+
+## Pisah landing vs Kolavo App (14 Okt 2026) — rencana: `PROMPT-APP.md`
+
+- **A1 · dua mode di router.** `KolavoApp.mode` = `'landing'` (hanya `scrBeranda`) atau
+  `'app'` (semua layar lain), ditulis di `gambar()` setiap pindah layar, dan dipantulkan ke
+  `body.m-app`. Nav/footer membaca kelas ini, tidak memeriksa id layar satu per satu.
+  Footer jualan disembunyikan di mode app (`body.m-app footer{display:none}`). Nav app belum
+  berubah — isinya diganti di A3. Nama `window.KolavoApp` tetap objek keadaan; "Kolavo App"
+  sebagai produk tidak punya objek global sendiri.

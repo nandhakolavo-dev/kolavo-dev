@@ -7,6 +7,7 @@
 (function(){
   const App = {
     masuk: false,       /* sudah lewat modal Google? */
+    mode: 'landing',    /* 'landing' (halaman jualan, scrBeranda) | 'app' (semua layar lain) */
     lengkap: false,     /* profil sudah diisi? */
     niat: null,         /* 'anggota' | 'pengurus' | 'nav' — pemicu yang membawa ke sini */
     komunitas: null     /* {nama, kelas, jumlah} — kartu yang tadi diklik */
@@ -47,6 +48,10 @@
     /* dashboard pengurus baru ada setelah komunitasnya dibuat */
     if(id === 'scrKelola' && !App.dibuat) id = App.lengkap ? 'scrBuat' : 'scrLengkapi';
     sekarang = id;
+    /* dua pintu: landing untuk jualan ke pengurus, app untuk yang sudah punya akun.
+       Nav & footer membaca kelas body ini, bukan memeriksa layar satu per satu. */
+    App.mode = id === 'scrBeranda' ? 'landing' : 'app';
+    document.body.classList.toggle('m-app', App.mode === 'app');
 
     LAYAR.forEach(function(n){
       const el = document.getElementById(n);
@@ -176,6 +181,12 @@
         kolom = document.createElement('input');
         kolom.className = 'inp';
         kolom.type = 'text';
+        /* V4: jawaban angka — keypad angka di ponsel, huruf dibuang saat mengetik */
+        if(t.tipe === 'angka'){
+          kolom.inputMode = 'numeric';
+          kolom.placeholder = 'Tulis angka';
+          kolom.addEventListener('input', function(){ kolom.value = kolom.value.replace(/[^0-9.,]/g, ''); });
+        }
       }
       kolom.id = 'tanya-' + t.id;
       kolom.dataset.tanyaId = t.id;
@@ -239,6 +250,15 @@
       if(!pertama) pertama = f;
     }
 
+    /* persetujuan TnC + Kebijakan Privasi: tanpa ini profil tidak boleh dikirim.
+       Yang opsional (#setujuKabar) sengaja tidak diperiksa. */
+    const legal = document.getElementById('setujuLegal');
+    if(legal && !legal.checked){
+      const f = legal.closest('.f');
+      if(f) f.classList.add('salah');
+      if(!pertama) pertama = f || legal;
+    }
+
     return pertama;
   }
 
@@ -266,12 +286,40 @@
          kalau belum diisi — sekaligus jadi tag pertama yang selalu ada */
       pasang(nilai('kerja') || window.KolavoKerjaDefault || 'Anggota komunitas', true);
       pasang(nilai('kota'), false);
+      pasang([nilai('didik'), nilai('didikDi').trim()].filter(Boolean).join(' · '), false);
       if(!tags.children.length){
         const s = document.createElement('span');
         s.className = 'tag kosong';
         s.textContent = 'Belum ada keahlian yang diisi';
         tags.appendChild(s);
       }
+    }
+
+    /* V4: memberi & mengambil */
+    const gt = document.getElementById('pfGt');
+    if(gt){
+      const beri = nilai('beri').trim(), dapat = nilai('bio').trim();
+      gt.hidden = !(beri || dapat);
+      gt.innerHTML = '';
+      [['Bisa saya bagikan', beri], ['Yang saya cari', dapat]].forEach(function(x){
+        if(!x[1]) return;
+        const d = document.createElement('div');
+        d.className = 'pf-gt-i';
+        d.innerHTML = '<span class="pf-gt-l"></span><p></p>';
+        d.firstChild.textContent = x[0];
+        d.lastChild.textContent = x[1];
+        gt.appendChild(d);
+      });
+    }
+
+    /* V4: kredit kenalan — satu kali beli, berlaku di semua komunitas */
+    const kr = document.getElementById('pfKredit');
+    if(kr){
+      kr.innerHTML = '<div class="pf-item"><span class="pf-kredit-ic" aria-hidden="true">' + (window.KolavoIkon ? window.KolavoIkon('orang') : '') + '</span>' +
+        '<div class="t"><div class="n">Kredit kenalan</div>' +
+        '<div class="s">Membuka nomor WhatsApp dan akun media sosial anggota yang menerima ajakan kenalanmu. Beli satu kali, berlaku di semua komunitas yang kamu ikuti.</div></div>' +
+        (App.kredit ? '<span class="status anggota">Aktif</span>'
+                    : '<div class="pf-item-aksi"><span class="pf-harga">Rp XXXX</span><button type="button" class="btn sm" data-kredit-beli>Beli kredit kenalan</button></div>') + '</div>';
     }
 
     if(list){
@@ -283,9 +331,10 @@
       if(buat) list.insertAdjacentHTML('beforeend', buat);
       if(App.komunitas){
         list.insertAdjacentHTML('beforeend',
-          '<div class="pf-item"><span class="logo-sq ' + App.komunitas.kelas + '" role="img" aria-label="Logo komunitas"></span>' +
+          '<div class="pf-item"><div class="pf-open" data-komunitas-anggota role="button" tabindex="0" title="Buka halaman komunitas">' +
+          '<span class="logo-sq ' + App.komunitas.kelas + '" role="img" aria-label="Logo komunitas"></span>' +
           '<div class="t"><div class="n">' + App.komunitas.nama + '</div>' +
-          '<div class="s">' + [App.komunitas.jumlah].concat(window.KolavoJawaban()).join(' · ') + '</div></div>' +
+          '<div class="s">' + [App.komunitas.jumlah].concat(window.KolavoJawaban()).join(' · ') + '</div></div></div>' +
           ((App.diajukan || {})[App.komunitas.kelas] === 'anggota'
             ? '<span class="status anggota">Anggota</span></div>'
             : '<span class="status tunggu">Menunggu</span></div>'));
@@ -325,6 +374,15 @@
   document.addEventListener('click', function(e){
     const t = e.target.closest('[data-ke]');
     if(t){ e.preventDefault(); ke(t.dataset.ke, t.dataset.anchor); return; }
+    /* V4: komunitas yang diikuti sebagai anggota bisa dibuka dari "Komunitas saya" */
+    if(e.target.closest('[data-komunitas-anggota]') && App.kartu && window.KolavoLihatKomunitas){
+      e.preventDefault(); window.KolavoLihatKomunitas(App.kartu); return;
+    }
+    if(e.target.closest('[data-kredit-beli]')){
+      App.kredit = true; isiProfil();
+      if(window.KolavoToast) window.KolavoToast('Kredit kenalan aktif di semua komunitasmu. Mode demo — belum ada pembayaran.');
+      return;
+    }
 
     if(e.target.closest('#kirim')){
       const kurang = periksa();
@@ -336,6 +394,15 @@
       }
       if(galat) galat.hidden = true;
       App.lengkap = true;
+      /* jejak persetujuan disimpan bersama versinya — akuntabilitas pengendali
+         data: harus bisa dibuktikan kapan dan atas naskah versi mana orang setuju */
+      const kabar = document.getElementById('setujuKabar');
+      App.persetujuan = {
+        legal: true,
+        versi: (window.KolavoLegal && window.KolavoLegal.versi) || '',
+        kabar: !!(kabar && kabar.checked),
+        waktu: new Date().toISOString()
+      };
       gambarNav();
       /* datang dari kartu komunitas: antar ke halaman komunitasnya, bukan
          ke profil — gabungnya belum terjadi, baru profilnya yang beres */
