@@ -440,6 +440,8 @@ body.m-tab .nav-in{position:relative}
 .bgk-aksi{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
 /* tombol demo pengurus hanya relevan di tab Dashboard */
 body:not([data-layar="scrDasbor"]) #demoAngkat{display:none}
+/* simulasi tautan/QR undangan: dari luar app (landing) atau di halaman masuk */
+body:not([data-layar="scrBeranda"]):not([data-layar="scrMasuk"]) #demoTautan{display:none}
 /* layar sempit: tab pindah ke bilah bawah, label kecil tampil */
 @media(max-width:767px){
   .nav-tab{position:fixed;top:auto;left:0;right:0;bottom:0;transform:none;z-index:40;gap:0;height:calc(60px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:var(--bg);border-top:1px solid var(--line)}
@@ -4523,6 +4525,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   <span><b>Mode demo</b> · tanpa jaringan</span>
   <button type="button" class="setuju" id="demoSetuju" hidden>Setujui pendaftaran</button>
   <button type="button" class="setuju" id="demoKenal" hidden>Terima ajakan kenalan</button>
+  <button type="button" id="demoTautan">Buka tautan undangan</button>
   <button type="button" id="demoAngkat">Angkat saya jadi pengurus</button>
   <button type="button" id="demoReset">Ulangi dari awal</button>
 </div>
@@ -11253,6 +11256,23 @@ function hitung(){}
     else gambarDasbor();
   };
 
+  /* ---------- tautan / QR undangan (A5b) ----------
+     kolavo.app/k/<slug> dibuka: belum masuk → halaman masuk varian undangan,
+     sesudah masuk (dan lengkapi profil bila perlu) → profil komunitasnya.
+     Sudah masuk → langsung ke profil komunitas. Di prototipe dipicu tombol demo. */
+  window.KolavoBukaTautan = function(kartu){
+    const a = App();
+    if(a.masuk){
+      a.undangan = null;
+      if(!a.lengkap){ window.KolavoMasuk('anggota', kartu); return; }
+      window.KolavoLihatKomunitas(kartu);
+      return;
+    }
+    a.undangan = kartu;
+    window.KolavoKe('scrMasuk');
+  };
+  let demoKe = 0;
+
   function bukaDasbor(jenis){
     if(jenis === 'dibuat'){ window.KolavoKe('scrKelola'); return; }
     toast('Prototipe: dashboard komunitas yang mengangkatmu memakai tampilan yang sama, belum disimulasikan.');
@@ -11273,6 +11293,14 @@ function hitung(){}
     /* cari di nav: router sudah pindah ke scrApp#direktori, tinggal fokus ke kolom cari */
     if(e.target.closest('#navCari')){
       setTimeout(function(){ const q = document.getElementById('q'); if(q) q.focus({ preventScroll: true }); }, 400);
+      return;
+    }
+    if(e.target.closest('#demoTautan')){
+      /* bergiliran antar komunitas contoh, supaya Esensial & Advance sama-sama bisa dicoba */
+      const kartu = document.querySelectorAll('#direktori .ccard')[demoKe++ % 4];
+      if(!kartu) return;
+      toast('Membuka kolavo.app/k/' + kelasKartu(kartu).replace(/^l-/, ''));
+      window.KolavoBukaTautan(kartu);
       return;
     }
     if(e.target.closest('#demoAngkat')){

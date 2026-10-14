@@ -1298,3 +1298,10 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   harus sama di kedua tema; prompt sempat menyebut `--qr-fg/--qr-bg`, tidak diperlukan.
   Tautan layar sukses diseragamkan ke `kolavo.app/k/<slug>` (sebelumnya `kolavo.app/<slug>`,
   beda dengan halaman komunitas).
+- **A5b · tautan/QR undangan.** `KolavoBukaTautan(kartu)` (50-js-app) mensimulasikan
+  `kolavo.app/k/<slug>` dibuka: belum masuk → `App.undangan = kartu` → `scrMasuk` varian
+  undangan → sesudah masuk diperlakukan sebagai niat `anggota` → `scrLengkapi` (lede
+  menyebut komunitasnya) bila profil belum lengkap → `scrKomunitas` dengan tombol Gabung
+  (onboarding Advance seperti biasa); sudah masuk → langsung `scrKomunitas`; sudah anggota →
+  halaman menampilkan "Kamu anggota di sini". Pemicu prototipe: tombol demo **Buka tautan
+  undangan**, hanya di landing & `scrMasuk`, bergiliran antar 4 komunitas contoh.

@@ -69,6 +69,23 @@
     else gambarDasbor();
   };
 
+  /* ---------- tautan / QR undangan (A5b) ----------
+     kolavo.app/k/<slug> dibuka: belum masuk → halaman masuk varian undangan,
+     sesudah masuk (dan lengkapi profil bila perlu) → profil komunitasnya.
+     Sudah masuk → langsung ke profil komunitas. Di prototipe dipicu tombol demo. */
+  window.KolavoBukaTautan = function(kartu){
+    const a = App();
+    if(a.masuk){
+      a.undangan = null;
+      if(!a.lengkap){ window.KolavoMasuk('anggota', kartu); return; }
+      window.KolavoLihatKomunitas(kartu);
+      return;
+    }
+    a.undangan = kartu;
+    window.KolavoKe('scrMasuk');
+  };
+  let demoKe = 0;
+
   function bukaDasbor(jenis){
     if(jenis === 'dibuat'){ window.KolavoKe('scrKelola'); return; }
     toast('Prototipe: dashboard komunitas yang mengangkatmu memakai tampilan yang sama, belum disimulasikan.');
@@ -89,6 +106,14 @@
     /* cari di nav: router sudah pindah ke scrApp#direktori, tinggal fokus ke kolom cari */
     if(e.target.closest('#navCari')){
       setTimeout(function(){ const q = document.getElementById('q'); if(q) q.focus({ preventScroll: true }); }, 400);
+      return;
+    }
+    if(e.target.closest('#demoTautan')){
+      /* bergiliran antar komunitas contoh, supaya Esensial & Advance sama-sama bisa dicoba */
+      const kartu = document.querySelectorAll('#direktori .ccard')[demoKe++ % 4];
+      if(!kartu) return;
+      toast('Membuka kolavo.app/k/' + kelasKartu(kartu).replace(/^l-/, ''));
+      window.KolavoBukaTautan(kartu);
       return;
     }
     if(e.target.closest('#demoAngkat')){
