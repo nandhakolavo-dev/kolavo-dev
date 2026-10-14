@@ -1419,11 +1419,12 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   user 14 Okt 2026: lebih bersih, tidak bersaing dengan kartu). Tampil di semua lebar. Semua warna lewat token — tetap terbaca di tema gelap.
 - **Kartu masuk didesain ulang.** `.msk-box`: semi-transparan (`color-mix` dari `--card` 84%)
   + `backdrop-filter: blur(18px)` supaya bentuk latar tembus samar, garis aksen 4px biru→oranye
-  di tepi atas, rata kiri. Kepala kartu: logo kecil (tautan ke landing) + pil brand line
-  "Basecamp digital komunitasmu" (oranye). Judul 27px `.msk-h`, sub, tombol Google
+  di tepi atas, rata kiri. **Logo tetap di luar kartu, di tengah atasnya** (pilihan user —
+  sempat dipindah ke dalam lalu dikembalikan). Kepala kartu: pil brand line "Basecamp digital
+  komunitasmu" (oranye). Judul 27px `.msk-h`, sub, tombol Google
   (`.msk-gbtn`), keterangan akun baru di tengah kecil. Varian **undangan**: kartu komunitas
   pengundang (`#mskProof.msk-undang`) di atas judul; varian **biasa/pengurus**: deretan logo
   komunitas bertumpuk + keterangan di bawah tombol (`#mskBukti`, garis pemisah). Catatan
-  privasi dalam kotak `--bg-alt`. Logo di atas kartu dihapus (pindah ke dalam).
+  privasi dalam kotak `--bg-alt`.
   Pelajaran: jangan pakai nama kelas `msk-g` untuk elemen lain — itu kelas bentuk geometris
   latar (`position:absolute`); tombol Google sempat melayang menimpa teks karenanya.
