@@ -1344,3 +1344,8 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   Kelola langganan), remah nama komunitas membuka halaman IA SMAN 52 (`data-buka-diangkat`).
   Terverifikasi: dua dashboard bolak-balik dengan keadaan terpisah (permintaan gabung diubah
   di satu tidak bocor ke yang lain), juga untuk pengguna tanpa komunitas buatan.
+- **Daftar Dashboard: kolom tetap.** `#dasborList` satu kolom (bukan grid 2 kolom `.pf-list`);
+  tiap baris `.dsb-i` grid `minmax(0,1fr) 120px auto` — nama membungkus di kolomnya, lencana
+  rata kanan di kolom 120px, tombol "Buka dashboard" selalu di tepi kanan (terukur sama
+  persis untuk nama 13 vs 90 karakter). ≤ 560px: nama satu baris penuh, lencana + tombol di
+  baris kedua, posisinya tetap sama antarbaris.

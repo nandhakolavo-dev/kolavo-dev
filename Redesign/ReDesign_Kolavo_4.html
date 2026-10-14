@@ -437,6 +437,17 @@ body.m-tab .nav-in{position:relative}
 /* dashboard komunitas yang mengangkatmu: tagihan & akses milik pembuat/Ketua */
 #scrKelola.kl-diangkat .kl-tab[data-tab="tagihan"],#scrKelola.kl-diangkat .kl-tab[data-tab="akses"]{display:none}
 .dsb-buat{margin-top:16px}
+/* baris daftar dashboard: kolom tetap supaya lencana & tombol tidak bergeser
+   mengikuti panjang nama komunitas — nama yang panjang membungkus di kolomnya */
+#dasborList .pf-list{grid-template-columns:1fr}
+.pf-item.dsb-i{display:grid;grid-template-columns:minmax(0,1fr) 120px auto;align-items:center;gap:16px}
+.dsb-i .status{justify-self:end}
+.dsb-i .n{overflow-wrap:anywhere}
+@media(max-width:560px){
+  .pf-item.dsb-i{grid-template-columns:minmax(0,1fr) auto;row-gap:12px}
+  .dsb-i .pf-open{grid-column:1 / -1}
+  .dsb-i .status{justify-self:start}
+}
 /* popup Bagikan + QR (A5a). Kotak QR tetap putih di kedua tema — kamera butuh
    gelap di atas terang; warnanya ada di SVG, bukan di CSS tema */
 .bgk-box{max-width:420px}
