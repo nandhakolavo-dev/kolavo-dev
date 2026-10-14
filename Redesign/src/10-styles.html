@@ -377,6 +377,9 @@ body.m-tab .nav-in{position:relative}
 .nt svg{position:relative;width:26px;height:26px}
 .nt b{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .nt.on{color:var(--blue)}
+/* duotone: tab aktif mengisi bentuknya dengan warna lembut dari currentColor */
+.nt.on svg{stroke-width:2}
+.nt.on svg :is(path,rect,circle){fill:currentColor;fill-opacity:.16}
 .nt.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--blue)}
 .nt.on:hover::before{background:transparent}
 .nt:focus-visible{outline:3px solid var(--ring);outline-offset:-6px;border-radius:13px}

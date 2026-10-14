@@ -1425,3 +1425,8 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   baru, catatan privasi sebagai kaki kartu (garis pemisah, rata kiri). Brand line di dalam
   kartu dihapus. Riwayat: versi kaca ber-blur + aksen biru→oranye + rata kiri sempat dipakai
   lalu diganti atas permintaan user. Hindari nama kelas `msk-g` selain untuk bentuk latar.
+- **Ikon nav app alternatif (duotone).** Ikon baru di `50-js-ikon`: `beranda` (rumah membulat,
+  bentuk tertutup), `komunitas` (tiga orang), `panel` (kotak membulat + grafik batang).
+  Tab tidak aktif = garis luar `--ink-2`; tab aktif = biru + bentuk terisi `currentColor`
+  16% + garis 2px (`.nt.on svg :is(path,rect,circle)`). Ikon lama (`rumah`, `orang`,
+  `kelompok`) tetap ada — kembali cukup dengan mengganti `data-ic` di `#navTab`.
