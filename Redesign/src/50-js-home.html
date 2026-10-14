@@ -70,7 +70,7 @@
     const a = App(), item = [];
     kenalanMasuk().forEach(function(o, i){
       const pg = o.nama.split(' ')[0];
-      item.push(kartuAksi('tangan', '<b>' + esc(pg) + '</b> mengajakmu kenalan',
+      item.push(kartuAksi('tangan', '<b>' + esc(pg) + '</b> ingin berkenalan',
         esc([o.kerja, o.kota].filter(Boolean).join(' · ')) + ' · ' + esc(info(o.kelas).nama),
         '<button type="button" class="btn sm" data-home-kenal-terima="' + i + '">Terima</button>' +
         '<button type="button" class="btn outline sm" data-home-kenal-tolak="' + i + '">Tolak</button>'));
@@ -87,22 +87,22 @@
     });
     const dj = a.diajukan || {};
     Object.keys(dj).filter(function(k){ return dj[k] === 'menunggu'; }).forEach(function(k){
-      item.push(kartuAksi('jam', 'Pengajuan gabungmu sedang ditinjau', esc(info(k).nama) + ' · pengurusnya yang memutuskan', ''));
+      item.push(kartuAksi('jam', 'Pengajuan bergabung sedang ditinjau', esc(info(k).nama) + ' · pengurusnya yang memutuskan', ''));
     });
     if(!a.lengkap){
-      item.push(kartuAksi('profil', 'Profilmu belum lengkap', 'Pengurus perlu memastikan kamu orang asli sebelum menyetujui.',
+      item.push(kartuAksi('profil', 'Lengkapi profilmu', 'Pengurus perlu memastikan kamu orang asli sebelum menyetujui.',
         '<button type="button" class="btn sm" data-ke="scrLengkapi">Lengkapi profil</button>'));
     }
-    el('homeAksi').innerHTML = '<h2>Perlu tindakanmu</h2>' + (item.length
+    el('homeAksi').innerHTML = '<h2>Perlu Tindakan</h2>' + (item.length
       ? '<div class="pf-list ha-list">' + item.join('') + '</div>'
-      : '<p class="app-kosong">Tidak ada yang perlu kamu lakukan sekarang.</p>');
+      : '<p class="app-kosong">Semua beres. Belum ada yang memerlukan tindakan.</p>');
   }
 
   /* ---------- Kabar dari komunitasmu ---------- */
   function gambarKabar(){
     const w = el('homeKabar'), kom = diterima();
     if(!kom.length){
-      w.innerHTML = '<h2>Kabar dari komunitasmu</h2><div class="empty">' +
+      w.innerHTML = '<h2>Kabar Komunitas</h2><div class="empty">' +
         '<div class="empty-ic">' + ic('orang') + '</div>' +
         '<h3>Kabar muncul setelah kamu diterima di komunitas</h3>' +
         '<p>Cari komunitasmu lalu ajukan gabung. Punya tautan undangan dari pengurus? Buka tautannya untuk langsung bergabung.</p>' +
@@ -118,7 +118,7 @@
     const list = semua.filter(function(x){ return saring === 'semua' || x.kelas === saring; })
       .sort(function(a, b){ return (b.p.sematkan ? 1 : 0) - (a.p.sematkan ? 1 : 0) || b.p.waktu - a.p.waktu; });
     const chip = function(k, label){ return '<button type="button" class="chip' + (saring === k ? ' on' : '') + '" data-home-saring="' + k + '">' + esc(label) + '</button>'; };
-    w.innerHTML = '<h2>Kabar dari komunitasmu</h2>' +
+    w.innerHTML = '<h2>Kabar Komunitas</h2>' +
       (punya.length > 1 ? '<div class="hk-chips">' + chip('semua', 'Semua') + punya.map(function(k){ return chip(k, info(k).nama); }).join('') + '</div>' : '') +
       (list.length
         ? '<div class="hk-list">' + list.slice(0, tampil).map(function(x){
@@ -160,8 +160,8 @@
     if(!w) return;
     const list = saranKenal();
     if(!list.length){ w.innerHTML = ''; return; }   /* kosong: bagian disembunyikan */
-    w.innerHTML = '<h2>Orang yang mungkin kamu kenal</h2>' +
-      '<p class="app-sub">Anggota komunitasmu yang punya kesamaan denganmu.</p>' +
+    w.innerHTML = '<h2>Rekomendasi Kenalan</h2>' +
+      '<p class="app-sub">Anggota di komunitasmu dengan latar yang serupa.</p>' +
       '<div class="ob-orang-list hn-grid">' + list.map(function(x, j){
         const o = x.o, pg = o.pg || o.n.split(' ')[0];
         /* nama panggilan saja — nama lengkap termasuk data pribadi */
@@ -176,34 +176,21 @@
   /* ---------- sapaan + ringkasan pribadi ----------
      Komponen kartu statistik sama dengan dashboard pengurus (.sek-stat-i). */
   function gambarRingkas(){
-    const a = App(), kn = a.kenalan || {}, dj = a.diajukan || {};
+    const a = App(), kn = a.kenalan || {};
     const nm = (el('pfNm') && el('pfNm').textContent.trim()) || '';
-    if(el('homeSapa')) el('homeSapa').textContent = nm ? 'Halo, ' + nm.split(' ')[0] : 'Home';
-    const hitung = function(o, v){ return Object.keys(o).filter(function(k){ return o[k] === v; }).length; };
-    const kelola = (a.dibuat && !a.dibuat.arsip ? 1 : 0) + (a.diangkat ? 1 : 0);
-    const komIkut = diterima();
-    /* anggota lain di komunitas yang menerimamu (tanpa dirimu, tanpa nama ganda) */
-    const orang = {};
-    komIkut.forEach(function(k){
-      (window.KolavoAnggotaKomunitas ? window.KolavoAnggotaKomunitas(k) : []).forEach(function(o){ if(!o.aku && o.n !== nm) orang[o.n] = 1; });
-    });
-    const kotak = function(angka, ket, ikon, ke, warn){
-      const isi = '<div class="sek-stat-h"><b>' + angka + '</b><i class="sek-stat-ic">' + ic(ikon) + '</i></div><span>' + ket + '</span>';
-      return ke ? '<button type="button" class="sek-stat-i hs-i' + (warn ? ' warn' : '') + '" data-ke="' + ke + '">' + isi + '</button>'
-                : '<div class="sek-stat-i hs-i' + (warn ? ' warn' : '') + '">' + isi + '</div>';
-    };
+    if(el('homeSapa')) el('homeSapa').textContent = nm ? 'Selamat datang, ' + nm.split(' ')[0] : 'Home';
+    const terhubung = Object.keys(kn).filter(function(k){ return kn[k] === 'terhubung'; }).length;
     const masuk = kenalanMasuk().length;   /* siapkan dulu ajakan contoh sebelum dihitung */
-    el('homeRingkas').innerHTML =
-      '<p class="sek-judul-k">Pertemanan</p><div class="sek-stat">' +
-        kotak(hitung(kn, 'terhubung'), 'Kenalan terhubung', 'tangan', '') +
-        kotak(masuk, 'Ajakan kenalan masuk', 'tambahOrang', '', masuk > 0) +
-        kotak(hitung(kn, 'menunggu'), 'Ajakanmu menunggu jawaban', 'jam', '') +
-        kotak(saranKenal(true).length, 'Orang yang cocok denganmu', 'orang', '') +
-      '</div><p class="sek-judul-k">Komunitas</p><div class="sek-stat">' +
-        kotak(komIkut.length, 'Komunitas yang kamu ikuti', 'komunitas', 'scrApp') +
-        kotak(Object.keys(orang).length, 'Anggota yang bisa kamu kenal', 'orang', '') +
-        kotak(hitung(dj, 'menunggu'), 'Pengajuan gabung menunggu', 'jam', '', hitung(dj, 'menunggu') > 0) +
-        kotak(kelola, 'Komunitas yang kamu kelola', 'panel', 'scrDasbor') +
+    /* empat angka saja; tiap kartu membawa ke bagian yang relevan */
+    const kotak = function(angka, ket, ikon, ke, jangkar, warn){
+      return '<button type="button" class="sek-stat-i hs-i' + (warn ? ' warn' : '') + '" data-ke="' + ke + '"' + (jangkar ? ' data-anchor="' + jangkar + '"' : '') + '>' +
+        '<div class="sek-stat-h"><b>' + angka + '</b><i class="sek-stat-ic">' + ic(ikon) + '</i></div><span>' + ket + '</span></button>';
+    };
+    el('homeRingkas').innerHTML = '<div class="sek-stat">' +
+      kotak(diterima().length, 'Komunitas Diikuti', 'komunitas', 'scrApp', '') +
+      kotak(terhubung, 'Kenalan Terhubung', 'tangan', 'scrHome', 'homeKenal') +
+      kotak(masuk, 'Permintaan Kenalan', 'tambahOrang', 'scrHome', 'homeAksi', masuk > 0) +
+      kotak(saranKenal(true).length, 'Rekomendasi Kenalan', 'orang', 'scrHome', 'homeKenal') +
       '</div>';
   }
 

@@ -1443,3 +1443,13 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   menunggu · komunitas dikelola (→ Dashboard). Angka oranye bila ada yang menunggu tindakan.
   → Perlu tindakanmu → Orang yang mungkin kamu kenal (grid kartu ≥ 260px; foto + teks di
   atas, tombol Ajak selebar kartu) → Kabar. Ringkasan digambar ulang sesudah Ajak/Terima.
+- **Home: 4 angka + bahasa lebih profesional.** Ringkasan dipangkas jadi satu baris tanpa
+  label kelompok: **Komunitas Diikuti** (→ tab Komunitas) · **Kenalan Terhubung** ·
+  **Permintaan Kenalan** (oranye bila ada; → Perlu Tindakan) · **Rekomendasi Kenalan**
+  (→ bagian rekomendasi). Dibuang: ajakan terkirim, anggota yang bisa dikenal, pengajuan
+  menunggu, komunitas dikelola (tetap terlihat di Perlu Tindakan / Dashboard). Bahasa Home:
+  sapaan "Selamat datang, {nama}", sub "Ringkasan aktivitas dan koneksimu di seluruh
+  komunitas.", judul bagian **Perlu Tindakan · Rekomendasi Kenalan · Kabar Komunitas** (Title
+  Case), kartu "Sekar ingin berkenalan", "Pengajuan bergabung sedang ditinjau", "Lengkapi
+  profilmu", kosong → "Semua beres. Belum ada yang memerlukan tindakan." Sapaan tetap "kamu"
+  (suara brand), hanya dibuat lebih ringkas & formal.
