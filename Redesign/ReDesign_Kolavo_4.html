@@ -517,20 +517,21 @@ body:not([data-layar="scrBeranda"]):not([data-layar="scrMasuk"]) #demoTautan{dis
   background-image:radial-gradient(var(--line) 1.2px,transparent 1.3px);background-size:22px 22px;
   -webkit-mask-image:radial-gradient(70% 60% at 50% 42%,#000 0%,transparent 78%);mask-image:radial-gradient(70% 60% at 50% 42%,#000 0%,transparent 78%)}
 .msk-in{position:relative;z-index:1}
-.msk-deko{display:none}
-@media(min-width:1180px){
-  .msk-deko{display:block;position:absolute;inset:0;z-index:0;pointer-events:none}
-  .msk-org{position:absolute;display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:100px;
-    background:var(--card);border:1px solid var(--line);box-shadow:var(--sh-lg);animation:mskApung 7s ease-in-out infinite}
-  .msk-org .av{width:44px;height:44px}
-  .msk-tag{font-size:12.5px;font-weight:500;color:var(--ink-2);white-space:nowrap}
-  .msk-org.o1{left:7%;top:18%}
-  .msk-org.o2{left:11%;bottom:20%;animation-delay:-2s}
-  .msk-org.o3{right:7%;top:24%;animation-delay:-4s}
-  .msk-org.o4{right:10%;bottom:16%;animation-delay:-1s}
-}
-@keyframes mskApung{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@media(prefers-reduced-motion:reduce){.msk-org{animation:none}}
+/* bentuk geometris brand: cincin & lingkaran samar dari token, sebagian keluar tepi.
+   Ukuran pakai vmin supaya proporsinya sama di HP dan desktop. */
+.msk-deko{position:absolute;inset:0;z-index:0;pointer-events:none}
+.msk-g{position:absolute;border-radius:50%}
+.msk-g.g1{width:46vmin;height:46vmin;left:-16vmin;top:-14vmin;border:2px solid var(--blue);opacity:.28}
+.msk-g.g2{width:22vmin;height:22vmin;left:9vmin;top:18vmin;border:2px dashed var(--blue);opacity:.35}
+.msk-g.g3{width:30vmin;height:30vmin;right:-8vmin;top:-6vmin;background:var(--blue-wash);opacity:.9}
+.msk-g.g4{width:52vmin;height:52vmin;right:-20vmin;bottom:-22vmin;border:2px solid var(--orange);opacity:.32}
+.msk-g.g5{width:14vmin;height:14vmin;right:14vmin;bottom:16vmin;background:var(--orange-wash)}
+.msk-g.g6{width:26vmin;height:26vmin;left:-6vmin;bottom:-8vmin;background:var(--blue-wash);opacity:.8}
+/* gerak sangat pelan di bentuk kecil saja */
+.msk-g.g2,.msk-g.g5{animation:mskApung 9s ease-in-out infinite}
+.msk-g.g5{animation-delay:-3s}
+@keyframes mskApung{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@media(prefers-reduced-motion:reduce){.msk-g{animation:none}}
 .msk-in{max-width:440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:22px}
 .msk-box{width:100%;background:var(--card);border-radius:32px;box-shadow:var(--sh-lg);padding:30px 28px 24px;text-align:center}
 .msk-foot{font-size:13.5px;color:var(--ink-2);text-align:center}
@@ -2719,12 +2720,10 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
      ============================================================ -->
 <div class="scr" id="scrMasuk" hidden>
  <div class="msk">
-  <!-- latar dekoratif: anggota (foto AI) yang menunggu dikenali — hanya di layar lebar -->
+  <!-- latar dekoratif: bentuk geometris brand (lingkaran & cincin), tanpa konten -->
   <div class="msk-deko" aria-hidden="true">
-    <span class="msk-org o1"><span class="av photo p-fajar"></span><span class="msk-tag">Kontraktor · Jakarta Utara</span></span>
-    <span class="msk-org o2"><span class="av photo p-rani"></span><span class="msk-tag">Desainer produk</span></span>
-    <span class="msk-org o3"><span class="av photo p-ayu"></span><span class="msk-tag">Sama-sama alumni 2016</span></span>
-    <span class="msk-org o4"><span class="av photo p-bagas"></span><span class="msk-tag">Ajakan kenalan diterima</span></span>
+    <span class="msk-g g1"></span><span class="msk-g g2"></span><span class="msk-g g3"></span>
+    <span class="msk-g g4"></span><span class="msk-g g5"></span><span class="msk-g g6"></span>
   </div>
   <div class="msk-in">
     <a class="logo" href="#0" data-ke="scrBeranda" aria-label="Kolavo — tentang Kolavo">Kolavo</a>

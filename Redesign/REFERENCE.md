@@ -1412,8 +1412,8 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   menyalin semua kartu direktori (komunitas buatan ikut, tombolnya `data-etalase="l-dibuat"`).
 - **Latar halaman masuk (`scrMasuk`).** `.msk`: dua gradasi radial dari token (`--blue-wash`
   kiri atas, `--orange-wash` kanan bawah) di atas `--blue-tint → --bg-alt`, plus pola titik
-  `--line` yang memudar ke tepi (mask). Di ≥ 1180px: empat keping anggota melayang
-  (`.msk-deko`, `aria-hidden`; foto AI Fajar, Rani, Ayu, Bagas + keterangan singkat) yang
-  menggemakan "Kenali anggotamu"; animasi naik-turun 7 detik, mati bila
-  `prefers-reduced-motion`. Di bawah 1180px keping disembunyikan (di 960–1180 sempat
-  menyentuh kartu masuk). Semua warna lewat token — tetap terbaca di tema gelap.
+  `--line` yang memudar ke tepi (mask). Dekorasi: **bentuk geometris brand** (`.msk-g`, 6 buah,
+  `aria-hidden`) — cincin biru/oranye (garis 2px, satu putus-putus) dan lingkaran isi
+  `--blue-wash`/`--orange-wash`, ukuran `vmin`, sebagian keluar tepi; dua yang kecil bergerak
+  pelan (mati bila `prefers-reduced-motion`). Menggantikan keping foto anggota melayang (dipilih
+  user 14 Okt 2026: lebih bersih, tidak bersaing dengan kartu). Tampil di semua lebar. Semua warna lewat token — tetap terbaca di tema gelap.
