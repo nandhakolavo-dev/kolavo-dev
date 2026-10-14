@@ -140,9 +140,10 @@ Rencana & keputusan: `Redesign/PROMPT-APP.md`; rincian teknis di `REFERENCE.md`.
 - **Landing** (`scrBeranda`) = halaman jualan untuk calon pengurus: nav Untuk siapa · Cara
   kerja · Harga · Buat komunitas · Masuk, etalase 3 komunitas. Tanpa menu akun/notifikasi.
 - **Kolavo App** = semua layar lain. Pintu masuknya halaman login penuh `scrMasuk` (Google
-  SSO; varian undangan bila datang dari tautan/QR). Nav ikon ala Facebook: Komunitas
-  (`scrApp`: Komunitasku + jelajahi/minta gabung) · Profil · Dashboard (`scrDasbor`: daftar
-  komunitas yang dikelola, terbuka untuk semua) — di HP jadi bilah bawah.
+  SSO; varian undangan bila datang dari tautan/QR). Nav ikon ala Facebook: Home
+  (`scrHome`: apa yang baru & perlu dilakukan — `PROMPT-HOME.md`) · Komunitas (`scrApp`:
+  Komunitasku + jelajahi/minta gabung) · Dashboard (`scrDasbor`: daftar komunitas yang
+  dikelola, terbuka untuk semua) — di HP jadi bilah bawah. Profil lewat avatar header.
 - Tautan/QR komunitas (`kolavo.app/k/<slug>`) → login → profil komunitasnya. QR dibuat
   inline oleh `50-js-qr` (tanpa pustaka).
 - `window.KolavoApp` tetap nama objek keadaan, bukan produk.

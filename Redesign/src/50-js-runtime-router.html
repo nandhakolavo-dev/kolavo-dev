@@ -19,7 +19,7 @@
      dibuka dari data: URL dan iframe ber-sandbox, tempat hash tidak selalu
      bisa ditulis — di sana routing berbasis hash diam-diam tidak jalan.
      Anchor dalam halaman (#direktori, #pengurus) tetap seperti biasa. */
-  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrApp', 'scrDasbor', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
+  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrHome', 'scrApp', 'scrDasbor', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
   /* Dua pintu (PROMPT-APP): scrBeranda = landing jualan; layar lain = Kolavo App.
      Tab app: Komunitas (scrApp) · Profil · Dashboard (scrDasbor). Layar terlindung
      tanpa akun → scrMasuk + App.tujuan. Halaman komunitas sendiri tetap tanpa
@@ -27,7 +27,7 @@
      undangan (KolavoBukaTautan) yang meminta masuk dulu. */
   /* detail anggota cuma bisa dicapai dari daftar yang sudah terbuka, tapi
      penjaganya tetap dipasang supaya tidak bisa dibuka lewat KolavoKe langsung */
-  const perluMasuk = { scrApp: true, scrDasbor: true, scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
+  const perluMasuk = { scrHome: true, scrApp: true, scrDasbor: true, scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
   let sekarang = 'scrBeranda';
 
   window.KolavoKe = function(id, anchor){ ke(id, anchor); };
@@ -45,7 +45,7 @@
     let id = sekarang;
     /* penjaga: layar yang butuh akun tidak bisa dibuka sebelum masuk */
     /* sudah masuk: halaman masuk tidak relevan lagi, teruskan ke tujuannya */
-    if(id === 'scrMasuk' && App.masuk){ id = App.tujuan || 'scrApp'; App.tujuan = null; }
+    if(id === 'scrMasuk' && App.masuk){ id = App.tujuan || 'scrHome'; App.tujuan = null; }
     /* belum masuk: layar terlindung diganti halaman masuk penuh (bukan modal),
        tujuannya diingat supaya sesudah masuk langsung ke sana */
     if(perluMasuk[id] && !App.masuk){ App.tujuan = id; id = 'scrMasuk'; }
@@ -73,14 +73,15 @@
     });
     window.scrollTo(0, 0);
     if(id === 'scrProfil') isiProfil();
-    if((id === 'scrApp' || id === 'scrDasbor') && window.KolavoGambarApp) window.KolavoGambarApp(id);
+    if((id === 'scrHome' || id === 'scrApp' || id === 'scrDasbor') && window.KolavoGambarApp) window.KolavoGambarApp(id);
   }
 
   /* ---------- tab nav Kolavo App (A3) ----------
      Tab aktif mengikuti layar, bukan klik terakhir: layar yang dibuka lewat
      tautan lain (kartu, notifikasi) tetap menyalakan tab induknya. */
-  const TAB = { scrApp: 'komunitas', scrKomunitas: 'komunitas', scrAnggota: 'komunitas',
-                scrProfil: 'profil', scrLengkapi: 'profil', scrDasbor: 'dashboard', scrKelola: 'dashboard', scrBuat: 'dashboard' };
+  /* Profil & Lengkapi dibuka dari avatar — tidak menyalakan tab mana pun (PROMPT-HOME H1) */
+  const TAB = { scrHome: 'home', scrApp: 'komunitas', scrKomunitas: 'komunitas', scrAnggota: 'komunitas',
+                scrDasbor: 'dashboard', scrKelola: 'dashboard', scrBuat: 'dashboard' };
   function tabNav(id){
     const ada = App.mode === 'app' && App.masuk && id !== 'scrMasuk';
     document.body.classList.toggle('m-tab', ada);
@@ -154,7 +155,7 @@
     } else if(App.tujuan){
       const t = App.tujuan; App.tujuan = null; ke(t);
     } else {
-      ke('scrApp');
+      ke('scrHome');
     }
   };
 
@@ -464,7 +465,7 @@
         const t = App.tujuan; App.tujuan = null; ke(t);
         toast('Profil kamu sudah lengkap.');
       } else {
-        ke('scrApp');
+        ke('scrHome');
         toast('Profil kamu sudah lengkap.');
       }
       return;

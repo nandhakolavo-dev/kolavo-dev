@@ -439,6 +439,10 @@ body.m-tab .nav-in{position:relative}
 .dsb-buat{margin-top:16px}
 /* baris daftar dashboard: kolom tetap supaya lencana & tombol tidak bergeser
    mengikuti panjang nama komunitas — nama yang panjang membungkus di kolomnya */
+/* Home (PROMPT-HOME): satu kolom; H3 menjadikannya dua kolom di desktop */
+.home-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0 28px}
+.home-grid .app-sek:empty{display:none}
+.home-utama,.home-samping{min-width:0}
 #dasborList .pf-list{grid-template-columns:1fr}
 .pf-item.dsb-i{display:grid;grid-template-columns:minmax(0,1fr) 120px auto;align-items:center;gap:16px}
 .dsb-i .status{justify-self:end}
@@ -2271,8 +2275,8 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
          (router: body.m-tab). < 768px pindah ke bilah bawah. -->
     <a class="nav-cari" id="navCari" href="#0" data-ke="scrApp" data-anchor="direktori" aria-label="Cari komunitas" hidden><i data-ic="cari"></i><span>Cari komunitas</span></a>
     <div class="nav-tab" id="navTab" role="navigation" aria-label="Menu Kolavo" hidden>
+      <a class="nt" href="#0" data-tab="home" data-ke="scrHome" title="Home"><i data-ic="rumah"></i><b>Home</b></a>
       <a class="nt" href="#0" data-tab="komunitas" data-ke="scrApp" title="Komunitas"><i data-ic="orang"></i><b>Komunitas</b></a>
-      <a class="nt" href="#0" data-tab="profil" data-ke="scrProfil" title="Profil"><i data-ic="profil"></i><b>Profil</b></a>
       <a class="nt" href="#0" data-tab="dashboard" data-ke="scrDasbor" title="Dashboard"><i data-ic="kelompok"></i><b>Dashboard</b></a>
     </div>
     <div class="nav-sp"></div>
@@ -2284,7 +2288,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
       Buat komunitas
     </a>
-    <a class="btn md" href="#0" data-ke="scrApp" id="btnApp" hidden>Buka Kolavo</a>
+    <a class="btn md" href="#0" data-ke="scrHome" id="btnApp" hidden>Buka Kolavo</a>
     <a class="btn md" href="#0" data-login="nav" id="btnMasuk">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
       Masuk
@@ -2326,7 +2330,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
           Profil saya
           <span class="pill" id="acctPill">Belum lengkap</span>
         </a>
-        <a class="acct-i" href="#0" data-ke="scrProfil" data-anchor="pfKomunitas">
+        <a class="acct-i" href="#0" data-ke="scrApp">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
           Komunitas saya
           <span class="num">2</span>
@@ -2680,6 +2684,31 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       </div>
     </div>
     <p class="msk-foot">Pengurus yang ingin membuat komunitas? <a href="#0" data-ke="scrBeranda">Pelajari Kolavo</a></p>
+  </div>
+ </div>
+</div>
+<!-- ============================================================
+     Kolavo App · tab Home (PROMPT-HOME H1) — beranda sesudah masuk.
+     Home = apa yang baru & apa yang perlu dilakukan di semua komunitasmu.
+     Komunitas (scrApp) = di mana; Dashboard (scrDasbor) = alat pengurus.
+     Wadah diisi bertahap: #homeAksi & #homeKabar (H2), #homeKenal (H3).
+     ============================================================ -->
+<div class="scr" id="scrHome" hidden>
+ <div class="app-pg">
+  <div class="shell">
+    <header class="app-hd">
+      <h1>Home</h1>
+      <p>Kabar terbaru dan hal yang perlu kamu lakukan di semua komunitasmu.</p>
+    </header>
+    <div class="home-grid">
+      <div class="home-utama">
+        <section class="app-sek" id="homeAksi" aria-label="Perlu tindakanmu"></section>
+        <section class="app-sek" id="homeKabar" aria-label="Kabar dari komunitasmu"></section>
+      </div>
+      <aside class="home-samping">
+        <section class="app-sek" id="homeKenal" aria-label="Orang yang mungkin kamu kenal"></section>
+      </aside>
+    </div>
   </div>
  </div>
 </div>
@@ -3677,7 +3706,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
    Nama: dasbor info onboard jawaban mata kelompok rapi email setting
    akun notif tagihan akses tambahOrang orang pengurus kartuId serah
    riwayat terimaOrang tolakOrang dokumen naik turun bagikan pensil
-   sampah kalender jam bendera tangan toa profil cari
+   sampah kalender jam bendera tangan toa profil cari rumah
    ============================================================ */
 (function(){
   const P = {
@@ -3714,6 +3743,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
     jam:         '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     profil:      '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
     cari:        '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+    rumah:       '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9"/>',
     bendera:     '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
     tangan:      '<path d="M7 11V6a1.5 1.5 0 0 1 3 0v4M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V12M16 9a1.5 1.5 0 0 1 3 0v4a8 8 0 0 1-8 8h-.5A6.5 6.5 0 0 1 5 16.8L3.4 13a1.5 1.5 0 0 1 2.6-1.4L7 13"/>'
   };
@@ -4728,7 +4758,7 @@ function hitung(){}
      dibuka dari data: URL dan iframe ber-sandbox, tempat hash tidak selalu
      bisa ditulis — di sana routing berbasis hash diam-diam tidak jalan.
      Anchor dalam halaman (#direktori, #pengurus) tetap seperti biasa. */
-  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrApp', 'scrDasbor', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
+  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrHome', 'scrApp', 'scrDasbor', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
   /* Dua pintu (PROMPT-APP): scrBeranda = landing jualan; layar lain = Kolavo App.
      Tab app: Komunitas (scrApp) · Profil · Dashboard (scrDasbor). Layar terlindung
      tanpa akun → scrMasuk + App.tujuan. Halaman komunitas sendiri tetap tanpa
@@ -4736,7 +4766,7 @@ function hitung(){}
      undangan (KolavoBukaTautan) yang meminta masuk dulu. */
   /* detail anggota cuma bisa dicapai dari daftar yang sudah terbuka, tapi
      penjaganya tetap dipasang supaya tidak bisa dibuka lewat KolavoKe langsung */
-  const perluMasuk = { scrApp: true, scrDasbor: true, scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
+  const perluMasuk = { scrHome: true, scrApp: true, scrDasbor: true, scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
   let sekarang = 'scrBeranda';
 
   window.KolavoKe = function(id, anchor){ ke(id, anchor); };
@@ -4754,7 +4784,7 @@ function hitung(){}
     let id = sekarang;
     /* penjaga: layar yang butuh akun tidak bisa dibuka sebelum masuk */
     /* sudah masuk: halaman masuk tidak relevan lagi, teruskan ke tujuannya */
-    if(id === 'scrMasuk' && App.masuk){ id = App.tujuan || 'scrApp'; App.tujuan = null; }
+    if(id === 'scrMasuk' && App.masuk){ id = App.tujuan || 'scrHome'; App.tujuan = null; }
     /* belum masuk: layar terlindung diganti halaman masuk penuh (bukan modal),
        tujuannya diingat supaya sesudah masuk langsung ke sana */
     if(perluMasuk[id] && !App.masuk){ App.tujuan = id; id = 'scrMasuk'; }
@@ -4782,14 +4812,15 @@ function hitung(){}
     });
     window.scrollTo(0, 0);
     if(id === 'scrProfil') isiProfil();
-    if((id === 'scrApp' || id === 'scrDasbor') && window.KolavoGambarApp) window.KolavoGambarApp(id);
+    if((id === 'scrHome' || id === 'scrApp' || id === 'scrDasbor') && window.KolavoGambarApp) window.KolavoGambarApp(id);
   }
 
   /* ---------- tab nav Kolavo App (A3) ----------
      Tab aktif mengikuti layar, bukan klik terakhir: layar yang dibuka lewat
      tautan lain (kartu, notifikasi) tetap menyalakan tab induknya. */
-  const TAB = { scrApp: 'komunitas', scrKomunitas: 'komunitas', scrAnggota: 'komunitas',
-                scrProfil: 'profil', scrLengkapi: 'profil', scrDasbor: 'dashboard', scrKelola: 'dashboard', scrBuat: 'dashboard' };
+  /* Profil & Lengkapi dibuka dari avatar — tidak menyalakan tab mana pun (PROMPT-HOME H1) */
+  const TAB = { scrHome: 'home', scrApp: 'komunitas', scrKomunitas: 'komunitas', scrAnggota: 'komunitas',
+                scrDasbor: 'dashboard', scrKelola: 'dashboard', scrBuat: 'dashboard' };
   function tabNav(id){
     const ada = App.mode === 'app' && App.masuk && id !== 'scrMasuk';
     document.body.classList.toggle('m-tab', ada);
@@ -4863,7 +4894,7 @@ function hitung(){}
     } else if(App.tujuan){
       const t = App.tujuan; App.tujuan = null; ke(t);
     } else {
-      ke('scrApp');
+      ke('scrHome');
     }
   };
 
@@ -5173,7 +5204,7 @@ function hitung(){}
         const t = App.tujuan; App.tujuan = null; ke(t);
         toast('Profil kamu sudah lengkap.');
       } else {
-        ke('scrApp');
+        ke('scrHome');
         toast('Profil kamu sudah lengkap.');
       }
       return;
@@ -11262,7 +11293,8 @@ function hitung(){}
 
   window.KolavoGambarApp = function(id){
     if(id === 'scrApp'){ gambarKu(); gambarKartu(); }
-    else gambarDasbor();
+    else if(id === 'scrDasbor') gambarDasbor();
+    /* scrHome: diisi PROMPT-HOME H2 (aksi & kabar) dan H3 (kenalan) */
   };
 
   /* ---------- tautan / QR undangan (A5b) ----------

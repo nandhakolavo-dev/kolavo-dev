@@ -1349,3 +1349,13 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   rata kanan di kolom 120px, tombol "Buka dashboard" selalu di tepi kanan (terukur sama
   persis untuk nama 13 vs 90 karakter). ≤ 560px: nama satu baris penuh, lencana + tombol di
   baris kedua, posisinya tetap sama antarbaris.
+
+## Menu Home (14 Okt 2026) — rencana: `PROMPT-HOME.md`
+
+- **H1 · kerangka.** Layar `scrHome` (ke-11, perluMasuk) dengan wadah `#homeAksi`,
+  `#homeKabar` (kolom utama) dan `#homeKenal` (`aside`) — wadah kosong disembunyikan
+  (`.app-sek:empty`). Nav `#navTab`: **Home** (ikon baru `rumah`) · Komunitas · Dashboard;
+  tab Profil dihapus — profil lewat avatar. `TAB`: `scrProfil`/`scrLengkapi` tidak menyalakan
+  tab. Tujuan bawaan sesudah masuk, simpan Lengkapi, `scrMasuk`, dan tombol landing "Buka
+  Kolavo" → `scrHome`. Menu avatar "Komunitas saya" → tab Komunitas. Tautan/QR undangan tetap
+  ke `scrKomunitas`.

@@ -396,6 +396,10 @@ body.m-tab .nav-in{position:relative}
 .dsb-buat{margin-top:16px}
 /* baris daftar dashboard: kolom tetap supaya lencana & tombol tidak bergeser
    mengikuti panjang nama komunitas — nama yang panjang membungkus di kolomnya */
+/* Home (PROMPT-HOME): satu kolom; H3 menjadikannya dua kolom di desktop */
+.home-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0 28px}
+.home-grid .app-sek:empty{display:none}
+.home-utama,.home-samping{min-width:0}
 #dasborList .pf-list{grid-template-columns:1fr}
 .pf-item.dsb-i{display:grid;grid-template-columns:minmax(0,1fr) 120px auto;align-items:center;gap:16px}
 .dsb-i .status{justify-self:end}
