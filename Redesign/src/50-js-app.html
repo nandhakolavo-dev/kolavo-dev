@@ -12,6 +12,27 @@
   /* contoh komunitas orang lain yang mengangkatmu jadi pengurus — dimunculkan
      tombol demo "Angkat saya jadi pengurus", supaya daftar dua jenis bisa dicoba */
   const DIANGKAT = { kelas: 'l-iasman52', nama: 'Ikatan Alumni SMAN 52', jabatan: 'Sekretaris', jumlah: '6 anggota' };
+  /* objek komunitas untuk mesin dashboard — dibuat sekali supaya keadaannya
+     dipulihkan (bukan dibangun ulang) setiap kali dibuka lagi. Orangnya sama
+     dengan data contoh halaman komunitas IA SMAN 52. */
+  let komAngkat = null;
+  function komDiangkat(){
+    if(komAngkat) return komAngkat;
+    const logo = document.querySelector('#direktori .ccard .logo-sq.' + DIANGKAT.kelas);
+    const bg = logo ? getComputedStyle(logo).backgroundImage : '';
+    const m = /^url\("?(.*?)"?\)$/.exec(bg || '');
+    komAngkat = {
+      slug: 'iasman52', kelas: DIANGKAT.kelas, nama: DIANGKAT.nama, bentuk: 'Ikatan Alumni', kota: 'Jakarta Utara',
+      inisial: 'IA', logo: m ? m[1] : '', diangkat: true, jabatan: DIANGKAT.jabatan, nomorMode: 'manual', kode: 'IAS52',
+      pengurusLain: [ { nama: 'Fajar Nugroho', jabatan: 'Ketua', kerja: 'Kontraktor', kota: 'Jakarta Utara' },
+                      { nama: 'Rani Setiawati', jabatan: 'Bendahara', kerja: 'Desainer produk', kota: 'Jakarta Selatan' } ],
+      anggota: [ { nama: 'Ayu Lestari', kerja: 'Apoteker', kota: 'Depok' },
+                 { nama: 'Intan Permatasari', kerja: 'Guru', kota: 'Bekasi' },
+                 { nama: 'Tari Andriani', kerja: 'Karyawan swasta', kota: 'Jakarta Utara' } ]
+      /* 3 pengurus (termasuk kamu) + 3 anggota = 6, sama dengan kartu komunitasnya */
+    };
+    return komAngkat;
+  }
 
   /* ---------- tab Komunitas ---------- */
   function gambarKu(){
@@ -103,8 +124,7 @@
 
   function bukaDasbor(jenis){
     /* lewat KolavoBukaDashboard, bukan KolavoKe: keadaan dashboard harus dibangun dulu */
-    if(jenis === 'dibuat'){ window.KolavoBukaDashboard(); return; }
-    toast('Prototipe: dashboard komunitas yang mengangkatmu memakai tampilan yang sama, belum disimulasikan.');
+    window.KolavoBukaDashboard(null, jenis === 'diangkat' ? komDiangkat() : null);
   }
 
   document.addEventListener('click', function(e){
@@ -121,6 +141,12 @@
     if(et){
       const asli = document.querySelector('#direktori .ccard .logo-sq.' + et.dataset.etalase);
       if(asli) window.KolavoBukaTautan(asli.closest('.ccard'));
+      return;
+    }
+    const bd = e.target.closest('[data-buka-diangkat]');
+    if(bd){
+      const l = document.querySelector('#direktori .ccard .logo-sq.' + bd.dataset.bukaDiangkat);
+      if(l) window.KolavoLihatKomunitas(l.closest('.ccard'));
       return;
     }
     const d = e.target.closest('[data-dasbor-buka]');

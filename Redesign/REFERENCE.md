@@ -1329,3 +1329,18 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   dipakai `scrMasuk`. Kelas `.lgn`/`.lgn-box`/`.lgn-head` tetap: wadah popup Bagikan,
   Legal, Onboarding, Sekretariat. `KolavoBukaModal` dipertahankan namanya (dipanggil tombol
   Gabung), isinya ke `scrMasuk`.
+- **Dashboard komunitas yang mengangkatmu (14 Okt 2026).** Mesin dashboard kini memegang
+  >1 komunitas: `bangun(kom)` menyimpan keadaan komunitas yang ditinggal (`KONTEKS[slug]`:
+  salinan dangkal kunci data `D`, isi `JABATAN`, dan titipan modul lain lewat
+  `D.onSimpan`/`D.onPulih` — Sekretariat menitipkan `S`) lalu memulihkannya saat dibuka lagi
+  (hanya bila objek komunitasnya sama, supaya komunitas buatan yang dihapus lalu dibuat ulang
+  mulai dari nol). `KolavoBukaDashboard(tab, kom)` — tanpa `kom` = komunitas buatan sendiri.
+  Contoh "diangkat" (`komDiangkat()` di 50-js-app, dinyalakan tombol demo **Angkat saya jadi
+  pengurus**): IA SMAN 52, kamu **Sekretaris** di bawah Ketua Fajar Nugroho & Bendahara Rani
+  Setiawati (orangnya sama dengan halaman komunitas; total 6 anggota = kartunya), peninjau
+  Ketua + kamu, Advance sudah dilanggan Ketua. Bedanya dengan komunitas buatan sendiri
+  (`#scrKelola.kl-diangkat`): menu **Tagihan** & **Akses pengurus** tersembunyi dan dipaksa
+  ke Dashboard bila dipilih, banner Advance menulis "langganan dikelola Ketua" (bukan tautan
+  Kelola langganan), remah nama komunitas membuka halaman IA SMAN 52 (`data-buka-diangkat`).
+  Terverifikasi: dua dashboard bolak-balik dengan keadaan terpisah (permintaan gabung diubah
+  di satu tidak bocor ke yang lain), juga untuk pengguna tanpa komunitas buatan.

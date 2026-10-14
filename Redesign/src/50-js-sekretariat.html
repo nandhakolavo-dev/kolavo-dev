@@ -122,6 +122,9 @@
     S.kode = acak();
   }
   D.onBangun.push(reset);
+  /* dashboard pindah komunitas: titipkan & pulihkan keadaan Advance komunitas ini */
+  D.onSimpan.push(function(){ return Object.assign({}, S); });
+  D.onPulih.push(function(s){ Object.keys(S).forEach(function(k){ delete S[k]; }); Object.assign(S, s); });
   /* jabatan diganti nama / dihapus di Struktur Kepengurusan: hak ikut pindah kunci */
   D.onJabatanGanti.push(function(lama, baru){
     [S.hak, S.hakDraf].forEach(function(peta){
@@ -133,7 +136,8 @@
 
   function catat(teks){ S.jejak.unshift({ teks: teks, waktu: 'baru saja' }); }
   function pemegangAkses(){
-    return D.pengurus.filter(function(p){ return p.aku || S.akses[p.nama]; });
+    /* di komunitas yang mengangkatmu, Ketua (pemegang langganan) tentu memegang dashboard */
+    return D.pengurus.filter(function(p){ return p.aku || S.akses[p.nama] || (D.kom && D.kom.diangkat && p.jabatan === 'Ketua'); });
   }
   function depan(nama){ return nama === D.aku ? 'Kamu' : nama.split(' ')[0]; }
   function tglIndo(iso){
@@ -159,7 +163,9 @@
     if(adv){
       info = '<b>Advance aktif</b> · ditagihkan ke ' + lolos(D.kom.nama) + ', bukan ke akunmu · ' +
         pemegangAkses().length + ' pengurus memegang dashboard · ' +
-        '<button type="button" class="kl-mode-link" data-sek-kelola>Kelola langganan</button>';
+        /* komunitas yang mengangkatmu: langganan dipegang pembuatnya, bukan kamu */
+        (D.kom.diangkat ? 'langganan dikelola ' + lolos((D.pengurus[0] || {}).jabatan || 'Ketua')
+                        : '<button type="button" class="kl-mode-link" data-sek-kelola>Kelola langganan</button>');
     } else if(D.sekAktif){
       info = 'Langganan Advance tetap aktif. Pindah ke Advance kapan saja.';
     } else {

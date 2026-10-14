@@ -54,6 +54,9 @@
   window.KolavoDashboard = D;
   /* kait buat modul yang menempel ke dashboard (50-js-sekretariat) */
   D.onBangun = [];
+  /* keadaan per komunitas (dashboard >1 komunitas): modul lain menitipkan keadaannya
+     lewat onSimpan (kembalikan salinan) & onPulih (terima salinan itu lagi) */
+  D.onSimpan = []; D.onPulih = [];
   /* dipanggil (lama, baru) saat jabatan diganti nama; baru = null kalau dihapus */
   D.onJabatanGanti = [];
   D.onGambar = [];
@@ -145,12 +148,34 @@
   const IKON_CEK_KECIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
 
   /* ---------- membangun dari komunitas yang baru dibuat ---------- */
-  function bangun(){
-    const kom = (window.KolavoApp || {}).dibuat;
+  /* ---------- konteks per komunitas ----------
+     Mesin ini dulu hanya memegang komunitas buatan sendiri. Kini pengguna bisa
+     mengelola beberapa (buatan sendiri + yang mengangkatnya jadi pengurus): keadaan
+     komunitas yang ditinggal disimpan, lalu dipulihkan saat dibuka lagi. */
+  const KONTEKS = {};
+  function simpanKonteks(){
+    if(!D.built || !D.kom) return;
+    const d = {};
+    Object.keys(D).forEach(function(k){ if(typeof D[k] !== 'function' && !/^on[A-Z]/.test(k)) d[k] = D[k]; });
+    KONTEKS[D.kom.slug] = { kom: D.kom, d: d, jab: JABATAN.slice(), lain: D.onSimpan.map(function(f){ return f(); }) };
+  }
+  function pulihKonteks(k){
+    Object.assign(D, k.d);
+    JABATAN.length = 0; Array.prototype.push.apply(JABATAN, k.jab);
+    D.onPulih.forEach(function(f, i){ f(k.lain[i]); });
+  }
+
+  function bangun(komMinta){
+    const kom = komMinta || (window.KolavoApp || {}).dibuat;
     if(!kom) return false;
 
     /* dibangun ulang tiap komunitas baru; kalau komunitas sama, keadaan dijaga */
     if(D.built && D.kom && D.kom.slug === kom.slug){ D.kom = kom; return true; }
+    simpanKonteks();
+    /* komunitas yang pernah dibuka: pulihkan (objek komunitas yang sama — komunitas
+       buatan yang dihapus lalu dibuat ulang dengan slug sama tetap mulai dari nol) */
+    const lama = KONTEKS[kom.slug];
+    if(lama && lama.kom === kom){ pulihKonteks(lama); return true; }
 
     D.kom = kom;
     D.aku = nilaiProfil('pfNm') || (el('pfNm') && el('pfNm').textContent.trim()) || 'Kamu';
@@ -197,7 +222,25 @@
     D.built = true;
     /* modul lain (Sekretariat) mengosongkan keadaannya sendiri di sini */
     D.onBangun.forEach(function(f){ f(); });
+    if(kom.diangkat) terapkanDiangkat(kom);
     return true;
+  }
+
+  /* komunitas orang lain yang mengangkatmu jadi pengurus (contoh: IA SMAN 52).
+     Bedanya dengan komunitas buatan sendiri: kamu bukan pembuat — jabatanmu dari
+     Ketua, Advance sudah dilanggan Ketua, dan Tagihan/Akses pengurus tidak terbuka. */
+  function terapkanDiangkat(kom){
+    const lain = kom.pengurusLain || [];
+    D.pengurus = lain.slice(0, 1).map(function(p){ return { nama: p.nama, jabatan: p.jabatan }; })
+      .concat([{ nama: D.aku, jabatan: kom.jabatan || 'Pengurus', aku: true }])
+      .concat(lain.slice(1).map(function(p){ return { nama: p.nama, jabatan: p.jabatan }; }));
+    lain.concat(kom.anggota || []).forEach(function(o){ D.mem[o.nama] = { nama: o.nama, kerja: o.kerja || '', kota: o.kota || '' }; });
+    D.anggotaBiasa = (kom.anggota || []).map(function(o){ return o.nama; });
+    D.peninjau = lain.length ? [lain[0].nama, D.aku] : [D.aku];
+    if(lain.length) D.riwayat[1].oleh = lain[0].nama;
+    D.sekAktif = true;
+    D.mode = 'advance';
+    D.tab = 'dasbor';
   }
 
   /* nomor anggota: KODE-TAHUN MASUK-URUTAN (3 digit). urut = jumlah yang sudah
@@ -227,7 +270,14 @@
   /* ---------- kepala halaman ---------- */
   function gambarKepala(){
     const kom = D.kom;
-    const jk = el('klJalurKom'); if(jk) jk.textContent = kom.nama;
+    const jk = el('klJalurKom');
+    if(jk){
+      jk.textContent = kom.nama;
+      /* remah ke halaman komunitasnya: buatan sendiri vs komunitas yang mengangkatmu */
+      jk.toggleAttribute('data-komunitas-dibuat', !kom.diangkat);
+      if(kom.diangkat) jk.setAttribute('data-buka-diangkat', kom.kelas); else jk.removeAttribute('data-buka-diangkat');
+    }
+    scr.classList.toggle('kl-diangkat', !!kom.diangkat);
     el('klNm').textContent = kom.nama;
     const logo = el('klLogo');
     logo.textContent = kom.logo ? '' : (kom.inisial || inisial(kom.nama));
@@ -605,9 +655,12 @@
   /* ---------- ganti tab ---------- */
   /* tab Advance (data-sek) hanya ada di tampilan Advance — di Esensial, yang
      tersisa dari tab itu jatuh kembali ke Permintaan gabung */
+  /* menu yang hanya milik pembuat/pemegang langganan — tertutup di komunitas yang mengangkatmu */
+  const KHUSUS_PEMBUAT = ['tagihan', 'akses'];
   function pilihTab(nama){
     const tombol = scr.querySelector('.kl-tab[data-tab="' + nama + '"]');
     if(tombol && tombol.hasAttribute('data-sek') && D.mode !== 'advance') nama = 'minta';
+    if(D.kom && D.kom.diangkat && KHUSUS_PEMBUAT.indexOf(nama) >= 0) nama = 'dasbor';
     D.tab = nama;
     const tampil = nama;
     scr.querySelectorAll('.kl-tab').forEach(function(b){
@@ -684,8 +737,8 @@
   /* dipanggil dari halaman komunitas versi pemilik (tombol "Dashboard pengurus")
      dan dari tombol di layar buat. Argumen tab opsional: 'minta' langsung ke
      panel permintaan (dipakai notifikasi "N orang menunggu"). */
-  window.KolavoBukaDashboard = function(tab){
-    if(!bangun()){
+  window.KolavoBukaDashboard = function(tab, kom){
+    if(!bangun(kom)){
       if(window.KolavoToast) window.KolavoToast('Bikin dulu halaman komunitasmu.');
       window.KolavoKe('scrBuat');
       return;
