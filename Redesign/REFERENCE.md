@@ -1514,3 +1514,14 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   Home), **Terkirim** (Batalkan ajakan → +10 kredit · Lihat profil). Kartu grid ≥ 300px: foto
   56px, nama panggilan + label status, pekerjaan · kota, logo & nama komunitas. Data orang
   dicari di semua komunitas (`cariOrang`). Kosong → ajakan ke Rekomendasi Kenalan.
+- **Etalase landing → profil publik dulu (15 Okt 2026).** Tombol kartu etalase kini
+  `KolavoLihatKomunitas` (bukan alur tautan/login): **belum masuk** → "Lihat profil", halaman
+  komunitas publik tanpa nav app, remah **Beranda** (→ `#etalase`), isi bisa dilihat; masuk
+  baru diminta saat **Gabung** (halaman masuk varian undangan). **Sudah masuk** → tombol
+  **"Buka di Kolavo App"**, halaman yang sama dengan nav app (tab Komunitas menyala), remah
+  **Komunitas** (→ tab Komunitas). Remah diatur router saat `scrKomunitas` digambar.
+- **Perbaikan: "Komunitasku" dibangun dari `App.diajukan`** (status per komunitas), bukan
+  `App.komunitas` — yang terakhir itu "komunitas yang terakhir dibuka" dan ikut berubah setiap
+  kali profil komunitas lain dilihat (bug sejak A4: anggota Forpastara yang melihat IA PNJ
+  mendapati Komunitasku berganti jadi IA PNJ "Menunggu persetujuan"). Item kini membawa
+  `data-komunitas-anggota="<kelas>"` dan membuka komunitasnya sendiri.

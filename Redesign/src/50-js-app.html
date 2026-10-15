@@ -153,7 +153,8 @@
       if(b){
         b.removeAttribute('data-gabung-kartu'); b.removeAttribute('data-buka-milik'); b.classList.remove('outline');
         b.setAttribute('data-etalase', k.hasAttribute('data-dibuat') ? 'l-dibuat' : kelasKartu(k));
-        b.textContent = 'Lihat profil';
+        /* sudah masuk: profilnya dibuka di dalam Kolavo App; belum: profil publik dulu */
+        b.textContent = App().masuk ? 'Buka di Kolavo App' : 'Lihat profil';
       }
       w.appendChild(c);
     });
@@ -188,8 +189,10 @@
       return;
     }
     if(et){
+      /* pengunjung boleh melihat isi profil komunitas dulu tanpa masuk — masuk baru diminta
+         saat menekan Gabung. Yang sudah masuk membuka halaman yang sama dengan nav app. */
       const asli = document.querySelector('#direktori .ccard .logo-sq.' + et.dataset.etalase);
-      if(asli) window.KolavoBukaTautan(asli.closest('.ccard'));
+      if(asli) window.KolavoLihatKomunitas(asli.closest('.ccard'));
       return;
     }
     const bd = e.target.closest('[data-buka-diangkat]');

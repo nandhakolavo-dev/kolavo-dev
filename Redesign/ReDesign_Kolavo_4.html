@@ -5165,6 +5165,16 @@ function hitung(){}
     window.scrollTo(0, 0);
     if(id === 'scrProfil') isiProfil();
     if(id === 'scrKenalan' && window.KolavoGambarKenalan) window.KolavoGambarKenalan();
+    /* remah halaman komunitas: pengunjung (dari etalase landing) kembali ke landing,
+       pengguna yang sudah masuk kembali ke tab Komunitas */
+    if(id === 'scrKomunitas'){
+      const j = document.querySelector('#scrKomunitas .kom-jalur button');
+      if(j){
+        j.textContent = App.masuk ? 'Komunitas' : 'Beranda';
+        j.dataset.ke = App.masuk ? 'scrApp' : 'scrBeranda';
+        j.dataset.anchor = App.masuk ? 'direktori' : 'etalase';
+      }
+    }
     if((id === 'scrBeranda' || id === 'scrHome' || id === 'scrApp' || id === 'scrDasbor') && window.KolavoGambarApp) window.KolavoGambarApp(id);
   }
 
@@ -5395,15 +5405,26 @@ function hitung(){}
   }
 
   /* komunitas yang diikuti — satu sumber untuk Profil dan tab Komunitas (A4) */
+  /* dibangun dari status keanggotaan per komunitas (App.diajukan), BUKAN dari
+     App.komunitas — itu "komunitas yang terakhir dibuka" dan berubah setiap kali
+     pengguna melihat profil komunitas lain */
   function itemIkut(){
-    if(!App.komunitas) return '';
-    return '<div class="pf-item"><div class="pf-open" data-komunitas-anggota role="button" tabindex="0" title="Buka halaman komunitas">' +
-      '<span class="logo-sq ' + App.komunitas.kelas + '" role="img" aria-label="Logo komunitas"></span>' +
-      '<div class="t"><div class="n">' + App.komunitas.nama + '</div>' +
-      '<div class="s">' + [App.komunitas.jumlah].concat(window.KolavoJawaban()).join(' · ') + '</div></div></div>' +
-      ((App.diajukan || {})[App.komunitas.kelas] === 'anggota'
-        ? '<span class="status anggota">Anggota</span></div>'
-        : '<span class="status tunggu">Menunggu persetujuan</span></div>');
+    const dj = App.diajukan || {};
+    return Object.keys(dj).filter(function(k){ return dj[k] === 'anggota' || dj[k] === 'menunggu'; }).map(function(kelas){
+      const l = document.querySelector('#direktori .ccard .logo-sq.' + kelas);
+      const kartu = l && l.closest('.ccard');
+      if(!kartu) return '';
+      const nama = kartu.querySelector('h3').firstChild.textContent.trim();
+      const jumlah = (kartu.querySelector('.mem') || {}).textContent || '';
+      const jawab = App.komunitas && App.komunitas.kelas === kelas && window.KolavoJawaban ? window.KolavoJawaban() : [];
+      return '<div class="pf-item"><div class="pf-open" data-komunitas-anggota="' + kelas + '" role="button" tabindex="0" title="Buka halaman komunitas">' +
+        '<span class="logo-sq ' + kelas + '" role="img" aria-label="Logo komunitas"></span>' +
+        '<div class="t"><div class="n">' + nama + '</div>' +
+        '<div class="s">' + [jumlah].concat(jawab).filter(Boolean).join(' · ') + '</div></div></div>' +
+        (dj[kelas] === 'anggota'
+          ? '<span class="status anggota">Anggota</span></div>'
+          : '<span class="status tunggu">Menunggu persetujuan</span></div>');
+    }).join('');
   }
   window.KolavoKomunitasKu = function(){
     return (window.KolavoDibuatItem ? window.KolavoDibuatItem() : '') + itemIkut();
@@ -5516,7 +5537,12 @@ function hitung(){}
     const t = e.target.closest('[data-ke]');
     if(t){ e.preventDefault(); ke(t.dataset.ke, t.dataset.anchor); return; }
     /* V4: komunitas yang diikuti sebagai anggota bisa dibuka dari "Komunitas saya" */
-    if(e.target.closest('[data-komunitas-anggota]') && App.kartu && window.KolavoLihatKomunitas){
+    const ka = e.target.closest('[data-komunitas-anggota]');
+    if(ka && ka.dataset.komunitasAnggota && window.KolavoLihatKomunitas){
+      const l = document.querySelector('#direktori .ccard .logo-sq.' + ka.dataset.komunitasAnggota);
+      if(l){ e.preventDefault(); window.KolavoLihatKomunitas(l.closest('.ccard')); return; }
+    }
+    if(ka && App.kartu && window.KolavoLihatKomunitas){
       e.preventDefault(); window.KolavoLihatKomunitas(App.kartu); return;
     }
 
@@ -11767,7 +11793,8 @@ function hitung(){}
       if(b){
         b.removeAttribute('data-gabung-kartu'); b.removeAttribute('data-buka-milik'); b.classList.remove('outline');
         b.setAttribute('data-etalase', k.hasAttribute('data-dibuat') ? 'l-dibuat' : kelasKartu(k));
-        b.textContent = 'Lihat profil';
+        /* sudah masuk: profilnya dibuka di dalam Kolavo App; belum: profil publik dulu */
+        b.textContent = App().masuk ? 'Buka di Kolavo App' : 'Lihat profil';
       }
       w.appendChild(c);
     });
@@ -11802,8 +11829,10 @@ function hitung(){}
       return;
     }
     if(et){
+      /* pengunjung boleh melihat isi profil komunitas dulu tanpa masuk — masuk baru diminta
+         saat menekan Gabung. Yang sudah masuk membuka halaman yang sama dengan nav app. */
       const asli = document.querySelector('#direktori .ccard .logo-sq.' + et.dataset.etalase);
-      if(asli) window.KolavoBukaTautan(asli.closest('.ccard'));
+      if(asli) window.KolavoLihatKomunitas(asli.closest('.ccard'));
       return;
     }
     const bd = e.target.closest('[data-buka-diangkat]');
