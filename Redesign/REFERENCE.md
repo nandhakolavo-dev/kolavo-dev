@@ -1643,3 +1643,10 @@ Lengkapi Profil (A), formulir gabung (B), Buat komunitas (C), atau sistem.
 
 Copy Lengkapi diselaraskan dengan fitur kenalan: WhatsApp "baru terbuka ke anggota lain kalau
 kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah kenalan denganmu".
+- **Anggota contoh komunitas baru menyamai acuan.** `ANGGOTA_CONTOH` kini membawa pekerjaan dari
+  pilihan Lengkapi (Dokter, Guru, Konsultan, Teknisi, …), tahun, dan "Bisa dibagikan"; ditambah
+  `CARI_CONTOH` (Yang dicari), `GABUNG_CONTOH` (jawaban alasan bergabung), dan "Anggota sejak"
+  (`bulanLalu`). Pendaftar yang diterima lewat dashboard dapat "Anggota sejak" bulan ini.
+- **Nama lengkap hanya untuk pengurus** (`akuPengurus()`): pemilik halaman, atau pengguna yang
+  diangkat jadi pengurus di komunitas itu (IA SMAN 52). Sesama anggota melihat nama panggilan saja,
+  di kartu daftar anggota maupun profil.

@@ -6359,7 +6359,8 @@ function hitung(){}
     const anggota = nama.map(function(n){
       const m = D.mem[n] || { nama: n };
       /* panggilan pemilik diambil dari namanya (dashboard mengisinya "Kamu") */
-      const o = { n: n, pg: n === D.aku ? '' : (m.panggil || ''), full: m.full || '', k: m.kerja || '—', d: m.kota || '—', a: m.tahun || '', j: (m.tags || []).slice(), id: m.id || '', aku: !!m.aku };
+      const o = { n: n, pg: n === D.aku ? '' : (m.panggil || ''), full: m.full || '', k: m.kerja || '—', d: m.kota || '—', a: m.tahun || '', j: (m.tags || []).slice(), id: m.id || '', aku: !!m.aku,
+        s: m.sejak || '', beri: m.beri || '', cari: m.cari || '', alasan: m.alasan || '', sosmed: (m.sosmed || []).slice() };
       /* label kelompok jawaban (dashboard › Kelompokkan) jadi sumbu saring tambahan */
       return D.kelompokOrang ? Object.assign(o, D.kelompokOrang(n)) : o;
     });
@@ -6699,7 +6700,7 @@ function hitung(){}
       return '<div class="m" role="button" tabindex="0" data-nm="' + o.n + '">' + av +
         '<div>' + (o.id ? '<div class="mem-id">' + o.id + '</div>' : '') +
         '<div class="nm-baris"><div class="nm">' + panggilan(o) + '</div>' +
-        (founder ? '<span class="nm-full">' + (o.full || o.n) + '</span>' : '') +
+        (akuPengurus() ? '<span class="nm-full">' + (o.full || o.n) + '</span>' : '') +
         (o.aku ? '<span class="aku">Kamu</span>' : '') + '</div>' +
         '<div class="tags"><span class="tag hi">' + o.k + '</span>' +
         '<span class="tag">' + o.d + '</span>' +
@@ -6811,6 +6812,7 @@ function hitung(){}
       const ada = simpan.filter(function(j){ return j.judul === t.judul && j.nilai && j.nilai !== '—'; })[0];
       let v = ada ? ada.nilai : '';
       if(!v && t.id === 'nickname') v = panggilan(o);
+      if(!v && o.alasan && /alasan|kenapa/i.test(t.judul + ' ' + (t.tanya || ''))) v = o.alasan;
       if(!v && t.tipe === 'tahun') v = o.a ? String(o.a) : String(2008 + acak(nama, 15));
       if(!v && t.tipe === 'angka') v = String(1 + acak(nama, 9));
       if(!v){
@@ -7007,8 +7009,8 @@ function hitung(){}
     el('agKerja').textContent = o.k || '';
 
     const full = el('agFull');
-    full.textContent = founder ? 'Nama lengkap: ' + (o.full || nama) : '';
-    full.hidden = !founder;
+    full.textContent = akuPengurus() ? 'Nama lengkap: ' + (o.full || nama) : '';
+    full.hidden = !akuPengurus();
 
     /* domisili pindah dari tag ke baris meta — mengikuti kolavo.app, yang
        menaruh kota sebagai baris tersendiri dan menyisakan tag untuk jawaban
@@ -7031,7 +7033,7 @@ function hitung(){}
     /* V4: memberi & mengambil — profil sendiri punya dua jawaban berlabel */
     /* dua jawaban Lengkapi Profil, selalu berlabel. Data contoh anggota lain cuma punya
        satu kalimat (o.bio) yang isinya "apa yang bisa dibagikan". */
-    const beri = o.aku ? o.beri : (o.beri || o.bio), cari = (o.aku || o.beri) ? o.bio : o.cari;
+    const beri = o.aku ? o.beri : (o.beri || o.bio), cari = o.aku ? o.bio : o.cari;
     bio.innerHTML = (beri ? '<b>Bisa dibagikan:</b> ' + esc(beri) : '') + (beri && cari ? '<br>' : '') + (cari ? '<b>Yang dicari:</b> ' + esc(cari) : '');
     bio.hidden = !(beri || cari);
 
@@ -7276,6 +7278,13 @@ function hitung(){}
   /* nama yang tampil ke sesama anggota: nama panggilan. Nama lengkap hanya di
      tampilan pengurus (halaman pemilik), karena termasuk data pribadi. */
   function panggilan(o){ return o.pg || String(o.n || '').split(' ')[0]; }
+  /* nama lengkap hanya untuk pengurus komunitas yang sedang dibuka: pemilik halaman,
+     atau pengguna yang diangkat jadi pengurus di sana. Sesama anggota cuma melihat panggilan. */
+  function akuPengurus(){
+    if(founder) return true;
+    const k = window.KolavoKomDiangkat && window.KolavoKomDiangkat();
+    return !!(k && kini && k.kelas === kini.kelas);
+  }
 
   /* tombol ikon bulat di samping aksi utama: Edit data pendaftaran (anggota) dan
      Bagikan tautan (semua). Label ada di aria-label + tooltip data-tip. */
@@ -9529,9 +9538,12 @@ function hitung(){}
     D.anggotaBiasa = [];
     /* contoh demo: komunitas baru langsung berisi 18 anggota (+ pembuatnya = 19),
        supaya batas 20 anggota Esensial kelihatan setelah satu pendaftar diterima */
-    ANGGOTA_CONTOH.forEach(function(a){
+    ANGGOTA_CONTOH.forEach(function(a, i){
       const id = D.nomorMode === 'auto' ? fmtId(++D.urut) : '';
-      D.mem[a[0]] = { nama: a[0], full: a[0], panggil: a[0].split(' ')[0], kerja: a[1], kota: a[2], tahun: a[3], tags: [], id: id };
+      /* isian yang sama dengan profil acuan: Lengkapi Profil (beri, cari) + formulir gabung (alasan) */
+      D.mem[a[0]] = { nama: a[0], full: a[0], panggil: a[0].split(' ')[0], kerja: a[1], kota: a[2], tahun: a[3], tags: [], id: id,
+        beri: a[4], cari: CARI_CONTOH[i % CARI_CONTOH.length], alasan: GABUNG_CONTOH[i % GABUNG_CONTOH.length],
+        sejak: bulanLalu(2 + Math.floor(i / 3)) };
       D.anggotaBiasa.push(a[0]);
     });
     D.minta = SEED.map(function(s, i){
@@ -9601,17 +9613,38 @@ function hitung(){}
   const BATAS_ESENSIAL = 20;
   function esensialSaja(){ return !D.sekAktif; }
   function penuhEsensial(){ return esensialSaja() && jumlahAnggota() >= BATAS_ESENSIAL; }
+  /* [nama, pekerjaan (pilihan Lengkapi), domisili, jawaban tahun, "bisa dibagikan"] */
   const ANGGOTA_CONTOH = [
-    ['Bima Prasetyo', 'Arsitek', 'Surabaya', 2015], ['Dewi Lestari', 'Dokter umum', 'Bandung', 2012],
-    ['Rizky Ramadhan', 'Software engineer', 'Jakarta Selatan', 2018], ['Fitri Handayani', 'Akuntan', 'Bekasi', 2014],
-    ['Hendra Gunawan', 'Wiraswasta', 'Tangerang', 2010], ['Maya Sari', 'Guru SMP', 'Depok', 2016],
-    ['Yoga Pratama', 'Fotografer', 'Yogyakarta', 2019], ['Lina Marlina', 'Perawat', 'Bogor', 2013],
-    ['Agus Setiawan', 'PNS', 'Jakarta Timur', 2009], ['Rina Wulandari', 'Desainer grafis', 'Jakarta Barat', 2017],
-    ['Dimas Saputra', 'Konsultan pajak', 'Jakarta Pusat', 2011], ['Nurul Hidayah', 'Apoteker', 'Semarang', 2016],
-    ['Teguh Santoso', 'Teknisi listrik', 'Bekasi', 2008], ['Indah Permata', 'Content creator', 'Jakarta Selatan', 2020],
-    ['Wahyu Hidayat', 'Dosen', 'Bandung', 2007], ['Sari Rahmawati', 'Bidan', 'Tangerang Selatan', 2014],
-    ['Eko Purnomo', 'Pengusaha kuliner', 'Malang', 2012], ['Citra Anggraini', 'Staf HR', 'Jakarta Utara', 2018]
+    ['Bima Prasetyo', 'Arsitek', 'Surabaya', 2015, 'Bisa bantu desain tata letak venue kalau komunitas bikin acara.'],
+    ['Dewi Lestari', 'Dokter', 'Bandung', 2012, 'Siap jadi narasumber kesehatan di acara alumni.'],
+    ['Rizky Ramadhan', 'Software engineer', 'Jakarta Selatan', 2018, 'Bisa bantu bikin formulir atau situs kegiatan.'],
+    ['Fitri Handayani', 'Akuntan', 'Bekasi', 2014, 'Bisa bantu rapikan laporan keuangan acara.'],
+    ['Hendra Gunawan', 'Wiraswasta', 'Tangerang', 2010, 'Punya kenalan vendor tenda dan sound system.'],
+    ['Maya Sari', 'Guru', 'Depok', 2016, 'Bisa isi kelas singkat buat adik-adik kelas.'],
+    ['Yoga Pratama', 'Fotografer', 'Yogyakarta', 2019, 'Siap jadi fotografer di acara komunitas.'],
+    ['Lina Marlina', 'Perawat', 'Bogor', 2013, 'Bisa jaga pos kesehatan saat acara outdoor.'],
+    ['Agus Setiawan', 'PNS', 'Jakarta Timur', 2009, 'Paham alur perizinan kegiatan di kelurahan.'],
+    ['Rina Wulandari', 'Desainer grafis', 'Jakarta Barat', 2017, 'Bisa bantu bikin poster dan materi publikasi.'],
+    ['Dimas Saputra', 'Konsultan', 'Jakarta Pusat', 2011, 'Bisa berbagi soal pajak untuk usaha kecil.'],
+    ['Nurul Hidayah', 'Apoteker', 'Semarang', 2016, 'Bisa bantu sediakan kotak P3K untuk kegiatan.'],
+    ['Teguh Santoso', 'Teknisi', 'Bekasi', 2008, 'Bisa bantu urusan listrik dan lampu acara.'],
+    ['Indah Permata', 'Content creator', 'Jakarta Selatan', 2020, 'Bisa bantu urus media sosial komunitas.'],
+    ['Wahyu Hidayat', 'Dosen', 'Bandung', 2007, 'Bisa jadi pembicara soal studi lanjut.'],
+    ['Sari Rahmawati', 'Bidan', 'Tangerang Selatan', 2014, 'Bisa berbagi soal kesehatan ibu dan anak.'],
+    ['Eko Purnomo', 'Wiraswasta', 'Malang', 2012, 'Bisa urus konsumsi acara dari usaha kuliner saya.'],
+    ['Citra Anggraini', 'Karyawan swasta', 'Jakarta Utara', 2018, 'Bisa berbagi tips melamar kerja dan wawancara.']
   ];
+  const CARI_CONTOH = ['Teman diskusi seprofesi.', 'Info lowongan dan peluang kolaborasi.', 'Kegiatan sosial yang rutin.',
+    'Mentor untuk pengembangan karier.', 'Teman olahraga akhir pekan.', 'Relasi untuk usaha.'];
+  const GABUNG_CONTOH = ['Ingin kenal lagi teman-teman seangkatan.', 'Mau ikut program mentoring adik kelas.',
+    'Cari relasi seprofesi di komunitas ini.', 'Ingin bantu kegiatan sosial komunitas.',
+    'Kangen kumpul dengan teman lama.', 'Ingin berbagi pengalaman kerja.'];
+  const NAMA_BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  /* "Anggota sejak" — bulan dan tahun diterima, n minggu lalu */
+  function bulanLalu(minggu){
+    const d = new Date(); d.setDate(d.getDate() - 7 * (minggu || 0));
+    return NAMA_BULAN[d.getMonth()] + ' ' + d.getFullYear();
+  }
   function modeAdvance(){ return D.mode === 'advance'; }
   function akuPeninjau(){ return D.peninjau.indexOf(D.aku) >= 0; }
   function adaPeninjau(nama){ return D.peninjau.indexOf(nama) >= 0; }
@@ -10132,7 +10165,7 @@ function hitung(){}
     }
     D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
     /* tags jawaban ikut disimpan supaya muncul di daftar anggota halaman pemilik */
-    D.mem[r.nama] = { nama: r.nama, full: r.full || r.nama, kerja: r.kerja, kota: r.kota, tahun: r.tahun || '', sosmed: (r.sosmed || []).slice(), panggil: r.panggil, tags: (r.tags || []).slice(), jawaban: (r.jawaban || []).slice(), id: id };
+    D.mem[r.nama] = { nama: r.nama, full: r.full || r.nama, kerja: r.kerja, kota: r.kota, tahun: r.tahun || '', sosmed: (r.sosmed || []).slice(), sejak: bulanLalu(0), beri: r.beri || '', cari: r.cari || '', panggil: r.panggil, tags: (r.tags || []).slice(), jawaban: (r.jawaban || []).slice(), id: id };
     D.anggotaBiasa.push(r.nama);
     D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'diterima', oleh: D.aku, otomatis: !!o.otomatis, waktu: 'baru saja', catatan: o.catatan || '' });
     /* sambutan otomatis di feed halaman komunitas — ditolak sendiri kalau belum Advance */

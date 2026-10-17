@@ -253,7 +253,8 @@
     const anggota = nama.map(function(n){
       const m = D.mem[n] || { nama: n };
       /* panggilan pemilik diambil dari namanya (dashboard mengisinya "Kamu") */
-      const o = { n: n, pg: n === D.aku ? '' : (m.panggil || ''), full: m.full || '', k: m.kerja || '—', d: m.kota || '—', a: m.tahun || '', j: (m.tags || []).slice(), id: m.id || '', aku: !!m.aku };
+      const o = { n: n, pg: n === D.aku ? '' : (m.panggil || ''), full: m.full || '', k: m.kerja || '—', d: m.kota || '—', a: m.tahun || '', j: (m.tags || []).slice(), id: m.id || '', aku: !!m.aku,
+        s: m.sejak || '', beri: m.beri || '', cari: m.cari || '', alasan: m.alasan || '', sosmed: (m.sosmed || []).slice() };
       /* label kelompok jawaban (dashboard › Kelompokkan) jadi sumbu saring tambahan */
       return D.kelompokOrang ? Object.assign(o, D.kelompokOrang(n)) : o;
     });
@@ -593,7 +594,7 @@
       return '<div class="m" role="button" tabindex="0" data-nm="' + o.n + '">' + av +
         '<div>' + (o.id ? '<div class="mem-id">' + o.id + '</div>' : '') +
         '<div class="nm-baris"><div class="nm">' + panggilan(o) + '</div>' +
-        (founder ? '<span class="nm-full">' + (o.full || o.n) + '</span>' : '') +
+        (akuPengurus() ? '<span class="nm-full">' + (o.full || o.n) + '</span>' : '') +
         (o.aku ? '<span class="aku">Kamu</span>' : '') + '</div>' +
         '<div class="tags"><span class="tag hi">' + o.k + '</span>' +
         '<span class="tag">' + o.d + '</span>' +
@@ -705,6 +706,7 @@
       const ada = simpan.filter(function(j){ return j.judul === t.judul && j.nilai && j.nilai !== '—'; })[0];
       let v = ada ? ada.nilai : '';
       if(!v && t.id === 'nickname') v = panggilan(o);
+      if(!v && o.alasan && /alasan|kenapa/i.test(t.judul + ' ' + (t.tanya || ''))) v = o.alasan;
       if(!v && t.tipe === 'tahun') v = o.a ? String(o.a) : String(2008 + acak(nama, 15));
       if(!v && t.tipe === 'angka') v = String(1 + acak(nama, 9));
       if(!v){
@@ -901,8 +903,8 @@
     el('agKerja').textContent = o.k || '';
 
     const full = el('agFull');
-    full.textContent = founder ? 'Nama lengkap: ' + (o.full || nama) : '';
-    full.hidden = !founder;
+    full.textContent = akuPengurus() ? 'Nama lengkap: ' + (o.full || nama) : '';
+    full.hidden = !akuPengurus();
 
     /* domisili pindah dari tag ke baris meta — mengikuti kolavo.app, yang
        menaruh kota sebagai baris tersendiri dan menyisakan tag untuk jawaban
@@ -925,7 +927,7 @@
     /* V4: memberi & mengambil — profil sendiri punya dua jawaban berlabel */
     /* dua jawaban Lengkapi Profil, selalu berlabel. Data contoh anggota lain cuma punya
        satu kalimat (o.bio) yang isinya "apa yang bisa dibagikan". */
-    const beri = o.aku ? o.beri : (o.beri || o.bio), cari = (o.aku || o.beri) ? o.bio : o.cari;
+    const beri = o.aku ? o.beri : (o.beri || o.bio), cari = o.aku ? o.bio : o.cari;
     bio.innerHTML = (beri ? '<b>Bisa dibagikan:</b> ' + esc(beri) : '') + (beri && cari ? '<br>' : '') + (cari ? '<b>Yang dicari:</b> ' + esc(cari) : '');
     bio.hidden = !(beri || cari);
 
@@ -1170,6 +1172,13 @@
   /* nama yang tampil ke sesama anggota: nama panggilan. Nama lengkap hanya di
      tampilan pengurus (halaman pemilik), karena termasuk data pribadi. */
   function panggilan(o){ return o.pg || String(o.n || '').split(' ')[0]; }
+  /* nama lengkap hanya untuk pengurus komunitas yang sedang dibuka: pemilik halaman,
+     atau pengguna yang diangkat jadi pengurus di sana. Sesama anggota cuma melihat panggilan. */
+  function akuPengurus(){
+    if(founder) return true;
+    const k = window.KolavoKomDiangkat && window.KolavoKomDiangkat();
+    return !!(k && kini && k.kelas === kini.kelas);
+  }
 
   /* tombol ikon bulat di samping aksi utama: Edit data pendaftaran (anggota) dan
      Bagikan tautan (semua). Label ada di aria-label + tooltip data-tip. */
