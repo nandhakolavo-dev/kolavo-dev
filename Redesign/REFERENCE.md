@@ -1725,3 +1725,7 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   perisai, dua orang) dan tiap isian berikon (orang, surat, telepon, kalender, pin, tas, toga, hati,
   cari, tautan). Tombol ubah jadi ikon bulat `.pf-data-ubah` — pensil untuk Ubah, plus bergaris putus
   oranye untuk Isi — dengan label di tooltip dan `aria-label`. Penanda halaman: "Profil & Setting".
+- **"Komunitas saya" dihapus dari Profil & Setting (18 Okt 2026)** — halaman ini khusus data akun.
+  Komunitas yang diikuti ada di tab Komunitas, yang dikelola di tab Dashboard. Catatan: kontrol
+  arsip/hapus komunitas buatan (`KolavoDibuatItem`, kebab menu) tadinya hanya ada di daftar ini —
+  belum punya pintu lain; pengaturan halaman tetap lewat ikon pensil di halaman komunitas.
