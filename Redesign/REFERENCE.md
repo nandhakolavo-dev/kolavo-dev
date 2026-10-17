@@ -1238,7 +1238,10 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
 **Simulasi biaya** (`[data-kalk-buka]`) di kartu Advance sebagai `#kalkModal` (pola `.lgn`, lebar
 820). Kepala modal: angka utama `#kalkHero` = rata-rata per bulan setelah diskon + keterangan
 (`#kalkHeroKet`). Tambahan: pilihan cepat anggota 50/100/250/500/1.000 (`#kalkPreset`), kaki
-modal "Kembali ke paket" + "Buat Halaman Komunitas" (menutup modal dulu, lalu modal masuk).
+modal hanya "Buat Halaman Komunitas" (menutup modal dulu, lalu modal masuk). Revisi: tombol
+kartu Advance = Buat (lebar penuh) + ikon kalkulator bulat 52 px (`.harga-kalk`, label lewat
+tooltip `data-tip`), satu baris. Peninjau dan durasi bertumpuk; durasi jadi segmen 4 kolom
+sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Kembali ke paket" dihapus.
 
 ## Pisah landing vs Kolavo App (14 Okt 2026) — rencana: `PROMPT-APP.md`
 
