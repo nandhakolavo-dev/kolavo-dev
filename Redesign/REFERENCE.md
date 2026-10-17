@@ -1608,3 +1608,10 @@ sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Ke
   jawaban tiap pertanyaan `kini.tanya` + pekerjaan + domisili. Jawaban diambil dari `D.mem[n].jawaban`
   di komunitas sendiri; selain itu disusun dari data orangnya (panggilan, angkatan) atau contoh
   per jenis pertanyaan (`ISIAN_CONTOH`: prodi, satuan, alasan).
+- **Kartu kontak setelah kenalan didesain ulang.** `kartuKontak()`: kartu WhatsApp (ikon hijau,
+  nomor besar, tombol Chat) + kartu media sosial `.ag-sos-i` (ikon garis Instagram/LinkedIn/
+  TikTok/X, handle, panah keluar; tautan ke profilnya). Akun dari data asli (`o.sosmed`, atau
+  `D.mem[n].sosmed` yang kini ikut tersimpan saat pendaftar diterima), selain itu contoh tetap per
+  nama (`sosmedOrang`: Instagram selalu, LinkedIn 2/3 orang, TikTok atau X sebagian).
+  `kartuData()`: ubin dua kolom berikon (ikon ditebak dari judul pertanyaan), jawaban panjang
+  selebar penuh.
