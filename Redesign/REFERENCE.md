@@ -1595,3 +1595,10 @@ sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Ke
 - **Paginasi tidak lagi berpindah.** Pager pindah ke bilah atas, ujung kanan: di halaman komunitas
   ke `#bukaPager` (bilah filter), di dashboard › Anggota ke baris `#klAnggotaSeg` (sejajar
   Diterima | Ditolak). Ganti halaman tidak lagi menggulir layar.
+- **Paginasi kembali ke bawah daftar (ujung kanan)** — `#bukaPager` di bawah `#bukaList`,
+  `#klAnggotaPager` di bawah `#klAnggotaList`. Supaya tidak naik-turun, tinggi daftar dikunci
+  setinggi halaman penuh (`min-height` dari `data-penuh`, diukur saat halaman berisi 10).
+- **Angkatan di komunitas buatan sendiri.** Anggota contoh punya tahun (`ANGGOTA_CONTOH[i][3]`,
+  2007–2020) dan pendaftar yang diterima membawa `tahun`-nya ke `D.mem`. `aggDibuat()` mengisi
+  `a` per anggota dan `angkatan` = rentang tahun, sehingga statistik "rentang angkatan", dropdown
+  filter Angkatan, dan tag "Angkatan 2015" di kartu anggota ikut muncul.

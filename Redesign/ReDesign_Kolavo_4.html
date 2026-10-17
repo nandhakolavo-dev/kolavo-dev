@@ -1479,11 +1479,10 @@ body.lgn-open{overflow:hidden}
 .buka-ddo:hover{background:var(--bg-alt)}
 .buka-ddo input{width:16px;height:16px;margin:0;accent-color:var(--blue);flex:none}
 .buka-ddo .t{flex:1;min-width:0}
-.buka-pager{margin-left:auto;flex:none}
-.buka-pager .pager{padding:0}
-#klAnggotaSeg{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-#klAnggotaSeg .kl-seg{margin-bottom:0}
-#klAnggotaSeg .pager{margin-left:auto;padding:0}
+#bukaPager .pager{padding:6px 18px 16px}
+#bukaList{align-content:start}
+#klAnggotaList{align-content:start}
+#klAnggotaPager[hidden]{display:none}
 /* dashboard › Anggota: Diterima | Ditolak */
 .kl-seg{display:inline-flex;gap:4px;padding:4px;margin-bottom:14px;border:1px solid var(--line);border-radius:100px;background:var(--bg-alt)}
 .kl-seg button{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border:0;border-radius:100px;background:transparent;color:var(--ink-2);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
@@ -3661,6 +3660,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
           <div class="panel-filters buka-sumbu" id="bukaSumbu"></div>
           <div class="panel-filters" id="bukaFilter"></div>
           <div id="bukaList"></div>
+          <div id="bukaPager"></div>
           <div class="panel-foot">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
             Halaman ini cuma kelihatan sama sesama anggota
@@ -4042,6 +4042,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
         <p class="kl-sub">Semua yang sudah diterima, lengkap dengan siapa yang menerimanya dan catatan keputusannya.</p>
         <div id="klAnggotaSeg"></div>
         <div id="klAnggotaList"></div>
+        <div id="klAnggotaPager"></div>
         <!-- V4: tab Riwayat dilebur ke sini — catatan keputusan ikut di baris anggota, yang ditolak di bawahnya -->
         <div id="klRiwayatList"></div>
       </section>
@@ -6307,6 +6308,11 @@ function hitung(){}
      langsung dari keadaan dashboard pengurus (KolavoDashboard) supaya satu
      sumber: yang disetujui di dashboard langsung muncul di daftar anggota di
      sini, tanpa data kembar. */
+  /* rentang angkatan dari jawaban tahun anggota, mis. 2008–2023 */
+  function rentangTahun(anggota){
+    const th = anggota.map(function(o){ return +o.a; }).filter(Boolean);
+    return th.length ? Math.min.apply(null, th) + '–' + Math.max.apply(null, th) : '—';
+  }
   function aggDibuat(){
     const D = window.KolavoDashboard;
     if(!D || !D.built) return { profesi: [], kota: [], angkatan: '—', anggota: [], pengurus: [] };
@@ -6314,7 +6320,7 @@ function hitung(){}
     const anggota = nama.map(function(n){
       const m = D.mem[n] || { nama: n };
       /* panggilan pemilik diambil dari namanya (dashboard mengisinya "Kamu") */
-      const o = { n: n, pg: n === D.aku ? '' : (m.panggil || ''), full: m.full || '', k: m.kerja || '—', d: m.kota || '—', j: (m.tags || []).slice(), id: m.id || '', aku: !!m.aku };
+      const o = { n: n, pg: n === D.aku ? '' : (m.panggil || ''), full: m.full || '', k: m.kerja || '—', d: m.kota || '—', a: m.tahun || '', j: (m.tags || []).slice(), id: m.id || '', aku: !!m.aku };
       /* label kelompok jawaban (dashboard › Kelompokkan) jadi sumbu saring tambahan */
       return D.kelompokOrang ? Object.assign(o, D.kelompokOrang(n)) : o;
     });
@@ -6324,7 +6330,7 @@ function hitung(){}
       return Object.keys(peta).map(function(k){ return [k, peta[k]]; });
     };
     return {
-      profesi: tally('k'), kota: tally('d'), angkatan: '—',
+      profesi: tally('k'), kota: tally('d'), angkatan: rentangTahun(anggota),
       anggota: anggota,
       pengurus: D.pengurus.map(function(p){ return { n: p.nama, j: p.jabatan, kenal: p.perkenalan || '' }; })
     };
@@ -6516,6 +6522,11 @@ function hitung(){}
   let halKini = 0;
   const PER_HAL = 10;
   const IKON_FILTER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
+  function kunciTinggi(wadah, hal, tampil){
+    if(hal <= 1){ wadah.style.minHeight = ''; return; }
+    if(tampil === PER_HAL){ wadah.style.minHeight = ''; wadah.dataset.penuh = wadah.offsetHeight; }
+    if(wadah.dataset.penuh) wadah.style.minHeight = wadah.dataset.penuh + 'px';
+  }
   function jumlahFilter(){ return Object.keys(filterKini).reduce(function(n, k){ return n + filterKini[k].length; }, 0); }
   function lolosFilter(o){
     return Object.keys(filterKini).every(function(k){
@@ -6617,7 +6628,7 @@ function hitung(){}
     });
     const wadah = el('bukaList');
     if(!orang.length){
-      const pg = el('bukaPager'); if(pg) pg.innerHTML = '';
+      el('bukaPager').innerHTML = ''; wadah.style.minHeight = '';
       wadah.innerHTML = '<p class="buka-kosong">' + (hanyaBelum
         ? (n ? 'Semua anggota yang cocok dengan filter sudah kamu ajak kenalan.' : 'Semua anggota di sini sudah kamu ajak kenalan.')
         : 'Belum ada anggota yang cocok dengan filter ini.') + '</p>';
@@ -6642,8 +6653,10 @@ function hitung(){}
         (o.j || []).map(function(v){ return '<span class="tag">' + v + '</span>'; }).join('') +
         '</div></div>' + ikonKenal(o) + '</div>';
     }).join('');
-    /* paginasi di bilah filter (atas, kanan) — posisinya tetap walau isi halaman berganti */
-    const pg = el('bukaPager'); if(pg) pg.innerHTML = pagerHtml(hal, halKini, awal, potong.length, orang.length, 'data-bhal');
+    /* paginasi di bawah daftar, ujung kanan. Tinggi daftar dikunci setinggi halaman penuh
+       supaya tombolnya tidak naik-turun saat halaman terakhir lebih pendek. */
+    el('bukaPager').innerHTML = pagerHtml(hal, halKini, awal, potong.length, orang.length, 'data-bhal');
+    kunciTinggi(wadah, hal, potong.length);
     if(!n && !hanyaBelum && kini && orang.length < angkaKini()){
       wadah.insertAdjacentHTML('beforeend',
         '<p class="buka-kosong">Menampilkan ' + orang.length + ' dari ' + angkaKini() +
@@ -6682,8 +6695,7 @@ function hitung(){}
     }).join('');
     el('bukaSumbu').innerHTML =
       '<span class="buka-fik' + (n ? ' aktif' : '') + '" title="Filter" aria-hidden="true">' + IKON_FILTER + (n ? '<span class="buka-fn">' + n + '</span>' : '') + '</span>' +
-      dd + (n ? '<button type="button" class="buka-freset" data-f-reset>Hapus filter</button>' : '') +
-      '<div class="buka-pager" id="bukaPager"></div>';
+      dd + (n ? '<button type="button" class="buka-freset" data-f-reset>Hapus filter</button>' : '');
     el('bukaFilter').hidden = true;
     saring();
   }
@@ -7345,7 +7357,11 @@ function hitung(){}
     if(ddBuka && !e.target.closest('.buka-ddm')){ ddBuka = null; gambarFilter(); }
     if(e.target.closest('[data-f-reset]')){ filterKini = {}; halKini = 0; gambarFilter(); return; }
     const bh = e.target.closest('[data-bhal]');
-    if(bh){ halKini = +bh.dataset.bhal; saring(); return; }
+    if(bh){
+      const w = el('bukaList');
+      if(w.querySelectorAll('.m').length === PER_HAL){ w.style.minHeight = ''; w.dataset.penuh = w.offsetHeight; }
+      halKini = +bh.dataset.bhal; saring(); return;
+    }
     const baris = e.target.closest('#bukaList .m');
     if(baris && baris.dataset.nm){
       window.KolavoBukaAnggota(baris.dataset.nm);
@@ -9313,7 +9329,7 @@ function hitung(){}
        supaya batas 20 anggota Esensial kelihatan setelah satu pendaftar diterima */
     ANGGOTA_CONTOH.forEach(function(a){
       const id = D.nomorMode === 'auto' ? fmtId(++D.urut) : '';
-      D.mem[a[0]] = { nama: a[0], full: a[0], panggil: a[0].split(' ')[0], kerja: a[1], kota: a[2], tags: [], id: id };
+      D.mem[a[0]] = { nama: a[0], full: a[0], panggil: a[0].split(' ')[0], kerja: a[1], kota: a[2], tahun: a[3], tags: [], id: id };
       D.anggotaBiasa.push(a[0]);
     });
     D.minta = SEED.map(function(s, i){
@@ -9384,15 +9400,15 @@ function hitung(){}
   function esensialSaja(){ return !D.sekAktif; }
   function penuhEsensial(){ return esensialSaja() && jumlahAnggota() >= BATAS_ESENSIAL; }
   const ANGGOTA_CONTOH = [
-    ['Bima Prasetyo', 'Arsitek', 'Surabaya'], ['Dewi Lestari', 'Dokter umum', 'Bandung'],
-    ['Rizky Ramadhan', 'Software engineer', 'Jakarta Selatan'], ['Fitri Handayani', 'Akuntan', 'Bekasi'],
-    ['Hendra Gunawan', 'Wiraswasta', 'Tangerang'], ['Maya Sari', 'Guru SMP', 'Depok'],
-    ['Yoga Pratama', 'Fotografer', 'Yogyakarta'], ['Lina Marlina', 'Perawat', 'Bogor'],
-    ['Agus Setiawan', 'PNS', 'Jakarta Timur'], ['Rina Wulandari', 'Desainer grafis', 'Jakarta Barat'],
-    ['Dimas Saputra', 'Konsultan pajak', 'Jakarta Pusat'], ['Nurul Hidayah', 'Apoteker', 'Semarang'],
-    ['Teguh Santoso', 'Teknisi listrik', 'Bekasi'], ['Indah Permata', 'Content creator', 'Jakarta Selatan'],
-    ['Wahyu Hidayat', 'Dosen', 'Bandung'], ['Sari Rahmawati', 'Bidan', 'Tangerang Selatan'],
-    ['Eko Purnomo', 'Pengusaha kuliner', 'Malang'], ['Citra Anggraini', 'Staf HR', 'Jakarta Utara']
+    ['Bima Prasetyo', 'Arsitek', 'Surabaya', 2015], ['Dewi Lestari', 'Dokter umum', 'Bandung', 2012],
+    ['Rizky Ramadhan', 'Software engineer', 'Jakarta Selatan', 2018], ['Fitri Handayani', 'Akuntan', 'Bekasi', 2014],
+    ['Hendra Gunawan', 'Wiraswasta', 'Tangerang', 2010], ['Maya Sari', 'Guru SMP', 'Depok', 2016],
+    ['Yoga Pratama', 'Fotografer', 'Yogyakarta', 2019], ['Lina Marlina', 'Perawat', 'Bogor', 2013],
+    ['Agus Setiawan', 'PNS', 'Jakarta Timur', 2009], ['Rina Wulandari', 'Desainer grafis', 'Jakarta Barat', 2017],
+    ['Dimas Saputra', 'Konsultan pajak', 'Jakarta Pusat', 2011], ['Nurul Hidayah', 'Apoteker', 'Semarang', 2016],
+    ['Teguh Santoso', 'Teknisi listrik', 'Bekasi', 2008], ['Indah Permata', 'Content creator', 'Jakarta Selatan', 2020],
+    ['Wahyu Hidayat', 'Dosen', 'Bandung', 2007], ['Sari Rahmawati', 'Bidan', 'Tangerang Selatan', 2014],
+    ['Eko Purnomo', 'Pengusaha kuliner', 'Malang', 2012], ['Citra Anggraini', 'Staf HR', 'Jakarta Utara', 2018]
   ];
   function modeAdvance(){ return D.mode === 'advance'; }
   function akuPeninjau(){ return D.peninjau.indexOf(D.aku) >= 0; }
@@ -9626,9 +9642,17 @@ function hitung(){}
     D.halAnggota = Math.min(D.halAnggota || 0, Math.max(0, hal - 1));
     const awal = D.halAnggota * PER_HAL, isi = potong.slice(awal, awal + PER_HAL);
     wadah.innerHTML = isi.join('');
-    /* segmen di kiri, paginasi di ujung kanan — satu baris di atas daftar, posisinya tetap */
-    el('klAnggotaSeg').innerHTML = (seg || '<span></span>') +
-      (lihat === 'diterima' ? pagerHtml(hal, D.halAnggota, awal, isi.length, potong.length) : '');
+    el('klAnggotaSeg').innerHTML = seg;
+    /* paginasi di bawah daftar, ujung kanan; tinggi daftar dikunci setinggi halaman penuh
+       supaya tombolnya tidak naik-turun di halaman terakhir */
+    const pg = el('klAnggotaPager');
+    pg.hidden = lihat !== 'diterima';
+    pg.innerHTML = pagerHtml(hal, D.halAnggota, awal, isi.length, potong.length);
+    if(hal <= 1) wadah.style.minHeight = '';
+    else {
+      if(isi.length === PER_HAL){ wadah.style.minHeight = ''; wadah.dataset.penuh = wadah.offsetHeight; }
+      if(wadah.dataset.penuh) wadah.style.minHeight = wadah.dataset.penuh + 'px';
+    }
   }
 
   function baris(m, kanan, aksi, bawah){
@@ -9906,7 +9930,7 @@ function hitung(){}
     }
     D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
     /* tags jawaban ikut disimpan supaya muncul di daftar anggota halaman pemilik */
-    D.mem[r.nama] = { nama: r.nama, full: r.full || r.nama, kerja: r.kerja, kota: r.kota, panggil: r.panggil, tags: (r.tags || []).slice(), jawaban: (r.jawaban || []).slice(), id: id };
+    D.mem[r.nama] = { nama: r.nama, full: r.full || r.nama, kerja: r.kerja, kota: r.kota, tahun: r.tahun || '', panggil: r.panggil, tags: (r.tags || []).slice(), jawaban: (r.jawaban || []).slice(), id: id };
     D.anggotaBiasa.push(r.nama);
     D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'diterima', oleh: D.aku, otomatis: !!o.otomatis, waktu: 'baru saja', catatan: o.catatan || '' });
     /* sambutan otomatis di feed halaman komunitas — ditolak sendiri kalau belum Advance */
@@ -10135,6 +10159,8 @@ function hitung(){}
     if(al){ D.anggotaLihat = al.dataset.alihat; gambarAnggota(); return; }
     const ah = e.target.closest('[data-ahal]');
     if(ah){
+      const w = el('klAnggotaList');
+      if(w.querySelectorAll(':scope > .kl-row').length >= PER_HAL){ w.style.minHeight = ''; w.dataset.penuh = w.offsetHeight; }
       D.halAnggota = +ah.dataset.ahal; gambarAnggota();
       return;
     }

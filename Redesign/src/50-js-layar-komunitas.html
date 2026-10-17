@@ -241,6 +241,11 @@
      langsung dari keadaan dashboard pengurus (KolavoDashboard) supaya satu
      sumber: yang disetujui di dashboard langsung muncul di daftar anggota di
      sini, tanpa data kembar. */
+  /* rentang angkatan dari jawaban tahun anggota, mis. 2008–2023 */
+  function rentangTahun(anggota){
+    const th = anggota.map(function(o){ return +o.a; }).filter(Boolean);
+    return th.length ? Math.min.apply(null, th) + '–' + Math.max.apply(null, th) : '—';
+  }
   function aggDibuat(){
     const D = window.KolavoDashboard;
     if(!D || !D.built) return { profesi: [], kota: [], angkatan: '—', anggota: [], pengurus: [] };
@@ -248,7 +253,7 @@
     const anggota = nama.map(function(n){
       const m = D.mem[n] || { nama: n };
       /* panggilan pemilik diambil dari namanya (dashboard mengisinya "Kamu") */
-      const o = { n: n, pg: n === D.aku ? '' : (m.panggil || ''), full: m.full || '', k: m.kerja || '—', d: m.kota || '—', j: (m.tags || []).slice(), id: m.id || '', aku: !!m.aku };
+      const o = { n: n, pg: n === D.aku ? '' : (m.panggil || ''), full: m.full || '', k: m.kerja || '—', d: m.kota || '—', a: m.tahun || '', j: (m.tags || []).slice(), id: m.id || '', aku: !!m.aku };
       /* label kelompok jawaban (dashboard › Kelompokkan) jadi sumbu saring tambahan */
       return D.kelompokOrang ? Object.assign(o, D.kelompokOrang(n)) : o;
     });
@@ -258,7 +263,7 @@
       return Object.keys(peta).map(function(k){ return [k, peta[k]]; });
     };
     return {
-      profesi: tally('k'), kota: tally('d'), angkatan: '—',
+      profesi: tally('k'), kota: tally('d'), angkatan: rentangTahun(anggota),
       anggota: anggota,
       pengurus: D.pengurus.map(function(p){ return { n: p.nama, j: p.jabatan, kenal: p.perkenalan || '' }; })
     };
@@ -450,6 +455,11 @@
   let halKini = 0;
   const PER_HAL = 10;
   const IKON_FILTER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
+  function kunciTinggi(wadah, hal, tampil){
+    if(hal <= 1){ wadah.style.minHeight = ''; return; }
+    if(tampil === PER_HAL){ wadah.style.minHeight = ''; wadah.dataset.penuh = wadah.offsetHeight; }
+    if(wadah.dataset.penuh) wadah.style.minHeight = wadah.dataset.penuh + 'px';
+  }
   function jumlahFilter(){ return Object.keys(filterKini).reduce(function(n, k){ return n + filterKini[k].length; }, 0); }
   function lolosFilter(o){
     return Object.keys(filterKini).every(function(k){
@@ -551,7 +561,7 @@
     });
     const wadah = el('bukaList');
     if(!orang.length){
-      const pg = el('bukaPager'); if(pg) pg.innerHTML = '';
+      el('bukaPager').innerHTML = ''; wadah.style.minHeight = '';
       wadah.innerHTML = '<p class="buka-kosong">' + (hanyaBelum
         ? (n ? 'Semua anggota yang cocok dengan filter sudah kamu ajak kenalan.' : 'Semua anggota di sini sudah kamu ajak kenalan.')
         : 'Belum ada anggota yang cocok dengan filter ini.') + '</p>';
@@ -576,8 +586,10 @@
         (o.j || []).map(function(v){ return '<span class="tag">' + v + '</span>'; }).join('') +
         '</div></div>' + ikonKenal(o) + '</div>';
     }).join('');
-    /* paginasi di bilah filter (atas, kanan) — posisinya tetap walau isi halaman berganti */
-    const pg = el('bukaPager'); if(pg) pg.innerHTML = pagerHtml(hal, halKini, awal, potong.length, orang.length, 'data-bhal');
+    /* paginasi di bawah daftar, ujung kanan. Tinggi daftar dikunci setinggi halaman penuh
+       supaya tombolnya tidak naik-turun saat halaman terakhir lebih pendek. */
+    el('bukaPager').innerHTML = pagerHtml(hal, halKini, awal, potong.length, orang.length, 'data-bhal');
+    kunciTinggi(wadah, hal, potong.length);
     if(!n && !hanyaBelum && kini && orang.length < angkaKini()){
       wadah.insertAdjacentHTML('beforeend',
         '<p class="buka-kosong">Menampilkan ' + orang.length + ' dari ' + angkaKini() +
@@ -616,8 +628,7 @@
     }).join('');
     el('bukaSumbu').innerHTML =
       '<span class="buka-fik' + (n ? ' aktif' : '') + '" title="Filter" aria-hidden="true">' + IKON_FILTER + (n ? '<span class="buka-fn">' + n + '</span>' : '') + '</span>' +
-      dd + (n ? '<button type="button" class="buka-freset" data-f-reset>Hapus filter</button>' : '') +
-      '<div class="buka-pager" id="bukaPager"></div>';
+      dd + (n ? '<button type="button" class="buka-freset" data-f-reset>Hapus filter</button>' : '');
     el('bukaFilter').hidden = true;
     saring();
   }
@@ -1279,7 +1290,11 @@
     if(ddBuka && !e.target.closest('.buka-ddm')){ ddBuka = null; gambarFilter(); }
     if(e.target.closest('[data-f-reset]')){ filterKini = {}; halKini = 0; gambarFilter(); return; }
     const bh = e.target.closest('[data-bhal]');
-    if(bh){ halKini = +bh.dataset.bhal; saring(); return; }
+    if(bh){
+      const w = el('bukaList');
+      if(w.querySelectorAll('.m').length === PER_HAL){ w.style.minHeight = ''; w.dataset.penuh = w.offsetHeight; }
+      halKini = +bh.dataset.bhal; saring(); return;
+    }
     const baris = e.target.closest('#bukaList .m');
     if(baris && baris.dataset.nm){
       window.KolavoBukaAnggota(baris.dataset.nm);

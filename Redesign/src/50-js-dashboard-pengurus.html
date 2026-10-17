@@ -206,7 +206,7 @@
        supaya batas 20 anggota Esensial kelihatan setelah satu pendaftar diterima */
     ANGGOTA_CONTOH.forEach(function(a){
       const id = D.nomorMode === 'auto' ? fmtId(++D.urut) : '';
-      D.mem[a[0]] = { nama: a[0], full: a[0], panggil: a[0].split(' ')[0], kerja: a[1], kota: a[2], tags: [], id: id };
+      D.mem[a[0]] = { nama: a[0], full: a[0], panggil: a[0].split(' ')[0], kerja: a[1], kota: a[2], tahun: a[3], tags: [], id: id };
       D.anggotaBiasa.push(a[0]);
     });
     D.minta = SEED.map(function(s, i){
@@ -277,15 +277,15 @@
   function esensialSaja(){ return !D.sekAktif; }
   function penuhEsensial(){ return esensialSaja() && jumlahAnggota() >= BATAS_ESENSIAL; }
   const ANGGOTA_CONTOH = [
-    ['Bima Prasetyo', 'Arsitek', 'Surabaya'], ['Dewi Lestari', 'Dokter umum', 'Bandung'],
-    ['Rizky Ramadhan', 'Software engineer', 'Jakarta Selatan'], ['Fitri Handayani', 'Akuntan', 'Bekasi'],
-    ['Hendra Gunawan', 'Wiraswasta', 'Tangerang'], ['Maya Sari', 'Guru SMP', 'Depok'],
-    ['Yoga Pratama', 'Fotografer', 'Yogyakarta'], ['Lina Marlina', 'Perawat', 'Bogor'],
-    ['Agus Setiawan', 'PNS', 'Jakarta Timur'], ['Rina Wulandari', 'Desainer grafis', 'Jakarta Barat'],
-    ['Dimas Saputra', 'Konsultan pajak', 'Jakarta Pusat'], ['Nurul Hidayah', 'Apoteker', 'Semarang'],
-    ['Teguh Santoso', 'Teknisi listrik', 'Bekasi'], ['Indah Permata', 'Content creator', 'Jakarta Selatan'],
-    ['Wahyu Hidayat', 'Dosen', 'Bandung'], ['Sari Rahmawati', 'Bidan', 'Tangerang Selatan'],
-    ['Eko Purnomo', 'Pengusaha kuliner', 'Malang'], ['Citra Anggraini', 'Staf HR', 'Jakarta Utara']
+    ['Bima Prasetyo', 'Arsitek', 'Surabaya', 2015], ['Dewi Lestari', 'Dokter umum', 'Bandung', 2012],
+    ['Rizky Ramadhan', 'Software engineer', 'Jakarta Selatan', 2018], ['Fitri Handayani', 'Akuntan', 'Bekasi', 2014],
+    ['Hendra Gunawan', 'Wiraswasta', 'Tangerang', 2010], ['Maya Sari', 'Guru SMP', 'Depok', 2016],
+    ['Yoga Pratama', 'Fotografer', 'Yogyakarta', 2019], ['Lina Marlina', 'Perawat', 'Bogor', 2013],
+    ['Agus Setiawan', 'PNS', 'Jakarta Timur', 2009], ['Rina Wulandari', 'Desainer grafis', 'Jakarta Barat', 2017],
+    ['Dimas Saputra', 'Konsultan pajak', 'Jakarta Pusat', 2011], ['Nurul Hidayah', 'Apoteker', 'Semarang', 2016],
+    ['Teguh Santoso', 'Teknisi listrik', 'Bekasi', 2008], ['Indah Permata', 'Content creator', 'Jakarta Selatan', 2020],
+    ['Wahyu Hidayat', 'Dosen', 'Bandung', 2007], ['Sari Rahmawati', 'Bidan', 'Tangerang Selatan', 2014],
+    ['Eko Purnomo', 'Pengusaha kuliner', 'Malang', 2012], ['Citra Anggraini', 'Staf HR', 'Jakarta Utara', 2018]
   ];
   function modeAdvance(){ return D.mode === 'advance'; }
   function akuPeninjau(){ return D.peninjau.indexOf(D.aku) >= 0; }
@@ -519,9 +519,17 @@
     D.halAnggota = Math.min(D.halAnggota || 0, Math.max(0, hal - 1));
     const awal = D.halAnggota * PER_HAL, isi = potong.slice(awal, awal + PER_HAL);
     wadah.innerHTML = isi.join('');
-    /* segmen di kiri, paginasi di ujung kanan — satu baris di atas daftar, posisinya tetap */
-    el('klAnggotaSeg').innerHTML = (seg || '<span></span>') +
-      (lihat === 'diterima' ? pagerHtml(hal, D.halAnggota, awal, isi.length, potong.length) : '');
+    el('klAnggotaSeg').innerHTML = seg;
+    /* paginasi di bawah daftar, ujung kanan; tinggi daftar dikunci setinggi halaman penuh
+       supaya tombolnya tidak naik-turun di halaman terakhir */
+    const pg = el('klAnggotaPager');
+    pg.hidden = lihat !== 'diterima';
+    pg.innerHTML = pagerHtml(hal, D.halAnggota, awal, isi.length, potong.length);
+    if(hal <= 1) wadah.style.minHeight = '';
+    else {
+      if(isi.length === PER_HAL){ wadah.style.minHeight = ''; wadah.dataset.penuh = wadah.offsetHeight; }
+      if(wadah.dataset.penuh) wadah.style.minHeight = wadah.dataset.penuh + 'px';
+    }
   }
 
   function baris(m, kanan, aksi, bawah){
@@ -799,7 +807,7 @@
     }
     D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
     /* tags jawaban ikut disimpan supaya muncul di daftar anggota halaman pemilik */
-    D.mem[r.nama] = { nama: r.nama, full: r.full || r.nama, kerja: r.kerja, kota: r.kota, panggil: r.panggil, tags: (r.tags || []).slice(), jawaban: (r.jawaban || []).slice(), id: id };
+    D.mem[r.nama] = { nama: r.nama, full: r.full || r.nama, kerja: r.kerja, kota: r.kota, tahun: r.tahun || '', panggil: r.panggil, tags: (r.tags || []).slice(), jawaban: (r.jawaban || []).slice(), id: id };
     D.anggotaBiasa.push(r.nama);
     D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'diterima', oleh: D.aku, otomatis: !!o.otomatis, waktu: 'baru saja', catatan: o.catatan || '' });
     /* sambutan otomatis di feed halaman komunitas — ditolak sendiri kalau belum Advance */
@@ -1028,6 +1036,8 @@
     if(al){ D.anggotaLihat = al.dataset.alihat; gambarAnggota(); return; }
     const ah = e.target.closest('[data-ahal]');
     if(ah){
+      const w = el('klAnggotaList');
+      if(w.querySelectorAll(':scope > .kl-row').length >= PER_HAL){ w.style.minHeight = ''; w.dataset.penuh = w.offsetHeight; }
       D.halAnggota = +ah.dataset.ahal; gambarAnggota();
       return;
     }
