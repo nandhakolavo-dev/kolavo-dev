@@ -1234,6 +1234,11 @@ FREE), Advance (biru, Rp 199 — awalnya Rp 1.191, diubah 14 Okt 2026), Big Orga
 (`50-js-harga`, `window.KolavoHarga`) punya tiga masukan — anggota 30–1.000 per 10, peninjau,
 durasi 1/6/12 bulan/2 tahun — dan merinci biaya anggota, peninjau, per bulan, diskon, total.
 Aturan + uji angka: `PROMPT-HARGA.md`.
+**Kalkulator jadi modal (17 Okt 2026).** Tidak lagi tampil di bawah kartu harga; dibuka tombol
+**Simulasi biaya** (`[data-kalk-buka]`) di kartu Advance sebagai `#kalkModal` (pola `.lgn`, lebar
+820). Kepala modal: angka utama `#kalkHero` = rata-rata per bulan setelah diskon + keterangan
+(`#kalkHeroKet`). Tambahan: pilihan cepat anggota 50/100/250/500/1.000 (`#kalkPreset`), kaki
+modal "Kembali ke paket" + "Buat Halaman Komunitas" (menutup modal dulu, lalu modal masuk).
 
 ## Pisah landing vs Kolavo App (14 Okt 2026) — rencana: `PROMPT-APP.md`
 

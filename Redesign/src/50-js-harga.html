@@ -49,8 +49,36 @@
     el('kalkTL').textContent = 'Total ' + durasi(h.bulan);
     el('kalkT').textContent = rp(h.total);
     el('kalkBesar').hidden = h.n < MAKS;
+    /* angka utama modal: rata-rata per bulan setelah diskon */
+    el('kalkHero').textContent = rp(h.total / h.bulan);
+    el('kalkHeroKet').textContent = h.diskon
+      ? 'Rata-rata per bulan dengan diskon ' + Math.round(h.diskon * 100) + '% · total ' + durasi(h.bulan) + ' ' + rp(h.total)
+      : h.n.toLocaleString('id-ID') + ' anggota dan ' + h.p + ' peninjau, ditagih bulanan';
+    el('kalkPreset').querySelectorAll('[data-n]').forEach(function(c){ c.classList.toggle('on', +c.dataset.n === h.n); });
   }
   geser.addEventListener('input', gambar);
+  el('kalkPreset').addEventListener('click', function(e){
+    const c = e.target.closest('[data-n]'); if(!c) return;
+    geser.value = c.dataset.n; gambar();
+  });
+  /* modal simulasi: dibuka dari kartu Advance, ditutup lewat scrim/x/Escape;
+     tombol Buat di dalamnya menutup modal dulu lalu modal masuk mengambil alih */
+  const modal = el('kalkModal');
+  function bukaKalk(){
+    modal.hidden = false;
+    void modal.offsetWidth;
+    modal.classList.add('on');
+    document.body.classList.add('lgn-open');
+    geser.focus();
+  }
+  function tutupKalk(){
+    modal.classList.remove('on');
+    document.body.classList.remove('lgn-open');
+    setTimeout(function(){ if(!modal.classList.contains('on')) modal.hidden = true; }, 170);
+  }
+  document.addEventListener('click', function(e){ if(e.target.closest('[data-kalk-buka]')){ e.preventDefault(); bukaKalk(); } });
+  modal.addEventListener('click', function(e){ if(e.target.closest('[data-kalk-tutup],[data-login]')) tutupKalk(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !modal.hidden && !infoW.classList.contains('buka')) tutupKalk(); });
   el('kalkPMin').addEventListener('click', function(){ peninjau = Math.max(1, peninjau - 1); gambar(); });
   el('kalkPPlus').addEventListener('click', function(){ peninjau = Math.min(20, peninjau + 1); gambar(); });
   el('kalkBulan').addEventListener('click', function(e){

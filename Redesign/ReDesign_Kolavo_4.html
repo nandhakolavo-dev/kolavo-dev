@@ -2431,6 +2431,23 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .kalk-c{font-size:12.5px;color:var(--ink-3);line-height:1.5}
 .kalk-out .kalk-c{margin-top:10px}
 .kalk-out .kalk-c[hidden]{display:none}
+/* tombol kartu Advance: Buat + Simulasi biaya berdampingan */
+.harga-aksi{margin-top:auto;display:flex;flex-wrap:wrap;gap:10px}
+.harga-i .harga-aksi .btn{margin-top:0}
+/* modal simulasi biaya Advance (.lgn): angka utama di kepala, kontrol + rincian di badan */
+.lgn-box.kalk-box{max-width:820px;text-align:left;padding:30px 30px 24px}
+.kalk-kepala{padding:0 40px 20px 0;border-bottom:1px solid var(--line)}
+.kalk-eyebrow{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;color:var(--ink-2)}
+.kalk-eyebrow .harga-nm{padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;background:var(--blue);color:var(--card)}
+.kalk-hero{margin-top:12px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.kalk-hero b{font-size:40px;font-weight:700;letter-spacing:-.02em;line-height:1.1;color:var(--blue-ink);font-variant-numeric:tabular-nums}
+.kalk-hero span{font-size:15px;color:var(--ink-3)}
+.kalk-heroket{margin-top:4px;font-size:13.5px;color:var(--ink-2)}
+.kalk-box .kalk{margin-top:20px;border:0;padding:0;background:transparent;border-radius:0}
+.kalk-preset{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.kalk-preset .chip{cursor:pointer;font-family:inherit}
+.kalk-kaki{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+@media(max-width:559px){.lgn-box.kalk-box{padding:24px 18px 18px}.kalk-hero b{font-size:32px}.kalk-kaki .btn{flex:1}}
 @media(min-width:820px){
   .pilar{grid-template-columns:repeat(3,1fr)}
   /* baris tiap kartu disejajarkan antar-kartu: ikon, label, judul, uraian, daftar */
@@ -2795,7 +2812,10 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
           <li>Onboarding anggota baru</li>
           <li>Jawaban pendaftar dikelompokkan jadi persebaran pilihanmu</li>
         </ul>
-        <a class="btn" href="#0" data-login="pengurus">Buat Halaman Komunitas</a>
+        <div class="harga-aksi">
+          <a class="btn" href="#0" data-login="pengurus">Buat Halaman Komunitas</a>
+          <button type="button" class="btn secondary" data-kalk-buka aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 7h7M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01M8.5 15h.01M12 15h.01M15.5 15h.01M8.5 18h.01M12 18h3.5"/></svg>Simulasi biaya</button>
+        </div>
       </article>
       <article class="harga-i besar">
         <p class="harga-nm">Big Organization</p>
@@ -2811,44 +2831,70 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       </article>
     </div>
 
-    <div class="kalk">
-      <div class="kalk-in">
-        <div>
-          <label class="kalk-l" for="kalkN"><span class="kalk-lt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Jumlah anggota</span><b id="kalkNV">200</b></label>
-          <input type="range" id="kalkN" min="30" max="1000" step="10" value="200">
-          <div class="kalk-skala"><span>30</span><span>1.000</span></div>
+    <!-- V4: kalkulator Advance tidak tampil di halaman; dibuka tombol "Simulasi biaya"
+         di kartu Advance sebagai modal (.lgn). Angka utama di atas, rincian di samping. -->
+    <div class="lgn" id="kalkModal" hidden>
+      <div class="lgn-scrim" data-kalk-tutup></div>
+      <div class="lgn-box kalk-box" role="dialog" aria-modal="true" aria-labelledby="kalkJudul">
+        <button class="lgn-x" type="button" aria-label="Tutup simulasi biaya" data-kalk-tutup>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <div class="kalk-kepala">
+          <p class="kalk-eyebrow"><span class="harga-nm">Advance</span>Simulasi biaya</p>
+          <p class="kalk-hero" id="kalkJudul"><b id="kalkHero">—</b><span>/ bulan</span></p>
+          <p class="kalk-heroket" id="kalkHeroKet">—</p>
         </div>
-        <div class="kalk-dua">
-          <div>
-            <span class="kalk-l"><span class="kalk-lt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg><span id="kalkPL">Jumlah peninjau</span><span class="kalk-infow" id="kalkInfoW"><button type="button" class="kalk-info" id="kalkInfo" aria-label="Apa itu peninjau?" aria-expanded="false" aria-describedby="kalkTip">i</button><span class="kalk-tip" id="kalkTip" role="tooltip">Peninjau adalah pengurus yang memeriksa pendaftaran anggota baru, lalu menerima atau menolaknya. Tambah peninjau supaya tugas ini bisa dibagi.</span></span></span></span>
-            <div class="kalk-step" role="group" aria-labelledby="kalkPL">
-              <button type="button" id="kalkPMin" aria-label="Kurangi peninjau">−</button>
-              <b id="kalkP" aria-live="polite">1</b>
-              <button type="button" id="kalkPPlus" aria-label="Tambah peninjau">+</button>
+        <div class="kalk">
+          <div class="kalk-in">
+            <div>
+              <label class="kalk-l" for="kalkN"><span class="kalk-lt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Jumlah anggota</span><b id="kalkNV">200</b></label>
+              <input type="range" id="kalkN" min="30" max="1000" step="10" value="200">
+              <div class="kalk-skala"><span>30</span><span>1.000</span></div>
+              <div class="kalk-preset" id="kalkPreset" role="group" aria-label="Pilihan cepat jumlah anggota">
+                <button type="button" class="chip" data-n="50">50</button>
+                <button type="button" class="chip" data-n="100">100</button>
+                <button type="button" class="chip" data-n="250">250</button>
+                <button type="button" class="chip" data-n="500">500</button>
+                <button type="button" class="chip" data-n="1000">1.000</button>
+              </div>
             </div>
+            <div class="kalk-dua">
+              <div>
+                <span class="kalk-l"><span class="kalk-lt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg><span id="kalkPL">Jumlah peninjau</span><span class="kalk-infow" id="kalkInfoW"><button type="button" class="kalk-info" id="kalkInfo" aria-label="Apa itu peninjau?" aria-expanded="false" aria-describedby="kalkTip">i</button><span class="kalk-tip" id="kalkTip" role="tooltip">Peninjau adalah pengurus yang memeriksa pendaftaran anggota baru, lalu menerima atau menolaknya. Tambah peninjau supaya tugas ini bisa dibagi.</span></span></span></span>
+                <div class="kalk-step" role="group" aria-labelledby="kalkPL">
+                  <button type="button" id="kalkPMin" aria-label="Kurangi peninjau">−</button>
+                  <b id="kalkP" aria-live="polite">1</b>
+                  <button type="button" id="kalkPPlus" aria-label="Tambah peninjau">+</button>
+                </div>
+              </div>
+              <div>
+                <span class="kalk-l"><span class="kalk-lt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span id="kalkBL">Durasi langganan</span></span></span>
+                <div class="kalk-durasi" id="kalkBulan" role="radiogroup" aria-labelledby="kalkBL">
+                  <button type="button" class="chip on" role="radio" aria-checked="true" data-bulan="1">1 bulan</button>
+                  <button type="button" class="chip" role="radio" aria-checked="false" data-bulan="6">6 bulan</button>
+                  <button type="button" class="chip" role="radio" aria-checked="false" data-bulan="12">12 bulan</button>
+                  <button type="button" class="chip" role="radio" aria-checked="false" data-bulan="24">2 tahun</button>
+                </div>
+              </div>
+            </div>
+            <p class="kalk-c">Diskon 5% untuk 6–12 bulan, 10% untuk langsung 2 tahun. Berlaku untuk pembelian pertama.</p>
           </div>
-          <div>
-            <span class="kalk-l"><span class="kalk-lt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span id="kalkBL">Durasi langganan</span></span></span>
-            <div class="kalk-durasi" id="kalkBulan" role="radiogroup" aria-labelledby="kalkBL">
-              <button type="button" class="chip on" role="radio" aria-checked="true" data-bulan="1">1 bulan</button>
-              <button type="button" class="chip" role="radio" aria-checked="false" data-bulan="6">6 bulan</button>
-              <button type="button" class="chip" role="radio" aria-checked="false" data-bulan="12">12 bulan</button>
-              <button type="button" class="chip" role="radio" aria-checked="false" data-bulan="24">2 tahun</button>
-            </div>
+          <div class="kalk-out" aria-live="polite">
+            <p class="kalk-k">Perkiraan tagihan Advance</p>
+            <dl class="kalk-rinci">
+              <div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span id="kalkAL">200 anggota × Rp 199</span></dt><dd id="kalkA">—</dd></div>
+              <div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg><span id="kalkRL">1 peninjau</span></dt><dd id="kalkR">—</dd></div>
+              <div class="kalk-sub"><dt>Per bulan</dt><dd id="kalkBln">—</dd></div>
+              <div id="kalkDW" hidden><dt id="kalkDL">Diskon</dt><dd id="kalkD">—</dd></div>
+            </dl>
+            <p class="kalk-v"><span id="kalkTL">Total 1 bulan</span><b id="kalkT">—</b></p>
+            <p class="kalk-c" id="kalkBesar" hidden>Lebih dari 1.000 anggota? Pilih paket Big Organization.</p>
           </div>
         </div>
-        <p class="kalk-c">Diskon 5% untuk 6–12 bulan, 10% untuk langsung 2 tahun. Berlaku untuk pembelian pertama.</p>
-      </div>
-      <div class="kalk-out" aria-live="polite">
-        <p class="kalk-k">Perkiraan tagihan Advance</p>
-        <dl class="kalk-rinci">
-          <div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span id="kalkAL">200 anggota × Rp 199</span></dt><dd id="kalkA">—</dd></div>
-          <div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg><span id="kalkRL">1 peninjau</span></dt><dd id="kalkR">—</dd></div>
-          <div class="kalk-sub"><dt>Per bulan</dt><dd id="kalkBln">—</dd></div>
-          <div id="kalkDW" hidden><dt id="kalkDL">Diskon</dt><dd id="kalkD">—</dd></div>
-        </dl>
-        <p class="kalk-v"><span id="kalkTL">Total 1 bulan</span><b id="kalkT">—</b></p>
-        <p class="kalk-c" id="kalkBesar" hidden>Lebih dari 1.000 anggota? Pilih paket Big Organization.</p>
+        <div class="kalk-kaki">
+          <button type="button" class="btn outline" data-kalk-tutup>Kembali ke paket</button>
+          <a class="btn" href="#0" data-login="pengurus">Buat Halaman Komunitas</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4534,8 +4580,36 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
     el('kalkTL').textContent = 'Total ' + durasi(h.bulan);
     el('kalkT').textContent = rp(h.total);
     el('kalkBesar').hidden = h.n < MAKS;
+    /* angka utama modal: rata-rata per bulan setelah diskon */
+    el('kalkHero').textContent = rp(h.total / h.bulan);
+    el('kalkHeroKet').textContent = h.diskon
+      ? 'Rata-rata per bulan dengan diskon ' + Math.round(h.diskon * 100) + '% · total ' + durasi(h.bulan) + ' ' + rp(h.total)
+      : h.n.toLocaleString('id-ID') + ' anggota dan ' + h.p + ' peninjau, ditagih bulanan';
+    el('kalkPreset').querySelectorAll('[data-n]').forEach(function(c){ c.classList.toggle('on', +c.dataset.n === h.n); });
   }
   geser.addEventListener('input', gambar);
+  el('kalkPreset').addEventListener('click', function(e){
+    const c = e.target.closest('[data-n]'); if(!c) return;
+    geser.value = c.dataset.n; gambar();
+  });
+  /* modal simulasi: dibuka dari kartu Advance, ditutup lewat scrim/x/Escape;
+     tombol Buat di dalamnya menutup modal dulu lalu modal masuk mengambil alih */
+  const modal = el('kalkModal');
+  function bukaKalk(){
+    modal.hidden = false;
+    void modal.offsetWidth;
+    modal.classList.add('on');
+    document.body.classList.add('lgn-open');
+    geser.focus();
+  }
+  function tutupKalk(){
+    modal.classList.remove('on');
+    document.body.classList.remove('lgn-open');
+    setTimeout(function(){ if(!modal.classList.contains('on')) modal.hidden = true; }, 170);
+  }
+  document.addEventListener('click', function(e){ if(e.target.closest('[data-kalk-buka]')){ e.preventDefault(); bukaKalk(); } });
+  modal.addEventListener('click', function(e){ if(e.target.closest('[data-kalk-tutup],[data-login]')) tutupKalk(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !modal.hidden && !infoW.classList.contains('buka')) tutupKalk(); });
   el('kalkPMin').addEventListener('click', function(){ peninjau = Math.max(1, peninjau - 1); gambar(); });
   el('kalkPPlus').addEventListener('click', function(){ peninjau = Math.min(20, peninjau + 1); gambar(); });
   el('kalkBulan').addEventListener('click', function(e){
