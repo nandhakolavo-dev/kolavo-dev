@@ -10,7 +10,15 @@
 
       <!-- kepala profil: tanpa tombol "Ubah profil" — tiap isian di bawah punya tombol ubahnya sendiri -->
       <div class="pf-top">
-        <div class="pf-foto p-bagas" role="img" aria-label="Foto profil Bagas Prakoso — gambar AI"></div>
+        <!-- foto bisa diganti langsung dari sini (file lokal, tanpa jaringan) -->
+        <div class="pf-foto-w">
+          <div class="pf-foto p-bagas" role="img" aria-label="Foto profil Bagas Prakoso — gambar AI"></div>
+          <button type="button" class="pf-foto-btn" id="pfFotoGanti" aria-label="Ganti foto profil" data-tip="Ganti foto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          </button>
+          <input type="file" id="pfFotoFile" accept="image/*" hidden>
+          <button type="button" class="pf-foto-balik" id="pfFotoBalik" hidden>Pakai foto Google</button>
+        </div>
         <div class="pf-top-t">
           <h1 class="pf-nm" id="pfNm">Bagas Prakoso</h1>
           <p class="pf-loc" id="pfLoc">—</p>

@@ -1729,3 +1729,8 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   Komunitas yang diikuti ada di tab Komunitas, yang dikelola di tab Dashboard. Catatan: kontrol
   arsip/hapus komunitas buatan (`KolavoDibuatItem`, kebab menu) tadinya hanya ada di daftar ini —
   belum punya pintu lain; pengaturan halaman tetap lewat ikon pensil di halaman komunitas.
+- **Ganti foto dari Profil & Setting (18 Okt 2026).** Ikon kamera bulat `#pfFotoGanti` di pojok foto
+  kepala profil membuka pemilih berkas (`#pfFotoFile`, FileReader → data URL, tanpa jaringan). Foto
+  langsung tersimpan dan dipasang ke semua `.p-bagas` (nav, kartu, profil) — modul
+  50-js-sunting-identitas, satu sumber dengan ganti foto di Lengkapi profil. Tautan "Pakai foto
+  Google" (`#pfFotoBalik`) muncul bila foto sudah diganti.

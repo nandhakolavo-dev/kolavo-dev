@@ -1241,6 +1241,16 @@ body.lgn-open{overflow:hidden}
 .pf-lengkap-bar i{display:block;height:100%;border-radius:100px;background:var(--blue)}
 .pf-lengkap-s{font-size:12px;color:var(--ink-3)}
 @media(max-width:640px){.pf-top{flex-direction:column;text-align:center}.pf-top .pf-tags{justify-content:center}.pf-lengkap{width:100%;padding:14px 0 0;border-left:0;border-top:1px solid var(--line)}}
+/* foto profil + tombol ganti (ikon kamera di pojok) */
+.pf-foto-w{position:relative;flex:none;display:flex;flex-direction:column;align-items:center;gap:6px}
+.pf-foto-btn{position:absolute;top:66px;left:66px;width:36px;height:36px;border-radius:100px;border:3px solid var(--card);background:var(--blue);color:var(--btn-ink);display:grid;place-items:center;cursor:pointer;box-shadow:var(--sh-sm)}
+.pf-foto-btn svg{width:16px;height:16px}
+.pf-foto-btn:hover{background:var(--blue-hover)}
+.pf-foto-btn:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.pf-foto-btn::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);padding:4px 8px;border-radius:7px;background:var(--ink);color:var(--bg);font-size:11.5px;font-weight:500;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s ease}
+.pf-foto-btn:hover::after,.pf-foto-btn:focus-visible::after{opacity:1}
+.pf-foto-balik{border:0;background:none;padding:2px;font:inherit;font-size:11.5px;font-weight:600;color:var(--ink-3);cursor:pointer;text-decoration:underline}
+.pf-foto-balik[hidden]{display:none}
 .pf-foto{width:96px;height:96px;flex:none;border-radius:24px;background-color:var(--bg-alt);
   background-repeat:no-repeat;background-position:center 42%;background-size:cover}
 .pf-nm{font-size:clamp(21px,2.6vw,27px);font-weight:600;letter-spacing:-.02em}

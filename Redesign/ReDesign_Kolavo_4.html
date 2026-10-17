@@ -1284,6 +1284,16 @@ body.lgn-open{overflow:hidden}
 .pf-lengkap-bar i{display:block;height:100%;border-radius:100px;background:var(--blue)}
 .pf-lengkap-s{font-size:12px;color:var(--ink-3)}
 @media(max-width:640px){.pf-top{flex-direction:column;text-align:center}.pf-top .pf-tags{justify-content:center}.pf-lengkap{width:100%;padding:14px 0 0;border-left:0;border-top:1px solid var(--line)}}
+/* foto profil + tombol ganti (ikon kamera di pojok) */
+.pf-foto-w{position:relative;flex:none;display:flex;flex-direction:column;align-items:center;gap:6px}
+.pf-foto-btn{position:absolute;top:66px;left:66px;width:36px;height:36px;border-radius:100px;border:3px solid var(--card);background:var(--blue);color:var(--btn-ink);display:grid;place-items:center;cursor:pointer;box-shadow:var(--sh-sm)}
+.pf-foto-btn svg{width:16px;height:16px}
+.pf-foto-btn:hover{background:var(--blue-hover)}
+.pf-foto-btn:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.pf-foto-btn::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);padding:4px 8px;border-radius:7px;background:var(--ink);color:var(--bg);font-size:11.5px;font-weight:500;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s ease}
+.pf-foto-btn:hover::after,.pf-foto-btn:focus-visible::after{opacity:1}
+.pf-foto-balik{border:0;background:none;padding:2px;font:inherit;font-size:11.5px;font-weight:600;color:var(--ink-3);cursor:pointer;text-decoration:underline}
+.pf-foto-balik[hidden]{display:none}
 .pf-foto{width:96px;height:96px;flex:none;border-radius:24px;background-color:var(--bg-alt);
   background-repeat:no-repeat;background-position:center 42%;background-size:cover}
 .pf-nm{font-size:clamp(21px,2.6vw,27px);font-weight:600;letter-spacing:-.02em}
@@ -3766,7 +3776,15 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 
       <!-- kepala profil: tanpa tombol "Ubah profil" — tiap isian di bawah punya tombol ubahnya sendiri -->
       <div class="pf-top">
-        <div class="pf-foto p-bagas" role="img" aria-label="Foto profil Bagas Prakoso — gambar AI"></div>
+        <!-- foto bisa diganti langsung dari sini (file lokal, tanpa jaringan) -->
+        <div class="pf-foto-w">
+          <div class="pf-foto p-bagas" role="img" aria-label="Foto profil Bagas Prakoso — gambar AI"></div>
+          <button type="button" class="pf-foto-btn" id="pfFotoGanti" aria-label="Ganti foto profil" data-tip="Ganti foto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          </button>
+          <input type="file" id="pfFotoFile" accept="image/*" hidden>
+          <button type="button" class="pf-foto-balik" id="pfFotoBalik" hidden>Pakai foto Google</button>
+        </div>
         <div class="pf-top-t">
           <h1 class="pf-nm" id="pfNm">Bagas Prakoso</h1>
           <p class="pf-loc" id="pfLoc">—</p>
@@ -6418,6 +6436,42 @@ function hitung(){}
     pasangFoto(null);
     balik.hidden = true;
   });
+
+  /* Profil & Setting: ganti foto langsung dari kepala profil — langsung tersimpan,
+     dipasang ke semua tempat wajah itu muncul, sama seperti dari Lengkapi profil */
+  const pfGanti = document.getElementById('pfFotoGanti'),
+        pfFile  = document.getElementById('pfFotoFile'),
+        pfBalik = document.getElementById('pfFotoBalik');
+  function segarPf(){ if(pfBalik) pfBalik.hidden = !fotoSimpan; }
+  if(pfGanti && pfFile){
+    pfGanti.addEventListener('click', function(){ pfFile.click(); });
+    pfFile.addEventListener('change', function(){
+      const f = pfFile.files && pfFile.files[0];
+      if(!f) return;
+      if(!/^image\//.test(f.type)){
+        if(window.KolavoToast) window.KolavoToast('Berkasnya harus gambar.');
+        pfFile.value = '';
+        return;
+      }
+      const baca = new FileReader();
+      baca.onload = function(){
+        fotoSimpan = fotoDraf = baca.result;
+        pasangFoto(fotoSimpan);
+        segarPf();
+        if(window.KolavoToast) window.KolavoToast('Foto profil diperbarui.');
+      };
+      baca.readAsDataURL(f);
+      pfFile.value = '';
+    });
+  }
+  if(pfBalik) pfBalik.addEventListener('click', function(){
+    fotoSimpan = fotoDraf = null;
+    pasangFoto(null);
+    segarPf();
+    if(window.KolavoToast) window.KolavoToast('Kembali memakai foto Google.');
+  });
+  /* foto yang diganti lewat Lengkapi profil juga menyalakan tombol "Pakai foto Google" */
+  simpan.addEventListener('click', segarPf);
 })();
 </script>
 
