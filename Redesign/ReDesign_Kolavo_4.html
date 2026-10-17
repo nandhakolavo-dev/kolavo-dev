@@ -1937,6 +1937,33 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .kl-kenal-kaki{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
 .kl-kenal-kaki .kl-cb-hint{margin:0}
 .kl-kenal-aksi{display:flex;gap:10px}
+/* Esensial: kuota 20 anggota di panel permintaan */
+.kl-kuota{margin-bottom:14px;padding:14px 16px;border:1px solid var(--line);border-radius:13px;background:var(--card)}
+.kl-kuota-t{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--ink-2)}
+.kl-kuota-t b{color:var(--ink)}
+.kl-kuota-sisa{color:var(--ink-3);font-size:12.5px}
+.kl-kuota-bar{margin-top:8px;height:6px;border-radius:100px;background:var(--line-2);overflow:hidden}
+.kl-kuota-bar i{display:block;height:100%;border-radius:100px;background:var(--blue)}
+.kl-kuota.penuh{border-color:var(--orange);background:var(--orange-wash)}
+.kl-kuota.penuh .kl-kuota-bar i{background:var(--orange)}
+.kl-kuota-ajak{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.kl-kuota-ajak svg{width:18px;height:18px;flex:none;color:var(--orange-ink)}
+.kl-kuota-ajak p{flex:1;min-width:200px;font-size:13px;color:var(--ink-2);line-height:1.5}
+.kl-kuota-ajak b{color:var(--ink)}
+/* Esensial: tambah peninjau terkunci — jalan halus ke Advance */
+.kl-tambah-kunci{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:12px 14px;border:1px dashed var(--line);border-radius:13px;background:transparent;color:var(--ink-2);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.kl-tambah-kunci:hover{border-color:var(--blue);background:var(--blue-tint)}
+.kl-tambah-kunci:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.kl-tambah-plus{width:36px;height:36px;flex:none;border-radius:100px;border:1px dashed var(--ink-3);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--ink-3)}
+.kl-tambah-kunci .t{flex:1;min-width:0;display:flex;flex-direction:column}
+.kl-tambah-kunci b{font-size:14px;font-weight:600;color:var(--ink)}
+.kl-tambah-kunci small{font-size:12.5px;color:var(--ink-3)}
+.kl-tambah-tag{display:inline-flex;align-items:center;gap:5px;flex:none;padding:3px 9px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink);font-size:11.5px;font-weight:600}
+.kl-tambah-tag svg{width:12px;height:12px}
+/* pop up Advance: alasan naik paket dari batas Esensial */
+.sek-alasan{display:flex;gap:10px;align-items:flex-start;margin:0 0 16px;padding:12px 14px;border-radius:13px;background:var(--orange-wash);text-align:left}
+.sek-alasan svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--orange-ink)}
+.sek-alasan p{font-size:13px;color:var(--ink-2);line-height:1.5}
 .kl-upsell{margin-top:18px;border:1px dashed var(--line);border-radius:13px;padding:14px 16px;background:var(--bg-alt)}
 .kl-upsell-h{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
 .kl-upsell p{font-size:12.5px;color:var(--ink-3);line-height:1.55;margin:0 0 12px}
@@ -9068,6 +9095,7 @@ function hitung(){}
   const IKON_CEK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
   const IKON_X   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>';
   const IKON_MATA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>';
+  const IKON_KUNCI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
   const IKON_CEK_KECIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
 
   /* ---------- membangun dari komunitas yang baru dibuat ---------- */
@@ -9124,6 +9152,13 @@ function hitung(){}
        Awalnya cuma pembuatnya; pengurus lain bisa ditambahkan kapan saja. */
     D.peninjau = [D.aku];
     D.anggotaBiasa = [];
+    /* contoh demo: komunitas baru langsung berisi 18 anggota (+ pembuatnya = 19),
+       supaya batas 20 anggota Esensial kelihatan setelah satu pendaftar diterima */
+    ANGGOTA_CONTOH.forEach(function(a){
+      const id = D.nomorMode === 'auto' ? fmtId(++D.urut) : '';
+      D.mem[a[0]] = { nama: a[0], full: a[0], panggil: a[0].split(' ')[0], kerja: a[1], kota: a[2], tags: [], id: id };
+      D.anggotaBiasa.push(a[0]);
+    });
     D.minta = SEED.map(function(s, i){
       return denganJawaban({
         id: 'r' + i, nama: s.nama, panggil: s.panggil, full: s.full, jk: s.jk,
@@ -9173,6 +9208,21 @@ function hitung(){}
   function pakaiNomor(){ return D.nomorMode !== 'off'; }
 
   function jumlahAnggota(){ return D.pengurus.length + D.anggotaBiasa.length; }
+  /* Esensial (belum berlangganan) dibatasi 20 anggota dan 1 peninjau — lebih dari itu lewat Advance */
+  const BATAS_ESENSIAL = 20;
+  function esensialSaja(){ return !D.sekAktif; }
+  function penuhEsensial(){ return esensialSaja() && jumlahAnggota() >= BATAS_ESENSIAL; }
+  const ANGGOTA_CONTOH = [
+    ['Bima Prasetyo', 'Arsitek', 'Surabaya'], ['Dewi Lestari', 'Dokter umum', 'Bandung'],
+    ['Rizky Ramadhan', 'Software engineer', 'Jakarta Selatan'], ['Fitri Handayani', 'Akuntan', 'Bekasi'],
+    ['Hendra Gunawan', 'Wiraswasta', 'Tangerang'], ['Maya Sari', 'Guru SMP', 'Depok'],
+    ['Yoga Pratama', 'Fotografer', 'Yogyakarta'], ['Lina Marlina', 'Perawat', 'Bogor'],
+    ['Agus Setiawan', 'PNS', 'Jakarta Timur'], ['Rina Wulandari', 'Desainer grafis', 'Jakarta Barat'],
+    ['Dimas Saputra', 'Konsultan pajak', 'Jakarta Pusat'], ['Nurul Hidayah', 'Apoteker', 'Semarang'],
+    ['Teguh Santoso', 'Teknisi listrik', 'Bekasi'], ['Indah Permata', 'Content creator', 'Jakarta Selatan'],
+    ['Wahyu Hidayat', 'Dosen', 'Bandung'], ['Sari Rahmawati', 'Bidan', 'Tangerang Selatan'],
+    ['Eko Purnomo', 'Pengusaha kuliner', 'Malang'], ['Citra Anggraini', 'Staf HR', 'Jakarta Utara']
+  ];
   function modeAdvance(){ return D.mode === 'advance'; }
   function akuPeninjau(){ return D.peninjau.indexOf(D.aku) >= 0; }
   function adaPeninjau(nama){ return D.peninjau.indexOf(nama) >= 0; }
@@ -9243,7 +9293,21 @@ function hitung(){}
     }
 
     const bisa = akuPeninjau();
-    wadah.innerHTML = D.minta.map(function(r, i){
+    /* Esensial: meter kuota anggota; penuh = ajakan naik ke Advance di atas daftar */
+    let batas = '';
+    if(esensialSaja()){
+      const n = jumlahAnggota(), penuh = n >= BATAS_ESENSIAL;
+      batas = '<div class="kl-kuota' + (penuh ? ' penuh' : '') + '">' +
+        '<div class="kl-kuota-t"><span><b>' + Math.min(n, BATAS_ESENSIAL) + ' dari ' + BATAS_ESENSIAL + '</b> anggota · paket Esensial</span>' +
+          (penuh ? '' : '<span class="kl-kuota-sisa">sisa ' + (BATAS_ESENSIAL - n) + '</span>') + '</div>' +
+        '<div class="kl-kuota-bar"><i style="width:' + Math.min(100, Math.round(n / BATAS_ESENSIAL * 100)) + '%"></i></div>' +
+        (penuh
+          ? '<div class="kl-kuota-ajak">' + IKON_KUNCI + '<p><b>Kuota Esensial sudah penuh.</b> ' + D.minta.length + ' pendaftar belum bisa diterima. Naik ke Advance untuk menampung hingga 1.000 anggota.</p>' +
+              '<button type="button" class="btn sm" data-upgrade="anggota">Naik ke Advance</button></div>'
+          : '') +
+      '</div>';
+    }
+    wadah.innerHTML = batas + D.minta.map(function(r, i){
       const av = '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(r.nama) + '</div>';
 
       /* Jawaban pertanyaan pendaftaran — pertanyaan yang disusun pengurus saat
@@ -9525,7 +9589,14 @@ function hitung(){}
 
     const bisa = [D.aku].concat(D.anggotaBiasa).filter(function(n){ return !adaPeninjau(n); });
     let tambah;
-    if(bisa.length){
+    if(esensialSaja()){
+      /* Esensial cukup satu peninjau — tambahannya jalan halus menuju Advance */
+      tambah = '<button type="button" class="kl-tambah-kunci" data-upgrade="peninjau">' +
+          '<span class="kl-tambah-plus" aria-hidden="true">+</span>' +
+          '<span class="t"><b>Tambah peninjau</b><small>Bagi tugas meninjau pendaftaran dengan pengurus lain</small></span>' +
+          '<span class="kl-tambah-tag">' + IKON_KUNCI + 'Advance</span>' +
+        '</button>';
+    } else if(bisa.length){
       tambah = '<div class="kl-angkat">' +
           '<span class="kl-angkat-lbl">Tunjuk peninjau:</span>' +
           '<select class="sel" id="klPeninjauSel" aria-label="Pilih anggota jadi peninjau">' +
@@ -9538,7 +9609,7 @@ function hitung(){}
     }
 
     wadah.innerHTML =
-      '<div class="kl-tier"><b>Paket Esensial · Community Creator.</b> Di paket ini belum ada susunan pengurus. Yang diatur di sini: siapa saja <b>peninjau</b> yang menerima atau menolak pendaftaran.</div>' +
+      '<div class="kl-tier"><b>Paket Esensial · Community Creator.</b> Di paket ini belum ada susunan pengurus. Yang diatur di sini: <b>peninjau</b> yang menerima atau menolak pendaftaran' + (esensialSaja() ? ' — satu orang, hingga 20 anggota.' : '.') + '</div>' +
       '<div class="kl-seksi-h">Peninjau pendaftaran</div>' +
       '<p class="kl-cb-hint">Merekalah yang menerima atau menolak pendaftaran. Selalu ada minimal satu.</p>' +
       list + tambah +
@@ -9793,6 +9864,7 @@ function hitung(){}
     if(setuju){
       const r = D.minta.filter(function(x){ return x.id === setuju.dataset.setuju; })[0];
       if(!r) return;
+      if(penuhEsensial()){ D.bukaAdvance('anggota'); return; }
       const kartu = setuju.closest('.kl-req');
       /* nomor anggota ditetapkan saat diterima: otomatis ikut urutan, atau
          diambil dari kolom manual yang diisi peninjau */
@@ -9857,6 +9929,9 @@ function hitung(){}
       toast((nama === D.aku ? 'Kamu' : nama.split(' ')[0]) + ' sekarang ikut meninjau pendaftaran.');
       return;
     }
+
+    const upg = e.target.closest('[data-upgrade]');
+    if(upg){ D.bukaAdvance(upg.dataset.upgrade); return; }
 
     /* Esensial: tunjuk anggota jadi peninjau lewat dropdown */
     const padd = e.target.closest('[data-peninjau-add]');
@@ -11262,8 +11337,19 @@ function hitung(){}
 
   /* ---------- modal aktifkan ---------- */
   const modal = el('sekModal');
-  function bukaModal(){
-    el('sekIsi').innerHTML = '<span class="sek-eb">' + IK.kantor + 'Dashboard Advance</span>' +
+  /* alasan naik paket dari batas Esensial — tampil sebagai konteks di atas pop up */
+  const ALASAN = {
+    peninjau: 'Di Esensial pendaftaran ditinjau satu orang. Dengan Advance, kamu bisa menambah peninjau dan menyusun pengurus lengkap.',
+    anggota: 'Komunitasmu sudah 20 anggota, batas paket Esensial. Dengan Advance, kamu bisa menerima pendaftar baru hingga 1.000 anggota.'
+  };
+  /* jalur naik paket dari dashboard Esensial: buka pop up, lalu kembali ke tab asalnya */
+  D.bukaAdvance = function(alasan){
+    D.tabSesudah = alasan === 'peninjau' ? 'pengurus' : alasan === 'anggota' ? 'minta' : null;
+    bukaModal(alasan);
+  };
+  function bukaModal(alasan){
+    el('sekIsi').innerHTML = (ALASAN[alasan] ? '<div class="sek-alasan">' + IK.kantor + '<p>' + ALASAN[alasan] + '</p></div>' : '') +
+      '<span class="sek-eb">' + IK.kantor + 'Dashboard Advance</span>' +
       '<h2 id="sekHead">Berlangganan Advance untuk ' + lolos(D.kom.nama) + '</h2>' +
       '<p class="lgn-sub">Alat administrasi tambahan di dashboard pengurus. Satu langganan untuk komunitas — setiap pengurus yang kamu undang ikut memakainya dengan akunnya sendiri.</p>' +
       '<div class="sek-modal-grid"><ul class="sek-poin">' + URUT.map(function(k){

@@ -145,6 +145,7 @@
   const IKON_CEK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
   const IKON_X   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>';
   const IKON_MATA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>';
+  const IKON_KUNCI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
   const IKON_CEK_KECIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
 
   /* ---------- membangun dari komunitas yang baru dibuat ---------- */
@@ -201,6 +202,13 @@
        Awalnya cuma pembuatnya; pengurus lain bisa ditambahkan kapan saja. */
     D.peninjau = [D.aku];
     D.anggotaBiasa = [];
+    /* contoh demo: komunitas baru langsung berisi 18 anggota (+ pembuatnya = 19),
+       supaya batas 20 anggota Esensial kelihatan setelah satu pendaftar diterima */
+    ANGGOTA_CONTOH.forEach(function(a){
+      const id = D.nomorMode === 'auto' ? fmtId(++D.urut) : '';
+      D.mem[a[0]] = { nama: a[0], full: a[0], panggil: a[0].split(' ')[0], kerja: a[1], kota: a[2], tags: [], id: id };
+      D.anggotaBiasa.push(a[0]);
+    });
     D.minta = SEED.map(function(s, i){
       return denganJawaban({
         id: 'r' + i, nama: s.nama, panggil: s.panggil, full: s.full, jk: s.jk,
@@ -250,6 +258,21 @@
   function pakaiNomor(){ return D.nomorMode !== 'off'; }
 
   function jumlahAnggota(){ return D.pengurus.length + D.anggotaBiasa.length; }
+  /* Esensial (belum berlangganan) dibatasi 20 anggota dan 1 peninjau — lebih dari itu lewat Advance */
+  const BATAS_ESENSIAL = 20;
+  function esensialSaja(){ return !D.sekAktif; }
+  function penuhEsensial(){ return esensialSaja() && jumlahAnggota() >= BATAS_ESENSIAL; }
+  const ANGGOTA_CONTOH = [
+    ['Bima Prasetyo', 'Arsitek', 'Surabaya'], ['Dewi Lestari', 'Dokter umum', 'Bandung'],
+    ['Rizky Ramadhan', 'Software engineer', 'Jakarta Selatan'], ['Fitri Handayani', 'Akuntan', 'Bekasi'],
+    ['Hendra Gunawan', 'Wiraswasta', 'Tangerang'], ['Maya Sari', 'Guru SMP', 'Depok'],
+    ['Yoga Pratama', 'Fotografer', 'Yogyakarta'], ['Lina Marlina', 'Perawat', 'Bogor'],
+    ['Agus Setiawan', 'PNS', 'Jakarta Timur'], ['Rina Wulandari', 'Desainer grafis', 'Jakarta Barat'],
+    ['Dimas Saputra', 'Konsultan pajak', 'Jakarta Pusat'], ['Nurul Hidayah', 'Apoteker', 'Semarang'],
+    ['Teguh Santoso', 'Teknisi listrik', 'Bekasi'], ['Indah Permata', 'Content creator', 'Jakarta Selatan'],
+    ['Wahyu Hidayat', 'Dosen', 'Bandung'], ['Sari Rahmawati', 'Bidan', 'Tangerang Selatan'],
+    ['Eko Purnomo', 'Pengusaha kuliner', 'Malang'], ['Citra Anggraini', 'Staf HR', 'Jakarta Utara']
+  ];
   function modeAdvance(){ return D.mode === 'advance'; }
   function akuPeninjau(){ return D.peninjau.indexOf(D.aku) >= 0; }
   function adaPeninjau(nama){ return D.peninjau.indexOf(nama) >= 0; }
@@ -320,7 +343,21 @@
     }
 
     const bisa = akuPeninjau();
-    wadah.innerHTML = D.minta.map(function(r, i){
+    /* Esensial: meter kuota anggota; penuh = ajakan naik ke Advance di atas daftar */
+    let batas = '';
+    if(esensialSaja()){
+      const n = jumlahAnggota(), penuh = n >= BATAS_ESENSIAL;
+      batas = '<div class="kl-kuota' + (penuh ? ' penuh' : '') + '">' +
+        '<div class="kl-kuota-t"><span><b>' + Math.min(n, BATAS_ESENSIAL) + ' dari ' + BATAS_ESENSIAL + '</b> anggota · paket Esensial</span>' +
+          (penuh ? '' : '<span class="kl-kuota-sisa">sisa ' + (BATAS_ESENSIAL - n) + '</span>') + '</div>' +
+        '<div class="kl-kuota-bar"><i style="width:' + Math.min(100, Math.round(n / BATAS_ESENSIAL * 100)) + '%"></i></div>' +
+        (penuh
+          ? '<div class="kl-kuota-ajak">' + IKON_KUNCI + '<p><b>Kuota Esensial sudah penuh.</b> ' + D.minta.length + ' pendaftar belum bisa diterima. Naik ke Advance untuk menampung hingga 1.000 anggota.</p>' +
+              '<button type="button" class="btn sm" data-upgrade="anggota">Naik ke Advance</button></div>'
+          : '') +
+      '</div>';
+    }
+    wadah.innerHTML = batas + D.minta.map(function(r, i){
       const av = '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(r.nama) + '</div>';
 
       /* Jawaban pertanyaan pendaftaran — pertanyaan yang disusun pengurus saat
@@ -602,7 +639,14 @@
 
     const bisa = [D.aku].concat(D.anggotaBiasa).filter(function(n){ return !adaPeninjau(n); });
     let tambah;
-    if(bisa.length){
+    if(esensialSaja()){
+      /* Esensial cukup satu peninjau — tambahannya jalan halus menuju Advance */
+      tambah = '<button type="button" class="kl-tambah-kunci" data-upgrade="peninjau">' +
+          '<span class="kl-tambah-plus" aria-hidden="true">+</span>' +
+          '<span class="t"><b>Tambah peninjau</b><small>Bagi tugas meninjau pendaftaran dengan pengurus lain</small></span>' +
+          '<span class="kl-tambah-tag">' + IKON_KUNCI + 'Advance</span>' +
+        '</button>';
+    } else if(bisa.length){
       tambah = '<div class="kl-angkat">' +
           '<span class="kl-angkat-lbl">Tunjuk peninjau:</span>' +
           '<select class="sel" id="klPeninjauSel" aria-label="Pilih anggota jadi peninjau">' +
@@ -615,7 +659,7 @@
     }
 
     wadah.innerHTML =
-      '<div class="kl-tier"><b>Paket Esensial · Community Creator.</b> Di paket ini belum ada susunan pengurus. Yang diatur di sini: siapa saja <b>peninjau</b> yang menerima atau menolak pendaftaran.</div>' +
+      '<div class="kl-tier"><b>Paket Esensial · Community Creator.</b> Di paket ini belum ada susunan pengurus. Yang diatur di sini: <b>peninjau</b> yang menerima atau menolak pendaftaran' + (esensialSaja() ? ' — satu orang, hingga 20 anggota.' : '.') + '</div>' +
       '<div class="kl-seksi-h">Peninjau pendaftaran</div>' +
       '<p class="kl-cb-hint">Merekalah yang menerima atau menolak pendaftaran. Selalu ada minimal satu.</p>' +
       list + tambah +
@@ -870,6 +914,7 @@
     if(setuju){
       const r = D.minta.filter(function(x){ return x.id === setuju.dataset.setuju; })[0];
       if(!r) return;
+      if(penuhEsensial()){ D.bukaAdvance('anggota'); return; }
       const kartu = setuju.closest('.kl-req');
       /* nomor anggota ditetapkan saat diterima: otomatis ikut urutan, atau
          diambil dari kolom manual yang diisi peninjau */
@@ -934,6 +979,9 @@
       toast((nama === D.aku ? 'Kamu' : nama.split(' ')[0]) + ' sekarang ikut meninjau pendaftaran.');
       return;
     }
+
+    const upg = e.target.closest('[data-upgrade]');
+    if(upg){ D.bukaAdvance(upg.dataset.upgrade); return; }
 
     /* Esensial: tunjuk anggota jadi peninjau lewat dropdown */
     const padd = e.target.closest('[data-peninjau-add]');

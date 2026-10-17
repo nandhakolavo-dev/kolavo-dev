@@ -1329,8 +1329,19 @@
 
   /* ---------- modal aktifkan ---------- */
   const modal = el('sekModal');
-  function bukaModal(){
-    el('sekIsi').innerHTML = '<span class="sek-eb">' + IK.kantor + 'Dashboard Advance</span>' +
+  /* alasan naik paket dari batas Esensial — tampil sebagai konteks di atas pop up */
+  const ALASAN = {
+    peninjau: 'Di Esensial pendaftaran ditinjau satu orang. Dengan Advance, kamu bisa menambah peninjau dan menyusun pengurus lengkap.',
+    anggota: 'Komunitasmu sudah 20 anggota, batas paket Esensial. Dengan Advance, kamu bisa menerima pendaftar baru hingga 1.000 anggota.'
+  };
+  /* jalur naik paket dari dashboard Esensial: buka pop up, lalu kembali ke tab asalnya */
+  D.bukaAdvance = function(alasan){
+    D.tabSesudah = alasan === 'peninjau' ? 'pengurus' : alasan === 'anggota' ? 'minta' : null;
+    bukaModal(alasan);
+  };
+  function bukaModal(alasan){
+    el('sekIsi').innerHTML = (ALASAN[alasan] ? '<div class="sek-alasan">' + IK.kantor + '<p>' + ALASAN[alasan] + '</p></div>' : '') +
+      '<span class="sek-eb">' + IK.kantor + 'Dashboard Advance</span>' +
       '<h2 id="sekHead">Berlangganan Advance untuk ' + lolos(D.kom.nama) + '</h2>' +
       '<p class="lgn-sub">Alat administrasi tambahan di dashboard pengurus. Satu langganan untuk komunitas — setiap pengurus yang kamu undang ikut memakainya dengan akunnya sendiri.</p>' +
       '<div class="sek-modal-grid"><ul class="sek-poin">' + URUT.map(function(k){

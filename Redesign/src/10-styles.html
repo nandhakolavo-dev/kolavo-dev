@@ -1894,6 +1894,33 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .kl-kenal-kaki{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
 .kl-kenal-kaki .kl-cb-hint{margin:0}
 .kl-kenal-aksi{display:flex;gap:10px}
+/* Esensial: kuota 20 anggota di panel permintaan */
+.kl-kuota{margin-bottom:14px;padding:14px 16px;border:1px solid var(--line);border-radius:13px;background:var(--card)}
+.kl-kuota-t{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--ink-2)}
+.kl-kuota-t b{color:var(--ink)}
+.kl-kuota-sisa{color:var(--ink-3);font-size:12.5px}
+.kl-kuota-bar{margin-top:8px;height:6px;border-radius:100px;background:var(--line-2);overflow:hidden}
+.kl-kuota-bar i{display:block;height:100%;border-radius:100px;background:var(--blue)}
+.kl-kuota.penuh{border-color:var(--orange);background:var(--orange-wash)}
+.kl-kuota.penuh .kl-kuota-bar i{background:var(--orange)}
+.kl-kuota-ajak{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.kl-kuota-ajak svg{width:18px;height:18px;flex:none;color:var(--orange-ink)}
+.kl-kuota-ajak p{flex:1;min-width:200px;font-size:13px;color:var(--ink-2);line-height:1.5}
+.kl-kuota-ajak b{color:var(--ink)}
+/* Esensial: tambah peninjau terkunci — jalan halus ke Advance */
+.kl-tambah-kunci{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:12px 14px;border:1px dashed var(--line);border-radius:13px;background:transparent;color:var(--ink-2);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.kl-tambah-kunci:hover{border-color:var(--blue);background:var(--blue-tint)}
+.kl-tambah-kunci:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.kl-tambah-plus{width:36px;height:36px;flex:none;border-radius:100px;border:1px dashed var(--ink-3);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--ink-3)}
+.kl-tambah-kunci .t{flex:1;min-width:0;display:flex;flex-direction:column}
+.kl-tambah-kunci b{font-size:14px;font-weight:600;color:var(--ink)}
+.kl-tambah-kunci small{font-size:12.5px;color:var(--ink-3)}
+.kl-tambah-tag{display:inline-flex;align-items:center;gap:5px;flex:none;padding:3px 9px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink);font-size:11.5px;font-weight:600}
+.kl-tambah-tag svg{width:12px;height:12px}
+/* pop up Advance: alasan naik paket dari batas Esensial */
+.sek-alasan{display:flex;gap:10px;align-items:flex-start;margin:0 0 16px;padding:12px 14px;border-radius:13px;background:var(--orange-wash);text-align:left}
+.sek-alasan svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--orange-ink)}
+.sek-alasan p{font-size:13px;color:var(--ink-2);line-height:1.5}
 .kl-upsell{margin-top:18px;border:1px dashed var(--line);border-radius:13px;padding:14px 16px;background:var(--bg-alt)}
 .kl-upsell-h{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
 .kl-upsell p{font-size:12.5px;color:var(--ink-3);line-height:1.55;margin:0 0 12px}

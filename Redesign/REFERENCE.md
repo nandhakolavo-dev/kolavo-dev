@@ -1537,3 +1537,21 @@ sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Ke
   kali profil komunitas lain dilihat (bug sejak A4: anggota Forpastara yang melihat IA PNJ
   mendapati Komunitasku berganti jadi IA PNJ "Menunggu persetujuan"). Item kini membawa
   `data-komunitas-anggota="<kelas>"` dan membuka komunitasnya sendiri.
+
+## Batas Esensial → jalur ke Advance (17 Okt 2026)
+
+- **Kuota 20 anggota.** `penuhEsensial()` (50-js-dashboard-pengurus) = belum berlangganan
+  (`!D.sekAktif`) dan `jumlahAnggota() >= 20`. Panel Permintaan gabung menampilkan meter
+  `.kl-kuota` ("19 dari 20 anggota · paket Esensial"); saat penuh berubah oranye dengan ajakan
+  "Naik ke Advance" (`[data-upgrade="anggota"]`), dan tombol Setujui membuka pop up Advance
+  alih-alih menerima.
+- **Satu peninjau.** Di Esensial (belum berlangganan) dropdown "Tunjuk peninjau" diganti baris
+  halus bergaris putus `.kl-tambah-kunci` "Tambah peninjau · Advance" (`[data-upgrade="peninjau"]`).
+  Kalau sudah berlangganan tapi sedang di tampilan Esensial, dropdown lama tetap ada.
+- **Pop up Advance tahu alasannya.** `D.bukaAdvance(alasan)` (50-js-sekretariat) membuka
+  `bukaModal` dengan kotak `.sek-alasan` (peninjau / anggota) dan kembali ke tab asal
+  (`pengurus` / `minta`) setelah berlangganan.
+- **Contoh demo.** Komunitas yang baru dibuat langsung berisi 18 anggota contoh
+  (`ANGGOTA_CONTOH`, termasuk Bima Prasetyo dari riwayat) + pembuatnya = 19; menerima satu
+  pendaftar membuat kuota penuh, pendaftar berikutnya memicu ajakan naik paket.
+- Belum diselaraskan: harga di pop up langganan masih `Rp XXXX` + "Minimal 50 anggota".
