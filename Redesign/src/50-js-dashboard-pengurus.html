@@ -213,9 +213,13 @@
       D.anggotaBiasa.push(a[0]);
     });
     D.minta = SEED.map(function(s, i){
+      /* kelengkapan dihitung dari isiannya, bukan ditulis tangan: media sosial kosong = kurang */
+      const sos = SOSMED_SEED[s.nama] || [];
+      const kurang = (s.kurang || []).slice();
+      if(!sos.length && kurang.indexOf('Media sosial') < 0) kurang.push('Media sosial');
       return denganJawaban({
         id: 'r' + i, nama: s.nama, panggil: s.panggil, full: s.full, jk: s.jk,
-        kerja: s.kerja, kota: s.kota, wa: s.wa, email: s.email, lengkap: s.lengkap, kurang: (s.kurang || []).slice(),
+        kerja: s.kerja, kota: s.kota, wa: s.wa, email: s.email, lengkap: !kurang.length, kurang: kurang,
         waktu: s.waktu, hari: s.hari, tahun: s.tahun,
         jwb: jawabPerId(s), sosmed: SOSMED_SEED[s.nama] || []
       });

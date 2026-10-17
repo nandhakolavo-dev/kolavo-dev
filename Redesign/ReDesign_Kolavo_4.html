@@ -2147,9 +2147,8 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .kl-kurang{display:flex;flex-wrap:wrap;align-items:center;gap:5px}
 .kl-kurang-l{font-size:12px;color:var(--ink-3)}
 .kl-kurang-i{font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:100px;background:var(--orange-wash);color:var(--orange-ink)}
-/* pop up pengurus: profil singkat (pekerjaan, domisili, jawaban gabung) */
-.peng-pp-prof{margin-top:16px;text-align:left}
-.peng-pp-prof .ag-data-g{margin-top:8px;grid-template-columns:1fr 1fr}
+/* pop up pengurus: label jawaban gabung yang berkaitan dengan komunitas */
+.peng-pp-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:10px}
 /* tab Dashboard: buat komunitas berikutnya */
 .dsb-baru{display:flex;align-items:center;gap:14px;width:100%;margin-top:14px;padding:16px 18px;border:1.5px dashed var(--line);border-radius:13px;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s ease,background .15s ease}
 .dsb-baru:hover{border-color:var(--blue);background:var(--blue-tint)}
@@ -7386,27 +7385,21 @@ function hitung(){}
       ? '<span class="av photo ' + p.f + '" role="img" aria-label="Foto profil ' + esc(p.n) + ' — gambar AI"></span>'
       : '<span class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(p.n) + '</span>';
   }
-  /* profil pengurus untuk calon anggota: pekerjaan & domisili (Lengkapi Profil) + jawaban
-     formulir gabung komunitas ini (tahun, prodi, satuan …). Panggilan & alasan tidak
-     ditampilkan — nama sudah jadi judul, alasan bukan kredensial. */
+  /* label pengurus untuk calon anggota: hanya jawaban formulir gabung yang berkaitan dengan
+     komunitas (tahun angkatan, prodi, satuan …). Pekerjaan & domisili bersifat pribadi —
+     tidak ditampilkan; panggilan sudah jadi judul, alasan bukan kredensial. */
   function profilPengurus(p){
     const base = ((kini && kini.agg && kini.agg.anggota) || []).filter(function(a){ return a.n === p.n; })[0] || {};
     const o = Object.assign({ n: p.n, f: p.f }, ORANG[p.n] || {}, base);
-    const alasan = /alasan|kenapa/i;
-    const baris = [];
-    if(o.k && o.k !== '—') baris.push(['Pekerjaan', o.k]);
-    if(o.d && o.d !== '—') baris.push(['Domisili', o.d]);
+    const tanya = (kini && kini.tanya) || [];
+    const label = [];
     jawabPendaftaran(p.n, o).forEach(function(r, i){
-      const t = ((kini && kini.tanya) || [])[i] || {};
-      if(t.id === 'nickname' || alasan.test(r[0] + ' ' + (t.tanya || '')) || !r[1] || r[1] === '—') return;
-      baris.push(r);
+      const t = tanya[i] || {};
+      if(t.id === 'nickname' || /alasan|kenapa/i.test(r[0] + ' ' + (t.tanya || '')) || !r[1] || r[1] === '—') return;
+      label.push(t.tipe === 'tahun' ? r[0] + ' ' + r[1] : r[1]);
     });
-    if(!baris.length) return '';
-    return '<div class="peng-pp-prof"><span class="peng-pp-lbl">Profil</span><div class="ag-data-g">' + baris.map(function(r){
-      const ik = DATA_IKON.filter(function(d){ return d[0].test(r[0]); })[0];
-      return '<div class="ag-data-i"><span class="ag-data-ic">' + svg(ik ? ik[1] : '<circle cx="12" cy="12" r="8"/>') + '</span>' +
-        '<span class="t"><small>' + esc(r[0]) + '</small><b>' + esc(r[1]) + '</b></span></div>';
-    }).join('') + '</div></div>';
+    if(!label.length) return '';
+    return '<div class="peng-pp-tags">' + label.map(function(v){ return '<span class="tag">' + esc(v) + '</span>'; }).join('') + '</div>';
   }
   function bukaPengurus(i){
     const p = pengKini[i]; if(!p) return;
@@ -9630,9 +9623,13 @@ function hitung(){}
       D.anggotaBiasa.push(a[0]);
     });
     D.minta = SEED.map(function(s, i){
+      /* kelengkapan dihitung dari isiannya, bukan ditulis tangan: media sosial kosong = kurang */
+      const sos = SOSMED_SEED[s.nama] || [];
+      const kurang = (s.kurang || []).slice();
+      if(!sos.length && kurang.indexOf('Media sosial') < 0) kurang.push('Media sosial');
       return denganJawaban({
         id: 'r' + i, nama: s.nama, panggil: s.panggil, full: s.full, jk: s.jk,
-        kerja: s.kerja, kota: s.kota, wa: s.wa, email: s.email, lengkap: s.lengkap, kurang: (s.kurang || []).slice(),
+        kerja: s.kerja, kota: s.kota, wa: s.wa, email: s.email, lengkap: !kurang.length, kurang: kurang,
         waktu: s.waktu, hari: s.hari, tahun: s.tahun,
         jwb: jawabPerId(s), sosmed: SOSMED_SEED[s.nama] || []
       });

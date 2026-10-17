@@ -1672,3 +1672,7 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
 - **Pop up pengurus punya profil** (`profilPengurus`): pekerjaan, domisili, dan jawaban formulir
   gabung komunitas itu (tahun, prodi, satuan …), tanpa panggilan dan alasan. Perkenalan Rani
   diselaraskan dengan datanya (angkatan 2015, desainer produk).
+- **Koreksi (17 Okt 2026):** kelengkapan pendaftar kini dihitung dari isiannya — media sosial kosong
+  otomatis masuk "Belum diisi" (Bayu Setiawan: 6 dari 7). Pop up pengurus tidak lagi menampilkan
+  pekerjaan & domisili (pribadi); cukup label jawaban gabung yang berkaitan dengan komunitas
+  (`.peng-pp-tags`: "Angkatan Paskibra 2016", "Teknik Informatika dan Komputer").

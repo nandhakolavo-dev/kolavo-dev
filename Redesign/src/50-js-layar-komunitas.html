@@ -1259,27 +1259,21 @@
       ? '<span class="av photo ' + p.f + '" role="img" aria-label="Foto profil ' + esc(p.n) + ' — gambar AI"></span>'
       : '<span class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(p.n) + '</span>';
   }
-  /* profil pengurus untuk calon anggota: pekerjaan & domisili (Lengkapi Profil) + jawaban
-     formulir gabung komunitas ini (tahun, prodi, satuan …). Panggilan & alasan tidak
-     ditampilkan — nama sudah jadi judul, alasan bukan kredensial. */
+  /* label pengurus untuk calon anggota: hanya jawaban formulir gabung yang berkaitan dengan
+     komunitas (tahun angkatan, prodi, satuan …). Pekerjaan & domisili bersifat pribadi —
+     tidak ditampilkan; panggilan sudah jadi judul, alasan bukan kredensial. */
   function profilPengurus(p){
     const base = ((kini && kini.agg && kini.agg.anggota) || []).filter(function(a){ return a.n === p.n; })[0] || {};
     const o = Object.assign({ n: p.n, f: p.f }, ORANG[p.n] || {}, base);
-    const alasan = /alasan|kenapa/i;
-    const baris = [];
-    if(o.k && o.k !== '—') baris.push(['Pekerjaan', o.k]);
-    if(o.d && o.d !== '—') baris.push(['Domisili', o.d]);
+    const tanya = (kini && kini.tanya) || [];
+    const label = [];
     jawabPendaftaran(p.n, o).forEach(function(r, i){
-      const t = ((kini && kini.tanya) || [])[i] || {};
-      if(t.id === 'nickname' || alasan.test(r[0] + ' ' + (t.tanya || '')) || !r[1] || r[1] === '—') return;
-      baris.push(r);
+      const t = tanya[i] || {};
+      if(t.id === 'nickname' || /alasan|kenapa/i.test(r[0] + ' ' + (t.tanya || '')) || !r[1] || r[1] === '—') return;
+      label.push(t.tipe === 'tahun' ? r[0] + ' ' + r[1] : r[1]);
     });
-    if(!baris.length) return '';
-    return '<div class="peng-pp-prof"><span class="peng-pp-lbl">Profil</span><div class="ag-data-g">' + baris.map(function(r){
-      const ik = DATA_IKON.filter(function(d){ return d[0].test(r[0]); })[0];
-      return '<div class="ag-data-i"><span class="ag-data-ic">' + svg(ik ? ik[1] : '<circle cx="12" cy="12" r="8"/>') + '</span>' +
-        '<span class="t"><small>' + esc(r[0]) + '</small><b>' + esc(r[1]) + '</b></span></div>';
-    }).join('') + '</div></div>';
+    if(!label.length) return '';
+    return '<div class="peng-pp-tags">' + label.map(function(v){ return '<span class="tag">' + esc(v) + '</span>'; }).join('') + '</div>';
   }
   function bukaPengurus(i){
     const p = pengKini[i]; if(!p) return;
