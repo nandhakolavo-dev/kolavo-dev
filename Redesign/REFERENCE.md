@@ -1707,3 +1707,9 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
 - **Kapasitas ditegakkan**: meter kuota di Permintaan gabung berlaku juga di Advance ("19 dari 100
   anggota · kapasitas Advance"); penuh → "Tambah kapasitas". Menjadikan peninjau melebihi kursi →
   pop up tambah kapasitas. `D.kapasitas()` dipakai 50-js-dashboard-pengurus.
+- **Pop up langganan jadi atas-bawah (17 Okt 2026).** Satu kolom, lebar 580 px
+  (`.lgn-box.sek-box:has(.sb-step)`): benefit → kalkulator (Kapasitas) / metode → ringkasan
+  (Pembayaran). Benefit jadi deret chip bercentang `.sb-fitur` (keterangan lengkap di `title`).
+  **Kaki menempel** `.sb-kaki` (sticky di bawah pop up): total + tombol utama + aksi kedua selalu
+  terlihat walau isi digulir; `#sbKakiTotal` ikut berubah saat slider digeser. QR di langkah
+  Pembayaran diperkecil (150 px).

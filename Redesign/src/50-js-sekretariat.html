@@ -1460,11 +1460,11 @@
           '<dt>Periode</dt><dd>' + durasiTeks(l.bulan) + ' · sampai ' + tglPanjang(l.sampai) + '</dd>' +
           '<dt>Metode</dt><dd>' + metodeH(l.metode) + '</dd></dl>' +
           '<p class="sek-kecil">Tambahan kapasitas langsung aktif. Selisihnya dibayar prorata sampai akhir periode, lalu ikut tagihan perpanjangan berikutnya.</p></div>'
-      : '<p class="sek-lbl">Yang kamu dapat</p><ul class="sek-poin sb-poin">' + URUT.map(function(k){
-          return '<li title="' + lolos(FITUR[k].ringkas) + '">' + IK.cek + '<span><b>' + FITUR[k].judul + '</b></span></li>';
+      : '<p class="sek-lbl">Yang kamu dapat</p><div class="sb-fitur">' + URUT.map(function(k){
+          return '<span title="' + lolos(FITUR[k].ringkas) + '">' + IK.cek + FITUR[k].judul + '</span>';
         }).join('') +
-          '<li>' + IK.cek + '<span><b>Struktur kepengurusan</b></span></li><li>' + IK.cek + '<span><b>Peninjau lebih dari satu</b></span></li></ul>' +
-        '<p class="sek-kecil sb-poin-k">Satu langganan untuk komunitas: setiap pengurus yang kamu undang ikut memakainya dengan akunnya sendiri. Bisa kembali ke tampilan Esensial kapan saja.</p>';
+          '<span>' + IK.cek + 'Struktur kepengurusan</span><span>' + IK.cek + 'Peninjau lebih dari satu</span></div>' +
+        '<p class="sek-kecil sb-poin-k">Satu langganan untuk komunitas — tiap pengurus yang kamu undang memakainya dengan akunnya sendiri.</p>';
     const durasi = tambah ? '' :
       '<div class="sb-baris-k"><span class="kalk-l"><span class="kalk-lt">Durasi langganan</span></span>' +
         '<div class="kalk-durasi" role="radiogroup" aria-label="Durasi langganan">' + [[1, 'Harga normal'], [6, 'Hemat 5%'], [12, 'Hemat 5%'], [24, 'Hemat 10%']].map(function(d){
@@ -1478,9 +1478,11 @@
         '<div class="sb-baris-k sb-sejajar"><span class="kalk-l"><span class="kalk-lt">Kursi peninjau</span></span>' + stepHtml('p', B.p, minPeninjau(), 20, 'Kursi peninjau') + '</div>' +
         durasi +
         '<div id="sbRingkas">' + ringkasHtml() + '</div>' +
-        '<button type="button" class="btn md sb-cta" data-sb-lanjut' + (hitungB().bayar <= 0 && tambah ? ' disabled' : '') + '>Lanjut ke pembayaran</button>' +
+      '</div></div>' +
+      /* kaki menempel di bawah pop up: total + tombol selalu terlihat walau isi digulir */
+      '<div class="sb-kaki"><div class="sb-kaki-t"><small>' + (tambah ? 'Dibayar sekarang' : 'Total ' + durasiTeks(B.bulan)) + '</small><b id="sbKakiTotal">' + rpx(hitungB().bayar) + '</b></div>' +
         '<button type="button" class="sb-batal" data-sek-tutup>' + (tambah ? 'Batal' : 'Tetap di Esensial') + '</button>' +
-      '</div></div>';
+        '<button type="button" class="btn md" data-sb-lanjut' + (hitungB().bayar <= 0 && tambah ? ' disabled' : '') + '>Lanjut ke pembayaran</button></div>';
   }
 
   let qrisTimer = null;
@@ -1514,11 +1516,11 @@
       '<dl class="sek-dl"><dt>Paket</dt><dd>Advance · ' + (tambah ? 'tambah kapasitas' : durasiTeks(B.bulan)) + '</dd>' +
       '<dt>Kapasitas anggota</dt><dd>' + B.n.toLocaleString('id-ID') + '</dd><dt>Kursi peninjau</dt><dd>' + B.p + '</dd>' +
       '<dt>Komunitas</dt><dd>' + lolos(D.kom.nama) + '</dd></dl>' +
-      '<p class="kalk-v"><span>Total</span><b>' + rpx(c.bayar) + '</b></p>' +
-      '<button type="button" class="btn md sb-cta" data-sb-bayar>' + (B.metode === 'qris' ? 'Simulasikan pembayaran berhasil' : 'Bayar ' + rpx(c.bayar)) + '</button>' +
-      '<button type="button" class="sb-batal" data-sb-kembali>Ubah kapasitas</button>' +
       '<p class="sek-kecil">Ditagihkan ke ' + lolos(D.kom.nama) + ', bukan ke akun pribadi. Prototipe: pembayaran disimulasikan.</p></div>';
-    return '<div class="sb-grid"><div class="sb-kiri"><p class="sek-lbl">Metode pembayaran</p><div class="sb-metode-l" role="radiogroup" aria-label="Metode pembayaran">' + pilih + '</div>' + detail + '</div>' + ringkas + '</div>';
+    const kaki = '<div class="sb-kaki"><div class="sb-kaki-t"><small>Total bayar</small><b>' + rpx(c.bayar) + '</b></div>' +
+      '<button type="button" class="sb-batal" data-sb-kembali>Ubah kapasitas</button>' +
+      '<button type="button" class="btn md" data-sb-bayar>' + (B.metode === 'qris' ? 'Sudah bayar (simulasi)' : 'Bayar ' + rpx(c.bayar)) + '</button></div>';
+    return '<div class="sb-grid"><div class="sb-kiri"><p class="sek-lbl">Metode pembayaran</p><div class="sb-metode-l" role="radiogroup" aria-label="Metode pembayaran">' + pilih + '</div>' + detail + '</div>' + ringkas + '</div>' + kaki;
   }
   function htmlProses(){
     return '<div class="sb-proses"><span class="gspin"></span><p>' + (B.metode === 'gopay' ? 'Menunggu konfirmasi di aplikasi Gojek…' : B.metode === 'qris' ? 'Memeriksa pembayaran QRIS…' : 'Memproses pembayaran kartu…') + '</p></div>';
@@ -1601,6 +1603,7 @@
     B.n = +e.target.value;
     el('sbNV').textContent = B.n.toLocaleString('id-ID');
     el('sbRingkas').innerHTML = ringkasHtml();
+    el('sbKakiTotal').textContent = rpx(hitungB().bayar);
     const cta = modal.querySelector('[data-sb-lanjut]');
     if(cta) cta.disabled = B.mode === 'tambah' && hitungB().bayar <= 0;
   });

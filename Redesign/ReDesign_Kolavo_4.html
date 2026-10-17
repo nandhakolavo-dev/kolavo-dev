@@ -2438,12 +2438,39 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .sb-step li.kini span{background:var(--blue);color:var(--btn-ink)}
 .sb-step li.lewat{color:var(--green)}
 .sb-step li.lewat span{background:var(--green);color:var(--btn-ink)}
-.sb-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
-@media(max-width:768px){.sb-grid{grid-template-columns:1fr;gap:18px}}
+/* susunan atas-bawah: benefit / metode di atas, kalkulator / ringkasan di bawah — satu kolom yang enak dibaca */
+.lgn-box.sek-box:has(.sb-step){max-width:580px;padding:28px 30px 26px}
+.sb-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
+.sek-box:has(.sb-step) h2{font-size:21px}
+.sek-box:has(.sb-step) .sb-step{margin:10px 0 14px}
+.sek-box:has(.sb-step) .sek-alasan{margin-bottom:12px;padding:10px 12px}
+/* benefit: deret chip bercentang, ringkas */
+.sb-fitur{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sb-fitur span{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:100px;background:var(--green-wash);color:var(--ink);font-size:12.5px;font-weight:500}
+.sb-fitur svg{width:13px;height:13px;color:var(--green);stroke-width:2.6}
+.sek-box:has(.sb-step) .sb-kanan{padding:14px 16px}
+.sek-box:has(.sb-step) .sb-baris-k{margin-top:10px}
+.sek-box:has(.sb-step) .sb-baris-k .sek-kecil{margin-top:2px}
+.sek-box:has(.sb-step) .sb-rinci{margin-top:12px;gap:5px}
+.sek-box:has(.sb-step) .kalk-v{margin-top:8px;padding-top:8px}
+.sek-box:has(.sb-step) .sb-cta{margin-top:12px}
+.sek-box:has(.sb-step) .kalk-seg{padding:7px 4px}
+.sek-box:has(.sb-step) .sb-metode{padding:10px 12px}
+/* kaki menempel: total + tombol utama selalu terlihat (pop up bisa digulir) */
+.sb-kaki{position:sticky;bottom:-26px;z-index:2;display:flex;align-items:center;gap:12px;margin:18px -30px -26px;padding:14px 30px 18px;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -10px 20px -14px rgba(0,0,0,.18)}
+.sb-kaki-t{display:flex;flex-direction:column;margin-right:auto;line-height:1.2}
+.sb-kaki-t small{font-size:12px;color:var(--ink-3)}
+.sb-kaki-t b{font-size:19px;font-weight:700;color:var(--blue-ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sb-kaki .sb-batal{margin:0}
+.sb-kaki .btn{flex:none}
+@media(max-width:560px){.sb-kaki{bottom:-20px;margin:16px -18px -20px;padding:12px 18px 16px;flex-wrap:wrap}.sb-kaki .btn{flex:1}.sb-kaki .sb-batal{order:3;width:100%}}
+.sb-qris .krd-qr{width:150px}
+.sb-qris .krd-qris{max-width:220px}
+@media(max-width:560px){.lgn-box.sek-box:has(.sb-step){padding:24px 18px 20px}}
 .sb-kanan{padding:18px;border-radius:16px;border:1px solid var(--line);background:var(--bg-alt)}
 .sb-poin{margin-top:8px;grid-template-columns:1fr 1fr;gap:10px 14px}
 .sb-poin li{font-size:13.5px}
-.sb-poin-k{margin-top:14px;line-height:1.55}
+.sb-poin-k{margin-top:8px;line-height:1.5}
 @media(max-width:480px){.sb-poin{grid-template-columns:1fr}}
 .sb-baris-k{margin-top:14px}
 .sb-baris-k input[type=range]{width:100%;accent-color:var(--blue)}
@@ -12209,11 +12236,11 @@ function hitung(){}
           '<dt>Periode</dt><dd>' + durasiTeks(l.bulan) + ' · sampai ' + tglPanjang(l.sampai) + '</dd>' +
           '<dt>Metode</dt><dd>' + metodeH(l.metode) + '</dd></dl>' +
           '<p class="sek-kecil">Tambahan kapasitas langsung aktif. Selisihnya dibayar prorata sampai akhir periode, lalu ikut tagihan perpanjangan berikutnya.</p></div>'
-      : '<p class="sek-lbl">Yang kamu dapat</p><ul class="sek-poin sb-poin">' + URUT.map(function(k){
-          return '<li title="' + lolos(FITUR[k].ringkas) + '">' + IK.cek + '<span><b>' + FITUR[k].judul + '</b></span></li>';
+      : '<p class="sek-lbl">Yang kamu dapat</p><div class="sb-fitur">' + URUT.map(function(k){
+          return '<span title="' + lolos(FITUR[k].ringkas) + '">' + IK.cek + FITUR[k].judul + '</span>';
         }).join('') +
-          '<li>' + IK.cek + '<span><b>Struktur kepengurusan</b></span></li><li>' + IK.cek + '<span><b>Peninjau lebih dari satu</b></span></li></ul>' +
-        '<p class="sek-kecil sb-poin-k">Satu langganan untuk komunitas: setiap pengurus yang kamu undang ikut memakainya dengan akunnya sendiri. Bisa kembali ke tampilan Esensial kapan saja.</p>';
+          '<span>' + IK.cek + 'Struktur kepengurusan</span><span>' + IK.cek + 'Peninjau lebih dari satu</span></div>' +
+        '<p class="sek-kecil sb-poin-k">Satu langganan untuk komunitas — tiap pengurus yang kamu undang memakainya dengan akunnya sendiri.</p>';
     const durasi = tambah ? '' :
       '<div class="sb-baris-k"><span class="kalk-l"><span class="kalk-lt">Durasi langganan</span></span>' +
         '<div class="kalk-durasi" role="radiogroup" aria-label="Durasi langganan">' + [[1, 'Harga normal'], [6, 'Hemat 5%'], [12, 'Hemat 5%'], [24, 'Hemat 10%']].map(function(d){
@@ -12227,9 +12254,11 @@ function hitung(){}
         '<div class="sb-baris-k sb-sejajar"><span class="kalk-l"><span class="kalk-lt">Kursi peninjau</span></span>' + stepHtml('p', B.p, minPeninjau(), 20, 'Kursi peninjau') + '</div>' +
         durasi +
         '<div id="sbRingkas">' + ringkasHtml() + '</div>' +
-        '<button type="button" class="btn md sb-cta" data-sb-lanjut' + (hitungB().bayar <= 0 && tambah ? ' disabled' : '') + '>Lanjut ke pembayaran</button>' +
+      '</div></div>' +
+      /* kaki menempel di bawah pop up: total + tombol selalu terlihat walau isi digulir */
+      '<div class="sb-kaki"><div class="sb-kaki-t"><small>' + (tambah ? 'Dibayar sekarang' : 'Total ' + durasiTeks(B.bulan)) + '</small><b id="sbKakiTotal">' + rpx(hitungB().bayar) + '</b></div>' +
         '<button type="button" class="sb-batal" data-sek-tutup>' + (tambah ? 'Batal' : 'Tetap di Esensial') + '</button>' +
-      '</div></div>';
+        '<button type="button" class="btn md" data-sb-lanjut' + (hitungB().bayar <= 0 && tambah ? ' disabled' : '') + '>Lanjut ke pembayaran</button></div>';
   }
 
   let qrisTimer = null;
@@ -12263,11 +12292,11 @@ function hitung(){}
       '<dl class="sek-dl"><dt>Paket</dt><dd>Advance · ' + (tambah ? 'tambah kapasitas' : durasiTeks(B.bulan)) + '</dd>' +
       '<dt>Kapasitas anggota</dt><dd>' + B.n.toLocaleString('id-ID') + '</dd><dt>Kursi peninjau</dt><dd>' + B.p + '</dd>' +
       '<dt>Komunitas</dt><dd>' + lolos(D.kom.nama) + '</dd></dl>' +
-      '<p class="kalk-v"><span>Total</span><b>' + rpx(c.bayar) + '</b></p>' +
-      '<button type="button" class="btn md sb-cta" data-sb-bayar>' + (B.metode === 'qris' ? 'Simulasikan pembayaran berhasil' : 'Bayar ' + rpx(c.bayar)) + '</button>' +
-      '<button type="button" class="sb-batal" data-sb-kembali>Ubah kapasitas</button>' +
       '<p class="sek-kecil">Ditagihkan ke ' + lolos(D.kom.nama) + ', bukan ke akun pribadi. Prototipe: pembayaran disimulasikan.</p></div>';
-    return '<div class="sb-grid"><div class="sb-kiri"><p class="sek-lbl">Metode pembayaran</p><div class="sb-metode-l" role="radiogroup" aria-label="Metode pembayaran">' + pilih + '</div>' + detail + '</div>' + ringkas + '</div>';
+    const kaki = '<div class="sb-kaki"><div class="sb-kaki-t"><small>Total bayar</small><b>' + rpx(c.bayar) + '</b></div>' +
+      '<button type="button" class="sb-batal" data-sb-kembali>Ubah kapasitas</button>' +
+      '<button type="button" class="btn md" data-sb-bayar>' + (B.metode === 'qris' ? 'Sudah bayar (simulasi)' : 'Bayar ' + rpx(c.bayar)) + '</button></div>';
+    return '<div class="sb-grid"><div class="sb-kiri"><p class="sek-lbl">Metode pembayaran</p><div class="sb-metode-l" role="radiogroup" aria-label="Metode pembayaran">' + pilih + '</div>' + detail + '</div>' + ringkas + '</div>' + kaki;
   }
   function htmlProses(){
     return '<div class="sb-proses"><span class="gspin"></span><p>' + (B.metode === 'gopay' ? 'Menunggu konfirmasi di aplikasi Gojek…' : B.metode === 'qris' ? 'Memeriksa pembayaran QRIS…' : 'Memproses pembayaran kartu…') + '</p></div>';
@@ -12350,6 +12379,7 @@ function hitung(){}
     B.n = +e.target.value;
     el('sbNV').textContent = B.n.toLocaleString('id-ID');
     el('sbRingkas').innerHTML = ringkasHtml();
+    el('sbKakiTotal').textContent = rpx(hitungB().bayar);
     const cta = modal.querySelector('[data-sb-lanjut]');
     if(cta) cta.disabled = B.mode === 'tambah' && hitungB().bayar <= 0;
   });
