@@ -1622,3 +1622,24 @@ sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Ke
   dan komunitas lain yang sama-sama diikuti — tampil di semua status kenalan, bukan cuma setelah
   terhubung. **Juga di komunitas** kini selalu terisi: data contoh bila ada, selain itu 1–2
   komunitas direktori dipilih tetap per nama (`komunitasLain`).
+
+## Profil anggota acuan & sumber data (17 Okt 2026)
+
+Acuan: profil **Wahyu Firmansyah di Forum Paskibra Tarumajaya**. Tiap field harus punya titik isi:
+Lengkapi Profil (A), formulir gabung (B), Buat komunitas (C), atau sistem.
+
+| Bagian profil | Sumber |
+|---|---|
+| Nama panggilan · nomor anggota | B (Nama Panggilan) · C (mode nomor) |
+| Nama lengkap (pengurus saja) | A |
+| Pekerjaan/keahlian (`agKerja`) | A — dulu `o.p` (keterangan bebas) yang tidak punya kolom isian; dihapus |
+| Tag "Angkatan Paskibra 2013" | B — label = judul pertanyaan tahun komunitas (`labelTahun()`), juga di kartu daftar, filter, Home (`KolavoLabelTahun`) |
+| Domisili · Anggota sejak | A · sistem |
+| Bisa dibagikan / Yang dicari (berlabel) | A |
+| Kesamaan denganmu · Juga di komunitas | sistem |
+| WhatsApp · media sosial (setelah kenalan) | A |
+| Profil Komunitas | B saja (alasan bergabung paling bawah); pekerjaan & domisili dikeluarkan karena milik A dan sudah di kepala |
+| Pendidikan | A, **hanya di profil sendiri** — Lengkapi menjanjikan pendidikan cuma tampil sebagai angka persebaran |
+
+Copy Lengkapi diselaraskan dengan fitur kenalan: WhatsApp "baru terbuka ke anggota lain kalau
+kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah kenalan denganmu".

@@ -425,9 +425,24 @@
     { id: 'd', nama: 'Domisili' }
   ];
   /* di halaman pemilik, kelompok jawaban yang dibuat pengurus ikut jadi sumbu */
+  /* label pertanyaan tahun komunitas ini (Angkatan Paskibra, Tahun Lulus, …) — dipakai
+     tag profil, tag kartu anggota, dan nama filter, supaya satu istilah di semua tempat */
+  function judulTahun(tanya){
+    const t = (tanya || []).filter(function(q){ return q.tipe === 'tahun'; })[0];
+    return (t && t.judul) || 'Angkatan';
+  }
+  function labelTahun(){ return judulTahun(kini && kini.tanya); }
+  /* untuk layar lain (Home): label tahun komunitas mana pun lewat kelasnya */
+  window.KolavoLabelTahun = function(kelas){
+    if(kelas === 'l-dibuat') return judulTahun(((window.KolavoApp || {}).dibuat || {}).tanya);
+    const l = document.querySelector('#direktori .ccard .logo-sq.' + kelas), k = l && l.closest('.ccard');
+    let tanya = [];
+    try { tanya = JSON.parse((k && k.dataset.tanya) || '[]'); } catch(e) { tanya = []; }
+    return judulTahun(tanya);
+  };
   function sumbuDaftar(){
     const D = window.KolavoDashboard;
-    return SUMBU.concat(founder && D && D.kelompokSumbu ? D.kelompokSumbu() : []);
+    return SUMBU.map(function(s){ return s.id === 'a' ? { id: 'a', nama: labelTahun() } : s; }).concat(founder && D && D.kelompokSumbu ? D.kelompokSumbu() : []);
   }
 
   /* Anggota di kolavo.app tetap bisa membetulkan jawabannya lewat
@@ -582,7 +597,7 @@
         (o.aku ? '<span class="aku">Kamu</span>' : '') + '</div>' +
         '<div class="tags"><span class="tag hi">' + o.k + '</span>' +
         '<span class="tag">' + o.d + '</span>' +
-        (o.a && !(o.j || []).length ? '<span class="tag">Angkatan ' + o.a + '</span>' : '') +
+        (o.a && !(o.j || []).length ? '<span class="tag">' + esc(labelTahun()) + ' ' + o.a + '</span>' : '') +
         (o.j || []).map(function(v){ return '<span class="tag">' + v + '</span>'; }).join('') +
         '</div></div>' + ikonKenal(o) + '</div>';
     }).join('');
@@ -755,8 +770,9 @@
   function kartuData(nama, o){
     /* alasan bergabung paling bawah — paling panjang, dan paling enak dibaca terakhir */
     const jw = jawabPendaftaran(nama, o), alasan = /alasan|kenapa/i;
+    /* hanya jawaban formulir gabung komunitas ini; pekerjaan & domisili milik profil akun
+       dan sudah tampil di kepala profil */
     const baris = jw.filter(function(r){ return !alasan.test(r[0]); })
-      .concat([['Pekerjaan', o.p || o.k || '—'], ['Domisili', o.d || '—']])
       .concat(jw.filter(function(r){ return alasan.test(r[0]); }));
     return '<div class="ag-data"><p class="ag-data-h">Profil Komunitas' + (kini ? '<span>' + esc(kini.nama) + '</span>' : '') + '</p>' +
       '<div class="ag-data-g">' + baris.map(function(r){
@@ -880,7 +896,9 @@
     /* baris teratas setelah nama: apa yang dia kerjakan sekarang. Di kolavo.app
        tempat ini diisi nomor WhatsApp dan nama lengkap — keduanya keterangan
        administratif, bukan alasan orang membuka profil sesama anggota. */
-    el('agKerja').textContent = o.p || o.k || '';
+    /* pekerjaan/keahlian dari Lengkapi Profil (pilihan daftar atau "Lainnya") — tidak ada
+       kolom keterangan pekerjaan bebas, jadi data contoh o.p tidak ditampilkan */
+    el('agKerja').textContent = o.k || '';
 
     const full = el('agFull');
     full.textContent = founder ? 'Nama lengkap: ' + (o.full || nama) : '';
@@ -889,11 +907,12 @@
     /* domisili pindah dari tag ke baris meta — mengikuti kolavo.app, yang
        menaruh kota sebagai baris tersendiri dan menyisakan tag untuk jawaban
        pertanyaan pengurus. Sebelumnya domisili tampil dua kali. */
+    /* tag = jawaban formulir gabung komunitas ini. Pendidikan hanya di profil sendiri:
+       Lengkapi Profil menjanjikan pendidikan cuma tampil sebagai angka persebaran. */
     el('agTags').innerHTML =
-      '<span class="tag hi">' + o.k + '</span>' +
-      (o.a && !(o.j || []).length ? '<span class="tag">Angkatan ' + o.a + '</span>' : '') +
+      (o.a && !(o.j || []).length ? '<span class="tag hi">' + esc(labelTahun()) + ' ' + o.a + '</span>' : '') +
       (o.j || []).map(function(v){ return '<span class="tag">' + v + '</span>'; }).join('') +
-      (o.didik ? '<span class="tag">' + esc(o.didik) + '</span>' : '');
+      (o.aku && o.didik ? '<span class="tag">' + esc(o.didik) + '</span>' : '');
 
     const sejak = o.aku ? 'Baru bergabung' : (o.s ? 'Anggota sejak ' + o.s : '');
     el('agMeta').innerHTML =
@@ -904,10 +923,11 @@
 
     const bio = el('agBio');
     /* V4: memberi & mengambil — profil sendiri punya dua jawaban berlabel */
-    if(o.beri){
-      bio.innerHTML = '<b>Bisa dibagikan:</b> ' + esc(o.beri) + (o.bio ? '<br><b>Yang dicari:</b> ' + esc(o.bio) : '');
-    } else bio.textContent = o.bio || '';
-    bio.hidden = !(o.bio || o.beri);
+    /* dua jawaban Lengkapi Profil, selalu berlabel. Data contoh anggota lain cuma punya
+       satu kalimat (o.bio) yang isinya "apa yang bisa dibagikan". */
+    const beri = o.aku ? o.beri : (o.beri || o.bio), cari = (o.aku || o.beri) ? o.bio : o.cari;
+    bio.innerHTML = (beri ? '<b>Bisa dibagikan:</b> ' + esc(beri) : '') + (beri && cari ? '<br>' : '') + (cari ? '<b>Yang dicari:</b> ' + esc(cari) : '');
+    bio.hidden = !(beri || cari);
 
     /* Di profil orang lain komunitas yang sedang dibuka disembunyikan — sudah
        jelas dia anggota di sini, itu sebabnya kamu melihatnya dari daftar ini.
