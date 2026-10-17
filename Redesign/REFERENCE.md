@@ -1719,3 +1719,9 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   Dilihat sesama anggota (domisili, pekerjaan, pendidikan, kontribusi, yang dicari, media sosial).
   Tiap baris: nilai atau "Belum diisi" (oranye), siapa yang melihat, dan tombol Ubah/Isi yang
   membuka Lengkapi profil tepat di kolomnya (`data-anchor`). Judul menghitung yang belum diisi.
+- **Profil & Setting dirombak (18 Okt 2026).** Tombol "Ubah profil" dihapus — tiap isian punya tombol
+  ubahnya sendiri. Kepala jadi kartu mendatar `.pf-top`: foto 96 px · nama, domisili, tag · meter
+  kelengkapan `#pfLengkap` ("50% lengkap · 5 isian belum diisi"). Tiap kelompok berikon (Google,
+  perisai, dua orang) dan tiap isian berikon (orang, surat, telepon, kalender, pin, tas, toga, hati,
+  cari, tautan). Tombol ubah jadi ikon bulat `.pf-data-ubah` — pensil untuk Ubah, plus bergaris putus
+  oranye untuk Isi — dengan label di tooltip dan `aria-label`. Penanda halaman: "Profil & Setting".
