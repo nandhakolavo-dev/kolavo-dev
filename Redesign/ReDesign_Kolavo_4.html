@@ -2283,6 +2283,8 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .sek-harga b{font-size:20px;font-weight:600}
 .sek-harga span{font-size:13px;color:var(--ink-2)}
 .sek-harga p{font-size:12px;color:var(--ink-3);line-height:1.5;margin-top:4px}
+.sek-harga .sek-kira{margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--blue-tint);color:var(--ink-2);font-size:12.5px}
+.sek-harga .sek-kira b{font-size:13px;font-weight:600;color:var(--blue-ink)}
 .sek-box .sek-cta .btn{flex:1}
 
 /* konfigurasi nomor anggota di layar buat */
@@ -11347,6 +11349,13 @@ function hitung(){}
     D.tabSesudah = alasan === 'peninjau' ? 'pengurus' : alasan === 'anggota' ? 'minta' : null;
     bukaModal(alasan);
   };
+  /* perkiraan tagihan bulanan untuk komunitas ini — rumus yang sama dengan kalkulator beranda */
+  function perkiraanAdvance(){
+    if(!window.KolavoHarga) return '';
+    const n = Math.max(30, D.jumlahAnggota()), h = window.KolavoHarga(n, D.peninjau.length, 1);
+    return '<p class="sek-kira">Perkiraan untuk ' + lolos(D.kom.nama) + ': <b>Rp ' + Math.round(h.perBulan).toLocaleString('id-ID') + '</b> / bulan' +
+      ' (' + h.n.toLocaleString('id-ID') + ' anggota, ' + h.p + ' peninjau' + (D.jumlahAnggota() < 30 ? ', minimal 30 anggota' : '') + ')</p>';
+  }
   function bukaModal(alasan){
     el('sekIsi').innerHTML = (ALASAN[alasan] ? '<div class="sek-alasan">' + IK.kantor + '<p>' + ALASAN[alasan] + '</p></div>' : '') +
       '<span class="sek-eb">' + IK.kantor + 'Dashboard Advance</span>' +
@@ -11355,8 +11364,10 @@ function hitung(){}
       '<div class="sek-modal-grid"><ul class="sek-poin">' + URUT.map(function(k){
         return '<li>' + IK.cek + '<span><b>' + FITUR[k].judul + '</b> — ' + FITUR[k].ringkas + '</span></li>';
       }).join('') + '</ul>' +
-      '<div class="sek-modal-samping"><div class="sek-harga"><b>Rp XXXX</b> <span>/ anggota / bulan</span>' +
-        '<p>Minimal 50 anggota. Ditagihkan ke komunitas, jadi langganan tidak ikut pergi saat kepengurusan berganti. Bisa kembali ke tampilan Esensial kapan saja.</p></div>' +
+      '<div class="sek-modal-samping"><div class="sek-harga"><b>Rp 199</b> <span>/ anggota / bulan</span>' +
+        '<p>Untuk 30 sampai 1.000 anggota — tarif per anggota makin turun saat komunitas tumbuh. Peninjau pertama Rp 15.000, tiap tambahan Rp 3.000 per bulan.</p>' +
+        perkiraanAdvance() +
+        '<p>Ditagihkan ke komunitas, jadi langganan tidak ikut pergi saat kepengurusan berganti. Bisa kembali ke tampilan Esensial kapan saja.</p></div>' +
       '<div class="sek-cta"><button type="button" class="btn md" data-sek-aktifkan>Berlangganan</button>' +
         '<button type="button" class="btn outline md" data-sek-tutup>Tetap di Esensial</button></div></div></div>';
     modal.hidden = false;

@@ -1554,4 +1554,6 @@ sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Ke
 - **Contoh demo.** Komunitas yang baru dibuat langsung berisi 18 anggota contoh
   (`ANGGOTA_CONTOH`, termasuk Bima Prasetyo dari riwayat) + pembuatnya = 19; menerima satu
   pendaftar membuat kuota penuh, pendaftar berikutnya memicu ajakan naik paket.
-- Belum diselaraskan: harga di pop up langganan masih `Rp XXXX` + "Minimal 50 anggota".
+- **Harga pop up langganan diselaraskan (17 Okt 2026):** Rp 199 / anggota / bulan, 30–1.000 anggota,
+  peninjau Rp 15.000 + Rp 3.000; plus perkiraan bulanan komunitas ini lewat `KolavoHarga`
+  (`perkiraanAdvance()`, minimal 30 anggota). Panel Tagihan dashboard masih `Rp XXXX`.
