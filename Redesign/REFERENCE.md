@@ -1655,3 +1655,20 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   `.lgl-baca` dihapus). Klik tautan membuka naskah tanpa mencentang kotak; klik teks lain tetap
   mencentang. Halaman masuk: "…foto profil Google-mu, sesuai Kebijakan Privasi dan Ketentuan
   Layanan." — tautan di dalam kalimat, bukan deret terpisah di ujung.
+
+## Revisi lanjutan (17 Okt 2026)
+
+- **Buat komunitas lagi.** Tab Dashboard selalu menampilkan kartu putus-putus `.dsb-baru`
+  "Buat komunitas lagi" (`[data-buat-lagi]`). Prototipe kini menyimpan lebih dari satu komunitas
+  buatan: yang aktif di `App.dibuat`, sisanya di `App.dibuatLain`. `KolavoBuatLagi()` memindahkan
+  yang aktif ke daftar lain dan mengosongkan formulir Buat; `KolavoPakaiDibuat(kom)` menukar
+  komunitas aktif saat dibuka dari Dashboard (`data-dasbor-buka="lain:<i>"`). Keadaan dashboard
+  tiap komunitas dijaga per slug (`KONTEKS`). Buat tetap mensyaratkan profil lengkap.
+- **Kelengkapan profil pendaftar dirinci.** `kelengkapan(r)`: meter "4 dari 7 terisi" + chip oranye
+  "Belum diisi: Foto profil · Pendidikan · Kontribusi". Tujuh isian = Lengkapi Profil (foto, domisili,
+  pekerjaan, pendidikan, kontribusi, yang dicari, media sosial). Data contoh: `SEED[].kurang`.
+- **Kalkulator:** penurunan tarif kini **Rp 0,13 per 10 anggota** (dulu 0,04167) → Rp 186,39 di
+  1.000 anggota. Diperbarui juga di CLAUDE.md dan PROMPT-HARGA.md.
+- **Pop up pengurus punya profil** (`profilPengurus`): pekerjaan, domisili, dan jawaban formulir
+  gabung komunitas itu (tahun, prodi, satuan …), tanpa panggilan dan alasan. Perkenalan Rani
+  diselaraskan dengan datanya (angkatan 2015, desainer produk).

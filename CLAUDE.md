@@ -171,7 +171,7 @@ pendampingan komunitas adalah satu-satunya kolom yang hampir kosong di tabel kom
 entry strategy 2 tahun pertama lewat 5–10 komunitas kurasi, bukan pencarian publik.
 **Keputusan harga (6 Okt 2026)** — rinciannya di `Redesign/PROMPT-HARGA.md`, rumusnya di
 `src/50-js-harga.html` (`window.KolavoHarga`): Esensial **FREE** (20 anggota, 1 peninjau) ·
-Advance Rp 199/anggota/bulan per kelipatan 10 (30–1.000), tarif turun Rp 0,04167 tiap 10
+Advance Rp 199/anggota/bulan per kelipatan 10 (30–1.000), tarif turun Rp 0,13 tiap 10
 anggota, peninjau Rp 15.000 + Rp 3.000 tiap tambahan · diskon 5% (6–12 bulan) dan 10%
 (langsung 2 tahun) · **Big Organization** di atas 1.000 anggota lewat "Hubungi kami".
 Label paket Esensial ditulis FREE, bukan "Gratis", dan hanya untuk batas Esensial — jangan

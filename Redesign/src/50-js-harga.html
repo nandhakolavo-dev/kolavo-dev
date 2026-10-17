@@ -2,13 +2,13 @@
 /* ============================================================
    Kalkulator harga Advance di beranda (V4). Aturan: Redesign/PROMPT-HARGA.md
      anggota  : ditagih per kelipatan 10, 30–1.000; SEMUA anggota kena tarif
-     tarif(n) : 199 − ((n − 30) / 10 × 0,04167)   ← rumus sheet =L5-((M5-30)/10*0.04167)
+     tarif(n) : 199 − ((n − 30) / 10 × 0,13)   ← penurunan 0,13 per 10 anggota (17 Okt 2026; dulu 0,04167)
      peninjau : 15.000 untuk yang pertama + 3.000 tiap tambahan, per bulan
      diskon   : 1–5 bulan 0% · 6–12 bulan 5% · langsung 2 tahun (24 bulan) 10% (pembelian pertama)
    Dibuka ke window.KolavoHarga supaya angkanya bisa diuji tanpa DOM.
    ============================================================ */
 (function(){
-  const TARIF = 199, TURUN = 0.04167, MIN = 30, MAKS = 1000;
+  const TARIF = 199, TURUN = 0.13, MIN = 30, MAKS = 1000;
   const PENINJAU_1 = 15000, PENINJAU_N = 3000;
   function hitung(anggota, peninjau, bulan){
     const n = Math.min(MAKS, Math.max(MIN, Math.ceil(anggota / 10) * 10));

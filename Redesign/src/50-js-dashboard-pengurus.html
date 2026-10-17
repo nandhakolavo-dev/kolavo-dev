@@ -34,12 +34,12 @@
   const SEED = [
     { nama: 'Putri Maharani',  panggil: 'Putri', full: 'Putri Maharani Lestari', jk: 'Perempuan', kerja: 'Guru SD',         kota: 'Bekasi',        wa: '0812-••••-4417', email: 'putri••••@gmail.com', lengkap: true,  waktu: '2 hari lalu', hari: 2, tahun: 2014, teks: ['Diajak teman seangkatan', 'Ingin ikut kegiatan alumni'], alasan: 'Saya ingin ikut kegiatan mengajar sukarela yang sering diadakan alumni. Sebagai guru, rasanya pas kalau bisa berbagi ke adik-adik tingkat.' },
     { nama: 'Andi Firmansyah', panggil: 'Andi',  full: 'Andi Firmansyah',        jk: 'Laki-laki', kerja: 'Karyawan swasta', kota: 'Jakarta Timur', wa: '0813-••••-2210', email: 'andi.f••••@gmail.com', lengkap: true,  waktu: 'kemarin',     hari: 1, tahun: 2010, teks: ['Ketemu di grup WhatsApp', 'Cari koneksi seprofesi'], alasan: 'Cari koneksi seprofesi. Saya lagi menimbang pindah kerja ke bidang logistik, siapa tahu ada alumni yang bisa kasih gambaran dunia kerjanya.' },
-    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, waktu: '3 jam lalu',  hari: 0, tahun: 2016, teks: ['Nemu halaman ini di Kolavo', 'Mau kenal alumni lain'], alasan: 'Mau kenal alumni lain, sekalian mengenalkan usaha katering saya. Kalau ada acara komunitas, saya siap bantu urusan konsumsi.' },
+    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, kurang: ['Pendidikan', 'Yang dicari'], waktu: '3 jam lalu',  hari: 0, tahun: 2016, teks: ['Nemu halaman ini di Kolavo', 'Mau kenal alumni lain'], alasan: 'Mau kenal alumni lain, sekalian mengenalkan usaha katering saya. Kalau ada acara komunitas, saya siap bantu urusan konsumsi.' },
     { nama: 'Rina Kartika',    panggil: 'Rina',  full: 'Rina Kartika Sari',      jk: 'Perempuan', kerja: 'Perawat',         kota: 'Jakarta Utara', wa: '0821-••••-7702', email: 'rinaks••••@gmail.com', lengkap: true,  waktu: '5 hari lalu', hari: 5, tahun: 2012, teks: ['Diajak ketua angkatan', 'Mau bantu kegiatan sosial'], alasan: 'Diajak ketua angkatan untuk bantu penggalangan dana beasiswa. Dulu saya sendiri terbantu beasiswa alumni, sekarang giliran saya membalas.' },
     { nama: 'Bayu Setiawan',   panggil: 'Bayu',  full: 'Bayu Setiawan',          jk: 'Laki-laki', kerja: 'Teknisi jaringan', kota: 'Bekasi',       wa: '0838-••••-1185', email: 'bayu.s••••@gmail.com', lengkap: true,  waktu: '8 hari lalu', hari: 8, tahun: 2010, teks: ['Dari grup WhatsApp angkatan', 'Cari info lowongan'], alasan: 'Info lowongan.' },
-    { nama: 'Galih Pramudya',  panggil: 'Galih', full: 'Galih Pramudya',         jk: 'Laki-laki', kerja: 'Desainer grafis', kota: 'Tangerang',     wa: '0877-••••-5543', email: 'galihp••••@gmail.com', lengkap: false, waktu: '6 hari lalu', hari: 6, tahun: 2015, teks: ['Lihat unggahan di Instagram', 'Ingin ikut reuni'], alasan: 'Kangen teman-teman lama. Lihat foto reuni tahun lalu di Instagram dan menyesal tidak ikut, jadi tahun ini tidak mau ketinggalan lagi.' },
+    { nama: 'Galih Pramudya',  panggil: 'Galih', full: 'Galih Pramudya',         jk: 'Laki-laki', kerja: 'Desainer grafis', kota: 'Tangerang',     wa: '0877-••••-5543', email: 'galihp••••@gmail.com', lengkap: false, kurang: ['Foto profil', 'Pendidikan', 'Kontribusi'], waktu: '6 hari lalu', hari: 6, tahun: 2015, teks: ['Lihat unggahan di Instagram', 'Ingin ikut reuni'], alasan: 'Kangen teman-teman lama. Lihat foto reuni tahun lalu di Instagram dan menyesal tidak ikut, jadi tahun ini tidak mau ketinggalan lagi.' },
     { nama: 'Dimas Aryo',      panggil: 'Dimas', full: 'Dimas Aryo Nugroho',     jk: 'Laki-laki', kerja: 'Mahasiswa S2',    kota: 'Bandung',       wa: '0896-••••-2051', email: 'dimasa••••@gmail.com', lengkap: true,  waktu: '4 hari lalu', hari: 4, tahun: 2016, teks: ['Disarankan dosen pembimbing', 'Cari narasumber riset'], alasan: 'Saya sedang riset tentang UMKM di Jawa Barat dan butuh narasumber. Berharap bisa belajar langsung dari alumni yang sudah menjalankan usaha.' },
-    { nama: 'Yoga Saputra',    panggil: 'Yoga',  full: 'Yoga Saputra',           jk: 'Laki-laki', kerja: 'PNS',             kota: 'Bogor',         wa: '0819-••••-6634', email: 'yogas••••@gmail.com',  lengkap: false, waktu: '7 hari lalu', hari: 7, tahun: 2011, teks: ['Dari teman', 'Ikut saja'], alasan: 'ikut aja' }
+    { nama: 'Yoga Saputra',    panggil: 'Yoga',  full: 'Yoga Saputra',           jk: 'Laki-laki', kerja: 'PNS',             kota: 'Bogor',         wa: '0819-••••-6634', email: 'yogas••••@gmail.com',  lengkap: false, kurang: ['Media sosial', 'Kontribusi', 'Yang dicari'], waktu: '7 hari lalu', hari: 7, tahun: 2011, teks: ['Dari teman', 'Ikut saja'], alasan: 'ikut aja' }
   ];
 
   const D = {
@@ -215,7 +215,7 @@
     D.minta = SEED.map(function(s, i){
       return denganJawaban({
         id: 'r' + i, nama: s.nama, panggil: s.panggil, full: s.full, jk: s.jk,
-        kerja: s.kerja, kota: s.kota, wa: s.wa, email: s.email, lengkap: s.lengkap,
+        kerja: s.kerja, kota: s.kota, wa: s.wa, email: s.email, lengkap: s.lengkap, kurang: (s.kurang || []).slice(),
         waktu: s.waktu, hari: s.hari, tahun: s.tahun,
         jwb: jawabPerId(s), sosmed: SOSMED_SEED[s.nama] || []
       });
@@ -419,9 +419,7 @@
           baris2('Email', lolos(r.email)) +
           (r.sosmed && r.sosmed.length ? baris2('Media sosial', sosmedHtml(r.sosmed)) : '') +
           baris2('Jenis kelamin', lolos(r.jk)) +
-          baris2('Kelengkapan profil', r.lengkap
-            ? '<span class="kl-ok">Profil lengkap</span>'
-            : '<span class="kl-warn">Sebagian belum diisi</span>') +
+          baris2('Kelengkapan profil', kelengkapan(r)) +
         '</div>';
 
       /* nomor anggota: otomatis (pratinjau format) atau manual (isi/ubah saat menerima) */
@@ -457,6 +455,21 @@
           info + jawab + nomor + catatan + aksi +
         '</div>';
     }).join('');
+  }
+
+  /* kelengkapan profil pendaftar: isian Lengkapi Profil yang belum diisi disebut satu per satu,
+     supaya peninjau tahu persis apa yang kurang (bukan cuma "sebagian belum diisi") */
+  const ISIAN_PROFIL = ['Foto profil', 'Domisili', 'Pekerjaan', 'Pendidikan', 'Kontribusi', 'Yang dicari', 'Media sosial'];
+  function kelengkapan(r){
+    const kurang = r.lengkap ? [] : (r.kurang && r.kurang.length ? r.kurang : ['Sebagian isian']);
+    const terisi = ISIAN_PROFIL.length - kurang.length;
+    if(!kurang.length) return '<span class="kl-ok">' + IKON_CEK_KECIL + 'Profil lengkap · ' + ISIAN_PROFIL.length + ' dari ' + ISIAN_PROFIL.length + ' terisi</span>';
+    return '<span class="kl-lengkap">' +
+      '<span class="kl-lengkap-t"><span class="kl-warn">' + terisi + ' dari ' + ISIAN_PROFIL.length + ' terisi</span>' +
+        '<span class="kl-lengkap-bar" aria-hidden="true"><i style="width:' + Math.round(terisi / ISIAN_PROFIL.length * 100) + '%"></i></span></span>' +
+      '<span class="kl-kurang"><span class="kl-kurang-l">Belum diisi:</span>' +
+        kurang.map(function(k){ return '<span class="kl-kurang-i">' + lolos(k) + '</span>'; }).join('') + '</span>' +
+    '</span>';
   }
 
   /* satu baris "label : nilai" di kartu permintaan */

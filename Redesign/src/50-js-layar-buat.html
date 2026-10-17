@@ -513,6 +513,45 @@
     window.scrollTo(0, 0);
   }
   window.KolavoSuntingDibuat = suntingDibuat;
+
+  /* ---------- lebih dari satu komunitas buatan ----------
+     Komunitas aktif tetap di App.dibuat (dipakai halaman komunitas, dashboard, Home);
+     yang lain disimpan di App.dibuatLain dan ditukar saat dibuka dari tab Dashboard.
+     Keadaan dashboard tiap komunitas dijaga per slug oleh 50-js-dashboard-pengurus. */
+  function simpanKeLain(kom){
+    const A = window.KolavoApp; if(!A || !kom) return;
+    A.dibuatLain = (A.dibuatLain || []).filter(function(k){ return k !== kom; }).concat([kom]);
+  }
+  window.KolavoPakaiDibuat = function(kom){
+    const A = window.KolavoApp; if(!A || !kom) return;
+    dibuat = dibuat || A.dibuat;   /* sumber kebenaran: komunitas aktif di keadaan aplikasi */
+    if(dibuat && dibuat !== kom) simpanKeLain(dibuat);
+    A.dibuatLain = (A.dibuatLain || []).filter(function(k){ return k !== kom; });
+    dibuat = kom; A.dibuat = kom;
+    konfHapus = false; menuBuka = false;
+  };
+  /* formulir kosong untuk komunitas berikutnya; yang sekarang pindah ke daftar lain */
+  window.KolavoBuatLagi = function(){
+    const A = window.KolavoApp;
+    dibuat = dibuat || (A && A.dibuat);
+    if(dibuat) simpanKeLain(dibuat);
+    dibuat = null; if(A) A.dibuat = null;
+    modeSunting = false; slugKetik = false; kodeKetik = false;
+    ['bkNama', 'bkAlias', 'bkSlug', 'bkAjak', 'bkKode'].forEach(function(id){ const x = el(id); if(x) x.value = ''; });
+    scr.querySelectorAll('input[name="bkBentuk"]').forEach(function(r){ r.checked = false; });
+    const neg = el('bkNegara'); if(neg) neg.value = '';
+    ['bkProvinsi', 'bkKota'].forEach(function(id){ const x = el(id); if(x){ x.value = ''; x.disabled = true; } });
+    warna = WARNA[0];
+    const wr = scr.querySelector('input[name="bkWarna"][value="' + warna + '"]'); if(wr) wr.checked = true;
+    pakaiWarna();
+    logo = ''; nomorMode = 'manual';
+    tanya = [{ id: 'q' + (++urut), judul: '', tanya: '', tipe: 'tahun', wajib: false, bawaan: true },
+             { id: 'q' + (++urut), judul: 'Alasan Bergabung', tanya: 'Kenapa kamu ingin bergabung di komunitas ini?', tipe: 'teks', wajib: false, bawaan: false }];
+    const h1 = scr.querySelector('.ph-h1'); if(h1) h1.textContent = 'Bikin basecamp komunitasmu.';
+    el('bkKirim').textContent = 'Buat halaman komunitas';
+    el('buatForm').hidden = false; el('buatDone').hidden = true;
+    gambarLogo(); gambarNomor(); gambarTanya(); progres();
+  };
   window.KolavoDibuatItem = function(){
     if(!dibuat) return '';
     const gaya = dibuat.logo ? ' style="background-image:url(' + dibuat.logo + ')"' : '';

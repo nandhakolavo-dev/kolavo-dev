@@ -63,15 +63,18 @@
     const w = document.getElementById('dasborList');
     if(!w) return;
     const a = App(), d = a.dibuat, item = [];
-    if(d){
-      const gaya = d.logo ? ' style="background-image:url(' + d.logo + ')"' : '';
-      item.push(baris('<span class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' + (d.logo ? '' : esc(d.inisial || '')) + '</span>',
-        d.nama, [d.bentuk, d.kota].filter(Boolean).join(' · '), d.arsip ? 'Diarsipkan' : 'Pembuat', 'dibuat'));
-    }
+    const barisDibuat = function(k, jenis){
+      const gaya = k.logo ? ' style="background-image:url(' + k.logo + ')"' : '';
+      item.push(baris('<span class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' + (k.logo ? '' : esc(k.inisial || '')) + '</span>',
+        k.nama, [k.bentuk, k.kota].filter(Boolean).join(' · '), k.arsip ? 'Diarsipkan' : 'Pembuat', jenis));
+    };
+    if(d) barisDibuat(d, 'dibuat');
+    (a.dibuatLain || []).forEach(function(k, i){ barisDibuat(k, 'lain:' + i); });
     if(a.diangkat){
       item.push(baris('<span class="logo-sq ' + DIANGKAT.kelas + '" role="img" aria-label="Logo komunitas"></span>',
         DIANGKAT.nama, DIANGKAT.jumlah, DIANGKAT.jabatan, 'diangkat'));
     }
+    const adaBuatan = !!d || !!(a.dibuatLain || []).length;
     if(!item.length){
       w.innerHTML = '<div class="empty">' +
         '<div class="empty-ic">' + (window.KolavoIkon ? window.KolavoIkon('kelompok') : '') + '</div>' +
@@ -80,9 +83,12 @@
         '<div class="empty-cta"><button type="button" class="btn" data-ke="scrBuat">Buat komunitas</button></div></div>';
       return;
     }
-    /* prototipe menyimpan satu komunitas buatan; tombol buat hanya bila belum ada */
+    /* selalu ada jalan membuat komunitas berikutnya, juga kalau sudah punya */
     w.innerHTML = '<div class="pf-list">' + item.join('') + '</div>' +
-      (d ? '' : '<div class="dsb-buat"><button type="button" class="btn outline" data-ke="scrBuat">Buat komunitas</button></div>');
+      '<button type="button" class="dsb-baru" data-buat-lagi>' +
+        '<span class="dsb-baru-ic" aria-hidden="true">+</span>' +
+        '<span class="t"><b>' + (adaBuatan ? 'Buat komunitas lagi' : 'Buat komunitas') + '</b>' +
+        '<small>' + (adaBuatan ? 'Kelola komunitas lain dengan halaman dan dashboard sendiri.' : 'Bikin halaman dan dashboard untuk komunitasmu.') + '</small></span></button>';
   }
 
   window.KolavoKomDiangkat = function(){ return App().diangkat ? komDiangkat() : null; };
@@ -163,6 +169,14 @@
   gambarEtalase();
 
   function bukaDasbor(jenis){
+    /* komunitas buatan yang lain: jadikan aktif dulu, baru dashboard-nya dibangun */
+    if(jenis.indexOf('lain:') === 0){
+      const k = (App().dibuatLain || [])[+jenis.slice(5)];
+      if(k && window.KolavoPakaiDibuat) window.KolavoPakaiDibuat(k);
+      sinkronDibuat();
+      window.KolavoBukaDashboard(null);
+      return;
+    }
     /* lewat KolavoBukaDashboard, bukan KolavoKe: keadaan dashboard harus dibangun dulu */
     window.KolavoBukaDashboard(null, jenis === 'diangkat' ? komDiangkat() : null);
   }
@@ -203,6 +217,12 @@
     }
     const d = e.target.closest('[data-dasbor-buka]');
     if(d){ bukaDasbor(d.dataset.dasborBuka); return; }
+    if(e.target.closest('[data-buat-lagi]')){
+      if(window.KolavoBuatLagi) window.KolavoBuatLagi();
+      sinkronDibuat();
+      window.KolavoKe('scrBuat');
+      return;
+    }
     if(e.target.closest('#demoTautan')){
       /* bergiliran antar komunitas contoh, supaya Esensial & Advance sama-sama bisa dicoba */
       const kartu = document.querySelectorAll('#direktori .ccard')[demoKe++ % 4];
