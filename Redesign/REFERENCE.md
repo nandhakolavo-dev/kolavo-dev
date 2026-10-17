@@ -1682,7 +1682,7 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   nomor referensi), total bayar, hitung mundur 10 menit; "Ubah jumlah kredit" kembali ke langkah 1.
   (3) Berhasil: kredit baru ditambahkan **setelah** pembayaran diterima (di prototipe lewat tombol
   simulasi). Bagian kredit di halaman profil dihapus — top up hanya lewat tombol saldo di nav.
-- **Menu akun** tinggal satu item: "Profil & pengaturan akun" (→ scrProfil, ada tombol Ubah profil)
+- **Menu akun** tinggal satu item: "Profil & Setting" (dulu "Profil & pengaturan akun"; → scrProfil, ada tombol Ubah profil)
   + Keluar. "Komunitas saya" (sudah ada di nav Komunitas) dan "Pengaturan akun" dihapus.
 - **Label pop up pengurus senada tema**: `#pengModal` ikut diwarnai `KolavoTema`/`KolavoWarnai`;
   `.peng-pp-tags .tag` memakai `--blue-wash` / `--blue-ink` tema komunitas.
