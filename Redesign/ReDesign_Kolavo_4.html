@@ -1588,6 +1588,10 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .ag-wa{margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .ag-wa-n{font-size:19px;font-weight:600;letter-spacing:.01em;font-variant-numeric:tabular-nums}
 .ag-kenal.buka .ag-wa-n{color:var(--green)}
+/* profil anggota: kesamaan dengan pengguna */
+.ag-sama[hidden]{display:none}
+.ag-sama .hn-chips{margin-top:10px}
+.ag-sama .hn-chip{font-size:12.5px;padding:5px 12px}
 /* setelah kenalan: kartu kontak (WhatsApp + media sosial) dan ubin data pendaftaran */
 .ag-kontak{margin-top:16px;display:grid;gap:10px}
 .ag-kontak-wa,.ag-sos-i{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:13px;background:var(--card);border:1px solid var(--line)}
@@ -3774,6 +3778,13 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       </div>
 
       <p class="ag-bio" id="agBio" hidden></p>
+
+      <!-- kesamaan dengan pengguna: alasan untuk mulai menyapa -->
+      <section class="kom-sec ag-sama" id="agSamaSec" hidden>
+        <h2 class="kom-h">Kesamaan denganmu</h2>
+        <p class="kom-sub" id="agSamaSub"></p>
+        <div class="hn-chips" id="agSama"></div>
+      </section>
 
       <!-- dinaikkan dari dasar halaman: komunitas lain yang diikuti seseorang
            adalah keterangan sosial yang sungguhan, sekaligus lingkar penemuan
@@ -6848,8 +6859,12 @@ function hitung(){}
     [/domisili/i, '<path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/>']
   ];
   function kartuData(nama, o){
-    const baris = jawabPendaftaran(nama, o).concat([['Pekerjaan', o.p || o.k || '—'], ['Domisili', o.d || '—']]);
-    return '<div class="ag-data"><p class="ag-data-h">Data pendaftaran' + (kini ? '<span>' + esc(kini.nama) + '</span>' : '') + '</p>' +
+    /* alasan bergabung paling bawah — paling panjang, dan paling enak dibaca terakhir */
+    const jw = jawabPendaftaran(nama, o), alasan = /alasan|kenapa/i;
+    const baris = jw.filter(function(r){ return !alasan.test(r[0]); })
+      .concat([['Pekerjaan', o.p || o.k || '—'], ['Domisili', o.d || '—']])
+      .concat(jw.filter(function(r){ return alasan.test(r[0]); }));
+    return '<div class="ag-data"><p class="ag-data-h">Profil Komunitas' + (kini ? '<span>' + esc(kini.nama) + '</span>' : '') + '</p>' +
       '<div class="ag-data-g">' + baris.map(function(r){
         const ik = DATA_IKON.filter(function(d){ return d[0].test(r[0]); })[0];
         const lebar = String(r[1]).length > 34;
@@ -7006,7 +7021,8 @@ function hitung(){}
        mana saja", bukan "selain di sini dia di mana". */
     const lain = o.aku
       ? komunitasAku()
-      : komunitasOrang(nama).filter(function(k){ return !kini || k.kelas !== kini.kelas; });
+      : komunitasLain(nama);
+    gambarSama(nama, o, lain);
     el('agKomH').textContent = o.aku ? 'Komunitas saya' : 'Juga di komunitas';
     el('agKomSub').textContent = o.aku
       ? 'Semua komunitas yang kamu ikuti.'
@@ -7018,6 +7034,44 @@ function hitung(){}
              '<div class="s">' + k.peran + '</div></div></div>';
     }).join('');
     return true;
+  }
+
+  /* komunitas lain yang diikuti: dari data contoh bila ada; selain itu 1–2 komunitas
+     direktori dipilih tetap per nama, supaya tiap profil punya contoh untuk ditinjau */
+  function komunitasLain(nama){
+    const kecuali = function(k){ return !kini || k.kelas !== kini.kelas; };
+    const asli = komunitasOrang(nama).filter(kecuali);
+    if(asli.length) return asli;
+    const kelas = [].map.call(document.querySelectorAll('#direktori .ccard .logo-sq'), function(l){
+      return [].filter.call(l.classList, function(c){ return c.indexOf('l-') === 0; })[0];
+    }).filter(function(k){ return k && k !== 'l-dibuat' && (!kini || k !== kini.kelas); });
+    if(!kelas.length) return [];
+    const n = 1 + acak(nama + 'k', 2), mulai = acak(nama, kelas.length), out = [];
+    for(let i = 0; i < Math.min(n, kelas.length); i++){
+      out.push({ kelas: kelas[(mulai + i) % kelas.length], peran: 'Anggota' });
+    }
+    return out;
+  }
+
+  /* kesamaan dengan pengguna: pekerjaan, domisili, dan komunitas yang sama-sama diikuti */
+  const IKON_CENTANG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>';
+  function gambarSama(nama, o, lain){
+    const sec = el('agSamaSec');
+    if(o.aku){ sec.hidden = true; return; }
+    const aku = window.KolavoProfilKu ? window.KolavoProfilKu() : {};
+    const sama = function(a, b){ return a && b && String(a).trim().toLowerCase() === String(b).trim().toLowerCase(); };
+    const chip = [];
+    if(kini) chip.push(['Anggota ' + kini.nama, true]);
+    if(sama(o.k, aku.kerja)) chip.push(['Pekerjaan · ' + o.k, true]);
+    if(sama(o.d, aku.kota)) chip.push(['Domisili · ' + o.d, true]);
+    const punyaku = komunitasAku().filter(function(k){ return k.peran === 'Anggota'; }).map(function(k){ return k.kelas; });
+    lain.forEach(function(k){ if(punyaku.indexOf(k.kelas) >= 0) chip.push(['Juga di ' + namaKelas(k.kelas), true]); });
+    const cocok = chip.length - (kini ? 1 : 0);
+    el('agSamaSub').textContent = cocok
+      ? 'Bahan obrolan pertama kalian — ' + cocok + ' kesamaan selain komunitas ini.'
+      : 'Belum ada kesamaan pekerjaan atau domisili. Komunitas ini sudah jadi titik temu kalian.';
+    el('agSama').innerHTML = chip.map(function(c){ return '<span class="hn-chip cocok">' + IKON_CENTANG + esc(c[0]) + '</span>'; }).join('');
+    sec.hidden = false;
   }
 
   window.KolavoBukaAnggota = function(nama){

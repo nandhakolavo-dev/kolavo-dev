@@ -1615,3 +1615,10 @@ sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Ke
   nama (`sosmedOrang`: Instagram selalu, LinkedIn 2/3 orang, TikTok atau X sebagian).
   `kartuData()`: ubin dua kolom berikon (ikon ditebak dari judul pertanyaan), jawaban panjang
   selebar penuh.
+- **Profil anggota: Profil Komunitas, kesamaan, komunitas lain (17 Okt 2026).** Judul kotak data
+  jadi **Profil Komunitas**; urutannya jawaban pertanyaan → pekerjaan → domisili → alasan
+  bergabung (paling bawah). Bagian baru **Kesamaan denganmu** (`#agSamaSec`, `gambarSama`): chip
+  hijau ber-centang untuk komunitas ini, pekerjaan/domisili yang sama dengan `KolavoProfilKu()`,
+  dan komunitas lain yang sama-sama diikuti — tampil di semua status kenalan, bukan cuma setelah
+  terhubung. **Juga di komunitas** kini selalu terisi: data contoh bila ada, selain itu 1–2
+  komunitas direktori dipilih tetap per nama (`komunitasLain`).
