@@ -1602,3 +1602,9 @@ sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Ke
   2007–2020) dan pendaftar yang diterima membawa `tahun`-nya ke `D.mem`. `aggDibuat()` mengisi
   `a` per anggota dan `angkatan` = rentang tahun, sehingga statistik "rentang angkatan", dropdown
   filter Angkatan, dan tag "Angkatan 2015" di kartu anggota ikut muncul.
+- **Setelah kenalan diterima (17 Okt 2026).** Kotak hijau "Kalian sudah kenalan" di profil anggota
+  kini menampilkan nomor WhatsApp untuk semua orang — dari `KONTAK` bila ada, selain itu nomor
+  contoh tetap per nama (`waOrang`) — dan kotak **Data pendaftaran di <komunitas>** (`.ag-jawab`):
+  jawaban tiap pertanyaan `kini.tanya` + pekerjaan + domisili. Jawaban diambil dari `D.mem[n].jawaban`
+  di komunitas sendiri; selain itu disusun dari data orangnya (panggilan, angkatan) atau contoh
+  per jenis pertanyaan (`ISIAN_CONTOH`: prodi, satuan, alasan).

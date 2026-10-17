@@ -1588,6 +1588,14 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .ag-wa{margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .ag-wa-n{font-size:19px;font-weight:600;letter-spacing:.01em;font-variant-numeric:tabular-nums}
 .ag-kenal.buka .ag-wa-n{color:var(--green)}
+/* data pendaftaran yang terbuka setelah kenalan */
+.ag-jawab{margin-top:16px;padding:14px 16px;border-radius:13px;background:var(--card);border:1px solid var(--line)}
+.ag-jawab-h{font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+.ag-jawab dl{margin:0;display:grid;gap:0}
+.ag-jawab dl div{display:grid;grid-template-columns:minmax(120px,38%) 1fr;gap:12px;padding:8px 0;border-top:1px solid var(--line-2)}
+.ag-jawab dl div:first-child{border-top:0}
+.ag-jawab dt{font-size:13px;color:var(--ink-3)}
+.ag-jawab dd{margin:0;font-size:13.5px;font-weight:500;color:var(--ink)}
 /* barisnya bisa diklik — tanpa penanda ini tidak ada yang tahu ada isinya.
    Tiap baris jadi kartu sendiri (border + radius selalu tampak, bukan cuma
    garis pemisah) supaya kisinya terbaca sebagai kumpulan profil yang bisa
@@ -6730,6 +6738,43 @@ function hitung(){}
   /* tiga keadaan untuk tampilan: tanpa nilai berarti belum pernah diajak */
   window.KolavoStatusKenal = function(nama){ return statusKenal(nama) || 'belum'; };
 
+  /* ---------- isi yang terbuka setelah kenalan ----------
+     Nomor contoh dibuat dari nama (tetap sama tiap dibuka) bila data kontaknya tidak ada,
+     dan jawaban pendaftaran disusun mengikuti pertanyaan komunitas yang sedang dibuka. */
+  function acak(nama, n){
+    let h = 0;
+    for(let i = 0; i < nama.length; i++) h = (h * 31 + nama.charCodeAt(i)) >>> 0;
+    return h % n;
+  }
+  function waOrang(nama, o){
+    if(o.wa) return o.wa;
+    const pre = ['0812', '0813', '0821', '0857', '0877', '0895'][acak(nama, 6)];
+    const a = String(1000 + acak(nama + 'a', 9000)), b = String(1000 + acak(nama + 'b', 9000));
+    return pre + '-' + a + '-' + b;
+  }
+  const ISIAN_CONTOH = [
+    [/prodi|program studi|jurusan/i, ['Teknik Informatika', 'Teknik Multimedia dan Jaringan', 'Teknik Komputer dan Jaringan', 'Teknik Informatika dan Komputer']],
+    [/satuan/i, ['Paskibraka Kota Jakarta Utara', 'Paskibraka Provinsi DKI Jakarta', 'Paskibraka Nasional']],
+    [/alasan|kenapa/i, ['Ingin kenal lebih banyak sesama anggota dan ikut kegiatan komunitas.', 'Cari koneksi seprofesi dan ikut program mentoring.', 'Mau bantu kegiatan sosial yang diadakan komunitas.']]
+  ];
+  function jawabPendaftaran(nama, o){
+    const tanya = (kini && kini.tanya) || [];
+    const D = window.KolavoDashboard;
+    const simpan = (founder && D && D.mem && D.mem[nama] && D.mem[nama].jawaban) || [];
+    return tanya.map(function(t){
+      const ada = simpan.filter(function(j){ return j.judul === t.judul && j.nilai && j.nilai !== '—'; })[0];
+      let v = ada ? ada.nilai : '';
+      if(!v && t.id === 'nickname') v = panggilan(o);
+      if(!v && t.tipe === 'tahun') v = o.a ? String(o.a) : String(2008 + acak(nama, 15));
+      if(!v && t.tipe === 'angka') v = String(1 + acak(nama, 9));
+      if(!v){
+        const cocok = ISIAN_CONTOH.filter(function(c){ return c[0].test(t.judul + ' ' + (t.tanya || '')); })[0];
+        v = cocok ? cocok[1][acak(nama, cocok[1].length)] : ((o.j || [])[0] || o.bio || '—');
+      }
+      return [t.judul || t.tanya, v];
+    });
+  }
+
   function gambarKenal(nama, o){
     const wadah = el('agKenal');
     /* tidak ada tombol kenalan di profil sendiri */
@@ -6745,8 +6790,17 @@ function hitung(){}
         '<p class="ag-kenal-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.4 2.4 2.4 4.6-5"/></svg>Kalian sudah kenalan</p>' +
         /* kredit sudah terpakai saat mengajak — begitu diterima, kontak langsung terbuka */
         '<p class="ag-kenal-s">' + panggil + ' menerima ajakanmu, jadi nomor dan akun media sosialnya kebuka buat kamu — dan punyamu kebuka buat dia.</p>' +
-        '<div class="ag-wa"><span class="ag-wa-n">' + (o.wa || '—') + '</span>' +
-        '<button type="button" class="btn sm" id="agKenalChat">Chat di WhatsApp</button></div>';
+        '<div class="ag-wa"><span class="ag-wa-n">' + esc(waOrang(nama, o)) + '</span>' +
+        '<button type="button" class="btn sm" id="agKenalChat">Chat di WhatsApp</button></div>' +
+        (function(){
+          const jw = jawabPendaftaran(nama, o);
+          if(!jw.length) return '';
+          return '<div class="ag-jawab"><p class="ag-jawab-h">Data pendaftaran' + (kini ? ' di ' + esc(kini.nama) : '') + '</p><dl>' +
+            jw.map(function(r){ return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('') +
+            '<div><dt>Pekerjaan</dt><dd>' + esc(o.p || o.k || '—') + '</dd></div>' +
+            '<div><dt>Domisili</dt><dd>' + esc(o.d || '—') + '</dd></div>' +
+          '</dl></div>';
+        })();
       return;
     }
 
