@@ -403,6 +403,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 52px;background:var(--bg-
 body.m-app footer{display:none}
 /* halaman masuk penuh (A2): berdiri sendiri, tanpa nav */
 body.m-masuk nav{display:none}
+#scrKomunitas[data-publik] #komFeed,#scrKomunitas[data-publik] #komAnggotaSec{display:none}
 /* nav Kolavo App (A3): tab ikon di tengah ala Facebook web, tautan jualan disembunyikan */
 body.m-app .nav-lnk,body.m-app #navPengurus,body.m-app #btnApp{display:none}
 /* tautan jualan rata kiri, diberi jarak dari logo */
@@ -2763,7 +2764,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
   <div class="shell">
     <div class="sec-tengah">
       <div class="kicker">Harga</div>
-      <h2>Mulai FREE, naik paket saat komunitasmu tumbuh.</h2>
+      <h2>Mulai gratis, naik paket saat komunitasmu tumbuh.</h2>
       <p class="sec-lede">Pilih paket sesuai jumlah anggota dan pengurusmu.</p>
     </div>
 
@@ -3469,7 +3470,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
            Digambar 50-js-feed; tidak ada sama sekali di Esensial. -->
       <section class="kom-sec kom-feed" id="komFeed" hidden></section>
 
-      <section class="kom-sec">
+      <section class="kom-sec" id="komAnggotaSec">
         <h2 class="kom-h">Daftar anggota</h2>
         <p class="kom-sub" id="komKunciSub">Kebuka setelah pengurus menyetujui pendaftaranmu.</p>
         <div class="kunci" id="komKunci">
@@ -5168,6 +5169,8 @@ function hitung(){}
     /* remah halaman komunitas: pengunjung (dari etalase landing) kembali ke landing,
        pengguna yang sudah masuk kembali ke tab Komunitas */
     if(id === 'scrKomunitas'){
+      /* profil publik (pengunjung belum masuk): Kabar & Daftar anggota disembunyikan */
+      document.getElementById('scrKomunitas').toggleAttribute('data-publik', !App.masuk);
       const j = document.querySelector('#scrKomunitas .kom-jalur button');
       if(j){
         j.textContent = App.masuk ? 'Komunitas' : 'Beranda';

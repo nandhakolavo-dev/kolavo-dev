@@ -1520,6 +1520,10 @@ Aturan + uji angka: `PROMPT-HARGA.md`.
   baru diminta saat **Gabung** (halaman masuk varian undangan). **Sudah masuk** → tombol
   **"Buka di Kolavo App"**, halaman yang sama dengan nav app (tab Komunitas menyala), remah
   **Komunitas** (→ tab Komunitas). Remah diatur router saat `scrKomunitas` digambar.
+- **Profil publik tanpa Kabar & Daftar anggota (17 Okt 2026).** Router memberi
+  `#scrKomunitas[data-publik]` bila `!App.masuk`; CSS menyembunyikan `#komFeed` (Kabar) dan
+  `#komAnggotaSec` (Daftar anggota, termasuk tirai terkunci). Pengurus, persebaran, info tetap
+  tampil. Setelah masuk, keduanya kembali seperti biasa.
 - **Perbaikan: "Komunitasku" dibangun dari `App.diajukan`** (status per komunitas), bukan
   `App.komunitas` — yang terakhir itu "komunitas yang terakhir dibuka" dan ikut berubah setiap
   kali profil komunitas lain dilihat (bug sejak A4: anggota Forpastara yang melihat IA PNJ

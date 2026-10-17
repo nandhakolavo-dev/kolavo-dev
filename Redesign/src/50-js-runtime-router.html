@@ -79,6 +79,8 @@
     /* remah halaman komunitas: pengunjung (dari etalase landing) kembali ke landing,
        pengguna yang sudah masuk kembali ke tab Komunitas */
     if(id === 'scrKomunitas'){
+      /* profil publik (pengunjung belum masuk): Kabar & Daftar anggota disembunyikan */
+      document.getElementById('scrKomunitas').toggleAttribute('data-publik', !App.masuk);
       const j = document.querySelector('#scrKomunitas .kom-jalur button');
       if(j){
         j.textContent = App.masuk ? 'Komunitas' : 'Beranda';
