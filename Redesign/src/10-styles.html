@@ -1273,6 +1273,13 @@ body.lgn-open{overflow:hidden}
 .kom-aksi{display:flex;flex-direction:column;gap:10px;align-items:stretch;min-width:212px}
 @media(max-width:640px){.kom-aksi{width:100%}}
 .kom-aksi .btn{width:100%}
+/* pintu dashboard pengurus: ikon panel, lencana menunggu, panah */
+.kom-aksi .btn.kom-dasbor{justify-content:flex-start;gap:10px;padding:0 16px 0 18px;box-shadow:0 6px 16px -8px var(--blue)}
+.kom-dasbor svg{width:19px;height:19px}
+.kom-dasbor > span:first-of-type{flex:1;text-align:left}
+.kom-dasbor-n{padding:3px 9px;border-radius:100px;background:var(--orange);color:var(--btn-ink);font-size:11.5px;font-weight:600;line-height:1.3}
+.kom-dasbor .kom-dasbor-p{width:16px;height:16px;opacity:.8;transition:transform .15s ease}
+.kom-dasbor:hover .kom-dasbor-p{transform:translateX(3px)}
 .kom-aksi .catat{font-size:12px;color:var(--ink-3);line-height:1.5;text-align:center}
 /* aksi utama + tombol ikon (edit data pendaftaran, bagikan) dalam satu baris */
 .kom-aksi-baris{display:flex;align-items:center;gap:8px}
@@ -1380,8 +1387,43 @@ body.lgn-open{overflow:hidden}
    sehingga "2010" dan "Teknik Informatika" terbaca sebagai hal yang sejenis. */
 .buka-sumbu{align-items:center;gap:8px}
 /* saring daftar anggota: dropdown bila pilihannya lebih dari 5 */
-#bukaFilter:has(.buka-sel){align-items:center;gap:10px}
-.buka-sel{min-width:0;max-width:100%;flex:0 1 280px}
+/* filter daftar anggota: tombol ikon + chip aktif; panel kategori terbuka di bawahnya */
+.buka .panel-filters.buka-sumbu{flex-wrap:wrap;overflow:visible}
+.buka-fbtn{position:relative;width:36px;height:36px;flex:none;border-radius:100px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .15s ease,color .15s ease}
+.buka-fbtn svg{width:18px;height:18px}
+.buka-fbtn:hover,.buka-fbtn.aktif{border-color:var(--blue);color:var(--blue-ink);background:var(--blue-tint)}
+.buka-fbtn:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.buka-fn{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 5px;border-radius:100px;background:var(--blue);color:var(--btn-ink);font-size:10.5px;font-weight:700;line-height:18px;text-align:center}
+.buka-fhint{font-size:12px;color:var(--ink-3)}
+.buka-fchip{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-family:inherit}
+.buka-fchip span{font-size:13px;line-height:1;opacity:.85}
+.buka-freset{border:0;background:none;padding:4px 2px;color:var(--ink-3);font:inherit;font-size:12px;font-weight:500;cursor:pointer;text-decoration:underline}
+.buka-freset:hover{color:var(--ink)}
+.buka #bukaFilter{display:block;padding:14px 18px;background:var(--bg-alt)}
+.buka #bukaFilter[hidden]{display:none}
+.buka-fgrup + .buka-fgrup{margin-top:12px}
+.buka-flbl{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.buka-fopsi{display:flex;flex-wrap:wrap;gap:6px}
+.buka-fopsi .chip{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-family:inherit}
+.buka-fc{font-size:10.5px;font-weight:600;color:var(--ink-3)}
+.buka-fopsi .chip.on .buka-fc{color:var(--btn-ink)}
+/* paginasi daftar (halaman komunitas + dashboard Anggota) */
+.pager{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 4px 4px}
+.pager-info{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.pager-n{display:flex;gap:4px}
+.pager-b{min-width:34px;height:34px;padding:0 8px;border-radius:100px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);font:inherit;font-size:13px;font-weight:600;cursor:pointer;font-variant-numeric:tabular-nums}
+.pager-b:hover:not(:disabled){border-color:var(--blue);color:var(--blue-ink)}
+.pager-b.on{background:var(--blue);border-color:var(--blue);color:var(--btn-ink)}
+.pager-b:disabled{opacity:.4;cursor:default}
+.pager-b:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+#bukaList .pager{padding:14px 18px}
+/* dashboard › Anggota: Diterima | Ditolak */
+.kl-seg{display:inline-flex;gap:4px;padding:4px;margin-bottom:14px;border:1px solid var(--line);border-radius:100px;background:var(--bg-alt)}
+.kl-seg button{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border:0;border-radius:100px;background:transparent;color:var(--ink-2);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.kl-seg button span{font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.kl-seg button[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:var(--sh-sm)}
+.kl-seg button:focus-visible{outline:3px solid var(--ring);outline-offset:1px}
+#klAnggotaList[hidden],#klRiwayatList[hidden]{display:none}
 .buka-lbl{font-size:11.5px;font-weight:500;color:var(--ink-3);margin-right:2px}
 .buka-sumbu .chip{font-size:11.5px;padding:5px 11px}
 /* status kenalan per kartu + progres di atas daftar — mendorong mengajak kenalan.

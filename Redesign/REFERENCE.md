@@ -1571,3 +1571,14 @@ sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Ke
   ikon orang (jadi gumpalan). Selektor dipersempit ke `.kn-ring > svg`; ikon 17 px, garis 2.
 - **Copy paket Esensial (dashboard › Peninjau)** ditulis untuk pengguna: "Paket Esensial.
   Pendaftaran anggota ditinjau oleh satu peninjau, untuk komunitas hingga 20 anggota."
+- **Filter daftar anggota multi-kategori (menggantikan "Lihat berdasarkan" + chip/dropdown).**
+  `#bukaSumbu` = tombol ikon filter `#bukaFBtn` (lencana jumlah filter aktif) + chip aktif
+  `.buka-fchip` (× untuk melepas) + "Hapus semua". `#bukaFilter` = panel kategori dari
+  `sumbuDaftar()` (Keahlian, Angkatan, Domisili, + kelompok jawaban di halaman pemilik), chip
+  toggle dengan jumlah. Dalam satu kategori ATAU, antarkategori DAN (`filterKini`).
+- **Paginasi 10 per halaman** (`.pager`): daftar anggota halaman komunitas (`data-bhal`) dan
+  dashboard › Anggota (`data-ahal`, `D.halAnggota`).
+- **Dashboard › Anggota: Diterima | Ditolak** (`.kl-seg`, `D.anggotaLihat`). Pendaftaran yang
+  ditolak tidak lagi menumpuk di bawah daftar; segmen hanya muncul bila ada yang ditolak.
+- **Tombol Dashboard pengurus** (`.kom-dasbor`): ikon panel, lencana oranye "N menunggu"
+  (jumlah permintaan gabung), panah yang bergeser saat hover.

@@ -419,7 +419,6 @@
     { id: 'a', nama: 'Angkatan' },
     { id: 'd', nama: 'Domisili' }
   ];
-  let sumbuKini = 'k';
   /* di halaman pemilik, kelompok jawaban yang dibuat pengurus ikut jadi sumbu */
   function sumbuDaftar(){
     const D = window.KolavoDashboard;
@@ -444,8 +443,28 @@
     });
   }
 
-  /* saringan "Belum kenalan" berdiri sendiri, bisa digabung dengan chip sumbu */
-  let bidangKini = '';
+  /* saringan "Belum kenalan" berdiri sendiri, bisa digabung dengan filter kategori.
+     Filter kategori berlapis: tiap kategori boleh banyak pilihan (ATAU), antarkategori DAN. */
+  let filterKini = {};
+  let filterBuka = false;
+  let halKini = 0;
+  const PER_HAL = 10;
+  const IKON_FILTER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
+  function jumlahFilter(){ return Object.keys(filterKini).reduce(function(n, k){ return n + filterKini[k].length; }, 0); }
+  function lolosFilter(o){
+    return Object.keys(filterKini).every(function(k){
+      const pil = filterKini[k];
+      return !pil.length || pil.indexOf(String(o[k] == null ? '' : o[k])) >= 0;
+    });
+  }
+  /* navigasi halaman: ‹ 1 2 3 › + keterangan rentang */
+  function pagerHtml(hal, kini, awal, tampil, total, attr){
+    if(hal <= 1) return '';
+    let b = '<button type="button" class="pager-b" ' + attr + '="' + (kini - 1) + '"' + (kini ? '' : ' disabled') + ' aria-label="Halaman sebelumnya">‹</button>';
+    for(let i = 0; i < hal; i++) b += '<button type="button" class="pager-b' + (i === kini ? ' on' : '') + '" ' + attr + '="' + i + '"' + (i === kini ? ' aria-current="page"' : '') + '>' + (i + 1) + '</button>';
+    b += '<button type="button" class="pager-b" ' + attr + '="' + (kini + 1) + '"' + (kini < hal - 1 ? '' : ' disabled') + ' aria-label="Halaman berikutnya">›</button>';
+    return '<nav class="pager" aria-label="Halaman daftar"><span class="pager-info">' + (awal + 1) + '–' + (awal + tampil) + ' dari ' + total + '</span><div class="pager-n">' + b + '</div></nav>';
+  }
   let hanyaBelum = false;
   const KN_LABEL = { belum: 'Belum kenalan', menunggu: 'Menunggu', terhubung: 'Sudah kenal' };
   /* ikon orang: + (belum), jam (menunggu), centang (sudah kenal) */
@@ -463,7 +482,7 @@
   window.KolavoIkonKenal = svgKenal;
   /* dipakai daftar anggota & kartu sambutan feed: cincin, ikon, dan saringan ikut segar */
   function segarKenal(){
-    if(kini && !el('komBuka').hidden){ gambarProgres(); saring(bidangKini); }
+    if(kini && !el('komBuka').hidden){ gambarProgres(); saring(); }
     if(window.KolavoGambarFeed) window.KolavoGambarFeed();
   }
   window.KolavoAjakKenal = function(nama){
@@ -515,21 +534,23 @@
       (belum ? '<button type="button" class="chip' + (hanyaBelum ? ' on' : '') + '" id="bukaBelum" aria-pressed="' + hanyaBelum + '">' + svgKenal('belum') + 'Belum kenalan · ' + belum + '</button>' : '');
   }
 
-  function saring(bidang){
-    bidangKini = bidang || '';
-    const orang = daftarOrang().filter(function(o){
-      return !bidang || String(o[sumbuKini] == null ? '' : o[sumbuKini]) === bidang;
-    }).filter(function(o){
+  function saring(){
+    const n = jumlahFilter();
+    const orang = daftarOrang().filter(lolosFilter).filter(function(o){
       return !hanyaBelum || (!o.aku && !statusKenal(o.n));
     });
     const wadah = el('bukaList');
     if(!orang.length){
       wadah.innerHTML = '<p class="buka-kosong">' + (hanyaBelum
-        ? (bidang ? 'Semua anggota di kelompok ini sudah kamu ajak kenalan.' : 'Semua anggota di sini sudah kamu ajak kenalan.')
-        : 'Belum ada anggota dengan keahlian itu.') + '</p>';
+        ? (n ? 'Semua anggota yang cocok dengan filter sudah kamu ajak kenalan.' : 'Semua anggota di sini sudah kamu ajak kenalan.')
+        : 'Belum ada anggota yang cocok dengan filter ini.') + '</p>';
       return;
     }
-    wadah.innerHTML = orang.map(function(o, i){
+    const hal = Math.ceil(orang.length / PER_HAL);
+    if(halKini >= hal) halKini = hal - 1;
+    const awal = halKini * PER_HAL, potong = orang.slice(awal, awal + PER_HAL);
+    wadah.innerHTML = potong.map(function(o, j){
+      const i = awal + j;
       const av = o.f
         ? '<div class="av photo ' + o.f + '" role="img" aria-label="Foto profil ' + panggilan(o) + ' — gambar AI"></div>'
         : '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(o.n) + '</div>';
@@ -544,38 +565,50 @@
         (o.j || []).map(function(v){ return '<span class="tag">' + v + '</span>'; }).join('') +
         '</div></div>' + ikonKenal(o) + '</div>';
     }).join('');
-    if(!bidang && !hanyaBelum && kini && orang.length < angkaKini()){
+    wadah.insertAdjacentHTML('beforeend', pagerHtml(hal, halKini, awal, potong.length, orang.length, 'data-bhal'));
+    if(!n && !hanyaBelum && kini && orang.length < angkaKini()){
       wadah.insertAdjacentHTML('beforeend',
         '<p class="buka-kosong">Menampilkan ' + orang.length + ' dari ' + angkaKini() +
         ' anggota — sisanya belum dibuat di prototipe.</p>');
     }
   }
 
-  /* chip disusun dari baris yang benar-benar ada, bukan dari agregat —
-     chip dari agregat bisa menyaring jadi kosong dan itu terbaca sebagai rusak */
-  function gambarNilai(orang){
-    const nilai = [];
-    orang.forEach(function(o){
-      const v = o[sumbuKini];
-      if(v == null || v === '') return;
-      if(nilai.indexOf(String(v)) < 0) nilai.push(String(v));
-    });
-    if(sumbuKini === 'a') nilai.sort(function(a, b){ return b - a; });
-    /* lebih dari 5 pilihan: dropdown, bukan deretan chip yang panjang */
-    const jml = function(v){ return orang.filter(function(o){ return String(o[sumbuKini]) === v; }).length; };
-    el('bukaFilter').innerHTML = nilai.length > 5
-      ? '<label class="buka-lbl" for="bukaSaringSel">Saring</label>' +
-        '<select class="sel buka-sel" id="bukaSaringSel"><option value="">Semua · ' + orang.length + '</option>' +
-          nilai.map(function(v){ return '<option value="' + v + '">' + v + ' · ' + jml(v) + '</option>'; }).join('') + '</select>'
-      : '<span class="chip on" data-saring="">Semua</span>' +
-        nilai.map(function(v){
-          return '<span class="chip" data-saring="' + v + '">' + v + '</span>';
-        }).join('');
-    saring('');
+  /* bilah filter: tombol ikon + filter aktif sebagai chip yang bisa dilepas.
+     Pilihan disusun dari baris yang benar-benar ada, bukan dari agregat —
+     pilihan dari agregat bisa menyaring jadi kosong dan itu terbaca sebagai rusak */
+  function gambarFilter(){
+    const orang = daftarOrang(), sumbu = sumbuDaftar();
+    Object.keys(filterKini).forEach(function(k){ if(!sumbu.some(function(x){ return x.id === k; })) delete filterKini[k]; });
+    const n = jumlahFilter();
+    const aktif = sumbu.map(function(x){
+      return (filterKini[x.id] || []).map(function(v){
+        return '<button type="button" class="chip on buka-fchip" data-f-hapus="' + x.id + '" data-v="' + v + '" aria-label="Lepas filter ' + v + '">' + v + '<span aria-hidden="true">×</span></button>';
+      }).join('');
+    }).join('');
+    el('bukaSumbu').innerHTML =
+      '<button type="button" class="buka-fbtn' + (n || filterBuka ? ' aktif' : '') + '" id="bukaFBtn" aria-expanded="' + filterBuka + '" aria-controls="bukaFilter" aria-label="Filter anggota" title="Filter">' +
+        IKON_FILTER + (n ? '<span class="buka-fn">' + n + '</span>' : '') + '</button>' +
+      (n ? aktif + '<button type="button" class="buka-freset" data-f-reset>Hapus semua</button>'
+         : '<span class="buka-fhint">' + sumbu.map(function(x){ return x.nama; }).join(' · ') + '</span>');
+    const p = el('bukaFilter');
+    p.hidden = !filterBuka;
+    p.innerHTML = sumbu.map(function(x){
+      const nilai = [];
+      orang.forEach(function(o){
+        const v = o[x.id];
+        if(v == null || v === '') return;
+        if(nilai.indexOf(String(v)) < 0) nilai.push(String(v));
+      });
+      if(x.id === 'a') nilai.sort(function(a, b){ return b - a; });
+      if(!nilai.length) return '';
+      return '<div class="buka-fgrup"><p class="buka-flbl">' + x.nama + '</p><div class="buka-fopsi">' + nilai.map(function(v){
+        const on = (filterKini[x.id] || []).indexOf(v) >= 0;
+        const c = orang.filter(function(o){ return String(o[x.id]) === v; }).length;
+        return '<button type="button" class="chip' + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-f="' + x.id + '" data-v="' + v + '">' + v + '<span class="buka-fc">' + c + '</span></button>';
+      }).join('') + '</div></div>';
+    }).join('');
+    saring();
   }
-  document.addEventListener('change', function(e){
-    if(e.target.id === 'bukaSaringSel') saring(e.target.value);
-  });
 
   /* Nama komunitas dibaca dari kartunya di direktori, bukan disalin ke sini —
      satu sumber, supaya tidak ada dua nama yang bisa berselisih. */
@@ -792,14 +825,8 @@
     el('bukaJml').textContent = angkaKini() + ' anggota';
     gambarProgres();
 
-    const sumbu = sumbuDaftar();
-    if(!sumbu.some(function(s){ return s.id === sumbuKini; })) sumbuKini = 'k';
-    el('bukaSumbu').innerHTML = '<span class="buka-lbl">Lihat berdasarkan</span>' +
-      sumbu.map(function(s){
-        return '<span class="chip' + (s.id === sumbuKini ? ' on' : '') + '" data-sumbu="' + s.id + '">' + s.nama + '</span>';
-      }).join('');
-
-    gambarNilai(orang);
+    halKini = 0;
+    gambarFilter();
   }
 
   /* Tombol "Setujui pendaftaran" di bilah demo memerankan pengurus — di produk
@@ -977,6 +1004,17 @@
       (founder ? tombolIkon('pensil', 'Sunting halaman komunitas', 'data-kom-sunting') : '') +
       tombolIkon('bagikan', 'Bagikan tautan', 'data-kom-bagikan'));
   }
+  /* pintu ke dashboard: ikon panel + lencana pendaftar yang menunggu ditinjau */
+  function tombolDasbor(){
+    const D = window.KolavoDashboard;
+    const n = D && D.built && D.minta ? D.minta.length : 0;
+    return '<button type="button" class="btn kom-dasbor" data-dashboard>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="9" rx="1.8"/><rect x="13.5" y="3" width="7.5" height="5" rx="1.8"/><rect x="13.5" y="11" width="7.5" height="10" rx="1.8"/><rect x="3" y="15" width="7.5" height="6" rx="1.8"/></svg>' +
+      '<span>Dashboard pengurus</span>' +
+      (n ? '<span class="kom-dasbor-n" aria-label="' + n + ' pendaftar menunggu">' + n + ' menunggu</span>' : '') +
+      '<svg class="kom-dasbor-p" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>' +
+    '</button>';
+  }
   function isiAksi(){
     const wadah = el('komAksi');
     wadah.innerHTML = '';
@@ -986,7 +1024,7 @@
       const jab = (window.KolavoDashboard && window.KolavoDashboard.jabatanAku && window.KolavoDashboard.jabatanAku()) || 'Pengurus';
       wadah.innerHTML =
         '<p class="kom-status pengurus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v5c0 4.5 3.4 8 8 10 4.6-2 8-5.5 8-10V6l-8-3Z"/></svg>Kamu ' + jab + ' di sini</p>' +
-        '<button type="button" class="btn" data-dashboard>Dashboard pengurus</button>';
+        tombolDasbor();
       return;
     }
 
@@ -1227,10 +1265,26 @@
       if(p && kini) p.textContent = 'Pertanyaan dari pengurus ' + kini.nama;
       return;
     }
-    const sumbu = e.target.closest('#bukaSumbu .chip');
-    if(sumbu){
-      sumbuKini = sumbu.dataset.sumbu;
-      gambarDaftar(true);
+    if(e.target.closest('#bukaFBtn')){ filterBuka = !filterBuka; gambarFilter(); return; }
+    const fo = e.target.closest('#bukaFilter [data-f]');
+    if(fo){
+      const daf = filterKini[fo.dataset.f] || (filterKini[fo.dataset.f] = []), i = daf.indexOf(fo.dataset.v);
+      if(i >= 0) daf.splice(i, 1); else daf.push(fo.dataset.v);
+      halKini = 0; gambarFilter();
+      return;
+    }
+    const fh = e.target.closest('[data-f-hapus]');
+    if(fh){
+      const daf = filterKini[fh.dataset.fHapus] || [], i = daf.indexOf(fh.dataset.v);
+      if(i >= 0) daf.splice(i, 1);
+      halKini = 0; gambarFilter();
+      return;
+    }
+    if(e.target.closest('[data-f-reset]')){ filterKini = {}; halKini = 0; gambarFilter(); return; }
+    const bh = e.target.closest('[data-bhal]');
+    if(bh){
+      halKini = +bh.dataset.bhal; saring();
+      el('komBuka').scrollIntoView({ block: 'start', behavior: 'smooth' });
       return;
     }
     const baris = e.target.closest('#bukaList .m');
@@ -1240,8 +1294,9 @@
     }
     if(e.target.closest('#bukaBelum')){
       hanyaBelum = !hanyaBelum;
+      halKini = 0;
       gambarProgres();
-      saring(bidangKini);
+      saring();
       return;
     }
     const lebih = e.target.closest('.agg-lebih');
@@ -1250,12 +1305,6 @@
       s.hidden = !buka;
       lebih.setAttribute('aria-expanded', buka ? 'true' : 'false');
       lebih.textContent = buka ? 'Tampilkan lebih sedikit' : 'Tampilkan ' + lebih.dataset.n + ' lainnya';
-      return;
-    }
-    const chip = e.target.closest('#bukaFilter .chip');
-    if(chip){
-      document.querySelectorAll('#bukaFilter .chip').forEach(function(c){ c.classList.toggle('on', c === chip); });
-      saring(chip.dataset.saring || '');
       return;
     }
     if(e.target.closest('#demoSetuju')){
