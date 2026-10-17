@@ -1363,7 +1363,10 @@
     }
 
     if(founder || pratinjau){
-      if(window.KolavoWarnai) window.KolavoWarnai(document.getElementById('scrKomunitas'), kini.warna);
+      if(window.KolavoWarnai){
+        window.KolavoWarnai(document.getElementById('scrKomunitas'), kini.warna);
+        window.KolavoWarnai(el('pengModal'), kini.warna);   /* label di pop up pengurus ikut tema */
+      }
     } else if(window.KolavoTema) window.KolavoTema(kini.kelas);
     el('komKunciT').textContent = angkaKini() + ' anggota di dalam';
     gambarAksi();

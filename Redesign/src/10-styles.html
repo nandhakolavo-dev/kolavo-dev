@@ -512,6 +512,35 @@ button.kn-orang:hover b{color:var(--blue-ink)}
 .krd-paket span{font-size:12.5px;color:var(--ink-2)}
 .krd-paket strong{font-size:17px;color:var(--blue-ink)}
 .krd-bayar{width:100%;margin-top:16px;justify-content:center}
+.krd-langkah[hidden]{display:none}
+/* langkah 1: pilihan cepat + jumlah paket + ringkasan */
+.krd-cepat{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px}
+.krd-cepat .chip{cursor:pointer;font-family:inherit}
+.krd-atur{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;text-align:left}
+.krd-atur .t{display:flex;flex-direction:column}
+.krd-atur b{font-size:14px;color:var(--ink)}
+.krd-atur small{font-size:12px;color:var(--ink-3)}
+.krd-ringkas{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:14px 16px;border:2px solid var(--blue);border-radius:13px;background:var(--blue-wash);text-align:left}
+.krd-ringkas span{display:flex;flex-direction:column}
+.krd-ringkas b{font-size:15px;color:var(--ink)}
+.krd-ringkas small{font-size:12.5px;color:var(--ink-2)}
+.krd-ringkas strong{font-size:18px;color:var(--blue-ink);white-space:nowrap}
+/* langkah 2: kartu QRIS */
+.krd-qris{margin:16px auto 0;max-width:260px;padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--card);box-shadow:var(--sh-sm)}
+.krd-qris-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding-bottom:10px;border-bottom:1px dashed var(--line)}
+.krd-qris-h b{font-size:16px;font-weight:800;letter-spacing:.04em;color:var(--ink)}
+.krd-qris-h span{font-size:11.5px;color:var(--ink-3)}
+.krd-qr{margin:12px auto;width:200px;padding:8px;border-radius:10px;background:#FFFFFF}
+.krd-qr svg{display:block;width:100%;height:auto}
+.krd-qris-n{display:flex;align-items:baseline;justify-content:space-between;padding-top:10px;border-top:1px dashed var(--line)}
+.krd-qris-n small{font-size:12px;color:var(--ink-3)}
+.krd-qris-n strong{font-size:18px;color:var(--ink)}
+.krd-tunggu{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--ink-2)}
+.krd-tunggu b{font-variant-numeric:tabular-nums;color:var(--ink)}
+.krd-ganti{display:block;margin:10px auto 0;border:0;background:none;padding:4px;font:inherit;font-size:13px;font-weight:600;color:var(--blue-ink);cursor:pointer}
+/* langkah 3: berhasil */
+.krd-ok-ic{display:grid;place-items:center;width:56px;height:56px;margin:4px auto 12px;border-radius:100px;background:var(--green-wash);color:var(--green)}
+.krd-ok-ic svg{width:26px;height:26px}
 .krd-catat{margin-top:12px;font-size:12px;color:var(--ink-3);line-height:1.5}
 /* judul bagian Home: ikon berwarna + teks + jumlah */
 .hsek-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
@@ -2106,6 +2135,8 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .kl-kurang-i{font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:100px;background:var(--orange-wash);color:var(--orange-ink)}
 /* pop up pengurus: label jawaban gabung yang berkaitan dengan komunitas */
 .peng-pp-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:10px}
+/* warna label ikut tema komunitas (pop up diwarnai 50-js-tema-komunitas) */
+.peng-pp-tags .tag{background:var(--blue-wash);color:var(--blue-ink);border-color:transparent;font-weight:600}
 /* tab Dashboard: buat komunitas berikutnya */
 .dsb-baru{display:flex;align-items:center;gap:14px;width:100%;margin-top:14px;padding:16px 18px;border:1.5px dashed var(--line);border-radius:13px;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s ease,background .15s ease}
 .dsb-baru:hover{border-color:var(--blue);background:var(--blue-tint)}

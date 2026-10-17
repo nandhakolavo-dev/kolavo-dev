@@ -1676,3 +1676,13 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   otomatis masuk "Belum diisi" (Bayu Setiawan: 6 dari 7). Pop up pengurus tidak lagi menampilkan
   pekerjaan & domisili (pribadi); cukup label jawaban gabung yang berkaitan dengan komunitas
   (`.peng-pp-tags`: "Angkatan Paskibra 2016", "Teknik Informatika dan Komputer").
+- **Top up kredit (17 Okt 2026):** pop up `#krd` jadi tiga langkah. (1) Pilih jumlah: pilihan cepat
+  100/200/500/1.000 kredit + stepper paket (1 paket = 100 kredit = Rp50.000, maks 20), ringkasan
+  jumlah ajakan dan total. (2) **QRIS**: kartu QRIS dengan kode QR dinamis (`KolavoQR`, nominal +
+  nomor referensi), total bayar, hitung mundur 10 menit; "Ubah jumlah kredit" kembali ke langkah 1.
+  (3) Berhasil: kredit baru ditambahkan **setelah** pembayaran diterima (di prototipe lewat tombol
+  simulasi). Bagian kredit di halaman profil dihapus — top up hanya lewat tombol saldo di nav.
+- **Menu akun** tinggal satu item: "Profil & pengaturan akun" (→ scrProfil, ada tombol Ubah profil)
+  + Keluar. "Komunitas saya" (sudah ada di nav Komunitas) dan "Pengaturan akun" dihapus.
+- **Label pop up pengurus senada tema**: `#pengModal` ikut diwarnai `KolavoTema`/`KolavoWarnai`;
+  `.peng-pp-tags .tag` memakai `--blue-wash` / `--blue-ink` tema komunitas.
