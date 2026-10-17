@@ -520,6 +520,23 @@
         const v = inp.value.trim();
         return v ? (sel ? sel.options[sel.selectedIndex].text : '') + ' · ' + v : '';
       }).filter(Boolean);
+      /* media sosial: satu label per akun — ikon platform + nama akun */
+      const IK_SOS = {
+        'Instagram': '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor"/>',
+        'LinkedIn': '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.5V16M8 7.6v.1M11.5 16v-5.5M11.5 13c0-1.6 1-2.6 2.3-2.6s2.2.9 2.2 2.6V16"/>',
+        'TikTok': '<path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.4 2 4 4.5 4.3"/>',
+        'X (Twitter)': '<path d="M5 5l14 14M19 5 5 19"/>',
+        'Facebook': '<path d="M14 8h2V4.5h-2.5A3.5 3.5 0 0 0 10 8v2.5H8V14h2v6.5h3.5V14H16l.5-3.5h-3V8.5c0-.3.2-.5.5-.5Z"/>',
+        'YouTube': '<rect x="2.5" y="6" width="19" height="12" rx="4"/><path d="m10.5 9.5 4 2.5-4 2.5Z"/>',
+        'Situs web': '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 2.5 15.2 0 18M12 3c-2.5 2.8-2.5 15.2 0 18"/>'
+      };
+      const labelSos = function(){
+        const daftar = window.KolavoSosmed ? window.KolavoSosmed() : [];
+        return '<span class="pf-sos">' + daftar.map(function(s){
+          return '<span class="pf-sos-i" title="' + esc(s.platform) + '">' + ik(IK_SOS[s.platform] || IK_SOS['Situs web']) +
+            '<span class="sr-only">' + esc(s.platform) + ': </span>' + esc(s.akun) + '</span>';
+        }).join('') + '</span>';
+      };
       /* ikon garis 24px untuk judul kelompok, tiap isian, dan tombol ubah */
       const ik = function(isi){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + isi + '</svg>'; };
       const IKN = {
@@ -565,7 +582,7 @@
             : '<button type="button" class="pf-data-ubah' + (r[2] ? '' : ' isi') + '" data-pf-ubah="' + r[5] + '" aria-label="' + (r[2] ? 'Ubah ' : 'Isi ') + r[1] + '" data-tip="' + (r[2] ? 'Ubah' : 'Isi') + '">' + ik(IKN[r[2] ? 'pensil' : 'tambah']) + '</button>';
           return '<div class="pf-data-r' + (sunting ? ' sunting' : '') + '"><span class="pf-data-ri">' + ik(IKN[r[0]]) + '</span><div class="t"><span class="pf-data-l">' + r[1] + '</span>' +
             (sunting ? '<div class="pf-ed">' + editorIsian(r[5]) + '</div>'
-              : (r[2] ? '<span class="pf-data-v">' + esc(r[2]).replace(/\n/g, '<br>') + '</span>' : '<span class="pf-data-v kosong">Belum diisi</span>') +
+              : (r[2] ? (r[5] === 'sos' ? labelSos() : '<span class="pf-data-v">' + esc(r[2]).replace(/\n/g, '<br>') + '</span>') : '<span class="pf-data-v kosong">Belum diisi</span>') +
                 '<span class="pf-data-s">Dilihat: ' + r[3] + '</span>') +
             '</div>' + tombol + '</div>';
         }).join('') + '</section>';

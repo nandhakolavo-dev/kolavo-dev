@@ -1746,3 +1746,6 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   (line-height 30 px), dan tombol bulat berada di satu garis (selisih titik tengah 0 px). Saat disunting,
   judul tetap di kolom kiri; editor `.pf-ed` hanya di kolom isi (maks 460 px), dan ruang tombol diganti
   pengisi `.pf-data-sp` supaya lebar baris tidak bergeser.
+- **Media sosial di Profil & Setting jadi label (18 Okt 2026).** Satu chip `.pf-sos-i` per akun —
+  ikon platform (Instagram, LinkedIn, TikTok, X, Facebook, YouTube, Situs web) + nama akun; nama
+  platform ada di `title` dan teks `.sr-only` (kelas utilitas baru) untuk pembaca layar.
