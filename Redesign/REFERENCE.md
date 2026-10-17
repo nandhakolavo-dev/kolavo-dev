@@ -1559,3 +1559,15 @@ sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Ke
   (`perkiraanAdvance()`, minimal 30 anggota). Panel Tagihan dashboard juga lewat `KolavoHarga`:
   tarif per anggota, anggota ditagihkan (min 30, kelipatan 10), rincian anggota/peninjau/per bulan,
   dan riwayat tagihan berisi angka per bulan yang sama. Tidak ada lagi `Rp XXXX` di v4.
+
+## Profil komunitas: chart & saring ringkas (17 Okt 2026)
+
+- **Chart persebaran maks 5 baris.** `bar()` (50-js-layar-komunitas) melipat baris ke-6 dst. ke
+  `.agg-sisa` (hidden) dengan tombol teks `.agg-lebih` "Tampilkan N lainnya" / "Tampilkan lebih
+  sedikit". Tidak dilipat bila sisanya cuma satu baris.
+- **Saring daftar anggota.** Bila nilai sumbu > 5, chip diganti dropdown `#bukaSaringSel`
+  ("Semua · 19", "Arsitek · 1", …); ≤ 5 tetap chip.
+- **Ikon di cincin "0/18".** Bug: `.kn-ring circle{stroke-width:5}` ikut mengenai lingkaran kepala
+  ikon orang (jadi gumpalan). Selektor dipersempit ke `.kn-ring > svg`; ikon 17 px, garis 2.
+- **Copy paket Esensial (dashboard › Peninjau)** ditulis untuk pengguna: "Paket Esensial.
+  Pendaftaran anggota ditinjau oleh satu peninjau, untuk komunitas hingga 20 anggota."

@@ -156,9 +156,12 @@
     };
   }
 
+  /* lebih dari 5 baris: sisanya dilipat di balik "Tampilkan lainnya" supaya kartu tidak memanjang */
+  const BARIS_AGG = 5;
   function bar(daftar, wadah, total){
     wadah.innerHTML = '';
-    daftar.forEach(function(p){
+    let sisa = null;
+    daftar.forEach(function(p, i){
       const baris = document.createElement('div');
       baris.className = 'agg-item' + (p[0] === 'Lainnya' ? ' lain' : '');
       const lebar = Math.round(p[1] / total * 100);
@@ -167,8 +170,20 @@
         '<span class="agg-bar"><i style="width:' + lebar + '%"></i></span>' +
         '<span class="n">' + p[1] + '</span>';
       baris.querySelector('.nm').textContent = p[0];
-      wadah.appendChild(baris);
+      if(i === BARIS_AGG && daftar.length > BARIS_AGG + 1){
+        sisa = document.createElement('div');
+        sisa.className = 'agg-sisa'; sisa.hidden = true;
+        wadah.appendChild(sisa);
+      }
+      (sisa || wadah).appendChild(baris);
     });
+    if(sisa){
+      const t = document.createElement('button');
+      t.type = 'button'; t.className = 'agg-lebih'; t.setAttribute('aria-expanded', 'false');
+      t.dataset.n = sisa.children.length;
+      t.textContent = 'Tampilkan ' + sisa.children.length + ' lainnya';
+      wadah.appendChild(t);
+    }
   }
 
   /* satu blok per sumbu persebaran: [{ nama, data: [[label, jumlah], ...] }] */
@@ -546,13 +561,21 @@
       if(nilai.indexOf(String(v)) < 0) nilai.push(String(v));
     });
     if(sumbuKini === 'a') nilai.sort(function(a, b){ return b - a; });
-    el('bukaFilter').innerHTML =
-      '<span class="chip on" data-saring="">Semua</span>' +
-      nilai.map(function(v){
-        return '<span class="chip" data-saring="' + v + '">' + v + '</span>';
-      }).join('');
+    /* lebih dari 5 pilihan: dropdown, bukan deretan chip yang panjang */
+    const jml = function(v){ return orang.filter(function(o){ return String(o[sumbuKini]) === v; }).length; };
+    el('bukaFilter').innerHTML = nilai.length > 5
+      ? '<label class="buka-lbl" for="bukaSaringSel">Saring</label>' +
+        '<select class="sel buka-sel" id="bukaSaringSel"><option value="">Semua · ' + orang.length + '</option>' +
+          nilai.map(function(v){ return '<option value="' + v + '">' + v + ' · ' + jml(v) + '</option>'; }).join('') + '</select>'
+      : '<span class="chip on" data-saring="">Semua</span>' +
+        nilai.map(function(v){
+          return '<span class="chip" data-saring="' + v + '">' + v + '</span>';
+        }).join('');
     saring('');
   }
+  document.addEventListener('change', function(e){
+    if(e.target.id === 'bukaSaringSel') saring(e.target.value);
+  });
 
   /* Nama komunitas dibaca dari kartunya di direktori, bukan disalin ke sini —
      satu sumber, supaya tidak ada dua nama yang bisa berselisih. */
@@ -1219,6 +1242,14 @@
       hanyaBelum = !hanyaBelum;
       gambarProgres();
       saring(bidangKini);
+      return;
+    }
+    const lebih = e.target.closest('.agg-lebih');
+    if(lebih){
+      const s = lebih.parentNode.querySelector('.agg-sisa'), buka = s.hidden;
+      s.hidden = !buka;
+      lebih.setAttribute('aria-expanded', buka ? 'true' : 'false');
+      lebih.textContent = buka ? 'Tampilkan lebih sedikit' : 'Tampilkan ' + lebih.dataset.n + ' lainnya';
       return;
     }
     const chip = e.target.closest('#bukaFilter .chip');

@@ -659,7 +659,9 @@
     }
 
     wadah.innerHTML =
-      '<div class="kl-tier"><b>Paket Esensial · Community Creator.</b> Di paket ini belum ada susunan pengurus. Yang diatur di sini: <b>peninjau</b> yang menerima atau menolak pendaftaran' + (esensialSaja() ? ' — satu orang, hingga 20 anggota.' : '.') + '</div>' +
+      '<div class="kl-tier"><b>Paket Esensial.</b> ' + (esensialSaja()
+        ? 'Pendaftaran anggota ditinjau oleh satu peninjau, untuk komunitas hingga 20 anggota.'
+        : 'Atur siapa saja yang menerima atau menolak pendaftaran anggota.') + '</div>' +
       '<div class="kl-seksi-h">Peninjau pendaftaran</div>' +
       '<p class="kl-cb-hint">Merekalah yang menerima atau menolak pendaftaran. Selalu ada minimal satu.</p>' +
       list + tambah +

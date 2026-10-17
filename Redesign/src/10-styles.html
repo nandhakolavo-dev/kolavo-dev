@@ -1322,6 +1322,11 @@ body.lgn-open{overflow:hidden}
 .agg-item .n{flex:none;width:22px;text-align:right;color:var(--ink-3);font-size:12.5px;
   font-variant-numeric:tabular-nums}
 .agg-item.lain .nm{color:var(--ink-3)}
+.agg-sisa{display:flex;flex-direction:column;gap:9px}
+.agg-sisa[hidden]{display:none}
+.agg-lebih{align-self:flex-start;margin-top:2px;padding:0;border:0;background:none;color:var(--blue-ink);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.agg-lebih:hover{text-decoration:underline}
+.agg-lebih:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:4px}
 .agg-item.lain .agg-bar i{background:var(--line)}
 
 /* ---------- daftar anggota terkunci ---------- */
@@ -1374,6 +1379,9 @@ body.lgn-open{overflow:hidden}
    nilai semua pertanyaan tercampur dalam satu baris datar tanpa keterangan,
    sehingga "2010" dan "Teknik Informatika" terbaca sebagai hal yang sejenis. */
 .buka-sumbu{align-items:center;gap:8px}
+/* saring daftar anggota: dropdown bila pilihannya lebih dari 5 */
+#bukaFilter:has(.buka-sel){align-items:center;gap:10px}
+.buka-sel{min-width:0;max-width:100%;flex:0 1 280px}
 .buka-lbl{font-size:11.5px;font-weight:500;color:var(--ink-3);margin-right:2px}
 .buka-sumbu .chip{font-size:11.5px;padding:5px 11px}
 /* status kenalan per kartu + progres di atas daftar — mendorong mengajak kenalan.
@@ -1381,12 +1389,12 @@ body.lgn-open{overflow:hidden}
 .kn-prog{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:6px 4px 14px}
 .kn-prog[hidden]{display:none}
 .kn-ring{position:relative;width:64px;height:64px;flex:none}
-.kn-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
-.kn-ring circle{fill:none;stroke-width:5}
+.kn-ring > svg{width:100%;height:100%;transform:rotate(-90deg)}
+.kn-ring > svg circle{fill:none;stroke-width:5}
 .kn-ring .jalur{stroke:var(--line)}
 .kn-ring .isi{stroke:var(--green);stroke-linecap:round;transition:stroke-dashoffset .5s ease}
 .kn-ring-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:var(--green)}
-.kn-ring-in svg{width:16px;height:16px;transform:none;stroke-width:1.5}
+.kn-ring-in svg{width:17px;height:17px;stroke-width:2}
 .kn-ring-in b{font-size:13px;font-weight:600;line-height:1;color:var(--ink)}
 .kn-prog-t{display:flex;flex-direction:column;gap:2px;flex:1 1 180px;min-width:0;font-size:12.5px;color:var(--ink-2);line-height:1.45}
 .kn-prog-t b{font-size:14px;font-weight:600;color:var(--ink)}

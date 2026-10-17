@@ -1365,6 +1365,11 @@ body.lgn-open{overflow:hidden}
 .agg-item .n{flex:none;width:22px;text-align:right;color:var(--ink-3);font-size:12.5px;
   font-variant-numeric:tabular-nums}
 .agg-item.lain .nm{color:var(--ink-3)}
+.agg-sisa{display:flex;flex-direction:column;gap:9px}
+.agg-sisa[hidden]{display:none}
+.agg-lebih{align-self:flex-start;margin-top:2px;padding:0;border:0;background:none;color:var(--blue-ink);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.agg-lebih:hover{text-decoration:underline}
+.agg-lebih:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:4px}
 .agg-item.lain .agg-bar i{background:var(--line)}
 
 /* ---------- daftar anggota terkunci ---------- */
@@ -1417,6 +1422,9 @@ body.lgn-open{overflow:hidden}
    nilai semua pertanyaan tercampur dalam satu baris datar tanpa keterangan,
    sehingga "2010" dan "Teknik Informatika" terbaca sebagai hal yang sejenis. */
 .buka-sumbu{align-items:center;gap:8px}
+/* saring daftar anggota: dropdown bila pilihannya lebih dari 5 */
+#bukaFilter:has(.buka-sel){align-items:center;gap:10px}
+.buka-sel{min-width:0;max-width:100%;flex:0 1 280px}
 .buka-lbl{font-size:11.5px;font-weight:500;color:var(--ink-3);margin-right:2px}
 .buka-sumbu .chip{font-size:11.5px;padding:5px 11px}
 /* status kenalan per kartu + progres di atas daftar — mendorong mengajak kenalan.
@@ -1424,12 +1432,12 @@ body.lgn-open{overflow:hidden}
 .kn-prog{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:6px 4px 14px}
 .kn-prog[hidden]{display:none}
 .kn-ring{position:relative;width:64px;height:64px;flex:none}
-.kn-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
-.kn-ring circle{fill:none;stroke-width:5}
+.kn-ring > svg{width:100%;height:100%;transform:rotate(-90deg)}
+.kn-ring > svg circle{fill:none;stroke-width:5}
 .kn-ring .jalur{stroke:var(--line)}
 .kn-ring .isi{stroke:var(--green);stroke-linecap:round;transition:stroke-dashoffset .5s ease}
 .kn-ring-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:var(--green)}
-.kn-ring-in svg{width:16px;height:16px;transform:none;stroke-width:1.5}
+.kn-ring-in svg{width:17px;height:17px;stroke-width:2}
 .kn-ring-in b{font-size:13px;font-weight:600;line-height:1;color:var(--ink)}
 .kn-prog-t{display:flex;flex-direction:column;gap:2px;flex:1 1 180px;min-width:0;font-size:12.5px;color:var(--ink-2);line-height:1.45}
 .kn-prog-t b{font-size:14px;font-weight:600;color:var(--ink)}
@@ -6140,9 +6148,12 @@ function hitung(){}
     };
   }
 
+  /* lebih dari 5 baris: sisanya dilipat di balik "Tampilkan lainnya" supaya kartu tidak memanjang */
+  const BARIS_AGG = 5;
   function bar(daftar, wadah, total){
     wadah.innerHTML = '';
-    daftar.forEach(function(p){
+    let sisa = null;
+    daftar.forEach(function(p, i){
       const baris = document.createElement('div');
       baris.className = 'agg-item' + (p[0] === 'Lainnya' ? ' lain' : '');
       const lebar = Math.round(p[1] / total * 100);
@@ -6151,8 +6162,20 @@ function hitung(){}
         '<span class="agg-bar"><i style="width:' + lebar + '%"></i></span>' +
         '<span class="n">' + p[1] + '</span>';
       baris.querySelector('.nm').textContent = p[0];
-      wadah.appendChild(baris);
+      if(i === BARIS_AGG && daftar.length > BARIS_AGG + 1){
+        sisa = document.createElement('div');
+        sisa.className = 'agg-sisa'; sisa.hidden = true;
+        wadah.appendChild(sisa);
+      }
+      (sisa || wadah).appendChild(baris);
     });
+    if(sisa){
+      const t = document.createElement('button');
+      t.type = 'button'; t.className = 'agg-lebih'; t.setAttribute('aria-expanded', 'false');
+      t.dataset.n = sisa.children.length;
+      t.textContent = 'Tampilkan ' + sisa.children.length + ' lainnya';
+      wadah.appendChild(t);
+    }
   }
 
   /* satu blok per sumbu persebaran: [{ nama, data: [[label, jumlah], ...] }] */
@@ -6530,13 +6553,21 @@ function hitung(){}
       if(nilai.indexOf(String(v)) < 0) nilai.push(String(v));
     });
     if(sumbuKini === 'a') nilai.sort(function(a, b){ return b - a; });
-    el('bukaFilter').innerHTML =
-      '<span class="chip on" data-saring="">Semua</span>' +
-      nilai.map(function(v){
-        return '<span class="chip" data-saring="' + v + '">' + v + '</span>';
-      }).join('');
+    /* lebih dari 5 pilihan: dropdown, bukan deretan chip yang panjang */
+    const jml = function(v){ return orang.filter(function(o){ return String(o[sumbuKini]) === v; }).length; };
+    el('bukaFilter').innerHTML = nilai.length > 5
+      ? '<label class="buka-lbl" for="bukaSaringSel">Saring</label>' +
+        '<select class="sel buka-sel" id="bukaSaringSel"><option value="">Semua · ' + orang.length + '</option>' +
+          nilai.map(function(v){ return '<option value="' + v + '">' + v + ' · ' + jml(v) + '</option>'; }).join('') + '</select>'
+      : '<span class="chip on" data-saring="">Semua</span>' +
+        nilai.map(function(v){
+          return '<span class="chip" data-saring="' + v + '">' + v + '</span>';
+        }).join('');
     saring('');
   }
+  document.addEventListener('change', function(e){
+    if(e.target.id === 'bukaSaringSel') saring(e.target.value);
+  });
 
   /* Nama komunitas dibaca dari kartunya di direktori, bukan disalin ke sini —
      satu sumber, supaya tidak ada dua nama yang bisa berselisih. */
@@ -7203,6 +7234,14 @@ function hitung(){}
       hanyaBelum = !hanyaBelum;
       gambarProgres();
       saring(bidangKini);
+      return;
+    }
+    const lebih = e.target.closest('.agg-lebih');
+    if(lebih){
+      const s = lebih.parentNode.querySelector('.agg-sisa'), buka = s.hidden;
+      s.hidden = !buka;
+      lebih.setAttribute('aria-expanded', buka ? 'true' : 'false');
+      lebih.textContent = buka ? 'Tampilkan lebih sedikit' : 'Tampilkan ' + lebih.dataset.n + ' lainnya';
       return;
     }
     const chip = e.target.closest('#bukaFilter .chip');
@@ -9611,7 +9650,9 @@ function hitung(){}
     }
 
     wadah.innerHTML =
-      '<div class="kl-tier"><b>Paket Esensial · Community Creator.</b> Di paket ini belum ada susunan pengurus. Yang diatur di sini: <b>peninjau</b> yang menerima atau menolak pendaftaran' + (esensialSaja() ? ' — satu orang, hingga 20 anggota.' : '.') + '</div>' +
+      '<div class="kl-tier"><b>Paket Esensial.</b> ' + (esensialSaja()
+        ? 'Pendaftaran anggota ditinjau oleh satu peninjau, untuk komunitas hingga 20 anggota.'
+        : 'Atur siapa saja yang menerima atau menolak pendaftaran anggota.') + '</div>' +
       '<div class="kl-seksi-h">Peninjau pendaftaran</div>' +
       '<p class="kl-cb-hint">Merekalah yang menerima atau menolak pendaftaran. Selalu ada minimal satu.</p>' +
       list + tambah +
