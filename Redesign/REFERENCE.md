@@ -1734,3 +1734,11 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   langsung tersimpan dan dipasang ke semua `.p-bagas` (nav, kartu, profil) — modul
   50-js-sunting-identitas, satu sumber dengan ganti foto di Lengkapi profil. Tautan "Pakai foto
   Google" (`#pfFotoBalik`) muncul bila foto sudah diganti.
+- **Sunting langsung di Profil & Setting (18 Okt 2026).** Ikon pensil/plus tidak lagi pindah ke
+  Lengkapi profil; baris terbuka di tempat (`pfEdit`, `editorIsian` di router) dengan kontrol yang sama
+  seperti formulir: nama (teks), WhatsApp (+62), tanggal lahir (date), domisili (negara → provinsi →
+  kota dari `KolavoWilayah`), pekerjaan (daftar Lengkapi + "Lainnya" → isian bebas), pendidikan
+  (jenjang + jurusan/kampus), kontribusi & yang dicari (kotak teks), media sosial (platform + akun,
+  tambah/hapus, maks 5). Email terkunci (dari Google). Simpan menulis ke formulir Lengkapi — satu sumber
+  data — lewat API kecil: `KolavoGantiNama`, `KolavoSetLahir`, `KolavoSosmedBaris/Pasang/Platform`.
+  Enter menyimpan, Escape membatalkan.

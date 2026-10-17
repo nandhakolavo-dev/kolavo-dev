@@ -47,6 +47,9 @@
     if(chip) chip.textContent = n.split(' ')[0];
   }
 
+  /* dipakai editor inline Profil & Setting */
+  window.KolavoGantiNama = function(n){ n = String(n || '').trim(); if(!n) return false; namaSimpan = n; pasangNama(n); return true; };
+
   function bukaEdit(){
     fotoDraf = fotoSimpan;
     input.value = namaSimpan;

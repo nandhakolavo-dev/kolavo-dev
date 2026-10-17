@@ -242,6 +242,14 @@ function hitung(){}
       return { platform: pl ? pl[1] : b.p, akun: b.h.trim() };
     });
   };
+  /* dipakai editor inline Profil & Setting: baca/tulis baris mentah + daftar platform */
+  window.KolavoSosmedBaris = function(){ return baris.map(function(b){ return { p: b.p, h: b.h }; }); };
+  window.KolavoSosmedPasang = function(arr){
+    baris = (arr || []).filter(function(b){ return b && b.h && b.h.trim(); }).slice(0, MAKS).map(function(b){ return { p: b.p, h: b.h.trim() }; });
+    if(!baris.length) baris.push({ p: 'instagram', h: '' });
+    gambar();
+  };
+  window.KolavoSosmedPlatform = PLATFORM;
   gambar();
 })();
 </script>

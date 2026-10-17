@@ -343,6 +343,120 @@
     return (window.KolavoDibuatItem ? window.KolavoDibuatItem() : '') + itemIkut();
   };
 
+  /* ---------- Profil & Setting: sunting langsung di halaman ----------
+     Tiap isian dibuka jadi kontrol yang sama dengan formulir Lengkapi profil (teks, telepon,
+     tanggal, wilayah bertingkat, daftar pilihan, kotak cerita, media sosial). Simpan menulis
+     ke formulir Lengkapi — satu sumber data — lalu halaman digambar ulang. */
+  let pfEdit = null, pfSos = null;
+  const elv = function(id){ const e = document.getElementById(id); return e ? e.value : ''; };
+  const escA = function(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  function opsi(daftar, pilih, kosong){
+    return '<option value="">' + kosong + '</option>' + daftar.map(function(n){ return '<option' + (n === pilih ? ' selected' : '') + '>' + escA(n) + '</option>'; }).join('');
+  }
+  function editorDom(neg, prov, kota){
+    const W = window.KolavoWilayah || {}, P = W[neg] || {}, K = P[prov] || [];
+    return '<div class="pf-ed-g3">' +
+      '<select class="sel" id="pfENeg" aria-label="Negara">' + opsi(Object.keys(W), neg, 'Negara') + '</select>' +
+      '<select class="sel" id="pfEProv" aria-label="Provinsi"' + (neg ? '' : ' disabled') + '>' + opsi(Object.keys(P), prov, 'Provinsi') + '</select>' +
+      '<select class="sel" id="pfEKota" aria-label="Kota atau kabupaten"' + (prov ? '' : ' disabled') + '>' + opsi(K, kota, 'Kota/kabupaten') + '</select></div>';
+  }
+  function editorSos(){
+    const PL = window.KolavoSosmedPlatform || [];
+    return '<div class="pf-ed-sos">' + pfSos.map(function(b, i){
+      return '<div class="pf-ed-sos-i"><select class="sel" data-pf-sos-p="' + i + '" aria-label="Platform">' +
+        PL.map(function(p){ return '<option value="' + p[0] + '"' + (p[0] === b.p ? ' selected' : '') + '>' + p[1] + '</option>'; }).join('') + '</select>' +
+        '<input class="inp" data-pf-sos-h="' + i + '" maxlength="60" value="' + escA(b.h) + '" placeholder="@namaakun" aria-label="Nama akun">' +
+        '<button type="button" class="pf-ed-x" data-pf-sos-x="' + i + '" aria-label="Hapus akun">×</button></div>';
+    }).join('') + (pfSos.length < 5 ? '<button type="button" class="pf-ed-tambah" data-pf-sos-tambah>+ Tambah akun</button>' : '') + '</div>';
+  }
+  function editorIsian(k){
+    let isi = '';
+    if(k === 'nama') isi = '<input class="inp" id="pfE" maxlength="60" value="' + escA((document.getElementById('idNama') || {}).textContent || '') + '" aria-label="Nama lengkap">';
+    else if(k === 'wa') isi = '<div class="tel"><span class="tel-pfx">🇮🇩 +62</span><input id="pfE" type="tel" inputmode="numeric" placeholder="812 3456 7890" value="' + escA(elv('wa')) + '" aria-label="Nomor WhatsApp"></div>';
+    else if(k === 'lahir') isi = '<input class="inp" id="pfE" type="date" max="' + new Date().toISOString().slice(0, 10) + '" value="' + escA(elv('lahir')) + '" aria-label="Tanggal lahir">';
+    else if(k === 'dom') isi = editorDom(elv('negara') || 'Indonesia', elv('provinsi'), elv('kota'));
+    else if(k === 'kerja'){
+      const src = document.getElementById('kerja'), lain = elv('kerja') === '__lain__';
+      isi = '<select class="sel" id="pfE" aria-label="Pekerjaan atau keahlian">' + (src ? src.innerHTML : '') + '</select>' +
+        '<input class="inp" id="pfE2" maxlength="40" placeholder="Tulis pekerjaanmu" value="' + escA(elv('kerjaLain')) + '"' + (lain ? '' : ' hidden') + ' aria-label="Pekerjaan lainnya">';
+    }
+    else if(k === 'didik'){
+      const src = document.getElementById('didik');
+      isi = '<div class="pf-ed-g2"><select class="sel" id="pfE" aria-label="Jenjang">' + (src ? src.innerHTML : '') + '</select>' +
+        '<input class="inp" id="pfE2" maxlength="60" placeholder="Jurusan dan kampus atau sekolah" value="' + escA(elv('didikDi')) + '" aria-label="Jurusan dan kampus"></div>';
+    }
+    else if(k === 'beri' || k === 'bio'){
+      const src = document.getElementById(k);
+      isi = '<textarea class="ta" id="pfE" rows="3" maxlength="' + ((src && src.maxLength > 0) ? src.maxLength : 200) + '" placeholder="' + escA(src ? src.placeholder : '') + '">' + escA(elv(k)) + '</textarea>';
+    }
+    else if(k === 'sos') isi = editorSos();
+    return isi + '<div class="pf-ed-aksi"><button type="button" class="btn sm" data-pf-simpan>Simpan</button><button type="button" class="btn outline sm" data-pf-batal>Batal</button></div>';
+  }
+  /* tulis ke kontrol formulir Lengkapi + picu event-nya, supaya progres & logika formulir ikut */
+  function tulis(id, v, ev){
+    const e = document.getElementById(id); if(!e) return;
+    e.value = v; e.dispatchEvent(new Event(ev || 'input', { bubbles: true }));
+  }
+  function simpanIsian(){
+    const k = pfEdit, v = elv('pfE');
+    if(k === 'nama'){ if(!window.KolavoGantiNama || !window.KolavoGantiNama(v)){ toastP('Nama tidak boleh kosong.'); return; } }
+    else if(k === 'wa') tulis('wa', v.trim());
+    else if(k === 'lahir'){ if(window.KolavoSetLahir) window.KolavoSetLahir(v); }
+    else if(k === 'dom'){ tulis('negara', elv('pfENeg'), 'change'); tulis('provinsi', elv('pfEProv'), 'change'); tulis('kota', elv('pfEKota'), 'change'); }
+    else if(k === 'kerja'){ tulis('kerja', v, 'change'); if(v === '__lain__') tulis('kerjaLain', elv('pfE2').trim()); }
+    else if(k === 'didik'){ tulis('didik', v, 'change'); tulis('didikDi', elv('pfE2').trim()); }
+    else if(k === 'beri' || k === 'bio') tulis(k, v.trim());
+    else if(k === 'sos'){ if(window.KolavoSosmedPasang) window.KolavoSosmedPasang(pfSos); }
+    pfEdit = null; pfSos = null;
+    isiProfil();
+    toastP('Tersimpan.');
+  }
+  function toastP(t){ if(window.KolavoToast) window.KolavoToast(t); }
+  document.addEventListener('click', function(e){
+    const u = e.target.closest('[data-pf-ubah]');
+    if(u){
+      pfEdit = u.dataset.pfUbah;
+      pfSos = pfEdit === 'sos' && window.KolavoSosmedBaris ? window.KolavoSosmedBaris() : null;
+      isiProfil();
+      const f = document.querySelector('.pf-ed #pfE, .pf-ed select, .pf-ed input');
+      if(f){ f.focus(); if(pfEdit === 'kerja') f.value = elv('kerja'); if(pfEdit === 'didik') f.value = elv('didik'); }
+      return;
+    }
+    if(!pfEdit) return;
+    if(e.target.closest('[data-pf-batal]')){ pfEdit = null; pfSos = null; isiProfil(); return; }
+    if(e.target.closest('[data-pf-simpan]')){ simpanIsian(); return; }
+    const sx = e.target.closest('[data-pf-sos-x]');
+    if(sx){ pfSos.splice(+sx.dataset.pfSosX, 1); if(!pfSos.length) pfSos.push({ p: 'instagram', h: '' }); isiProfil(); return; }
+    if(e.target.closest('[data-pf-sos-tambah]')){
+      const pakai = pfSos.map(function(b){ return b.p; }), PL = window.KolavoSosmedPlatform || [];
+      const sisa = PL.filter(function(p){ return pakai.indexOf(p[0]) < 0; })[0];
+      pfSos.push({ p: sisa ? sisa[0] : 'web', h: '' }); isiProfil(); return;
+    }
+  });
+  document.addEventListener('input', function(e){
+    const h = e.target.getAttribute && e.target.getAttribute('data-pf-sos-h');
+    if(h !== null && pfSos) pfSos[+h].h = e.target.value;
+  });
+  document.addEventListener('change', function(e){
+    if(!pfEdit) return;
+    const t = e.target;
+    const p = t.getAttribute && t.getAttribute('data-pf-sos-p');
+    if(p !== null && pfSos){ pfSos[+p].p = t.value; return; }
+    if(t.id === 'pfENeg' || t.id === 'pfEProv'){
+      const w = t.closest('.pf-ed');
+      const neg = elv('pfENeg'), prov = t.id === 'pfENeg' ? '' : elv('pfEProv');
+      const wadah = w.querySelector('.pf-ed-g3');
+      wadah.outerHTML = editorDom(neg, prov, '');
+      return;
+    }
+    if(t.id === 'pfE' && pfEdit === 'kerja'){ const l = document.getElementById('pfE2'); if(l) l.hidden = t.value !== '__lain__'; }
+  });
+  document.addEventListener('keydown', function(e){
+    if(!pfEdit || !e.target.closest || !e.target.closest('.pf-ed')) return;
+    if(e.key === 'Escape'){ pfEdit = null; pfSos = null; isiProfil(); }
+    if(e.key === 'Enter' && e.target.tagName === 'INPUT'){ e.preventDefault(); simpanIsian(); }
+  });
+
   function isiProfil(){
     const nilai = function(id){ const e = document.getElementById(id); return e ? e.value : ''; };
     const nm = document.getElementById('pfNm'),
@@ -427,27 +541,33 @@
       };
       const KELOMPOK = [
         ['google', 'Dari akun Google', 'Diambil dari Google saat masuk.', [
-          ['orang', 'Nama lengkap', teks('idNama') || (nm ? nm.textContent : ''), 'Pengurus komunitas', 'idKartu'],
-          ['surat', 'Email', (document.querySelector('.acct-em') || {}).textContent || '', 'Hanya kamu', 'idKartu']]],
+          ['orang', 'Nama lengkap', teks('idNama') || (nm ? nm.textContent : ''), 'Pengurus komunitas', 'idKartu', 'nama'],
+          ['surat', 'Email', (document.querySelector('.acct-em') || {}).textContent || '', 'Hanya kamu', 'idKartu', '']]],
         ['perisai', 'Cuma buat pengurus', 'Tidak tampil di daftar anggota.', [
-          ['telp', 'Nomor WhatsApp', nilai('wa') ? '+62 ' + nilai('wa') : '', 'Pengurus & anggota yang kenalan denganmu', 'wa'],
-          ['kalender', 'Tanggal lahir', lahir, 'Pengurus komunitas', 'lblLahir']]],
+          ['telp', 'Nomor WhatsApp', nilai('wa') ? '+62 ' + nilai('wa') : '', 'Pengurus & anggota yang kenalan denganmu', 'wa', 'wa'],
+          ['kalender', 'Tanggal lahir', lahir, 'Pengurus komunitas', 'lblLahir', 'lahir']]],
         ['orang2', 'Dilihat sesama anggota', 'Dipakai di semua komunitas yang kamu ikuti.', [
-          ['pin', 'Domisili', [nilai('kota'), nilai('provinsi'), nilai('negara')].filter(Boolean).join(', '), 'Sesama anggota', 'lblDom'],
-          ['tas', 'Pekerjaan atau keahlian', kerja, 'Sesama anggota', 'kerja'],
-          ['toga', 'Pendidikan terakhir', [nilai('didik'), nilai('didikDi').trim()].filter(Boolean).join(' · '), 'Hanya angka persebaran', 'didik'],
-          ['tangan', 'Kontribusi', nilai('beri').trim(), 'Sesama anggota', 'beri'],
-          ['cari', 'Yang dicari', nilai('bio').trim(), 'Sesama anggota', 'bio'],
-          ['tautan', 'Media sosial', sos.join('\n'), 'Anggota yang kenalan denganmu', 'lblSosmed']]]
+          ['pin', 'Domisili', [nilai('kota'), nilai('provinsi'), nilai('negara')].filter(Boolean).join(', '), 'Sesama anggota', 'lblDom', 'dom'],
+          ['tas', 'Pekerjaan atau keahlian', kerja, 'Sesama anggota', 'kerja', 'kerja'],
+          ['toga', 'Pendidikan terakhir', [nilai('didik'), nilai('didikDi').trim()].filter(Boolean).join(' · '), 'Hanya angka persebaran', 'didik', 'didik'],
+          ['tangan', 'Kontribusi', nilai('beri').trim(), 'Sesama anggota', 'beri', 'beri'],
+          ['cari', 'Yang dicari', nilai('bio').trim(), 'Sesama anggota', 'bio', 'bio'],
+          ['tautan', 'Media sosial', sos.join('\n'), 'Anggota yang kenalan denganmu', 'lblSosmed', 'sos']]]
       ];
       let kosong = 0, total = 0;
       data.innerHTML = KELOMPOK.map(function(g){
         return '<section class="pf-data-g"><div class="pf-data-gh"><span class="pf-data-gi">' + ik(IKN[g[0]]) + '</span><span class="t"><b>' + g[1] + '</b><span>' + g[2] + '</span></span></div>' + g[3].map(function(r){
           total++; if(!r[2]) kosong++;
-          return '<div class="pf-data-r"><span class="pf-data-ri">' + ik(IKN[r[0]]) + '</span><div class="t"><span class="pf-data-l">' + r[1] + '</span>' +
-            (r[2] ? '<span class="pf-data-v">' + esc(r[2]).replace(/\n/g, '<br>') + '</span>' : '<span class="pf-data-v kosong">Belum diisi</span>') +
-            '<span class="pf-data-s">Dilihat: ' + r[3] + '</span></div>' +
-            '<a class="pf-data-ubah' + (r[2] ? '' : ' isi') + '" href="#0" data-ke="scrLengkapi" data-anchor="' + r[4] + '" aria-label="' + (r[2] ? 'Ubah ' : 'Isi ') + r[1] + '" data-tip="' + (r[2] ? 'Ubah' : 'Isi') + '">' + ik(IKN[r[2] ? 'pensil' : 'tambah']) + '</a></div>';
+          const sunting = r[5] && pfEdit === r[5];
+          const tombol = !r[5]
+            ? '<span class="pf-data-kunci" title="Dari akun Google" aria-label="Dari akun Google">' + ik('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>') + '</span>'
+            : sunting ? ''
+            : '<button type="button" class="pf-data-ubah' + (r[2] ? '' : ' isi') + '" data-pf-ubah="' + r[5] + '" aria-label="' + (r[2] ? 'Ubah ' : 'Isi ') + r[1] + '" data-tip="' + (r[2] ? 'Ubah' : 'Isi') + '">' + ik(IKN[r[2] ? 'pensil' : 'tambah']) + '</button>';
+          return '<div class="pf-data-r' + (sunting ? ' sunting' : '') + '"><span class="pf-data-ri">' + ik(IKN[r[0]]) + '</span><div class="t"><span class="pf-data-l">' + r[1] + '</span>' +
+            (sunting ? '<div class="pf-ed">' + editorIsian(r[5]) + '</div>'
+              : (r[2] ? '<span class="pf-data-v">' + esc(r[2]).replace(/\n/g, '<br>') + '</span>' : '<span class="pf-data-v kosong">Belum diisi</span>') +
+                '<span class="pf-data-s">Dilihat: ' + r[3] + '</span>') +
+            '</div>' + tombol + '</div>';
         }).join('') + '</section>';
       }).join('');
       /* kepala profil: kelengkapan data akun */
