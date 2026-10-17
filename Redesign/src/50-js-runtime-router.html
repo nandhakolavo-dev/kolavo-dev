@@ -327,12 +327,12 @@
       const l = document.querySelector('#direktori .ccard .logo-sq.' + kelas);
       const kartu = l && l.closest('.ccard');
       if(!kartu) return '';
-      const nama = kartu.querySelector('h3').firstChild.textContent.trim();
+      const nama = kartu.querySelector('h3').firstChild.textContent.trim(), alias = kartu.dataset.alias || '';
       const jumlah = (kartu.querySelector('.mem') || {}).textContent || '';
       const jawab = App.komunitas && App.komunitas.kelas === kelas && window.KolavoJawaban ? window.KolavoJawaban() : [];
       return '<div class="pf-item"><div class="pf-open" data-komunitas-anggota="' + kelas + '" role="button" tabindex="0" title="Buka halaman komunitas">' +
         '<span class="logo-sq ' + kelas + '" role="img" aria-label="Logo komunitas"></span>' +
-        '<div class="t"><div class="n">' + nama + '</div>' +
+        '<div class="t"><div class="n">' + nama + '</div>' + (alias ? '<div class="al">' + alias + '</div>' : '') +
         '<div class="s">' + [jumlah].concat(jawab).filter(Boolean).join(' · ') + '</div></div></div>' +
         (dj[kelas] === 'anggota'
           ? '<span class="status anggota">Anggota</span></div>'

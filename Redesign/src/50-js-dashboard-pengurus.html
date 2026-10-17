@@ -52,6 +52,27 @@
     nomorMode: 'manual', kode: 'KOMU', tahun: new Date().getFullYear(), urut: 0, idUbahFor: null
   };
   window.KolavoDashboard = D;
+  /* kuota untuk kartu di tab Dashboard. Tepat bila komunitasnya sedang dibuka; bila pernah
+     dibuka, dari keadaan yang dititipkan; selain itu perkiraan dari isi awalnya (komunitas baru =
+     anggota contoh + pembuat, 1 peninjau; komunitas yang mengangkatmu = langganan contohnya). */
+  window.KolavoKuota = function(kom){
+    if(!kom) return null;
+    if(D.built && D.kom === kom){
+      const k = D.kapasitas && D.kapasitas();
+      return { a: D.pengurus.length + D.anggotaBiasa.length, ka: D.sekAktif ? (k ? k.anggota : null) : 20,
+               p: D.peninjau.length, kp: D.sekAktif ? (k ? k.peninjau : null) : 1, adv: !!D.sekAktif };
+    }
+    const lama = KONTEKS[kom.slug];
+    if(lama && lama.kom === kom){
+      const d = lama.d;
+      return { a: d.pengurus.length + d.anggotaBiasa.length, ka: d.sekAktif ? null : 20, p: d.peninjau.length, kp: d.sekAktif ? null : 1, adv: !!d.sekAktif };
+    }
+    if(kom.diangkat){
+      const n = (kom.pengurusLain || []).length + 1 + (kom.anggota || []).length;
+      return { a: n, ka: Math.max(50, Math.ceil(n * 2 / 10) * 10), p: 2, kp: 3, adv: true };
+    }
+    return { a: 19, ka: 20, p: 1, kp: 1, adv: false };
+  };
   /* kait buat modul yang menempel ke dashboard (50-js-sekretariat) */
   D.onBangun = [];
   /* keadaan per komunitas (dashboard >1 komunitas): modul lain menitipkan keadaannya
@@ -503,9 +524,23 @@
         '<button type="button" class="btn outline sm" data-idubah-batal>Batal</button>' +
       '</div>';
   }
+  /* tombol aksi baris anggota/pengurus: ikon bulat, labelnya di tooltip + aria-label */
+  const IKI = {
+    nomor:   '<path d="M5 9h14M5 15h14M10 3 8 21M16 3l-2 18"/>',
+    angkat:  '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M19 14V6M15.5 9.5 19 6l3.5 3.5"/>',
+    jabatan: '<path d="M3 7.5V4h3.5L20 17.5 16.5 21 3 7.5Z"/><circle cx="7" cy="7" r="1"/>',
+    mata:    '<path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/>',
+    mataOff: '<path d="M3 3l18 18M10.6 6c.5-.1.9-.1 1.4-.1 6.4 0 10 6.5 10 6.5a17.6 17.6 0 0 1-3.2 3.9M6.6 6.7C3.7 8.5 2 12 2 12s3.6 6.5 10 6.5c1.8 0 3.3-.5 4.6-1.2M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
+    copot:   '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 11h6"/>',
+    kenal:   '<path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9.5h8M8 12.5h5"/>'
+  };
+  function ib(attr, label, ik, kelas){
+    return '<button type="button" class="kl-ib' + (kelas ? ' ' + kelas : '') + '" ' + attr + ' aria-label="' + label + '" data-tip="' + label + '">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + IKI[ik] + '</svg></button>';
+  }
   function tombolNomor(nama, m){
     if(!pakaiNomor() || D.idUbahFor === nama) return '';
-    return '<button type="button" class="btn outline sm" data-idubah="' + lolos(nama) + '">' + (m && m.id ? 'Ubah nomor' : 'Beri nomor') + '</button>';
+    return ib('data-idubah="' + lolos(nama) + '"', m && m.id ? 'Ubah nomor anggota' : 'Beri nomor anggota', 'nomor');
   }
 
   /* tab Anggota: tampilan Diterima | Ditolak, daftar dipotong per 10 */
@@ -547,7 +582,7 @@
       let aksi = '';
       if(D.angkatFor !== nama && D.idUbahFor !== nama){
         aksi = '<div class="kl-row-aksi">' + tombolNomor(nama, m) +
-          (modeAdvance() ? '<button type="button" class="btn outline sm" data-angkat="' + lolos(nama) + '">Angkat jadi pengurus</button>' : '') + '</div>';
+          (modeAdvance() ? ib('data-angkat="' + lolos(nama) + '"', 'Angkat jadi pengurus', 'angkat') : '') + '</div>';
       }
       html = baris(m, '', aksi, putusan(nama)) + editNomor(nama, m);
       if(D.angkatFor === nama){
@@ -616,7 +651,7 @@
   function pengurusBernama(nama){ return D.pengurus.filter(function(x){ return x.nama === nama; })[0] || null; }
   function kenalTombol(p){
     if(!p || D.kenalFor === p.nama) return '';
-    return '<button type="button" class="btn outline sm" data-kenal="' + lolos(p.nama) + '">' + (p.perkenalan ? 'Ubah perkenalan' : 'Tulis perkenalan') + '</button>';
+    return ib('data-kenal="' + lolos(p.nama) + '"', p.perkenalan ? 'Ubah perkenalan' : 'Tulis perkenalan', 'kenal');
   }
   function kenalCuplik(p){
     if(!p || !p.perkenalan || D.kenalFor === p.nama) return '';
@@ -655,14 +690,14 @@
 
       let aksi = '';
       /* jabatan siapa pun bisa diubah, termasuk pembuat halaman sendiri */
-      if(D.ubahFor !== p.nama) aksi += '<button type="button" class="btn outline sm" data-ubah="' + lolos(p.nama) + '">Ubah jabatan</button>';
+      if(D.ubahFor !== p.nama) aksi += ib('data-ubah="' + lolos(p.nama) + '"', 'Ubah jabatan', 'jabatan');
       aksi += kenalTombol(p);
       if(ini){
         /* peninjau terakhir tidak boleh dilepas — selalu ada yang meninjau */
-        if(!satuPeninjau) aksi += '<button type="button" class="btn outline sm" data-peninjau-off="' + lolos(p.nama) + '">Lepas dari peninjau</button>';
+        if(!satuPeninjau) aksi += ib('data-peninjau-off="' + lolos(p.nama) + '"', 'Lepas dari peninjau', 'mataOff');
       } else {
-        aksi += '<button type="button" class="btn outline sm" data-peninjau-on="' + lolos(p.nama) + '">Jadikan peninjau</button>';
-        if(!p.aku) aksi += '<button type="button" class="btn sm tolak" data-copot="' + lolos(p.nama) + '">Copot</button>';
+        aksi += ib('data-peninjau-on="' + lolos(p.nama) + '"', 'Jadikan peninjau', 'mata');
+        if(!p.aku) aksi += ib('data-copot="' + lolos(p.nama) + '"', 'Copot dari pengurus', 'copot', 'bahaya');
       }
 
       let html = '<div class="kl-row">' + av +
@@ -726,7 +761,7 @@
       const sub = [m.kerja, m.kota].filter(Boolean).join(' · ');
       const av = '<div class="av ' + 'abc'[(nama.length) % 3] + '" aria-hidden="true">' + inisial(nama) + '</div>';
       const tag = (nama === D.aku) ? '<span class="tag hi">Kamu</span>' : '';
-      const lepas = satuPeninjau ? '' : '<button type="button" class="btn outline sm" data-peninjau-off="' + lolos(nama) + '">Lepas</button>';
+      const lepas = satuPeninjau ? '' : ib('data-peninjau-off="' + lolos(nama) + '"', 'Lepas dari peninjau', 'mataOff');
       /* peninjau yang juga pengurus bisa menulis perkenalan — tampil di halaman komunitas */
       const p = pengurusBernama(nama);
       const aksiE = kenalTombol(p) + lepas;

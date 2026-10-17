@@ -1390,6 +1390,17 @@
   }
   D.kapasitas = function(){ const l = langganan(); return l ? { anggota: l.anggota, peninjau: l.peninjau } : null; };
 
+  /* benefit Advance: judul + satu kalimat pendek, supaya jelas gunanya tanpa memanjangkan pop up */
+  const BENEFIT = [
+    ['Struktur kepengurusan', 'Ketua, sekretaris, bendahara dengan nama jabatan sendiri.'],
+    ['Peninjau lebih dari satu', 'Bagi tugas meninjau pendaftaran ke beberapa pengurus.'],
+    ['Dashboard pertumbuhan', 'Grafik anggota baru, pengunjung, dan rekap mingguan.'],
+    ['Kabar Komunitas', 'Kirim broadcast ke anggota; anggota baru disambut otomatis.'],
+    ['Info komunitas', 'Pengumuman, tautan grup WhatsApp, dan dokumen.'],
+    ['Onboarding', 'Perkenalan bertahap untuk tiap anggota baru.'],
+    ['Jawaban pendaftar', 'Kelompokkan jawaban jadi persebaran di halaman.'],
+    ['Akses pengurus', 'Undang pengurus lain dengan hak masing-masing.']
+  ];
   let B = null;   /* isi pop up yang sedang terbuka */
   function hitungB(){
     const H = window.KolavoHarga;
@@ -1460,10 +1471,9 @@
           '<dt>Periode</dt><dd>' + durasiTeks(l.bulan) + ' · sampai ' + tglPanjang(l.sampai) + '</dd>' +
           '<dt>Metode</dt><dd>' + metodeH(l.metode) + '</dd></dl>' +
           '<p class="sek-kecil">Tambahan kapasitas langsung aktif. Selisihnya dibayar prorata sampai akhir periode, lalu ikut tagihan perpanjangan berikutnya.</p></div>'
-      : '<p class="sek-lbl">Yang kamu dapat</p><div class="sb-fitur">' + URUT.map(function(k){
-          return '<span title="' + lolos(FITUR[k].ringkas) + '">' + IK.cek + FITUR[k].judul + '</span>';
-        }).join('') +
-          '<span>' + IK.cek + 'Struktur kepengurusan</span><span>' + IK.cek + 'Peninjau lebih dari satu</span></div>' +
+      : '<p class="sek-lbl">Yang kamu dapat</p><ul class="sb-fitur">' + BENEFIT.map(function(b){
+          return '<li>' + IK.cek + '<span><b>' + b[0] + '</b><small>' + b[1] + '</small></span></li>';
+        }).join('') + '</ul>' +
         '<p class="sek-kecil sb-poin-k">Satu langganan untuk komunitas — tiap pengurus yang kamu undang memakainya dengan akunnya sendiri.</p>';
     const durasi = tambah ? '' :
       '<div class="sb-baris-k"><span class="kalk-l"><span class="kalk-lt">Durasi langganan</span></span>' +

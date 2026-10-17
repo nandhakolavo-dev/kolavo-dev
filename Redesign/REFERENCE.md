@@ -1749,3 +1749,23 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
 - **Media sosial di Profil & Setting jadi label (18 Okt 2026).** Satu chip `.pf-sos-i` per akun —
   ikon platform (Instagram, LinkedIn, TikTok, X, Facebook, YouTube, Situs web) + nama akun; nama
   platform ada di `title` dan teks `.sr-only` (kelas utilitas baru) untuk pembaca layar.
+
+## Revisi 18 Okt 2026 (10 butir)
+
+1. **Harga landing**: "/ anggota / bulan" (`.harga-per`, kecil abu-abu) di samping Rp 199; baris di bawah
+   harga tiap kartu kini sama-sama jumlah anggota (20 · 30 sampai 1.000 · di atas 1.000).
+2. **Kabar Komunitas** (dulu "Anggota baru"): judul, penghitung "N kabar"; timeline, node, gelembung,
+   dan penanda sematan memakai `--blue`/`--blue-wash` tema komunitas.
+3. **Ikon kredit** `koin` diganti orang + tanda tambah (ajak berteman), bukan simbol uang.
+4. **Komunitasku**: `.pf-item` tidak membungkus lagi — label peran/status tetap di kanan, nama panjang
+   yang turun baris.
+5. **Alias komunitas** (`.al`) tampil di kartu Komunitasku dan kartu tab Dashboard.
+6. **Menu titik tiga komunitas buatan di Komunitasku** jalan: `rerenderP` (50-js-layar-buat) kini juga
+   menggambar ulang tab Komunitas, bukan cuma Profil.
+7. **Tab Dashboard**: lencana "Community Creator", kuota `.dsb-kuota` (anggota & peninjau terpakai/batas,
+   paket) dari `KolavoKuota(kom)`, tombol ikon panel + "Dashboard".
+8. **Pop up langganan · Yang kamu dapat**: daftar `BENEFIT` 2 kolom — judul + satu kalimat.
+9. **Broadcast dibuka lagi**: tab "Broadcast" (ikon toa) di Advance; kabar contoh disematkan dari ketua
+   di Forpastara & IA SMAN 52; kiriman pengurus tampil di Kabar Komunitas.
+10. **Aksi baris dashboard jadi ikon** `.kl-ib` (tooltip + aria-label): nomor anggota, angkat jadi
+    pengurus, ubah jabatan, jadikan/lepas peninjau, copot (merah), tulis/ubah perkenalan.

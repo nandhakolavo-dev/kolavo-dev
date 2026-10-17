@@ -65,8 +65,10 @@
       const o = (agg.anggota || []).filter(function(x){ return x.n === n; })[0];
       if(o) A.feed[kelas].push({ id: 'fd' + (++urut), jenis: 'sambutan', waktu: dariBulan(o.s), anggota: o.n, kerja: o.k, kota: o.d, f: o.f });
     });
-    /* V4: broadcast pengurus ditahan (kabar tetap lewat WhatsApp Komunitas sampai ada
-       mobile app) — feed hanya berisi sambutan anggota baru. Kode broadcast dibiarkan. */
+    /* broadcast pengurus dibuka lagi (18 Okt 2026): satu kabar contoh, disematkan, dari ketua */
+    const peng = (agg.pengurus || [])[0];
+    if(sd.kabar && peng) A.feed[kelas].push({ id: 'fd' + (++urut), jenis: 'broadcast', waktu: Date.now() - 2 * HARI, sematkan: true,
+      penulis: { n: peng.n, j: peng.j, f: peng.f }, isi: sd.kabar });
   }
 
   window.KolavoFeedBoleh = boleh;
@@ -192,7 +194,7 @@
   /* kotak khusus: kepala seperti panel Daftar Anggota, isi bergulir sendiri */
   function kotak(jumlah, isi){
     return '<div class="panel fd-box">' +
-      '<div class="panel-bar"><span class="fd-box-ic">' + IK.sambut + '</span><span class="t">Anggota baru</span>' +
+      '<div class="panel-bar"><span class="fd-box-ic">' + IK.toa + '</span><span class="t">Kabar Komunitas</span>' +
         '<span class="c">' + jumlah + '</span></div>' +
       '<div class="fd-gulir">' + isi + '</div>' +
       '<div class="panel-foot">' + IK.gembok + 'Cuma kelihatan sama sesama anggota</div></div>';
@@ -206,7 +208,7 @@
       if(!k.founder) return sembunyi();
       wadah.hidden = false;
       wadah.innerHTML = '<div class="kom-info-ajak">' + IK.advance +
-        '<div class="t"><strong>Sambut tiap anggota baru secara otomatis di halaman komunitas dengan paket Advance</strong>' +
+        '<div class="t"><strong>Kabar Komunitas: kirim kabar ke anggota dan sambut anggota baru otomatis dengan paket Advance</strong>' +
         '<p>Cuma kamu yang melihat kartu ini — pengunjung dan anggota tidak.</p></div>' +
         '<button type="button" class="btn outline xs" data-feed-advance>Lihat Advance</button></div>';
       return;
@@ -220,12 +222,12 @@
     }
     const unit = susun(App().feed[k.kelas] || []);
     if(!unit.length){
-      wadah.innerHTML = kotak('0 anggota baru', '<div class="fd-kosong"><p>Belum ada anggota baru. Tiap pendaftar yang diterima otomatis disambut di sini.</p></div>');
+      wadah.innerHTML = kotak('0 kabar', '<div class="fd-kosong"><p>Belum ada kabar. Kabar dari pengurus dan sambutan anggota baru tampil di sini.</p></div>');
       return;
     }
     const n = (App().feed[k.kelas] || []).length;
     const semua = terbuka[k.kelas] || unit.length <= BATAS;
-    wadah.innerHTML = kotak(n + ' anggota baru', '<ol class="fd-tl">' + (semua ? unit : unit.slice(0, BATAS)).map(gambarUnit).join('') + '</ol>' +
+    wadah.innerHTML = kotak(n + ' kabar', '<ol class="fd-tl">' + (semua ? unit : unit.slice(0, BATAS)).map(gambarUnit).join('') + '</ol>' +
       (semua ? '' : '<button type="button" class="fd-lagi" data-feed-lagi>Lihat sebelumnya (' + (unit.length - BATAS) + ')</button>'));
   }
   window.KolavoGambarFeed = gambarFeed;

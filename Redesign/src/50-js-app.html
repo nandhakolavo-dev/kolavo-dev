@@ -53,11 +53,25 @@
   }
 
   /* ---------- tab Dashboard ---------- */
-  function baris(logo, nama, sub, lencana, jenis){
+  /* kartu komunitas yang dikelola: peran, alias, kuota anggota & peninjau, tombol ikon + Dashboard */
+  const IK_PANEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="9" rx="1.8"/><rect x="13.5" y="3" width="7.5" height="5" rx="1.8"/><rect x="13.5" y="11" width="7.5" height="10" rx="1.8"/><rect x="3" y="15" width="7.5" height="6" rx="1.8"/></svg>';
+  const IK_ORANG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.6a3.5 3.5 0 0 1 0 6.8M21.5 20c0-2.7-1.6-4.8-4-5.6"/></svg>';
+  const IK_MATA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>';
+  function kuotaHtml(q){
+    if(!q) return '';
+    const isi = function(ik, n, kap, satuan){
+      const penuh = kap != null && n >= kap;
+      return '<span class="dsb-q' + (penuh ? ' penuh' : '') + '">' + ik + '<b>' + n.toLocaleString('id-ID') + (kap != null ? ' / ' + kap.toLocaleString('id-ID') : '') + '</b> ' + satuan + '</span>';
+    };
+    return '<div class="dsb-kuota">' + isi(IK_ORANG, q.a, q.ka, 'anggota') + isi(IK_MATA, q.p, q.kp, 'peninjau') +
+      '<span class="dsb-paket' + (q.adv ? ' adv' : '') + '">' + (q.adv ? 'Advance' : 'Esensial') + '</span></div>';
+  }
+  function baris(logo, nama, alias, sub, lencana, jenis, kom){
     return '<div class="pf-item dsb-i"><div class="pf-open" data-dasbor-buka="' + jenis + '" role="button" tabindex="0" title="Buka dashboard">' + logo +
-      '<div class="t"><div class="n">' + esc(nama) + '</div><div class="s">' + esc(sub) + '</div></div></div>' +
+      '<div class="t"><div class="n">' + esc(nama) + '</div>' + (alias ? '<div class="al">' + esc(alias) + '</div>' : '') +
+        '<div class="s">' + esc(sub) + '</div>' + kuotaHtml(window.KolavoKuota ? window.KolavoKuota(kom) : null) + '</div></div>' +
       '<span class="status pengurus">' + esc(lencana) + '</span>' +
-      '<button type="button" class="btn sm" data-dasbor-buka="' + jenis + '">Buka dashboard</button></div>';
+      '<button type="button" class="btn sm dsb-btn" data-dasbor-buka="' + jenis + '">' + IK_PANEL + 'Dashboard</button></div>';
   }
   function gambarDasbor(){
     const w = document.getElementById('dasborList');
@@ -66,13 +80,14 @@
     const barisDibuat = function(k, jenis){
       const gaya = k.logo ? ' style="background-image:url(' + k.logo + ')"' : '';
       item.push(baris('<span class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' + (k.logo ? '' : esc(k.inisial || '')) + '</span>',
-        k.nama, [k.bentuk, k.kota].filter(Boolean).join(' · '), k.arsip ? 'Diarsipkan' : 'Pembuat', jenis));
+        k.nama, k.alias || '', [k.bentuk, k.kota].filter(Boolean).join(' · '), k.arsip ? 'Diarsipkan' : 'Community Creator', jenis, k));
     };
     if(d) barisDibuat(d, 'dibuat');
     (a.dibuatLain || []).forEach(function(k, i){ barisDibuat(k, 'lain:' + i); });
     if(a.diangkat){
+      const ka = document.querySelector('#direktori .ccard .logo-sq.' + DIANGKAT.kelas);
       item.push(baris('<span class="logo-sq ' + DIANGKAT.kelas + '" role="img" aria-label="Logo komunitas"></span>',
-        DIANGKAT.nama, DIANGKAT.jumlah, DIANGKAT.jabatan, 'diangkat'));
+        DIANGKAT.nama, (ka && ka.closest('.ccard').dataset.alias) || '', 'Ikatan Alumni · Jakarta Utara', DIANGKAT.jabatan, 'diangkat', komDiangkat()));
     }
     const adaBuatan = !!d || !!(a.dibuatLain || []).length;
     if(!item.length){

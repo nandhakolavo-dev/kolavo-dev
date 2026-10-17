@@ -585,7 +585,26 @@ button.kn-orang:hover b{color:var(--blue-ink)}
 .hk-kom .logo-sq{width:24px;height:24px;border-radius:7px;border:1px solid var(--line);font-size:10px}
 .hk-lagi{margin-top:14px}
 #dasborList .pf-list{grid-template-columns:1fr}
-.pf-item.dsb-i{display:grid;grid-template-columns:minmax(0,1fr) 120px auto;align-items:center;gap:16px}
+.pf-item.dsb-i{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:16px}
+/* kuota anggota & peninjau di kartu tab Dashboard */
+.dsb-kuota{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.dsb-q{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;background:var(--bg-alt);font-size:12px;color:var(--ink-2)}
+.dsb-q svg{width:13px;height:13px;color:var(--ink-3)}
+.dsb-q b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.dsb-q.penuh{background:var(--orange-wash);color:var(--orange-ink)}
+.dsb-q.penuh b,.dsb-q.penuh svg{color:var(--orange-ink)}
+.dsb-paket{display:inline-flex;align-items:center;padding:3px 9px;border-radius:100px;background:var(--green-wash);color:var(--green);font-size:11.5px;font-weight:600}
+.dsb-paket.adv{background:var(--blue-wash);color:var(--blue-ink)}
+.dsb-btn svg{width:16px;height:16px}
+/* tombol aksi ikon di baris anggota / struktur kepengurusan */
+.kl-ib{position:relative;width:36px;height:36px;flex:none;border-radius:100px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);display:inline-grid;place-items:center;cursor:pointer;transition:border-color .15s ease,color .15s ease,background .15s ease}
+.kl-ib svg{width:17px;height:17px}
+.kl-ib:hover{border-color:var(--blue);color:var(--blue-ink);background:var(--blue-tint)}
+.kl-ib.bahaya{color:var(--red);border-color:var(--red-line)}
+.kl-ib.bahaya:hover{background:var(--red-wash);border-color:var(--red)}
+.kl-ib:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.kl-ib::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:5;padding:4px 8px;border-radius:7px;background:var(--ink);color:var(--bg);font-size:11.5px;font-weight:500;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s ease}
+.kl-ib:hover::after,.kl-ib:focus-visible::after{opacity:1}
 .dsb-i .status{justify-self:end}
 .dsb-i .n{overflow-wrap:anywhere}
 @media(max-width:560px){
@@ -1259,12 +1278,17 @@ body.lgn-open{overflow:hidden}
 .pf-h{margin:34px 0 16px;font-size:17px;font-weight:600;letter-spacing:-.01em}
 .pf-list{display:grid;gap:12px}
 @media(min-width:760px){.pf-list{grid-template-columns:1fr 1fr}}
-.pf-item{display:flex;flex-wrap:wrap;align-items:center;gap:13px;padding:16px;border-radius:14px;
+.pf-item{display:flex;flex-wrap:nowrap;align-items:center;gap:13px;padding:16px;border-radius:14px;
   background:var(--card);border:1px solid var(--line);box-shadow:var(--sh-sm)}
 .pf-item .logo-sq{width:46px;height:46px;border-radius:13px;border:none;flex:none}
 .pf-item .t{min-width:0;flex:1}
 .pf-item .n{font-size:14.5px;font-weight:600;line-height:1.35}
 .pf-item .s{font-size:12.5px;color:var(--ink-3);line-height:1.4}
+/* label peran/status menempel di kanan; nama komunitas yang panjang turun ke baris berikutnya */
+.pf-item > .status,.pf-item > .pf-item-aksi{align-self:center;margin-left:auto}
+.pf-item .n{overflow-wrap:anywhere}
+/* nama panggilan komunitas (alias) */
+.pf-item .al{display:inline-block;margin:3px 0 2px;padding:1px 8px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink);font-size:11.5px;font-weight:600}
 .status{flex:none;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
   padding:5px 11px;border-radius:100px}
 .status.tunggu{background:var(--orange-wash);color:var(--orange-ink)}
@@ -1808,11 +1832,12 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .fd-box-ic svg{width:15px;height:15px}
 .fd-gulir{max-height:440px;overflow-y:auto;overscroll-behavior:contain;padding:16px 18px 8px;background:var(--bg-alt)}
 .fd-tl{position:relative;list-style:none;margin:0;padding:0}
-.fd-tl::before{content:"";position:absolute;left:19px;top:8px;bottom:8px;width:2px;border-radius:2px;background:var(--line)}
+/* timeline Kabar Komunitas ikut warna tema komunitas (--blue diwarnai 50-js-tema-komunitas) */
+.fd-tl::before{content:"";position:absolute;left:19px;top:8px;bottom:8px;width:2px;border-radius:2px;background:var(--blue-wash)}
 .fd-i{position:relative;display:grid;grid-template-columns:40px 1fr;gap:12px;padding-bottom:18px}
 .fd-node{position:relative;z-index:1;width:40px;height:40px;border-radius:100px;box-shadow:0 0 0 3px var(--bg-alt)}
 .fd-node .av{width:40px;height:40px;font-size:14px}
-.fd-node.ic{display:grid;place-items:center;background:var(--green);color:var(--btn-ink)}
+.fd-node.ic{display:grid;place-items:center;background:var(--blue);color:var(--btn-ink)}
 .fd-node.ic svg{width:19px;height:19px}
 .fd-isi-w{min-width:0}
 .fd-meta{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;min-height:22px;font-size:13px;color:var(--ink-2);line-height:1.4}
@@ -1827,7 +1852,10 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .fd-tautan{margin-top:10px;display:inline-flex;align-items:center;gap:6px;max-width:100%;font:inherit;font-size:13px;font-weight:500;padding:6px 12px;border-radius:100px;border:1px solid var(--line);background:var(--blue-tint);color:var(--blue-ink);cursor:pointer}
 .fd-tautan span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fd-tautan svg{width:14px;height:14px;flex:none}
-.fd-bubble.sambut{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--green-wash);border-color:transparent}
+.fd-bubble.sambut{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--blue-wash);border-color:transparent}
+.fd-bubble{border-color:var(--blue-wash)}
+.fd-bubble.pin{border-color:var(--blue)}
+.fd-pin{background:var(--blue-wash);color:var(--blue-ink)}
 .fd-bubble.sambut .av{width:44px;height:44px;font-size:14px;flex:none}
 .fd-bubble.sambut .t{flex:1 1 140px;min-width:0}
 .fd-bubble.sambut b{display:block;font-size:14.5px;font-weight:600;line-height:1.35}
@@ -2421,9 +2449,13 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .sek-box:has(.sb-step) .sb-step{margin:10px 0 14px}
 .sek-box:has(.sb-step) .sek-alasan{margin-bottom:12px;padding:10px 12px}
 /* benefit: deret chip bercentang, ringkas */
-.sb-fitur{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.sb-fitur span{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:100px;background:var(--green-wash);color:var(--ink);font-size:12.5px;font-weight:500}
-.sb-fitur svg{width:13px;height:13px;color:var(--green);stroke-width:2.6}
+.sb-fitur{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin:8px 0 0;padding:0;list-style:none}
+@media(max-width:480px){.sb-fitur{grid-template-columns:1fr}}
+.sb-fitur li{display:flex;gap:8px;align-items:flex-start}
+.sb-fitur svg{width:16px;height:16px;flex:none;margin-top:2px;padding:2px;border-radius:100px;background:var(--green-wash);color:var(--green);stroke-width:2.8;box-sizing:content-box}
+.sb-fitur span{display:flex;flex-direction:column;line-height:1.35}
+.sb-fitur b{font-size:13.5px;font-weight:600;color:var(--ink)}
+.sb-fitur small{font-size:12px;color:var(--ink-3)}
 .sek-box:has(.sb-step) .sb-kanan{padding:14px 16px}
 .sek-box:has(.sb-step) .sb-baris-k{margin-top:10px}
 .sek-box:has(.sb-step) .sb-baris-k .sek-kecil{margin-top:2px}
@@ -2642,6 +2674,8 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .harga-rp{font-size:14px;color:var(--ink-3)}
 .harga-rp b{font-size:26px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
 .harga-batas{margin-top:-8px;font-size:13px;font-weight:500;color:var(--ink-3)}
+/* satuan harga di samping angka, kecil & abu-abu — baris jumlah anggota jadi sejajar antar kartu */
+.harga-per{font-size:13px;font-weight:500;color:var(--ink-3);white-space:nowrap}
 .harga-ket{font-size:14px;color:var(--ink-2);line-height:1.6}
 .kalk{margin-top:16px;display:grid;gap:26px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:26px}
 .kalk-in{display:grid;gap:22px;align-content:start}
