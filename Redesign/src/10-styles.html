@@ -2387,6 +2387,66 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 
 /* modal aktifkan */
 .lgn-box.sek-box{max-width:880px;text-align:left;padding:30px 34px 28px}
+/* pop up langganan Advance: Kapasitas → Pembayaran → Selesai */
+.sb-step{display:flex;gap:8px;margin:14px 0 18px;padding:0;list-style:none;flex-wrap:wrap}
+.sb-step li{display:flex;align-items:center;gap:7px;padding:5px 12px 5px 6px;border-radius:100px;background:var(--bg-alt);font-size:12.5px;font-weight:600;color:var(--ink-3)}
+.sb-step li span{width:20px;height:20px;border-radius:100px;display:grid;place-items:center;background:var(--line);color:var(--ink-2);font-size:11px}
+.sb-step li.kini{background:var(--blue-wash);color:var(--blue-ink)}
+.sb-step li.kini span{background:var(--blue);color:var(--btn-ink)}
+.sb-step li.lewat{color:var(--green)}
+.sb-step li.lewat span{background:var(--green);color:var(--btn-ink)}
+.sb-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
+@media(max-width:768px){.sb-grid{grid-template-columns:1fr;gap:18px}}
+.sb-kanan{padding:18px;border-radius:16px;border:1px solid var(--line);background:var(--bg-alt)}
+.sb-poin{margin-top:8px;grid-template-columns:1fr 1fr;gap:10px 14px}
+.sb-poin li{font-size:13.5px}
+.sb-poin-k{margin-top:14px;line-height:1.55}
+@media(max-width:480px){.sb-poin{grid-template-columns:1fr}}
+.sb-baris-k{margin-top:14px}
+.sb-baris-k input[type=range]{width:100%;accent-color:var(--blue)}
+.sb-baris-k .kalk-l{margin-bottom:8px}
+.sb-sejajar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sb-sejajar .kalk-l{margin-bottom:0}
+.sb-kanan .kalk-durasi{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.sb-rinci{margin-top:16px}
+.sb-rinci .sb-sub{padding-top:8px;border-top:1px solid var(--line)}
+.sb-rinci .sb-sub dd{font-weight:600}
+.sb-cta{width:100%;justify-content:center;margin-top:16px}
+.sb-batal{display:block;margin:8px auto 0;padding:6px;border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--ink-3);cursor:pointer}
+.sb-batal:hover{color:var(--ink)}
+.sb-kini{padding:16px;border-radius:14px;border:1px solid var(--line)}
+.sb-metode-l{display:grid;gap:8px;margin-top:8px}
+.sb-metode,.sek-bayar-i{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:13px;border:1.5px solid var(--line);background:var(--card);cursor:pointer}
+.sb-metode.on{border-color:var(--blue);background:var(--blue-wash)}
+.sb-metode input{accent-color:var(--blue)}
+.sb-metode .t,.sek-bayar-i .t{flex:1;min-width:0;display:flex;flex-direction:column}
+.sb-metode b{font-size:14px}
+.sb-metode small{font-size:12px;color:var(--ink-3)}
+.sb-metode-ic{width:36px;height:36px;flex:none;border-radius:10px;display:grid;place-items:center;background:var(--bg-alt);color:var(--blue-ink)}
+.sb-metode-ic svg{width:20px;height:20px}
+.sb-dipakai{font-size:11px;font-weight:600;padding:3px 8px;border-radius:100px;background:var(--green-wash);color:var(--green);white-space:nowrap}
+.sb-detail{margin-top:14px}
+.sb-detail .sek-kecil svg{width:13px;height:13px;vertical-align:-2px;margin-right:4px}
+.sb-simpan{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:var(--bg-alt);font-size:13.5px}
+.sb-simpan svg{width:20px;height:20px;color:var(--blue-ink)}
+.sb-qris .krd-qris{margin-top:0}
+.sb-proses{display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 0;text-align:center;color:var(--ink-2)}
+.sb-proses .gspin{width:28px;height:28px}
+.sb-ok{text-align:center}
+.sb-ok .krd-ok-ic svg{width:26px;height:26px}
+.sb-ok-dl{max-width:420px;margin:16px auto 0;text-align:left}
+.sb-ok .sb-cta{max-width:420px}
+/* panel Langganan: meter kapasitas */
+.sb-meter-g{display:grid;gap:14px;margin-top:14px}
+@media(min-width:640px){.sb-meter-g{grid-template-columns:1fr 1fr}}
+.sb-meter{padding:14px;border-radius:13px;border:1px solid var(--line);background:var(--card)}
+.sb-meter-t{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--ink-2)}
+.sb-meter-t b{font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
+.sb-meter-bar{margin:10px 0 6px;height:8px;border-radius:100px;background:var(--line-2);overflow:hidden}
+.sb-meter-bar i{display:block;height:100%;border-radius:100px;background:var(--blue)}
+.sb-meter.dekat .sb-meter-bar i{background:var(--orange)}
+.sb-meter.penuh{border-color:var(--orange);background:var(--orange-wash)}
+.sb-meter.penuh .sb-meter-bar i{background:var(--orange)}
 .sek-modal-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:start;margin-top:4px}
 .sek-modal-samping .sek-harga{margin-top:16px}
 .sek-modal-samping .sek-cta{flex-direction:column}

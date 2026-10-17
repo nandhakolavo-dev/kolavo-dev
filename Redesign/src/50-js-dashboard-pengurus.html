@@ -282,7 +282,13 @@
   /* Esensial (belum berlangganan) dibatasi 20 anggota dan 1 peninjau — lebih dari itu lewat Advance */
   const BATAS_ESENSIAL = 20;
   function esensialSaja(){ return !D.sekAktif; }
-  function penuhEsensial(){ return esensialSaja() && jumlahAnggota() >= BATAS_ESENSIAL; }
+  /* batas anggota: 20 di Esensial; di Advance = kapasitas yang dibayar (panel Langganan) */
+  function batasAnggota(){
+    if(esensialSaja()) return BATAS_ESENSIAL;
+    const k = D.kapasitas && D.kapasitas();
+    return k ? k.anggota : 1000;
+  }
+  function penuhEsensial(){ return jumlahAnggota() >= batasAnggota(); }
   /* [nama, pekerjaan (pilihan Lengkapi), domisili, jawaban tahun, "bisa dibagikan"] */
   const ANGGOTA_CONTOH = [
     ['Bima Prasetyo', 'Arsitek', 'Surabaya', 2015, 'Bisa bantu desain tata letak venue kalau komunitas bikin acara.'],
@@ -385,17 +391,18 @@
     }
 
     const bisa = akuPeninjau();
-    /* Esensial: meter kuota anggota; penuh = ajakan naik ke Advance di atas daftar */
+    /* meter kuota anggota: Esensial (20) atau kapasitas Advance; penuh = ajakan naik paket / tambah kapasitas */
     let batas = '';
-    if(esensialSaja()){
-      const n = jumlahAnggota(), penuh = n >= BATAS_ESENSIAL;
+    {
+      const n = jumlahAnggota(), kap = batasAnggota(), penuh = n >= kap, adv = !esensialSaja();
       batas = '<div class="kl-kuota' + (penuh ? ' penuh' : '') + '">' +
-        '<div class="kl-kuota-t"><span><b>' + Math.min(n, BATAS_ESENSIAL) + ' dari ' + BATAS_ESENSIAL + '</b> anggota · paket Esensial</span>' +
-          (penuh ? '' : '<span class="kl-kuota-sisa">sisa ' + (BATAS_ESENSIAL - n) + '</span>') + '</div>' +
-        '<div class="kl-kuota-bar"><i style="width:' + Math.min(100, Math.round(n / BATAS_ESENSIAL * 100)) + '%"></i></div>' +
+        '<div class="kl-kuota-t"><span><b>' + Math.min(n, kap).toLocaleString('id-ID') + ' dari ' + kap.toLocaleString('id-ID') + '</b> anggota · ' + (adv ? 'kapasitas Advance' : 'paket Esensial') + '</span>' +
+          (penuh ? '' : '<span class="kl-kuota-sisa">sisa ' + (kap - n).toLocaleString('id-ID') + '</span>') + '</div>' +
+        '<div class="kl-kuota-bar"><i style="width:' + Math.min(100, Math.round(n / kap * 100)) + '%"></i></div>' +
         (penuh
-          ? '<div class="kl-kuota-ajak">' + IKON_KUNCI + '<p><b>Kuota Esensial sudah penuh.</b> ' + D.minta.length + ' pendaftar belum bisa diterima. Naik ke Advance untuk menampung hingga 1.000 anggota.</p>' +
-              '<button type="button" class="btn sm" data-upgrade="anggota">Naik ke Advance</button></div>'
+          ? '<div class="kl-kuota-ajak">' + IKON_KUNCI + '<p><b>' + (adv ? 'Kapasitas langganan sudah penuh.' : 'Kuota Esensial sudah penuh.') + '</b> ' + D.minta.length + ' pendaftar belum bisa diterima. ' +
+                (adv ? 'Tambah kapasitas — selisihnya dibayar prorata sampai akhir periode.' : 'Naik ke Advance untuk menampung hingga 1.000 anggota.') + '</p>' +
+              '<button type="button" class="btn sm" data-upgrade="anggota">' + (adv ? 'Tambah kapasitas' : 'Naik ke Advance') + '</button></div>'
           : '') +
       '</div>';
     }
@@ -636,7 +643,8 @@
   function gambarPengurusAdvance(){
     const wadah = el('klPengurusList');
     const satuPeninjau = D.peninjau.length <= 1;
-    wadah.innerHTML = '<p class="kl-sub">Semua pengurus bisa melihat struktur ini dan menyunting perkenalannya sendiri. Hak menyetujui pendaftaran dipegang <b>peninjau pendaftaran</b> — boleh beberapa orang sekaligus, dan bisa kamu tambah atau lepas kapan saja. Selalu ada minimal satu peninjau.</p>' + D.pengurus.map(function(p){
+    wadah.innerHTML = '<p class="kl-sub">Semua pengurus bisa melihat struktur ini dan menyunting perkenalannya sendiri. Hak menyetujui pendaftaran dipegang <b>peninjau pendaftaran</b> — boleh beberapa orang sekaligus, dan bisa kamu tambah atau lepas kapan saja. Selalu ada minimal satu peninjau.' +
+        (D.kapasitas && D.kapasitas() ? ' Kursi peninjau terpakai <b>' + D.peninjau.length + ' dari ' + D.kapasitas().peninjau + '</b>.' : '') + '</p>' + D.pengurus.map(function(p){
       const m = D.mem[p.nama] || { nama: p.nama, kerja: '', kota: '' };
       const ini = adaPeninjau(p.nama);
       const nm = lolos(p.nama) + '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' +
@@ -1066,6 +1074,9 @@
     /* tambahkan seorang pengurus jadi peninjau (boleh banyak sekaligus) */
     const tambah = e.target.closest('[data-peninjau-on]');
     if(tambah){
+      /* kursi peninjau Advance terbatas sesuai langganan */
+      const kap = D.kapasitas && D.kapasitas();
+      if(kap && D.peninjau.length >= kap.peninjau){ D.bukaAdvance('peninjau'); return; }
       const nama = tambah.dataset.peninjauOn;
       if(!adaPeninjau(nama)) D.peninjau.push(nama);
       gambar();

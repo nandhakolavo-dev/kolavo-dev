@@ -2430,6 +2430,66 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 
 /* modal aktifkan */
 .lgn-box.sek-box{max-width:880px;text-align:left;padding:30px 34px 28px}
+/* pop up langganan Advance: Kapasitas → Pembayaran → Selesai */
+.sb-step{display:flex;gap:8px;margin:14px 0 18px;padding:0;list-style:none;flex-wrap:wrap}
+.sb-step li{display:flex;align-items:center;gap:7px;padding:5px 12px 5px 6px;border-radius:100px;background:var(--bg-alt);font-size:12.5px;font-weight:600;color:var(--ink-3)}
+.sb-step li span{width:20px;height:20px;border-radius:100px;display:grid;place-items:center;background:var(--line);color:var(--ink-2);font-size:11px}
+.sb-step li.kini{background:var(--blue-wash);color:var(--blue-ink)}
+.sb-step li.kini span{background:var(--blue);color:var(--btn-ink)}
+.sb-step li.lewat{color:var(--green)}
+.sb-step li.lewat span{background:var(--green);color:var(--btn-ink)}
+.sb-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
+@media(max-width:768px){.sb-grid{grid-template-columns:1fr;gap:18px}}
+.sb-kanan{padding:18px;border-radius:16px;border:1px solid var(--line);background:var(--bg-alt)}
+.sb-poin{margin-top:8px;grid-template-columns:1fr 1fr;gap:10px 14px}
+.sb-poin li{font-size:13.5px}
+.sb-poin-k{margin-top:14px;line-height:1.55}
+@media(max-width:480px){.sb-poin{grid-template-columns:1fr}}
+.sb-baris-k{margin-top:14px}
+.sb-baris-k input[type=range]{width:100%;accent-color:var(--blue)}
+.sb-baris-k .kalk-l{margin-bottom:8px}
+.sb-sejajar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sb-sejajar .kalk-l{margin-bottom:0}
+.sb-kanan .kalk-durasi{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.sb-rinci{margin-top:16px}
+.sb-rinci .sb-sub{padding-top:8px;border-top:1px solid var(--line)}
+.sb-rinci .sb-sub dd{font-weight:600}
+.sb-cta{width:100%;justify-content:center;margin-top:16px}
+.sb-batal{display:block;margin:8px auto 0;padding:6px;border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--ink-3);cursor:pointer}
+.sb-batal:hover{color:var(--ink)}
+.sb-kini{padding:16px;border-radius:14px;border:1px solid var(--line)}
+.sb-metode-l{display:grid;gap:8px;margin-top:8px}
+.sb-metode,.sek-bayar-i{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:13px;border:1.5px solid var(--line);background:var(--card);cursor:pointer}
+.sb-metode.on{border-color:var(--blue);background:var(--blue-wash)}
+.sb-metode input{accent-color:var(--blue)}
+.sb-metode .t,.sek-bayar-i .t{flex:1;min-width:0;display:flex;flex-direction:column}
+.sb-metode b{font-size:14px}
+.sb-metode small{font-size:12px;color:var(--ink-3)}
+.sb-metode-ic{width:36px;height:36px;flex:none;border-radius:10px;display:grid;place-items:center;background:var(--bg-alt);color:var(--blue-ink)}
+.sb-metode-ic svg{width:20px;height:20px}
+.sb-dipakai{font-size:11px;font-weight:600;padding:3px 8px;border-radius:100px;background:var(--green-wash);color:var(--green);white-space:nowrap}
+.sb-detail{margin-top:14px}
+.sb-detail .sek-kecil svg{width:13px;height:13px;vertical-align:-2px;margin-right:4px}
+.sb-simpan{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:var(--bg-alt);font-size:13.5px}
+.sb-simpan svg{width:20px;height:20px;color:var(--blue-ink)}
+.sb-qris .krd-qris{margin-top:0}
+.sb-proses{display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 0;text-align:center;color:var(--ink-2)}
+.sb-proses .gspin{width:28px;height:28px}
+.sb-ok{text-align:center}
+.sb-ok .krd-ok-ic svg{width:26px;height:26px}
+.sb-ok-dl{max-width:420px;margin:16px auto 0;text-align:left}
+.sb-ok .sb-cta{max-width:420px}
+/* panel Langganan: meter kapasitas */
+.sb-meter-g{display:grid;gap:14px;margin-top:14px}
+@media(min-width:640px){.sb-meter-g{grid-template-columns:1fr 1fr}}
+.sb-meter{padding:14px;border-radius:13px;border:1px solid var(--line);background:var(--card)}
+.sb-meter-t{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--ink-2)}
+.sb-meter-t b{font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
+.sb-meter-bar{margin:10px 0 6px;height:8px;border-radius:100px;background:var(--line-2);overflow:hidden}
+.sb-meter-bar i{display:block;height:100%;border-radius:100px;background:var(--blue)}
+.sb-meter.dekat .sb-meter-bar i{background:var(--orange)}
+.sb-meter.penuh{border-color:var(--orange);background:var(--orange-wash)}
+.sb-meter.penuh .sb-meter-bar i{background:var(--orange)}
 .sek-modal-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:start;margin-top:4px}
 .sek-modal-samping .sek-harga{margin-top:16px}
 .sek-modal-samping .sek-cta{flex-direction:column}
@@ -4099,7 +4159,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
         <div class="kl-subnav" data-grup="setting">
           <button type="button" class="kl-tab sub" data-tab="akun" data-sek role="tab"><i class="kl-tab-ic" data-ic="akun"></i>Akun</button>
           <button type="button" class="kl-tab sub" data-tab="notif" data-sek role="tab"><i class="kl-tab-ic" data-ic="notif"></i>Notifikasi</button>
-          <button type="button" class="kl-tab sub" data-tab="tagihan" data-sek role="tab"><i class="kl-tab-ic" data-ic="tagihan"></i>Tagihan</button>
+          <button type="button" class="kl-tab sub" data-tab="tagihan" data-sek role="tab"><i class="kl-tab-ic" data-ic="tagihan"></i>Langganan</button>
           <button type="button" class="kl-tab sub" data-tab="akses" data-sek role="tab"><i class="kl-tab-ic" data-ic="akses"></i>Akses pengurus</button>
         </div>
         <span class="kl-nav-h">Kelola</span>
@@ -9800,7 +9860,13 @@ function hitung(){}
   /* Esensial (belum berlangganan) dibatasi 20 anggota dan 1 peninjau — lebih dari itu lewat Advance */
   const BATAS_ESENSIAL = 20;
   function esensialSaja(){ return !D.sekAktif; }
-  function penuhEsensial(){ return esensialSaja() && jumlahAnggota() >= BATAS_ESENSIAL; }
+  /* batas anggota: 20 di Esensial; di Advance = kapasitas yang dibayar (panel Langganan) */
+  function batasAnggota(){
+    if(esensialSaja()) return BATAS_ESENSIAL;
+    const k = D.kapasitas && D.kapasitas();
+    return k ? k.anggota : 1000;
+  }
+  function penuhEsensial(){ return jumlahAnggota() >= batasAnggota(); }
   /* [nama, pekerjaan (pilihan Lengkapi), domisili, jawaban tahun, "bisa dibagikan"] */
   const ANGGOTA_CONTOH = [
     ['Bima Prasetyo', 'Arsitek', 'Surabaya', 2015, 'Bisa bantu desain tata letak venue kalau komunitas bikin acara.'],
@@ -9903,17 +9969,18 @@ function hitung(){}
     }
 
     const bisa = akuPeninjau();
-    /* Esensial: meter kuota anggota; penuh = ajakan naik ke Advance di atas daftar */
+    /* meter kuota anggota: Esensial (20) atau kapasitas Advance; penuh = ajakan naik paket / tambah kapasitas */
     let batas = '';
-    if(esensialSaja()){
-      const n = jumlahAnggota(), penuh = n >= BATAS_ESENSIAL;
+    {
+      const n = jumlahAnggota(), kap = batasAnggota(), penuh = n >= kap, adv = !esensialSaja();
       batas = '<div class="kl-kuota' + (penuh ? ' penuh' : '') + '">' +
-        '<div class="kl-kuota-t"><span><b>' + Math.min(n, BATAS_ESENSIAL) + ' dari ' + BATAS_ESENSIAL + '</b> anggota · paket Esensial</span>' +
-          (penuh ? '' : '<span class="kl-kuota-sisa">sisa ' + (BATAS_ESENSIAL - n) + '</span>') + '</div>' +
-        '<div class="kl-kuota-bar"><i style="width:' + Math.min(100, Math.round(n / BATAS_ESENSIAL * 100)) + '%"></i></div>' +
+        '<div class="kl-kuota-t"><span><b>' + Math.min(n, kap).toLocaleString('id-ID') + ' dari ' + kap.toLocaleString('id-ID') + '</b> anggota · ' + (adv ? 'kapasitas Advance' : 'paket Esensial') + '</span>' +
+          (penuh ? '' : '<span class="kl-kuota-sisa">sisa ' + (kap - n).toLocaleString('id-ID') + '</span>') + '</div>' +
+        '<div class="kl-kuota-bar"><i style="width:' + Math.min(100, Math.round(n / kap * 100)) + '%"></i></div>' +
         (penuh
-          ? '<div class="kl-kuota-ajak">' + IKON_KUNCI + '<p><b>Kuota Esensial sudah penuh.</b> ' + D.minta.length + ' pendaftar belum bisa diterima. Naik ke Advance untuk menampung hingga 1.000 anggota.</p>' +
-              '<button type="button" class="btn sm" data-upgrade="anggota">Naik ke Advance</button></div>'
+          ? '<div class="kl-kuota-ajak">' + IKON_KUNCI + '<p><b>' + (adv ? 'Kapasitas langganan sudah penuh.' : 'Kuota Esensial sudah penuh.') + '</b> ' + D.minta.length + ' pendaftar belum bisa diterima. ' +
+                (adv ? 'Tambah kapasitas — selisihnya dibayar prorata sampai akhir periode.' : 'Naik ke Advance untuk menampung hingga 1.000 anggota.') + '</p>' +
+              '<button type="button" class="btn sm" data-upgrade="anggota">' + (adv ? 'Tambah kapasitas' : 'Naik ke Advance') + '</button></div>'
           : '') +
       '</div>';
     }
@@ -10154,7 +10221,8 @@ function hitung(){}
   function gambarPengurusAdvance(){
     const wadah = el('klPengurusList');
     const satuPeninjau = D.peninjau.length <= 1;
-    wadah.innerHTML = '<p class="kl-sub">Semua pengurus bisa melihat struktur ini dan menyunting perkenalannya sendiri. Hak menyetujui pendaftaran dipegang <b>peninjau pendaftaran</b> — boleh beberapa orang sekaligus, dan bisa kamu tambah atau lepas kapan saja. Selalu ada minimal satu peninjau.</p>' + D.pengurus.map(function(p){
+    wadah.innerHTML = '<p class="kl-sub">Semua pengurus bisa melihat struktur ini dan menyunting perkenalannya sendiri. Hak menyetujui pendaftaran dipegang <b>peninjau pendaftaran</b> — boleh beberapa orang sekaligus, dan bisa kamu tambah atau lepas kapan saja. Selalu ada minimal satu peninjau.' +
+        (D.kapasitas && D.kapasitas() ? ' Kursi peninjau terpakai <b>' + D.peninjau.length + ' dari ' + D.kapasitas().peninjau + '</b>.' : '') + '</p>' + D.pengurus.map(function(p){
       const m = D.mem[p.nama] || { nama: p.nama, kerja: '', kota: '' };
       const ini = adaPeninjau(p.nama);
       const nm = lolos(p.nama) + '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' +
@@ -10584,6 +10652,9 @@ function hitung(){}
     /* tambahkan seorang pengurus jadi peninjau (boleh banyak sekaligus) */
     const tambah = e.target.closest('[data-peninjau-on]');
     if(tambah){
+      /* kursi peninjau Advance terbatas sesuai langganan */
+      const kap = D.kapasitas && D.kapasitas();
+      if(kap && D.peninjau.length >= kap.peninjau){ D.bukaAdvance('peninjau'); return; }
       const nama = tambah.dataset.peninjauOn;
       if(!adaPeninjau(nama)) D.peninjau.push(nama);
       gambar();
@@ -10726,7 +10797,8 @@ function hitung(){}
     pindah:  svg('<path d="M5 12h14M13 6l6 6-6 6"/>'),
     unduh:   svg('<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>'),
     atas:    svg('<path d="M12 19V5M6 11l6-6 6 6"/>'),
-    bawah:   svg('<path d="M12 5v14M6 13l6 6 6-6"/>')
+    bawah:   svg('<path d="M12 5v14M6 13l6 6 6-6"/>'),
+    kunci:   svg('<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>')
   };
   const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
@@ -10743,7 +10815,7 @@ function hitung(){}
     rapi:  { judul: 'Rapikan tulisan jawaban', ringkas: 'satukan jawaban yang sama tapi ditulis berbeda, supaya tag tidak ganda.' },
     akun:  { judul: 'Akun' },
     notif: { judul: 'Notifikasi' },
-    tagihan: { judul: 'Tagihan' },
+    tagihan: { judul: 'Langganan' },
     akses: { judul: 'Akses pengurus',  ringkas: 'undang pengurus lain dengan akunnya sendiri, dengan hak berbeda.' },
     serah: { judul: 'Serah terima',    ringkas: 'ganti kepengurusan tanpa kehilangan data dan akses.' }
   };
@@ -10794,7 +10866,8 @@ function hitung(){}
     S.akun = { email: emailAku(), langkah: 0, baru: '', kode: '' };
     S.notif = { jenis: { baru: true, putus: false }, ke: [emailAku()], email: '', pemicu: 'hari', jumlah: 10, hari: 1, jam: '09.00' };
     S.tagihan = { alamat: { nama: (D.kom && D.kom.nama) || '', email: emailAku(), jalan: '', kota: (D.kom && D.kom.kota) || '', pos: '', npwp: '' },
-      ubahAlamat: false, draf: {}, metode: 'va', draftMetode: 'va' };
+      ubahAlamat: false, draf: {}, metode: 'qris', draftMetode: 'qris' };
+    S.langganan = null;
     S.jejak = [];
     S.serah = { ketua: '', pemegang: '', lama: 'lihat', tanggal: '', jadwal: false };
     S.kode = acak();
@@ -11315,10 +11388,14 @@ function hitung(){}
     { k: 'baru',   h: 'Pendaftaran baru',             sub: 'Dirangkum jadi satu email, bukan satu email per pendaftar. Pilih pemicunya: jumlah pendaftar atau hari pengingat.' },
     { k: 'putus',  h: 'Keputusan pengurus lain',      sub: 'Rangkuman pendaftar yang diterima atau ditolak pengurus lain. Dikirim seminggu sekali.' }
   ];
+  /* metode pembayaran langganan Advance — dipakai pop up bayar dan panel Langganan */
   const BAYAR = [
-    { k: 'va',    h: 'Transfer virtual account', sub: 'BCA, Mandiri, BNI, BRI. Nomor VA dikirim bersama tagihan.' },
-    { k: 'qris',  h: 'QRIS',                     sub: 'Bayar lewat aplikasi bank atau dompet digital.' },
-    { k: 'kartu', h: 'Kartu kredit / debit',     sub: 'Data kartu diisi di halaman penyedia pembayaran, bukan di Kolavo.' }
+    { k: 'kartu', h: 'Kartu kredit / debit', sub: 'Visa, Mastercard, JCB. Diperpanjang otomatis.',
+      ic: svg('<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/>') },
+    { k: 'gopay', h: 'GoPay', sub: 'Konfirmasi lewat aplikasi Gojek.',
+      ic: svg('<rect x="3" y="6" width="18" height="13" rx="3"/><path d="M16 12.5h2M3 9.5h14a3 3 0 0 1 3 3"/>') },
+    { k: 'qris', h: 'QRIS', sub: 'Pindai dari m-banking atau dompet digital apa pun.',
+      ic: svg('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3h-3"/>') }
   ];
   function emailAku(){
     const e = document.querySelector('.acct-em');
@@ -11438,30 +11515,47 @@ function hitung(){}
           '<dt>Alamat</dt><dd>' + lolos([al.jalan, al.kota, al.pos].filter(Boolean).join(', ') || '—') + '</dd>' +
           '<dt>NPWP</dt><dd>' + lolos(al.npwp || '—') + '</dd></dl>' +
         '<div class="sek-baris"><button type="button" class="btn outline sm" data-sek-tagih="ubah-alamat">Ubah alamat</button></div>';
+    /* Langganan: pantau kapasitas yang dibayar dan tambah kapan saja */
+    const L = langganan();
+    if(!L){ el('klPanelTagihan').innerHTML = kepala('tagihan', 'Belum berlangganan Advance.'); return; }
+    const pakaiA = D.jumlahAnggota(), pakaiP = D.peninjau.length, sisaHari = Math.max(0, Math.ceil((L.sampai - Date.now()) / 864e5));
+    const meter = function(label, pakai, kap, satuan){
+      const pct = Math.min(100, Math.round(pakai / kap * 100)), penuh = pakai >= kap;
+      return '<div class="sb-meter' + (penuh ? ' penuh' : pct >= 85 ? ' dekat' : '') + '">' +
+        '<div class="sb-meter-t"><span>' + label + '</span><b>' + pakai.toLocaleString('id-ID') + ' / ' + kap.toLocaleString('id-ID') + '</b></div>' +
+        '<div class="sb-meter-bar"><i style="width:' + pct + '%"></i></div>' +
+        '<p class="sek-kecil">' + (penuh ? 'Penuh — tambah kapasitas supaya bisa menambah ' + satuan + '.' : 'Sisa ' + (kap - pakai).toLocaleString('id-ID') + ' ' + satuan + '.') + '</p></div>';
+    };
+    const perBulan = window.KolavoHarga ? window.KolavoHarga(L.anggota, L.peninjau, 1).perBulan : 0;
     el('klPanelTagihan').innerHTML =
-      kepala('tagihan', 'Langganan Advance ditagihkan ke ' + lolos(D.kom.nama) + ', bukan ke akun pribadi — tidak ikut pergi saat kepengurusan berganti.') +
-      '<div class="sek-blok"><div class="sek-baris atas"><div><div class="sek-blok-h">Advance · bulanan</div>' +
-        '<div class="sek-blok-sub">' + (H ? 'Rp ' + H.tarif.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'Rp 199') + ' / anggota / bulan · ' + n.toLocaleString('id-ID') + ' anggota ditagihkan (minimal 30, per kelipatan 10)</div></div>' +
-        '<span class="sek-status">Aktif</span></div>' +
-        (H ? '<dl class="sek-dl"><dt>Anggota</dt><dd>' + rp(H.biayaAnggota) + '</dd>' +
-          '<dt>Peninjau (' + H.p + ')</dt><dd>' + rp(H.biayaPeninjau) + '</dd>' +
-          '<dt>Per bulan</dt><dd><b>' + rp(H.perBulan) + '</b></dd></dl>' : '') +
-        '<p class="sek-kecil jarak">Tagihan berikutnya 1 ' + BULAN[(new Date().getMonth() + 1) % 12] + '.</p>' +
+      kepala('tagihan', 'Pantau kapasitas langganan Advance dan tambah kapan saja. Ditagihkan ke ' + lolos(D.kom.nama) + ', bukan ke akun pribadi — tidak ikut pergi saat kepengurusan berganti.') +
+      '<div class="sek-blok"><div class="sek-baris atas"><div><div class="sek-blok-h">Kapasitas</div>' +
+          '<div class="sek-blok-sub">Yang sudah dibayar untuk periode ini.</div></div>' +
+          '<button type="button" class="btn sm" data-sb-tambah>Tambah kapasitas</button></div>' +
+        '<div class="sb-meter-g">' + meter('Anggota', pakaiA, L.anggota, 'anggota') + meter('Kursi peninjau', pakaiP, L.peninjau, 'peninjau') + '</div>' +
       '</div>' +
-      '<div class="sek-blok"><div class="sek-blok-h">Alamat penagihan</div>' + alamatBlok + '</div>' +
+      '<div class="sek-blok"><div class="sek-baris atas"><div><div class="sek-blok-h">Advance · ' + durasiTeks(L.bulan) + '</div>' +
+          '<div class="sek-blok-sub">Aktif sampai ' + tglPanjang(L.sampai) + ' · sisa ' + sisaHari + ' hari</div></div>' +
+          '<span class="sek-status">Aktif</span></div>' +
+        '<dl class="sek-dl"><dt>Biaya per bulan</dt><dd>' + rpx(perBulan) + '</dd>' +
+          '<dt>Tarif per anggota</dt><dd>' + (window.KolavoHarga ? 'Rp ' + window.KolavoHarga(L.anggota, L.peninjau, 1).tarif.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—') + '</dd>' +
+          '<dt>Perpanjangan</dt><dd>' + tglPanjang(L.sampai) + ' lewat ' + metodeH(L.metode) + '</dd></dl>' +
+      '</div>' +
       '<div class="sek-blok"><div class="sek-blok-h">Metode pembayaran</div>' +
         '<div class="sek-bayar" role="radiogroup" aria-label="Metode pembayaran">' + BAYAR.map(function(b){
           return '<label class="sek-bayar-i"><input type="radio" name="sekBayar" value="' + b.k + '" data-sek-bayar' + (t.draftMetode === b.k ? ' checked' : '') + '>' +
+            '<span class="sb-metode-ic" aria-hidden="true">' + b.ic + '</span>' +
             '<span class="t"><b>' + b.h + '</b><small>' + b.sub + '</small></span>' + (t.metode === b.k ? '<span class="sek-status">Dipakai</span>' : '') + '</label>';
         }).join('') + '</div>' +
-        '<div class="sek-baris"><button type="button" class="btn sm" data-sek-tagih="simpan-metode"' + (t.draftMetode === t.metode ? ' disabled' : '') + '>Pakai metode ini</button></div>' +
+        '<div class="sek-baris"><button type="button" class="btn sm" data-sek-tagih="simpan-metode"' + (t.draftMetode === t.metode ? ' disabled' : '') + '>Pakai metode ini</button>' +
+          '<span class="sek-kecil">Dipakai untuk perpanjangan dan tambah kapasitas berikutnya.</span></div>' +
       '</div>' +
       '<div class="sek-blok"><div class="sek-blok-h">Riwayat tagihan</div>' +
-        '<ul class="sek-jejak">' + [1, 2].map(function(m){
-          const d = new Date(); d.setMonth(d.getMonth() - m + 1, 1);
-          return '<li>1 ' + BULAN[d.getMonth()] + ' ' + d.getFullYear() + ' · ' + (H ? rp(H.perBulan) : 'Rp 199 / anggota') + '<span>Lunas</span></li>';
+        '<ul class="sek-jejak">' + L.riwayat.map(function(r){
+          return '<li>' + tglPanjang(r.t) + ' · ' + lolos(r.ket) + ' · ' + rpx(r.total) + ' · ' + metodeH(r.metode) + '<span>Lunas</span></li>';
         }).join('') + '</ul>' +
-      '</div>';
+      '</div>' +
+      '<div class="sek-blok"><div class="sek-blok-h">Alamat penagihan</div>' + alamatBlok + '</div>';
   }
   function gambarSetting(){ gambarAkun(); gambarNotif(); gambarTagihan(); }
 
@@ -12013,59 +12107,251 @@ function hitung(){}
 
   /* ---------- modal aktifkan ---------- */
   const modal = el('sekModal');
-  /* alasan naik paket dari batas Esensial — tampil sebagai konteks di atas pop up */
+  /* ---------- langganan Advance: pop up beli & tambah kapasitas ----------
+     Satu alur untuk dua keperluan:
+       baru   — Esensial → Advance: atur kapasitas (anggota, peninjau, durasi), lalu bayar
+       tambah — Advance aktif, kapasitas dinaikkan: selisihnya dibayar prorata sisa periode
+     Langkah: Kapasitas (benefit + kalkulator) → Pembayaran (Kartu / GoPay / QRIS) → Selesai.
+     Harga dari KolavoHarga — rumus yang sama dengan kalkulator beranda. */
   const ALASAN = {
     peninjau: 'Di Esensial pendaftaran ditinjau satu orang. Dengan Advance, kamu bisa menambah peninjau dan menyusun pengurus lengkap.',
-    anggota: 'Komunitasmu sudah 20 anggota, batas paket Esensial. Dengan Advance, kamu bisa menerima pendaftar baru hingga 1.000 anggota.'
+    anggota: 'Komunitasmu sudah 20 anggota, batas paket Esensial. Dengan Advance, kamu bisa menerima pendaftar baru hingga 1.000 anggota.',
+    kapasitas: 'Kapasitas anggota langgananmu sudah terpakai semua. Tambah kapasitas supaya pendaftar baru bisa diterima.',
+    'kapasitas-peninjau': 'Semua kursi peninjau di langgananmu sudah terpakai. Tambah kursi untuk berbagi tugas meninjau.'
   };
-  /* jalur naik paket dari dashboard Esensial: buka pop up, lalu kembali ke tab asalnya */
-  D.bukaAdvance = function(alasan){
-    D.tabSesudah = alasan === 'peninjau' ? 'pengurus' : alasan === 'anggota' ? 'minta' : null;
-    bukaModal(alasan);
-  };
-  /* perkiraan tagihan bulanan untuk komunitas ini — rumus yang sama dengan kalkulator beranda */
-  function perkiraanAdvance(){
-    if(!window.KolavoHarga) return '';
-    const n = Math.max(30, D.jumlahAnggota()), h = window.KolavoHarga(n, D.peninjau.length, 1);
-    return '<p class="sek-kira">Perkiraan untuk ' + lolos(D.kom.nama) + ': <b>Rp ' + Math.round(h.perBulan).toLocaleString('id-ID') + '</b> / bulan' +
-      ' (' + h.n.toLocaleString('id-ID') + ' anggota, ' + h.p + ' peninjau' + (D.jumlahAnggota() < 30 ? ', minimal 30 anggota' : '') + ')</p>';
+  const rpx = function(x){ return 'Rp ' + Math.round(x).toLocaleString('id-ID'); };
+  const tglPanjang = function(t){ const d = new Date(t); return d.getDate() + ' ' + BULAN[d.getMonth()] + ' ' + d.getFullYear(); };
+  const tambahBulan = function(t, n){ const d = new Date(t); d.setMonth(d.getMonth() + n); return d.getTime(); };
+  const ke10 = function(n){ return Math.min(1000, Math.max(30, Math.ceil(n / 10) * 10)); };
+  const durasiTeks = function(b){ return b >= 24 ? (b / 12) + ' tahun' : b + ' bulan'; };
+  const metodeH = function(k){ const b = BAYAR.filter(function(x){ return x.k === k; })[0]; return b ? b.h : k; };
+
+  /* langganan aktif. Komunitas yang mengangkatmu sudah berlangganan sebelum kamu masuk,
+     jadi kapasitasnya dibuatkan contoh yang masuk akal dari jumlah anggotanya. */
+  function langganan(){
+    if(!S.langganan && D.sekAktif){
+      const mulai = tambahBulan(Date.now(), -5);
+      const n = ke10(Math.max(50, D.jumlahAnggota() * 2)), p = Math.max(2, D.peninjau.length + 1);
+      S.langganan = { anggota: n, peninjau: p, bulan: 12, metode: 'kartu', mulai: mulai, sampai: tambahBulan(mulai, 12), diskon: .05,
+        riwayat: [{ t: mulai, ket: 'Langganan Advance 12 bulan', total: window.KolavoHarga ? window.KolavoHarga(n, p, 12).total : 0, metode: 'kartu' }] };
+    }
+    return S.langganan || null;
   }
-  function bukaModal(alasan){
-    el('sekIsi').innerHTML = (ALASAN[alasan] ? '<div class="sek-alasan">' + IK.kantor + '<p>' + ALASAN[alasan] + '</p></div>' : '') +
-      '<span class="sek-eb">' + IK.kantor + 'Dashboard Advance</span>' +
-      '<h2 id="sekHead">Berlangganan Advance untuk ' + lolos(D.kom.nama) + '</h2>' +
-      '<p class="lgn-sub">Alat administrasi tambahan di dashboard pengurus. Satu langganan untuk komunitas — setiap pengurus yang kamu undang ikut memakainya dengan akunnya sendiri.</p>' +
-      '<div class="sek-modal-grid"><ul class="sek-poin">' + URUT.map(function(k){
-        return '<li>' + IK.cek + '<span><b>' + FITUR[k].judul + '</b> — ' + FITUR[k].ringkas + '</span></li>';
-      }).join('') + '</ul>' +
-      '<div class="sek-modal-samping"><div class="sek-harga"><b>Rp 199</b> <span>/ anggota / bulan</span>' +
-        '<p>Untuk 30 sampai 1.000 anggota — tarif per anggota makin turun saat komunitas tumbuh. Peninjau pertama Rp 15.000, tiap tambahan Rp 3.000 per bulan.</p>' +
-        perkiraanAdvance() +
-        '<p>Ditagihkan ke komunitas, jadi langganan tidak ikut pergi saat kepengurusan berganti. Bisa kembali ke tampilan Esensial kapan saja.</p></div>' +
-      '<div class="sek-cta"><button type="button" class="btn md" data-sek-aktifkan>Berlangganan</button>' +
-        '<button type="button" class="btn outline md" data-sek-tutup>Tetap di Esensial</button></div></div></div>';
+  D.kapasitas = function(){ const l = langganan(); return l ? { anggota: l.anggota, peninjau: l.peninjau } : null; };
+
+  let B = null;   /* isi pop up yang sedang terbuka */
+  function hitungB(){
+    const H = window.KolavoHarga;
+    if(B.mode !== 'tambah'){ const h = H(B.n, B.p, B.bulan); return { h: h, bayar: h.total }; }
+    const l = langganan(), h = H(B.n, B.p, 1), lama = H(l.anggota, l.peninjau, 1);
+    /* sisa bulan kalender periode ini (bulan berjalan dihitung penuh) */
+    const sisa = Math.max(1, Math.ceil((l.sampai - Date.now()) / (30.44 * 864e5) - 0.02));
+    const selisih = Math.max(0, h.perBulan - lama.perBulan);
+    return { h: h, lama: lama, sisa: sisa, selisih: selisih, bayar: Math.round(selisih * sisa * (1 - (l.diskon || 0))) };
+  }
+  function bukaBeli(mode, alasan){
+    const l = langganan(), tambah = mode === 'tambah' && !!l;
+    B = { mode: tambah ? 'tambah' : 'baru', alasan: alasan, langkah: 'paket', bulan: tambah ? l.bulan : 12,
+      n: tambah ? Math.min(1000, l.anggota + (alasan === 'kapasitas' ? 50 : 0)) : ke10(D.jumlahAnggota() + 10),
+      p: tambah ? l.peninjau + (alasan === 'kapasitas-peninjau' ? 1 : 0) : Math.max(1, D.peninjau.length),
+      metode: (l && l.metode) || S.tagihan.metode || 'qris' };
+    gambarBeli();
     modal.hidden = false;
     void modal.offsetWidth;
     modal.classList.add('on');
     document.body.classList.add('lgn-open');
-    const b = modal.querySelector('[data-sek-aktifkan]'); if(b) b.focus();
+  }
+  function bukaModal(alasan){ bukaBeli('baru', alasan); }
+  /* jalur naik paket / tambah kapasitas dari dashboard: kembali ke tab asalnya sesudah bayar */
+  D.bukaAdvance = function(alasan){
+    D.tabSesudah = alasan === 'peninjau' ? 'pengurus' : alasan === 'anggota' ? 'minta' : null;
+    if(D.sekAktif){ bukaBeli('tambah', alasan === 'peninjau' ? 'kapasitas-peninjau' : alasan === 'anggota' ? 'kapasitas' : alasan); return; }
+    bukaBeli('baru', alasan);
+  };
+
+  function langkahHtml(){
+    const urut = [['paket', 'Kapasitas'], ['bayar', 'Pembayaran'], ['ok', 'Selesai']];
+    const kini = B.langkah === 'proses' ? 'bayar' : B.langkah;
+    const i = urut.findIndex(function(x){ return x[0] === kini; });
+    return '<ol class="sb-step">' + urut.map(function(x, j){
+      return '<li class="' + (j < i ? 'lewat' : j === i ? 'kini' : '') + '"><span>' + (j < i ? '✓' : j + 1) + '</span>' + x[1] + '</li>';
+    }).join('') + '</ol>';
+  }
+  function ringkasHtml(){
+    const c = hitungB(), h = c.h;
+    let r = '<div><dt>' + h.n.toLocaleString('id-ID') + ' anggota × Rp ' + h.tarif.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</dt><dd>' + rpx(h.biayaAnggota) + '</dd></div>' +
+      '<div><dt>' + h.p + ' peninjau</dt><dd>' + rpx(h.biayaPeninjau) + '</dd></div>' +
+      '<div class="sb-sub"><dt>Per bulan</dt><dd>' + rpx(h.perBulan) + '</dd></div>';
+    if(B.mode === 'tambah'){
+      r += '<div><dt>Langganan sekarang</dt><dd>− ' + rpx(c.lama.perBulan) + '</dd></div>' +
+        '<div><dt>Selisih × ' + c.sisa + ' bulan tersisa</dt><dd>' + rpx(c.selisih * c.sisa) + '</dd></div>' +
+        (langganan().diskon ? '<div><dt>Diskon periode ' + Math.round(langganan().diskon * 100) + '%</dt><dd>berlaku</dd></div>' : '');
+    } else if(h.diskon){
+      r += '<div><dt>Diskon ' + Math.round(h.diskon * 100) + '% · ' + durasiTeks(h.bulan) + '</dt><dd>− ' + rpx(h.potongan) + '</dd></div>';
+    }
+    return '<dl class="kalk-rinci sb-rinci">' + r + '</dl>' +
+      '<p class="kalk-v"><span>' + (B.mode === 'tambah' ? 'Dibayar sekarang' : 'Total ' + durasiTeks(B.bulan)) + '</span><b>' + rpx(c.bayar) + '</b></p>';
+  }
+  function stepHtml(id, nilai, min, max, label){
+    return '<div class="kalk-step" role="group" aria-label="' + label + '">' +
+      '<button type="button" data-sb-' + id + '="-1"' + (nilai <= min ? ' disabled' : '') + ' aria-label="Kurangi">−</button>' +
+      '<b>' + nilai + '</b><button type="button" data-sb-' + id + '="1"' + (nilai >= max ? ' disabled' : '') + ' aria-label="Tambah">+</button></div>';
+  }
+  function minAnggota(){ const l = langganan(); return Math.max(ke10(D.jumlahAnggota()), B.mode === 'tambah' && l ? l.anggota : 30); }
+  function minPeninjau(){ const l = langganan(); return Math.max(1, D.peninjau.length, B.mode === 'tambah' && l ? l.peninjau : 1); }
+
+  function htmlPaket(){
+    const l = langganan(), tambah = B.mode === 'tambah';
+    const kiri = tambah
+      ? '<div class="sb-kini"><p class="sek-lbl">Langganan sekarang</p>' +
+          '<dl class="sek-dl"><dt>Kapasitas anggota</dt><dd>' + D.jumlahAnggota() + ' terpakai dari ' + l.anggota + '</dd>' +
+          '<dt>Kursi peninjau</dt><dd>' + D.peninjau.length + ' terpakai dari ' + l.peninjau + '</dd>' +
+          '<dt>Periode</dt><dd>' + durasiTeks(l.bulan) + ' · sampai ' + tglPanjang(l.sampai) + '</dd>' +
+          '<dt>Metode</dt><dd>' + metodeH(l.metode) + '</dd></dl>' +
+          '<p class="sek-kecil">Tambahan kapasitas langsung aktif. Selisihnya dibayar prorata sampai akhir periode, lalu ikut tagihan perpanjangan berikutnya.</p></div>'
+      : '<p class="sek-lbl">Yang kamu dapat</p><ul class="sek-poin sb-poin">' + URUT.map(function(k){
+          return '<li title="' + lolos(FITUR[k].ringkas) + '">' + IK.cek + '<span><b>' + FITUR[k].judul + '</b></span></li>';
+        }).join('') +
+          '<li>' + IK.cek + '<span><b>Struktur kepengurusan</b></span></li><li>' + IK.cek + '<span><b>Peninjau lebih dari satu</b></span></li></ul>' +
+        '<p class="sek-kecil sb-poin-k">Satu langganan untuk komunitas: setiap pengurus yang kamu undang ikut memakainya dengan akunnya sendiri. Bisa kembali ke tampilan Esensial kapan saja.</p>';
+    const durasi = tambah ? '' :
+      '<div class="sb-baris-k"><span class="kalk-l"><span class="kalk-lt">Durasi langganan</span></span>' +
+        '<div class="kalk-durasi" role="radiogroup" aria-label="Durasi langganan">' + [[1, 'Harga normal'], [6, 'Hemat 5%'], [12, 'Hemat 5%'], [24, 'Hemat 10%']].map(function(d){
+          return '<button type="button" class="kalk-seg' + (B.bulan === d[0] ? ' on' : '') + '" role="radio" aria-checked="' + (B.bulan === d[0]) + '" data-sb-durasi="' + d[0] + '">' + durasiTeks(d[0]) + '<small>' + d[1] + '</small></button>';
+        }).join('') + '</div></div>';
+    return '<div class="sb-grid"><div class="sb-kiri">' + kiri + '</div>' +
+      '<div class="sb-kanan"><p class="sek-lbl">' + (tambah ? 'Kapasitas baru' : 'Atur kapasitas') + '</p>' +
+        '<div class="sb-baris-k"><label class="kalk-l" for="sbN"><span class="kalk-lt">Kapasitas anggota</span><b id="sbNV">' + B.n.toLocaleString('id-ID') + '</b></label>' +
+          '<input type="range" id="sbN" min="' + minAnggota() + '" max="1000" step="10" value="' + B.n + '">' +
+          '<p class="sek-kecil">Saat ini ' + D.jumlahAnggota() + ' anggota. Kapasitas bisa ditambah kapan saja.</p></div>' +
+        '<div class="sb-baris-k sb-sejajar"><span class="kalk-l"><span class="kalk-lt">Kursi peninjau</span></span>' + stepHtml('p', B.p, minPeninjau(), 20, 'Kursi peninjau') + '</div>' +
+        durasi +
+        '<div id="sbRingkas">' + ringkasHtml() + '</div>' +
+        '<button type="button" class="btn md sb-cta" data-sb-lanjut' + (hitungB().bayar <= 0 && tambah ? ' disabled' : '') + '>Lanjut ke pembayaran</button>' +
+        '<button type="button" class="sb-batal" data-sek-tutup>' + (tambah ? 'Batal' : 'Tetap di Esensial') + '</button>' +
+      '</div></div>';
+  }
+
+  let qrisTimer = null;
+  function htmlBayar(){
+    const c = hitungB(), l = langganan(), tambah = B.mode === 'tambah';
+    const pilih = BAYAR.map(function(b){
+      return '<label class="sb-metode' + (B.metode === b.k ? ' on' : '') + '"><input type="radio" name="sbMetode" value="' + b.k + '" data-sb-metode' + (B.metode === b.k ? ' checked' : '') + '>' +
+        '<span class="sb-metode-ic" aria-hidden="true">' + b.ic + '</span><span class="t"><b>' + b.h + '</b><small>' + b.sub + '</small></span>' +
+        (l && l.metode === b.k ? '<span class="sb-dipakai">Dipakai sebelumnya</span>' : '') + '</label>';
+    }).join('');
+    let detail = '';
+    if(B.metode === 'kartu'){
+      detail = (l && l.metode === 'kartu')
+        ? '<div class="sb-detail"><p class="sb-simpan">' + BAYAR[0].ic + '<span>Kartu tersimpan <b>Visa •••• 4242</b> · berlaku 08/29</span></p></div>'
+        : '<div class="sb-detail sek-grid2">' +
+            '<div class="sek-penuh"><label class="sek-lbl" for="sbKartu">Nomor kartu</label><input class="inp" id="sbKartu" inputmode="numeric" autocomplete="off" placeholder="1234 5678 9012 3456"></div>' +
+            '<div><label class="sek-lbl" for="sbExp">Berlaku sampai</label><input class="inp" id="sbExp" inputmode="numeric" autocomplete="off" placeholder="BB/TT"></div>' +
+            '<div><label class="sek-lbl" for="sbCvv">CVV</label><input class="inp" id="sbCvv" inputmode="numeric" autocomplete="off" placeholder="123"></div>' +
+            '<p class="sek-kecil sek-penuh">' + IK.kunci + 'Diproses penyedia pembayaran berlisensi Bank Indonesia. Kolavo tidak menyimpan nomor kartu.</p></div>';
+    } else if(B.metode === 'gopay'){
+      detail = '<div class="sb-detail"><label class="sek-lbl" for="sbHp">Nomor HP yang terhubung GoPay</label>' +
+        '<div class="tel"><span class="tel-pfx">🇮🇩 +62</span><input id="sbHp" type="tel" inputmode="numeric" placeholder="812 3456 7890"></div>' +
+        '<p class="sek-kecil">Permintaan bayar dikirim ke aplikasi Gojek. Konfirmasi dengan PIN GoPay-mu.</p></div>';
+    } else {
+      detail = '<div class="sb-detail sb-qris"><div class="krd-qris"><div class="krd-qris-h"><b>QRIS</b><span>Kolavo · Advance</span></div>' +
+        '<div class="krd-qr">' + (window.KolavoQR ? window.KolavoQR('https://kolavo.app/qris/ADV' + Date.now().toString().slice(-8) + '?n=' + c.bayar, 'QRIS ' + rpx(c.bayar)) : '') + '</div>' +
+        '<div class="krd-qris-n"><small>Total bayar</small><strong>' + rpx(c.bayar) + '</strong></div></div>' +
+        '<p class="krd-tunggu"><span class="gspin"></span><span>Menunggu pembayaran · berlaku <b id="sbWaktu">10:00</b></span></p></div>';
+    }
+    const ringkas = '<div class="sb-kanan"><p class="sek-lbl">Ringkasan</p>' +
+      '<dl class="sek-dl"><dt>Paket</dt><dd>Advance · ' + (tambah ? 'tambah kapasitas' : durasiTeks(B.bulan)) + '</dd>' +
+      '<dt>Kapasitas anggota</dt><dd>' + B.n.toLocaleString('id-ID') + '</dd><dt>Kursi peninjau</dt><dd>' + B.p + '</dd>' +
+      '<dt>Komunitas</dt><dd>' + lolos(D.kom.nama) + '</dd></dl>' +
+      '<p class="kalk-v"><span>Total</span><b>' + rpx(c.bayar) + '</b></p>' +
+      '<button type="button" class="btn md sb-cta" data-sb-bayar>' + (B.metode === 'qris' ? 'Simulasikan pembayaran berhasil' : 'Bayar ' + rpx(c.bayar)) + '</button>' +
+      '<button type="button" class="sb-batal" data-sb-kembali>Ubah kapasitas</button>' +
+      '<p class="sek-kecil">Ditagihkan ke ' + lolos(D.kom.nama) + ', bukan ke akun pribadi. Prototipe: pembayaran disimulasikan.</p></div>';
+    return '<div class="sb-grid"><div class="sb-kiri"><p class="sek-lbl">Metode pembayaran</p><div class="sb-metode-l" role="radiogroup" aria-label="Metode pembayaran">' + pilih + '</div>' + detail + '</div>' + ringkas + '</div>';
+  }
+  function htmlProses(){
+    return '<div class="sb-proses"><span class="gspin"></span><p>' + (B.metode === 'gopay' ? 'Menunggu konfirmasi di aplikasi Gojek…' : B.metode === 'qris' ? 'Memeriksa pembayaran QRIS…' : 'Memproses pembayaran kartu…') + '</p></div>';
+  }
+  function htmlOk(){
+    const l = langganan(), tambah = B.mode === 'tambah';
+    return '<div class="sb-ok"><span class="krd-ok-ic" aria-hidden="true">' + IK.cek + '</span>' +
+      '<p class="lgn-sub">' + (tambah ? 'Kapasitas baru langsung berlaku.' : 'Semua alat Advance sudah bisa dipakai pengurus.') + '</p>' +
+      '<dl class="sek-dl sb-ok-dl"><dt>Kapasitas anggota</dt><dd>' + l.anggota.toLocaleString('id-ID') + '</dd><dt>Kursi peninjau</dt><dd>' + l.peninjau + '</dd>' +
+        '<dt>Berlaku sampai</dt><dd>' + tglPanjang(l.sampai) + '</dd><dt>Dibayar</dt><dd>' + rpx(l.riwayat[0].total) + ' · ' + metodeH(l.metode) + '</dd></dl>' +
+      '<button type="button" class="btn md sb-cta" data-sb-selesai>' + (tambah ? 'Kembali ke dashboard' : 'Buka dashboard Advance') + '</button></div>';
+  }
+  function gambarBeli(){
+    clearInterval(qrisTimer); qrisTimer = null;
+    const tambah = B.mode === 'tambah';
+    const judul = B.langkah === 'ok'
+      ? (tambah ? 'Kapasitas bertambah' : 'Advance aktif untuk ' + lolos(D.kom.nama))
+      : B.langkah === 'paket' ? (tambah ? 'Tambah kapasitas ' + lolos(D.kom.nama) : 'Berlangganan Advance untuk ' + lolos(D.kom.nama)) : 'Pembayaran';
+    const isi = B.langkah === 'paket' ? htmlPaket() : B.langkah === 'bayar' ? htmlBayar() : B.langkah === 'proses' ? htmlProses() : htmlOk();
+    el('sekIsi').innerHTML = (B.langkah === 'paket' && ALASAN[B.alasan] ? '<div class="sek-alasan">' + IK.kantor + '<p>' + ALASAN[B.alasan] + '</p></div>' : '') +
+      '<span class="sek-eb">' + IK.kantor + 'Advance</span><h2 id="sekHead">' + judul + '</h2>' + langkahHtml() + isi;
+    if(B.langkah === 'bayar' && B.metode === 'qris'){
+      let sisa = 600;
+      qrisTimer = setInterval(function(){
+        sisa--; const w = el('sbWaktu');
+        if(w) w.textContent = Math.floor(sisa / 60) + ':' + String(sisa % 60).padStart(2, '0');
+        if(sisa <= 0) clearInterval(qrisTimer);
+      }, 1000);
+    }
+  }
+  function selesaiBayar(){
+    const c = hitungB(), now = Date.now();
+    if(B.mode === 'baru'){
+      S.langganan = { anggota: B.n, peninjau: B.p, bulan: B.bulan, metode: B.metode, mulai: now, sampai: tambahBulan(now, B.bulan), diskon: c.h.diskon, riwayat: [] };
+      D.sekAktif = true;
+      D.mode = 'advance';
+      catat('Kamu berlangganan Advance: ' + B.n + ' anggota, ' + B.p + ' peninjau, ' + durasiTeks(B.bulan));
+    } else {
+      const l = langganan();
+      catat('Kamu menambah kapasitas Advance jadi ' + B.n + ' anggota dan ' + B.p + ' peninjau');
+      l.anggota = B.n; l.peninjau = B.p; l.metode = B.metode;
+    }
+    langganan().riwayat.unshift({ t: now, ket: B.mode === 'baru' ? 'Langganan Advance ' + durasiTeks(B.bulan) : 'Tambah kapasitas (' + B.n + ' anggota, ' + B.p + ' peninjau)', total: c.bayar, metode: B.metode });
+    S.tagihan.metode = S.tagihan.draftMetode = B.metode;
+    B.langkah = 'ok';
+    gambarBeli();
   }
   function tutupModal(){
+    clearInterval(qrisTimer); qrisTimer = null;
     modal.classList.remove('on');
     document.body.classList.remove('lgn-open');
     setTimeout(function(){ if(!modal.classList.contains('on')) modal.hidden = true; }, 170);
   }
   modal.addEventListener('click', function(e){
     if(e.target.closest('[data-sek-tutup]')){ tutupModal(); return; }
-    if(e.target.closest('[data-sek-aktifkan]')){
-      D.sekAktif = true;
-      D.mode = 'advance';
-      D.tab = D.tabSesudah || 'dasbor'; D.tabSesudah = null;
-      catat('Kamu berlangganan dashboard Advance');
-      tutupModal();
-      D.gambar();
-      toast('Advance aktif. Di produk, langkah ini membuka pembayaran.');
+    if(!B) return;
+    const pd = e.target.closest('[data-sb-p]');
+    if(pd){ B.p = Math.max(minPeninjau(), Math.min(20, B.p + (+pd.dataset.sbP))); gambarBeli(); return; }
+    const du = e.target.closest('[data-sb-durasi]');
+    if(du){ B.bulan = +du.dataset.sbDurasi; gambarBeli(); return; }
+    if(e.target.closest('[data-sb-lanjut]')){ B.langkah = 'bayar'; gambarBeli(); return; }
+    if(e.target.closest('[data-sb-kembali]')){ B.langkah = 'paket'; gambarBeli(); return; }
+    if(e.target.closest('[data-sb-bayar]')){
+      B.langkah = 'proses'; gambarBeli();
+      setTimeout(selesaiBayar, B.metode === 'gopay' ? 1600 : 1200);
+      return;
     }
+    if(e.target.closest('[data-sb-selesai]')){
+      if(D.tabSesudah){ D.tab = D.tabSesudah; D.tabSesudah = null; }
+      else if(B.mode === 'baru') D.tab = 'dasbor';
+      tutupModal(); D.gambar();
+      toast(B.mode === 'baru' ? 'Advance aktif. Selamat mengelola!' : 'Kapasitas langganan bertambah.');
+    }
+  });
+  modal.addEventListener('change', function(e){
+    if(B && e.target.matches('[data-sb-metode]')){ B.metode = e.target.value; gambarBeli(); }
+  });
+  modal.addEventListener('input', function(e){
+    if(!B || e.target.id !== 'sbN') return;
+    B.n = +e.target.value;
+    el('sbNV').textContent = B.n.toLocaleString('id-ID');
+    el('sbRingkas').innerHTML = ringkasHtml();
+    const cta = modal.querySelector('[data-sb-lanjut]');
+    if(cta) cta.disabled = B.mode === 'tambah' && hitungB().bayar <= 0;
   });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !modal.hidden) tutupModal(); });
 
@@ -12375,6 +12661,7 @@ function hitung(){}
       return;
     }
     /* setting: tagihan */
+    if(e.target.closest('[data-sb-tambah]')){ D.tabSesudah = 'tagihan'; bukaBeli('tambah'); return; }
     const tagih = e.target.closest('[data-sek-tagih]');
     if(tagih){
       const tg = S.tagihan, aksi = tagih.dataset.sekTagih;

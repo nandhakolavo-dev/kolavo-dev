@@ -1686,3 +1686,24 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   + Keluar. "Komunitas saya" (sudah ada di nav Komunitas) dan "Pengaturan akun" dihapus.
 - **Label pop up pengurus senada tema**: `#pengModal` ikut diwarnai `KolavoTema`/`KolavoWarnai`;
   `.peng-pp-tags .tag` memakai `--blue-wash` / `--blue-ink` tema komunitas.
+
+## Langganan Advance: beli, bayar, pantau kapasitas (17 Okt 2026)
+
+- **Pop up langganan = satu alur tiga langkah** (`bukaBeli(mode, alasan)` di 50-js-sekretariat;
+  `bukaModal`/`D.bukaAdvance` memanggilnya). Penunjuk langkah `.sb-step`: Kapasitas → Pembayaran → Selesai.
+  1. **Kapasitas**: kiri benefit ringkas (judul fitur, 2 kolom); kanan kalkulator — kapasitas anggota
+     (slider 30–1.000, min = anggota sekarang), kursi peninjau (stepper), durasi (segmen 1/6/12/24 +
+     hemat), rincian `KolavoHarga`, total. Mode **tambah**: kiri ringkasan langganan sekarang, tanpa
+     durasi; yang dibayar = selisih per bulan × sisa bulan periode × (1 − diskon periode).
+  2. **Pembayaran**: Kartu kredit/debit (isian kartu, atau "kartu tersimpan" bila dipakai sebelumnya),
+     GoPay (nomor HP → konfirmasi di Gojek), QRIS (kode dinamis + hitung mundur). Metode yang dipakai
+     sebelumnya terpilih otomatis dan diberi lencana "Dipakai sebelumnya". Ringkasan + tombol Bayar.
+  3. Proses (spinner sesuai metode) → **Selesai**: kapasitas, berlaku sampai, dibayar lewat apa.
+- **Tab Tagihan → Langganan** (`data-tab="tagihan"` tetap): meter kapasitas anggota & kursi peninjau
+  (biru, oranye ≥85%, penuh), tombol **Tambah kapasitas**, periode (aktif sampai, sisa hari, biaya per
+  bulan, tarif, perpanjangan lewat metode), metode pembayaran (Kartu/GoPay/QRIS), riwayat tagihan,
+  alamat penagihan. State: `S.langganan = { anggota, peninjau, bulan, metode, mulai, sampai, diskon, riwayat }`.
+  Komunitas yang mengangkatmu dibuatkan langganan contoh (`langganan()`).
+- **Kapasitas ditegakkan**: meter kuota di Permintaan gabung berlaku juga di Advance ("19 dari 100
+  anggota · kapasitas Advance"); penuh → "Tambah kapasitas". Menjadikan peninjau melebihi kursi →
+  pop up tambah kapasitas. `D.kapasitas()` dipakai 50-js-dashboard-pengurus.
