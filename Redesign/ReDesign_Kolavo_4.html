@@ -1451,9 +1451,10 @@ body.lgn-open{overflow:hidden}
 .buka-fc{font-size:10.5px;font-weight:600;color:var(--ink-3)}
 .buka-fopsi .chip.on .buka-fc{color:var(--btn-ink)}
 /* paginasi daftar (halaman komunitas + dashboard Anggota) */
-.pager{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 4px 4px}
-.pager-info{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
-.pager-n{display:flex;gap:4px}
+.pager{display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:14px 4px 4px}
+.pager-info{margin-right:auto;font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* tombol halaman selalu menempel di ujung kanan, lebar tetap supaya tidak bergeser */
+.pager-n{display:flex;gap:4px;flex:none;margin-left:auto}
 .pager-b{min-width:34px;height:34px;padding:0 8px;border-radius:100px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);font:inherit;font-size:13px;font-weight:600;cursor:pointer;font-variant-numeric:tabular-nums}
 .pager-b:hover:not(:disabled){border-color:var(--blue);color:var(--blue-ink)}
 .pager-b.on{background:var(--blue);border-color:var(--blue);color:var(--btn-ink)}
@@ -2571,9 +2572,16 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .ob-ttd-t b{font-size:13.5px;font-weight:600}
 .ob-ttd-t i{font-style:normal;font-size:12.5px;font-weight:400;color:var(--ink-3)}
 /* dashboard */
-.kl-putus{margin-top:6px;font-size:12.5px}
-.kl-putus summary{cursor:pointer;color:var(--ink-3);font-weight:500}
-.kl-putus p{margin-top:6px;padding:9px 12px;border-radius:11px;background:var(--bg-alt);border-left:3px solid var(--green);font-size:13px;line-height:1.5;color:var(--ink)}
+.kl-putus{margin-top:8px;font-size:12.5px}
+.kl-putus summary{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:pointer;list-style:none;color:var(--ink-3);font-weight:500}
+.kl-putus summary::-webkit-details-marker{display:none}
+/* pemicu alasan: pill hijau yang jelas bisa diklik, panahnya berputar saat terbuka */
+.kl-putus-lihat{display:inline-flex;align-items:center;gap:5px;padding:4px 10px 4px 12px;border-radius:100px;border:1px solid var(--green);background:var(--green-wash);color:var(--green);font-size:12px;font-weight:600;transition:background .15s ease}
+.kl-putus-lihat svg{width:14px;height:14px;transition:transform .15s ease}
+.kl-putus summary:hover .kl-putus-lihat{background:var(--card)}
+.kl-putus[open] .kl-putus-lihat svg{transform:rotate(180deg)}
+.kl-putus summary:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:100px}
+.kl-putus p{margin-top:8px;padding:10px 12px;border-radius:11px;background:var(--green-wash);border:1px solid var(--line);font-size:13px;line-height:1.5;color:var(--ink)}
 .kl-seksi-jarak{margin-top:26px}
 .sek-ingat-pemicu{flex-basis:100%}
 .sek-surat-tombol{display:inline-block;padding:9px 20px;border-radius:100px;background:var(--blue);color:var(--card);font-weight:600;font-size:13px}
@@ -3601,13 +3609,6 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
         <div class="agg" id="aggWadah"></div>
       </section>
 
-      <!-- V4: Pengurus naik ke atas daftar anggota dan tampil untuk semua pengunjung (kredensial) -->
-      <section class="kom-sec" id="komPengSec">
-        <h2 class="kom-h">Pengurus</h2>
-        <p class="kom-sub" id="komPengSub">Mereka yang mengurus komunitas ini.</p>
-        <div class="peng" id="komPengurus"></div>
-      </section>
-
       <!-- feed "Anggota baru" (paket Advance): sambutan otomatis anggota baru (broadcast ditahan di V4).
            Digambar 50-js-feed; tidak ada sama sekali di Esensial. -->
       <section class="kom-sec kom-feed" id="komFeed" hidden></section>
@@ -3642,6 +3643,13 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
             Halaman ini cuma kelihatan sama sesama anggota
           </div>
         </div>
+      </section>
+
+      <!-- Pengurus di bawah daftar anggota; tetap tampil untuk semua pengunjung (kredensial) -->
+      <section class="kom-sec" id="komPengSec">
+        <h2 class="kom-h">Pengurus</h2>
+        <p class="kom-sub" id="komPengSub">Mereka yang mengurus komunitas ini.</p>
+        <div class="peng" id="komPengurus"></div>
       </section>
 
       <!-- formulir gabung: pertanyaan yang disusun pengurus komunitas ini -->
@@ -7218,16 +7226,13 @@ function hitung(){}
       return;
     }
     if(!founder){ fb.hidden = true; fb.innerHTML = ''; return; }
-    fb.hidden = false;
     const D = window.KolavoDashboard;
     const pend = (D && D.minta) ? D.minta.length : 0;
-    fb.className = 'kom-founder' + (pend ? ' ada' : '');
+    /* yang menunggu sudah ditandai di tombol Dashboard pengurus — tidak perlu kotak kedua */
+    fb.hidden = !!pend;
+    fb.className = 'kom-founder';
     if(pend){
-      fb.innerHTML =
-        '<div class="kom-founder-t"><span class="kom-founder-badge">' + pend + '</span>' +
-          '<div><strong>' + pend + ' orang menunggu persetujuanmu</strong>' +
-          '<p>Tinjau dan setujui di dashboard pengurus.</p></div></div>' +
-        '<div class="kom-founder-aksi"><button type="button" class="btn xs" data-dashboard="minta">Tinjau permintaan</button></div>';
+      fb.innerHTML = '';
     } else {
       fb.innerHTML =
         '<div class="kom-founder-t"><span class="kom-founder-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>' +
@@ -9310,6 +9315,20 @@ function hitung(){}
       { nama: 'Andre Wijaya', panggil: 'Andre', kerja: 'Sales properti', kota: 'Jakarta Barat', status: 'ditolak', oleh: D.aku, waktu: '3 hari lalu',
         catatan: 'Bukan alumni, dan jawabannya menyebut ingin menawarkan produk ke anggota. Disarankan ikut acara terbuka dulu.' }
     ];
+    /* tiap anggota contoh punya catatan keputusan — semua yang diterima wajib beralasan */
+    const ALASAN_CONTOH = [
+      'Alumni angkatan yang sama dengan Ketua, dikenal langsung oleh pengurus.',
+      'Direkomendasikan anggota lain. Jawaban pendaftarannya lengkap dan jelas.',
+      'Pernah ikut kegiatan bakti sosial komunitas tahun lalu.',
+      'Rekan seprofesi pengurus, ingin aktif di program mentoring.',
+      'Data angkatan cocok dengan arsip alumni.',
+      'Pernah jadi panitia acara reuni, ingin bantu kegiatan berikutnya.'
+    ];
+    ANGGOTA_CONTOH.forEach(function(a, i){
+      if(D.riwayat.some(function(r){ return r.nama === a[0]; })) return;
+      D.riwayat.push({ nama: a[0], panggil: a[0].split(' ')[0], kerja: a[1], kota: a[2], status: 'diterima', oleh: D.aku,
+        waktu: (2 + Math.floor(i / 3)) + ' minggu lalu', catatan: ALASAN_CONTOH[i % ALASAN_CONTOH.length] });
+    });
     D.built = true;
     /* modul lain (Sekretariat) mengosongkan keadaannya sendiri di sini */
     D.onBangun.forEach(function(f){ f(); });
@@ -9609,7 +9628,8 @@ function hitung(){}
   function putusan(nama){
     const r = D.riwayat.filter(function(x){ return x.nama === nama && x.status === 'diterima'; })[0];
     if(!r) return '';
-    return '<details class="kl-putus"><summary>Diterima ' + olehSiapa(r) + ' · ' + lolos(r.waktu) + '</summary>' +
+    return '<details class="kl-putus"><summary><span class="kl-putus-t">Diterima ' + olehSiapa(r) + ' · ' + lolos(r.waktu) + '</span>' +
+      '<span class="kl-putus-lihat">Lihat alasan<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>' +
       '<p>' + (r.catatan ? lolos(r.catatan) : (r.otomatis ? 'Diterima otomatis sesuai aturan penerimaan otomatis.' : 'Tidak ada catatan.')) + '</p></details>';
   }
 

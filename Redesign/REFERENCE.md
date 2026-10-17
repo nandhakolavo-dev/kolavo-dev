@@ -1582,3 +1582,9 @@ sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Ke
   ditolak tidak lagi menumpuk di bawah daftar; segmen hanya muncul bila ada yang ditolak.
 - **Tombol Dashboard pengurus** (`.kom-dasbor`): ikon panel, lencana oranye "N menunggu"
   (jumlah permintaan gabung), panah yang bergeser saat hover.
+- **Revisi lanjutan (17 Okt 2026):** kotak "N orang menunggu persetujuanmu" di halaman pemilik
+  dihapus (sudah ada lencana di tombol Dashboard; kotak "Semua permintaan sudah kamu tinjau" tetap
+  saat kosong). Paginasi: tombol menempel di ujung kanan (`.pager-n{margin-left:auto}`), info rentang
+  di kiri. Semua anggota contoh punya catatan keputusan (`ALASAN_CONTOH`), pemicu alasan jadi pill
+  hijau "Lihat alasan ⌄" (`.kl-putus-lihat`). Bagian Pengurus di profil komunitas pindah ke bawah
+  daftar anggota.

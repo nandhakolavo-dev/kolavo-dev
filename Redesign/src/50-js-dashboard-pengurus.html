@@ -227,6 +227,20 @@
       { nama: 'Andre Wijaya', panggil: 'Andre', kerja: 'Sales properti', kota: 'Jakarta Barat', status: 'ditolak', oleh: D.aku, waktu: '3 hari lalu',
         catatan: 'Bukan alumni, dan jawabannya menyebut ingin menawarkan produk ke anggota. Disarankan ikut acara terbuka dulu.' }
     ];
+    /* tiap anggota contoh punya catatan keputusan — semua yang diterima wajib beralasan */
+    const ALASAN_CONTOH = [
+      'Alumni angkatan yang sama dengan Ketua, dikenal langsung oleh pengurus.',
+      'Direkomendasikan anggota lain. Jawaban pendaftarannya lengkap dan jelas.',
+      'Pernah ikut kegiatan bakti sosial komunitas tahun lalu.',
+      'Rekan seprofesi pengurus, ingin aktif di program mentoring.',
+      'Data angkatan cocok dengan arsip alumni.',
+      'Pernah jadi panitia acara reuni, ingin bantu kegiatan berikutnya.'
+    ];
+    ANGGOTA_CONTOH.forEach(function(a, i){
+      if(D.riwayat.some(function(r){ return r.nama === a[0]; })) return;
+      D.riwayat.push({ nama: a[0], panggil: a[0].split(' ')[0], kerja: a[1], kota: a[2], status: 'diterima', oleh: D.aku,
+        waktu: (2 + Math.floor(i / 3)) + ' minggu lalu', catatan: ALASAN_CONTOH[i % ALASAN_CONTOH.length] });
+    });
     D.built = true;
     /* modul lain (Sekretariat) mengosongkan keadaannya sendiri di sini */
     D.onBangun.forEach(function(f){ f(); });
@@ -526,7 +540,8 @@
   function putusan(nama){
     const r = D.riwayat.filter(function(x){ return x.nama === nama && x.status === 'diterima'; })[0];
     if(!r) return '';
-    return '<details class="kl-putus"><summary>Diterima ' + olehSiapa(r) + ' · ' + lolos(r.waktu) + '</summary>' +
+    return '<details class="kl-putus"><summary><span class="kl-putus-t">Diterima ' + olehSiapa(r) + ' · ' + lolos(r.waktu) + '</span>' +
+      '<span class="kl-putus-lihat">Lihat alasan<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>' +
       '<p>' + (r.catatan ? lolos(r.catatan) : (r.otomatis ? 'Diterima otomatis sesuai aturan penerimaan otomatis.' : 'Tidak ada catatan.')) + '</p></details>';
   }
 

@@ -1408,9 +1408,10 @@ body.lgn-open{overflow:hidden}
 .buka-fc{font-size:10.5px;font-weight:600;color:var(--ink-3)}
 .buka-fopsi .chip.on .buka-fc{color:var(--btn-ink)}
 /* paginasi daftar (halaman komunitas + dashboard Anggota) */
-.pager{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 4px 4px}
-.pager-info{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
-.pager-n{display:flex;gap:4px}
+.pager{display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:14px 4px 4px}
+.pager-info{margin-right:auto;font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* tombol halaman selalu menempel di ujung kanan, lebar tetap supaya tidak bergeser */
+.pager-n{display:flex;gap:4px;flex:none;margin-left:auto}
 .pager-b{min-width:34px;height:34px;padding:0 8px;border-radius:100px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);font:inherit;font-size:13px;font-weight:600;cursor:pointer;font-variant-numeric:tabular-nums}
 .pager-b:hover:not(:disabled){border-color:var(--blue);color:var(--blue-ink)}
 .pager-b.on{background:var(--blue);border-color:var(--blue);color:var(--btn-ink)}
@@ -2528,9 +2529,16 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .ob-ttd-t b{font-size:13.5px;font-weight:600}
 .ob-ttd-t i{font-style:normal;font-size:12.5px;font-weight:400;color:var(--ink-3)}
 /* dashboard */
-.kl-putus{margin-top:6px;font-size:12.5px}
-.kl-putus summary{cursor:pointer;color:var(--ink-3);font-weight:500}
-.kl-putus p{margin-top:6px;padding:9px 12px;border-radius:11px;background:var(--bg-alt);border-left:3px solid var(--green);font-size:13px;line-height:1.5;color:var(--ink)}
+.kl-putus{margin-top:8px;font-size:12.5px}
+.kl-putus summary{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:pointer;list-style:none;color:var(--ink-3);font-weight:500}
+.kl-putus summary::-webkit-details-marker{display:none}
+/* pemicu alasan: pill hijau yang jelas bisa diklik, panahnya berputar saat terbuka */
+.kl-putus-lihat{display:inline-flex;align-items:center;gap:5px;padding:4px 10px 4px 12px;border-radius:100px;border:1px solid var(--green);background:var(--green-wash);color:var(--green);font-size:12px;font-weight:600;transition:background .15s ease}
+.kl-putus-lihat svg{width:14px;height:14px;transition:transform .15s ease}
+.kl-putus summary:hover .kl-putus-lihat{background:var(--card)}
+.kl-putus[open] .kl-putus-lihat svg{transform:rotate(180deg)}
+.kl-putus summary:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:100px}
+.kl-putus p{margin-top:8px;padding:10px 12px;border-radius:11px;background:var(--green-wash);border:1px solid var(--line);font-size:13px;line-height:1.5;color:var(--ink)}
 .kl-seksi-jarak{margin-top:26px}
 .sek-ingat-pemicu{flex-basis:100%}
 .sek-surat-tombol{display:inline-block;padding:9px 20px;border-radius:100px;background:var(--blue);color:var(--card);font-weight:600;font-size:13px}

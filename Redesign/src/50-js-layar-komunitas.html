@@ -1183,16 +1183,13 @@
       return;
     }
     if(!founder){ fb.hidden = true; fb.innerHTML = ''; return; }
-    fb.hidden = false;
     const D = window.KolavoDashboard;
     const pend = (D && D.minta) ? D.minta.length : 0;
-    fb.className = 'kom-founder' + (pend ? ' ada' : '');
+    /* yang menunggu sudah ditandai di tombol Dashboard pengurus — tidak perlu kotak kedua */
+    fb.hidden = !!pend;
+    fb.className = 'kom-founder';
     if(pend){
-      fb.innerHTML =
-        '<div class="kom-founder-t"><span class="kom-founder-badge">' + pend + '</span>' +
-          '<div><strong>' + pend + ' orang menunggu persetujuanmu</strong>' +
-          '<p>Tinjau dan setujui di dashboard pengurus.</p></div></div>' +
-        '<div class="kom-founder-aksi"><button type="button" class="btn xs" data-dashboard="minta">Tinjau permintaan</button></div>';
+      fb.innerHTML = '';
     } else {
       fb.innerHTML =
         '<div class="kom-founder-t"><span class="kom-founder-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>' +
