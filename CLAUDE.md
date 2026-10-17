@@ -181,5 +181,5 @@ menjanjikan Kolavo gratis secara umum. Pengecualian: judul bagian harga beranda 
 kenalan memotong **10 kredit** (dikembalikan bila ajakan **ditolak** atau dibatalkan sebelum dijawab); top up berbayar
 **100 kredit = Rp50.000**. Rumus & gerbang di `src/50-js-kredit.html` (`window.KolavoKredit`).
 Saldo awal pengguna baru **100 kredit** (= 10 ajakan).
-Panel Tagihan dashboard masih `Rp XXXX` (belum diselaraskan). `archive/ReDesign_Kolavo_1.html` sengaja dibiarkan sebagai arsip.
-Jangan tulis ulang kata itu tanpa keputusan harga.
+Pop up langganan Advance dan panel Tagihan dashboard memakai `KolavoHarga` (17 Okt 2026).
+`archive/ReDesign_Kolavo_1.html` sengaja dibiarkan sebagai arsip.

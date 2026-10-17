@@ -1556,4 +1556,6 @@ sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Ke
   pendaftar membuat kuota penuh, pendaftar berikutnya memicu ajakan naik paket.
 - **Harga pop up langganan diselaraskan (17 Okt 2026):** Rp 199 / anggota / bulan, 30–1.000 anggota,
   peninjau Rp 15.000 + Rp 3.000; plus perkiraan bulanan komunitas ini lewat `KolavoHarga`
-  (`perkiraanAdvance()`, minimal 30 anggota). Panel Tagihan dashboard masih `Rp XXXX`.
+  (`perkiraanAdvance()`, minimal 30 anggota). Panel Tagihan dashboard juga lewat `KolavoHarga`:
+  tarif per anggota, anggota ditagihkan (min 30, kelipatan 10), rincian anggota/peninjau/per bulan,
+  dan riwayat tagihan berisi angka per bulan yang sama. Tidak ada lagi `Rp XXXX` di v4.

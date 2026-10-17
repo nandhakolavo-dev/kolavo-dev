@@ -10753,7 +10753,10 @@ function hitung(){}
 
   function gambarTagihan(){
     const t = S.tagihan, al = t.alamat;
-    const n = Math.max(50, D.jumlahAnggota());
+    /* rumus yang sama dengan kalkulator beranda: per kelipatan 10, minimal 30 anggota */
+    const H = window.KolavoHarga ? window.KolavoHarga(Math.max(30, D.jumlahAnggota()), D.peninjau.length, 1) : null;
+    const rp = function(x){ return 'Rp ' + Math.round(x).toLocaleString('id-ID'); };
+    const n = H ? H.n : Math.max(30, D.jumlahAnggota());
     const alamatBlok = t.ubahAlamat
       ? '<div class="sek-form sek-grid2">' +
           [['nama', 'Nama di tagihan'], ['email', 'Email tagihan'], ['jalan', 'Alamat'], ['kota', 'Kota'], ['pos', 'Kode pos'], ['npwp', 'NPWP (opsional)']].map(function(f){
@@ -10770,8 +10773,11 @@ function hitung(){}
     el('klPanelTagihan').innerHTML =
       kepala('tagihan', 'Langganan Advance ditagihkan ke ' + lolos(D.kom.nama) + ', bukan ke akun pribadi — tidak ikut pergi saat kepengurusan berganti.') +
       '<div class="sek-blok"><div class="sek-baris atas"><div><div class="sek-blok-h">Advance · bulanan</div>' +
-        '<div class="sek-blok-sub">Rp XXXX / anggota / bulan · ' + n + ' anggota ditagihkan (minimal 50)</div></div>' +
+        '<div class="sek-blok-sub">' + (H ? 'Rp ' + H.tarif.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'Rp 199') + ' / anggota / bulan · ' + n.toLocaleString('id-ID') + ' anggota ditagihkan (minimal 30, per kelipatan 10)</div></div>' +
         '<span class="sek-status">Aktif</span></div>' +
+        (H ? '<dl class="sek-dl"><dt>Anggota</dt><dd>' + rp(H.biayaAnggota) + '</dd>' +
+          '<dt>Peninjau (' + H.p + ')</dt><dd>' + rp(H.biayaPeninjau) + '</dd>' +
+          '<dt>Per bulan</dt><dd><b>' + rp(H.perBulan) + '</b></dd></dl>' : '') +
         '<p class="sek-kecil jarak">Tagihan berikutnya 1 ' + BULAN[(new Date().getMonth() + 1) % 12] + '.</p>' +
       '</div>' +
       '<div class="sek-blok"><div class="sek-blok-h">Alamat penagihan</div>' + alamatBlok + '</div>' +
@@ -10785,7 +10791,7 @@ function hitung(){}
       '<div class="sek-blok"><div class="sek-blok-h">Riwayat tagihan</div>' +
         '<ul class="sek-jejak">' + [1, 2].map(function(m){
           const d = new Date(); d.setMonth(d.getMonth() - m + 1, 1);
-          return '<li>1 ' + BULAN[d.getMonth()] + ' ' + d.getFullYear() + ' · Rp XXXX<span>Lunas</span></li>';
+          return '<li>1 ' + BULAN[d.getMonth()] + ' ' + d.getFullYear() + ' · ' + (H ? rp(H.perBulan) : 'Rp 199 / anggota') + '<span>Lunas</span></li>';
         }).join('') + '</ul>' +
       '</div>';
   }
