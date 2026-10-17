@@ -2455,6 +2455,9 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .kalk-kaki{display:flex;justify-content:flex-end;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
 /* peninjau & durasi bertumpuk; durasi = segmen 4 kolom sama lebar dengan label hemat */
 .kalk-dua.kalk-susun{grid-template-columns:1fr;gap:22px}
+/* peninjau satu baris: label kiri, stepper kanan */
+.kalk-susun > div:first-child{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.kalk-susun > div:first-child .kalk-l{margin-bottom:0}
 .kalk-durasi:has(.kalk-seg){display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;border:1px solid var(--line);border-radius:14px;background:var(--bg-alt)}
 .kalk-seg{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px;border:0;border-radius:10px;background:transparent;color:var(--ink);font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap}
 .kalk-seg small{font-size:11px;font-weight:500;color:var(--green)}
