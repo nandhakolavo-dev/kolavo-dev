@@ -1635,7 +1635,7 @@ Lengkapi Profil (A), formulir gabung (B), Buat komunitas (C), atau sistem.
 | Pekerjaan/keahlian (`agKerja`) | A — dulu `o.p` (keterangan bebas) yang tidak punya kolom isian; dihapus |
 | Tag "Angkatan Paskibra 2013" | B — label = judul pertanyaan tahun komunitas (`labelTahun()`), juga di kartu daftar, filter, Home (`KolavoLabelTahun`) |
 | Domisili · Anggota sejak | A · sistem |
-| Bisa dibagikan / Yang dicari (berlabel) | A |
+| Kontribusi / Yang dicari (berlabel; dulu "Bisa dibagikan") | A |
 | Kesamaan denganmu · Juga di komunitas | sistem |
 | WhatsApp · media sosial (setelah kenalan) | A |
 | Profil Komunitas | B saja (alasan bergabung paling bawah); pekerjaan & domisili dikeluarkan karena milik A dan sudah di kepala |

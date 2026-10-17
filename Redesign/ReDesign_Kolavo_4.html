@@ -7033,9 +7033,9 @@ function hitung(){}
     const bio = el('agBio');
     /* V4: memberi & mengambil — profil sendiri punya dua jawaban berlabel */
     /* dua jawaban Lengkapi Profil, selalu berlabel. Data contoh anggota lain cuma punya
-       satu kalimat (o.bio) yang isinya "apa yang bisa dibagikan". */
+       satu kalimat (o.bio) yang isinya "apa yang bisa dibagikan" — tampil sebagai Kontribusi. */
     const beri = o.aku ? o.beri : (o.beri || o.bio), cari = o.aku ? o.bio : o.cari;
-    bio.innerHTML = (beri ? '<b>Bisa dibagikan:</b> ' + esc(beri) : '') + (beri && cari ? '<br>' : '') + (cari ? '<b>Yang dicari:</b> ' + esc(cari) : '');
+    bio.innerHTML = (beri ? '<b>Kontribusi:</b> ' + esc(beri) : '') + (beri && cari ? '<br>' : '') + (cari ? '<b>Yang dicari:</b> ' + esc(cari) : '');
     bio.hidden = !(beri || cari);
 
     /* Di profil orang lain komunitas yang sedang dibuka disembunyikan — sudah
