@@ -1588,3 +1588,10 @@ sama lebar (`.kalk-seg`) dengan label "Harga normal / Hemat 5% / Hemat 10%". "Ke
   di kiri. Semua anggota contoh punya catatan keputusan (`ALASAN_CONTOH`), pemicu alasan jadi pill
   hijau "Lihat alasan ⌄" (`.kl-putus-lihat`). Bagian Pengurus di profil komunitas pindah ke bawah
   daftar anggota.
+- **Filter jadi dropdown (17 Okt 2026).** Panel chip diganti satu dropdown per kategori
+  (`.buka-dd` → tombol `.buka-ddb` "Domisili 2 ⌄", menu `.buka-ddm` berisi kotak centang + jumlah).
+  Centang banyak tetap boleh (ATAU dalam kategori, DAN antarkategori). Menu tertutup saat klik di
+  luar atau Escape. Ikon filter jadi penanda statis dengan lencana jumlah filter.
+- **Paginasi tidak lagi berpindah.** Pager pindah ke bilah atas, ujung kanan: di halaman komunitas
+  ke `#bukaPager` (bilah filter), di dashboard › Anggota ke baris `#klAnggotaSeg` (sejajar
+  Diterima | Ditolak). Ganti halaman tidak lagi menggulir layar.

@@ -474,7 +474,7 @@
     const ditolak = D.riwayat.filter(function(r){ return r.status !== 'diterima'; }).length;
     if(!ditolak) D.anggotaLihat = 'diterima';
     const lihat = D.anggotaLihat || 'diterima';
-    el('klAnggotaSeg').innerHTML = ditolak
+    const seg = ditolak
       ? '<div class="kl-seg" role="tablist" aria-label="Tampilkan">' +
           '<button type="button" role="tab" data-alihat="diterima" aria-selected="' + (lihat === 'diterima') + '">Diterima <span>' + jumlahAnggota() + '</span></button>' +
           '<button type="button" role="tab" data-alihat="ditolak" aria-selected="' + (lihat === 'ditolak') + '">Ditolak <span>' + ditolak + '</span></button>' +
@@ -518,7 +518,10 @@
     const hal = Math.ceil(potong.length / PER_HAL);
     D.halAnggota = Math.min(D.halAnggota || 0, Math.max(0, hal - 1));
     const awal = D.halAnggota * PER_HAL, isi = potong.slice(awal, awal + PER_HAL);
-    wadah.innerHTML = isi.join('') + pagerHtml(hal, D.halAnggota, awal, isi.length, potong.length);
+    wadah.innerHTML = isi.join('');
+    /* segmen di kiri, paginasi di ujung kanan — satu baris di atas daftar, posisinya tetap */
+    el('klAnggotaSeg').innerHTML = (seg || '<span></span>') +
+      (lihat === 'diterima' ? pagerHtml(hal, D.halAnggota, awal, isi.length, potong.length) : '');
   }
 
   function baris(m, kanan, aksi, bawah){
@@ -1026,7 +1029,6 @@
     const ah = e.target.closest('[data-ahal]');
     if(ah){
       D.halAnggota = +ah.dataset.ahal; gambarAnggota();
-      el('klPanelAnggota').scrollIntoView({ block: 'start', behavior: 'smooth' });
       return;
     }
     const upg = e.target.closest('[data-upgrade]');
