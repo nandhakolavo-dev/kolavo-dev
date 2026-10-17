@@ -1742,3 +1742,7 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   tambah/hapus, maks 5). Email terkunci (dari Google). Simpan menulis ke formulir Lengkapi — satu sumber
   data — lewat API kecil: `KolavoGantiNama`, `KolavoSetLahir`, `KolavoSosmedBaris/Pasang/Platform`.
   Enter menyimpan, Escape membatalkan.
+- **Rapi sejajar (18 Okt 2026).** Baris `.pf-data-r` rata atas: ikon 30 px, judul isian
+  (line-height 30 px), dan tombol bulat berada di satu garis (selisih titik tengah 0 px). Saat disunting,
+  judul tetap di kolom kiri; editor `.pf-ed` hanya di kolom isi (maks 460 px), dan ruang tombol diganti
+  pengisi `.pf-data-sp` supaya lebar baris tidak bergeser.

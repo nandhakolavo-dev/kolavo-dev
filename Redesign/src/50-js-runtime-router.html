@@ -561,7 +561,7 @@
           const sunting = r[5] && pfEdit === r[5];
           const tombol = !r[5]
             ? '<span class="pf-data-kunci" title="Dari akun Google" aria-label="Dari akun Google">' + ik('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>') + '</span>'
-            : sunting ? ''
+            : sunting ? '<span class="pf-data-sp" aria-hidden="true"></span>'
             : '<button type="button" class="pf-data-ubah' + (r[2] ? '' : ' isi') + '" data-pf-ubah="' + r[5] + '" aria-label="' + (r[2] ? 'Ubah ' : 'Isi ') + r[1] + '" data-tip="' + (r[2] ? 'Ubah' : 'Isi') + '">' + ik(IKN[r[2] ? 'pensil' : 'tambah']) + '</button>';
           return '<div class="pf-data-r' + (sunting ? ' sunting' : '') + '"><span class="pf-data-ri">' + ik(IKN[r[0]]) + '</span><div class="t"><span class="pf-data-l">' + r[1] + '</span>' +
             (sunting ? '<div class="pf-ed">' + editorIsian(r[5]) + '</div>'
