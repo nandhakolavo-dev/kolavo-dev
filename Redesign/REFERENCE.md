@@ -1650,3 +1650,8 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
 - **Nama lengkap hanya untuk pengurus** (`akuPengurus()`): pemilik halaman, atau pengguna yang
   diangkat jadi pengurus di komunitas itu (IA SMAN 52). Sesama anggota melihat nama panggilan saja,
   di kartu daftar anggota maupun profil.
+- **Tautan legal di dalam kalimat (17 Okt 2026).** Persetujuan Lengkapi Profil: "Ketentuan Layanan"
+  dan "Kebijakan Privasi" kini tautan `.lnk-teks` langsung di kalimat centang (baris "Baca … · Baca …"
+  `.lgl-baca` dihapus). Klik tautan membuka naskah tanpa mencentang kotak; klik teks lain tetap
+  mencentang. Halaman masuk: "…foto profil Google-mu, sesuai Kebijakan Privasi dan Ketentuan
+  Layanan." — tautan di dalam kalimat, bukan deret terpisah di ujung.

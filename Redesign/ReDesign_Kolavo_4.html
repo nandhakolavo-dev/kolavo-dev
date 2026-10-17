@@ -1712,7 +1712,10 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .lgl-p{font-size:14.5px;line-height:1.7;color:var(--ink-2);white-space:pre-line}
 /* blok persetujuan di Lengkapi Profil — berdiri sendiri, bukan di dalam .blk,
    jadi jarak atasnya disamakan dengan .blk supaya iramanya tidak putus */
-.lgl-baca{margin-top:8px;font-size:12.5px;color:var(--ink-3)}
+/* tautan legal di dalam kalimat persetujuan (Lengkapi Profil) */
+.lnk-teks{display:inline;padding:0;border:0;background:none;font:inherit;font-weight:600;color:var(--blue-ink);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.lnk-teks:hover{color:var(--blue-hover)}
+.lnk-teks:focus-visible{outline:3px solid var(--ring);outline-offset:1px;border-radius:4px}
 .lgl-opsi{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
 /* pil "Opsional" aslinya cuma hidup di dalam .f-lbl; di sini dipakai di dalam
    teks centang, dan latarnya dibalik jadi --card supaya tidak lebur dengan
@@ -3089,8 +3092,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       <p class="msk-alt">Belum punya akun? Tombol yang sama sekaligus membuat akunmu.</p>
       <div class="lgn-trust msk-trust">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6.5v5c0 4.6 3.4 8.4 8 9.5 4.6-1.1 8-4.9 8-9.5v-5L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
-        <span>Kolavo cuma menerima nama, email, dan foto profil Google-mu. Kami tidak bisa membaca isi emailmu atau memposting apa pun di akunmu.
-        <button type="button" data-legal="privasi">Kebijakan Privasi</button> · <button type="button" data-legal="tnc">Ketentuan Layanan</button></span>
+        <span>Kolavo cuma menerima nama, email, dan foto profil Google-mu, sesuai <button type="button" data-legal="privasi">Kebijakan Privasi</button> dan <button type="button" data-legal="tnc">Ketentuan Layanan</button>. Kami tidak bisa membaca isi emailmu atau memposting apa pun di akunmu.</span>
       </div>
       </div>
     </div>
@@ -3552,9 +3554,8 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       <div class="f" id="fSetuju">
         <label class="ob-setuju">
           <input type="checkbox" id="setujuLegal">
-          <span>Saya sudah membaca dan menyetujui <b>Ketentuan Layanan</b> dan <b>Kebijakan Privasi</b> Kolavo, termasuk pemrosesan data pribadi saya seperti dijelaskan di sana.</span>
+          <span>Saya sudah membaca dan menyetujui <button type="button" class="lnk-teks" data-legal="tnc">Ketentuan Layanan</button> dan <button type="button" class="lnk-teks" data-legal="privasi">Kebijakan Privasi</button> Kolavo, termasuk pemrosesan data pribadi saya seperti dijelaskan di sana.</span>
         </label>
-        <p class="lgl-baca"><button type="button" class="lnk" data-legal="tnc">Baca Ketentuan Layanan</button> · <button type="button" class="lnk" data-legal="privasi">Baca Kebijakan Privasi</button></p>
         <p class="f-galat">Persetujuan ini perlu dicentang dulu sebelum profil dikirim.</p>
 
         <label class="ob-setuju lgl-opsi">

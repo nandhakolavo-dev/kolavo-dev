@@ -1669,7 +1669,10 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .lgl-p{font-size:14.5px;line-height:1.7;color:var(--ink-2);white-space:pre-line}
 /* blok persetujuan di Lengkapi Profil — berdiri sendiri, bukan di dalam .blk,
    jadi jarak atasnya disamakan dengan .blk supaya iramanya tidak putus */
-.lgl-baca{margin-top:8px;font-size:12.5px;color:var(--ink-3)}
+/* tautan legal di dalam kalimat persetujuan (Lengkapi Profil) */
+.lnk-teks{display:inline;padding:0;border:0;background:none;font:inherit;font-weight:600;color:var(--blue-ink);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.lnk-teks:hover{color:var(--blue-hover)}
+.lnk-teks:focus-visible{outline:3px solid var(--ring);outline-offset:1px;border-radius:4px}
 .lgl-opsi{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
 /* pil "Opsional" aslinya cuma hidup di dalam .f-lbl; di sini dipakai di dalam
    teks centang, dan latarnya dibalik jadi --card supaya tidak lebur dengan
