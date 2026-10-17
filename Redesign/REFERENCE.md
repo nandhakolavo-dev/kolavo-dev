@@ -1713,3 +1713,9 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   **Kaki menempel** `.sb-kaki` (sticky di bawah pop up): total + tombol utama + aksi kedua selalu
   terlihat walau isi digulir; `#sbKakiTotal` ikut berubah saat slider digeser. QR di langkah
   Pembayaran diperkecil (150 px).
+- **Profil & Setting menampilkan semua isian akun (17 Okt 2026).** Bagian **Data akun** (`#pfData`,
+  digambar `isiProfil` di router) menggantikan kotak beri/cari lama. Tiga kelompok sama dengan
+  Lengkapi profil: Dari akun Google (nama, email) · Cuma buat pengurus (WhatsApp, tanggal lahir) ·
+  Dilihat sesama anggota (domisili, pekerjaan, pendidikan, kontribusi, yang dicari, media sosial).
+  Tiap baris: nilai atau "Belum diisi" (oranye), siapa yang melihat, dan tombol Ubah/Isi yang
+  membuka Lengkapi profil tepat di kolomnya (`data-anchor`). Judul menghitung yang belum diisi.

@@ -2751,6 +2751,24 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 /* profil: pendidikan, memberi & mengambil, kredit kenalan */
 .didik-grid{display:grid;gap:10px}
 @media(min-width:640px){.didik-grid{grid-template-columns:220px 1fr}}
+/* Profil & Setting: semua isian akun, dikelompokkan seperti Lengkapi profil */
+.pf-data{display:grid;gap:14px}
+.pf-data-n{margin-left:10px;padding:3px 10px;border-radius:100px;background:var(--orange-wash);color:var(--orange-ink);font-size:12px;font-weight:600;vertical-align:2px}
+.pf-data-g{border:1px solid var(--line);border-radius:13px;background:var(--card);overflow:hidden}
+.pf-data-gh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;background:var(--bg-alt);border-bottom:1px solid var(--line)}
+.pf-data-gh b{font-size:13.5px;font-weight:600}
+.pf-data-gh span{font-size:12px;color:var(--ink-3)}
+.pf-data-r{display:flex;align-items:center;gap:14px;padding:12px 16px;border-top:1px solid var(--line-2)}
+.pf-data-r:first-of-type{border-top:0}
+.pf-data-r .t{flex:1;min-width:0;display:grid;grid-template-columns:minmax(130px,34%) 1fr;column-gap:16px;row-gap:2px;align-items:baseline}
+.pf-data-l{font-size:13px;color:var(--ink-3)}
+.pf-data-v{font-size:14px;font-weight:500;color:var(--ink);line-height:1.5;overflow-wrap:anywhere}
+.pf-data-v.kosong{color:var(--orange-ink);font-weight:600}
+.pf-data-s{grid-column:2;font-size:11.5px;color:var(--ink-3)}
+.pf-data-ubah{flex:none;padding:6px 14px;border-radius:100px;border:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--blue-ink);text-decoration:none}
+.pf-data-ubah:hover{border-color:var(--blue);background:var(--blue-tint)}
+.pf-data-ubah:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+@media(max-width:560px){.pf-data-r .t{grid-template-columns:1fr}.pf-data-s{grid-column:1}}
 .pf-gt{margin-top:22px;display:grid;gap:12px}
 .pf-gt[hidden]{display:none}
 @media(min-width:640px){.pf-gt{grid-template-columns:repeat(2,1fr)}}
@@ -3739,8 +3757,10 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
         </a>
       </div>
 
-      <!-- V4: memberi & mengambil — diisi di Lengkapi profil, digambar router -->
-      <div class="pf-gt" id="pfGt" hidden></div>
+      <!-- Profil & Setting: semua isian akun dalam satu tempat, tiap baris langsung ke kolomnya
+           di Lengkapi profil. Digambar router (isiProfil). -->
+      <h2 class="pf-h" id="pfDataH">Data akun</h2>
+      <div class="pf-data" id="pfData"></div>
 
       <h2 class="pf-h" id="pfKomunitas">Komunitas saya</h2>
       <div class="pf-list" id="pfList"></div>
@@ -5933,6 +5953,48 @@ function hitung(){}
         d.lastChild.textContent = x[1];
         gt.appendChild(d);
       });
+    }
+
+    /* Profil & Setting: semua isian Lengkapi profil, dikelompokkan seperti formulirnya.
+       Tiap baris punya tombol Ubah yang membuka Lengkapi profil tepat di kolomnya. */
+    const data = document.getElementById('pfData');
+    if(data){
+      const esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+      const teks = function(id){ const e = document.getElementById(id); return e ? e.textContent.trim() : ''; };
+      const kerja = nilai('kerja') === '__lain__' ? nilai('kerjaLain').trim() : nilai('kerja');
+      const lahir = nilai('lahir') ? teks('lahirBtn') : '';
+      const sos = [].map.call(document.querySelectorAll('#sosmedList [data-sosmed-h]'), function(inp){
+        const sel = document.querySelector('#sosmedList [data-sosmed-p="' + inp.getAttribute('data-sosmed-h') + '"]');
+        const v = inp.value.trim();
+        return v ? (sel ? sel.options[sel.selectedIndex].text : '') + ' · ' + v : '';
+      }).filter(Boolean);
+      const KELOMPOK = [
+        ['Dari akun Google', 'Diambil dari Google saat masuk.', [
+          ['Nama lengkap', teks('idNama') || (nm ? nm.textContent : ''), 'Pengurus komunitas', 'idKartu'],
+          ['Email', teks('idEmail') || (document.querySelector('.acct-em') || {}).textContent || '', 'Hanya kamu', 'idKartu']]],
+        ['Cuma buat pengurus', 'Tidak tampil di daftar anggota.', [
+          ['Nomor WhatsApp', nilai('wa') ? '+62 ' + nilai('wa') : '', 'Pengurus & anggota yang kenalan denganmu', 'wa'],
+          ['Tanggal lahir', lahir, 'Pengurus komunitas', 'lblLahir']]],
+        ['Dilihat sesama anggota', 'Dipakai di semua komunitas yang kamu ikuti.', [
+          ['Domisili', [nilai('kota'), nilai('provinsi'), nilai('negara')].filter(Boolean).join(', '), 'Sesama anggota', 'lblDom'],
+          ['Pekerjaan atau keahlian', kerja, 'Sesama anggota', 'kerja'],
+          ['Pendidikan terakhir', [nilai('didik'), nilai('didikDi').trim()].filter(Boolean).join(' · '), 'Hanya angka persebaran', 'didik'],
+          ['Kontribusi', nilai('beri').trim(), 'Sesama anggota', 'beri'],
+          ['Yang dicari', nilai('bio').trim(), 'Sesama anggota', 'bio'],
+          ['Media sosial', sos.join('\n'), 'Anggota yang kenalan denganmu', 'lblSosmed']]]
+      ];
+      let kosong = 0;
+      data.innerHTML = KELOMPOK.map(function(g){
+        return '<section class="pf-data-g"><div class="pf-data-gh"><b>' + g[0] + '</b><span>' + g[1] + '</span></div>' + g[2].map(function(r){
+          if(!r[1]) kosong++;
+          return '<div class="pf-data-r"><div class="t"><span class="pf-data-l">' + r[0] + '</span>' +
+            (r[1] ? '<span class="pf-data-v">' + esc(r[1]).replace(/\n/g, '<br>') + '</span>' : '<span class="pf-data-v kosong">Belum diisi</span>') +
+            '<span class="pf-data-s">Dilihat: ' + r[2] + '</span></div>' +
+            '<a class="pf-data-ubah" href="#0" data-ke="scrLengkapi" data-anchor="' + r[3] + '" aria-label="Ubah ' + r[0] + '">' + (r[1] ? 'Ubah' : 'Isi') + '</a></div>';
+        }).join('') + '</section>';
+      }).join('');
+      const h = document.getElementById('pfDataH');
+      if(h) h.innerHTML = 'Data akun' + (kosong ? '<span class="pf-data-n">' + kosong + ' belum diisi</span>' : '');
     }
 
     /* kredit kenalan (15 Okt 2026): saldo, 10 kredit per ajakan, top up 100 kredit = Rp50.000 */
