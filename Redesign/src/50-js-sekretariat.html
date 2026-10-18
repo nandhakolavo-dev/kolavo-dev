@@ -964,21 +964,18 @@
   }
 
   function gambarJawab(){
-    const semua = orangJawab();
-    const saring = S.jawabSaring;
-    const orang = semua.filter(function(o){ return saring === 'semua' || o.status === saring; });
+    /* hanya anggota yang sudah diterima — pendaftar yang menunggu ditinjau di Permintaan gabung */
+    const orang = orangJawab().filter(function(o){ return o.status === 'anggota'; });
     const kolom = kolomJawab();
-    const n = function(st){ return semua.filter(function(o){ return st === 'semua' || o.status === st; }).length; };
     el('klPanelJawab').innerHTML =
-      kepala('jawab', 'Jawaban tiap pendaftar waktu pertama kali mendaftar — yang masih menunggu maupun yang sudah jadi anggota. Label kelompok muncul setelah jawabannya dikelompokkan.') +
-      '<div class="sek-alat">' +
-        segmen('Saring pendaftar', 'data-sek-jawab-saring', [['semua', 'Semua · ' + n('semua')], ['menunggu', 'Menunggu · ' + n('menunggu')], ['anggota', 'Anggota · ' + n('anggota')]], saring) +
+      kepala('jawab', 'Jawaban tiap anggota waktu pertama kali mendaftar. Label kelompok muncul setelah jawabannya dikelompokkan. Pendaftar yang masih menunggu ditinjau di Permintaan gabung.') +
+      '<div class="sek-alat"><span class="sek-kecil">' + orang.length + ' anggota</span>' +
         '<button type="button" class="btn outline sm" data-sek-ke="kelompok">Kelompokkan jawaban</button>' +
       '</div>' +
       (orang.length ? '<div class="sek-jawab">' + orang.map(function(o){
         return '<div class="sek-jawab-i">' +
           '<div class="sek-jawab-h">' + av(o.nama) + '<div class="t"><div class="kl-row-nm">' + lolos(o.panggil || o.nama.split(' ')[0]) +
-            '<span class="sek-status' + (o.status === 'menunggu' ? ' undang' : '') + '">' + (o.status === 'menunggu' ? 'Menunggu' : 'Anggota') + '</span></div>' +
+            '<span class="sek-status">Anggota</span></div>' +
             '<div class="kl-row-sub">' + lolos(o.full || o.nama) + (o.waktu ? ' · mendaftar ' + lolos(o.waktu) : '') + '</div></div></div>' +
           '<dl class="sek-dl">' + kolom.map(function(k){
             const v = nilaiKolom(o, k), l = labelKelompok(o, k);
@@ -986,7 +983,7 @@
               (l ? ' <span class="sek-label">' + lolos(l) + '</span>' : '') + '</dd>';
           }).join('') + '</dl>' +
         '</div>';
-      }).join('') + '</div>' : '<div class="sek-blok"><div class="sek-blok-sub">Belum ada pendaftar di sini.</div></div>');
+      }).join('') + '</div>' : '<div class="sek-blok"><div class="sek-blok-sub">Belum ada anggota yang diterima.</div></div>');
   }
 
   /* usulan awal untuk kolom Pekerjaan — hanya dipakai saat pengurus menekan

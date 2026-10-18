@@ -1769,3 +1769,8 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
    di Forpastara & IA SMAN 52; kiriman pengurus tampil di Kabar Komunitas.
 10. **Aksi baris dashboard jadi ikon** `.kl-ib` (tooltip + aria-label): nomor anggota, angkat jadi
     pengurus, ubah jabatan, jadikan/lepas peninjau, copot (merah), tulis/ubah perkenalan.
+- **Revisi lanjutan (18 Okt 2026):** setelah kenalan terhubung hanya kartu WhatsApp + media sosial
+  (`kartuKontak`); kotak Profil Komunitas tidak ditampilkan. Nama panggilan komunitas (`.al`) kini di
+  **atas** nama di Komunitasku & kartu Dashboard, dan tampil di kartu Jelajahi/etalase (`.ccard-al`,
+  disisipkan `pasangAlias()` dari `data-alias`). **Tinjau jawaban** hanya menampilkan anggota yang sudah
+  diterima — pendaftar menunggu ditinjau di Permintaan gabung (segmen Semua/Menunggu dihapus).

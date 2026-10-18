@@ -68,7 +68,7 @@
   }
   function baris(logo, nama, alias, sub, lencana, jenis, kom){
     return '<div class="pf-item dsb-i"><div class="pf-open" data-dasbor-buka="' + jenis + '" role="button" tabindex="0" title="Buka dashboard">' + logo +
-      '<div class="t"><div class="n">' + esc(nama) + '</div>' + (alias ? '<div class="al">' + esc(alias) + '</div>' : '') +
+      '<div class="t">' + (alias ? '<div class="al">' + esc(alias) + '</div>' : '') + '<div class="n">' + esc(nama) + '</div>' +
         '<div class="s">' + esc(sub) + '</div>' + kuotaHtml(window.KolavoKuota ? window.KolavoKuota(kom) : null) + '</div></div>' +
       '<span class="status pengurus">' + esc(lencana) + '</span>' +
       '<button type="button" class="btn sm dsb-btn" data-dasbor-buka="' + jenis + '">' + IK_PANEL + 'Dashboard</button></div>';
@@ -108,9 +108,19 @@
 
   window.KolavoKomDiangkat = function(){ return App().diangkat ? komDiangkat() : null; };
 
+  /* nama panggilan komunitas (data-alias) tampil di atas nama di tiap kartu direktori — ikut ke etalase */
+  function pasangAlias(){
+    document.querySelectorAll('#direktori .ccard').forEach(function(k){
+      const a = k.dataset.alias, h = k.querySelector('h3');
+      if(!a || !h || k.querySelector('.ccard-al')) return;
+      const p = document.createElement('p');
+      p.className = 'ccard-al'; p.textContent = a;
+      h.parentNode.insertBefore(p, h);
+    });
+  }
   window.KolavoGambarApp = function(id){
-    if(id === 'scrBeranda'){ sinkronDibuat(); gambarEtalase(); return; }
-    if(id === 'scrApp'){ sinkronDibuat(); gambarKu(); gambarKartu(); }
+    if(id === 'scrBeranda'){ sinkronDibuat(); pasangAlias(); gambarEtalase(); return; }
+    if(id === 'scrApp'){ sinkronDibuat(); pasangAlias(); gambarKu(); gambarKartu(); }
     else if(id === 'scrDasbor') gambarDasbor();
     else if(id === 'scrHome' && window.KolavoGambarHome) window.KolavoGambarHome();
   };
@@ -181,6 +191,7 @@
     });
   }
   sinkronDibuat();
+  pasangAlias();
   gambarEtalase();
 
   function bukaDasbor(jenis){

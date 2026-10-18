@@ -565,7 +565,7 @@
     const status = '<span class="status ' + (arsip ? 'arsip' : 'pengurus') + '">' + (arsip ? 'Diarsipkan' : 'Pengurus') + '</span>';
     const open = '<div class="pf-open" data-komunitas-dibuat role="button" tabindex="0" title="Buka halaman komunitas">' +
         '<span class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' + (dibuat.logo ? '' : dibuat.inisial) + '</span>' +
-        '<div class="t"><div class="n">' + lolos(dibuat.nama) + '</div>' + (dibuat.alias ? '<div class="al">' + lolos(dibuat.alias) + '</div>' : '') +
+        '<div class="t">' + (dibuat.alias ? '<div class="al">' + lolos(dibuat.alias) + '</div>' : '') + '<div class="n">' + lolos(dibuat.nama) + '</div>' +
         '<div class="s">' + lolos([dibuat.bentuk, dibuat.kota].filter(Boolean).join(' · ')) + '</div></div>' +
       '</div>';
     let aksi;
