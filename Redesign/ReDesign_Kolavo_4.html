@@ -10227,6 +10227,16 @@ function hitung(){}
       D.mem[a[0]] = { nama: a[0], full: a[0], panggil: a[0].split(' ')[0], kerja: a[1], kota: a[2], tahun: a[3], tags: [], id: id,
         beri: a[4], cari: CARI_CONTOH[i % CARI_CONTOH.length], alasan: GABUNG_CONTOH[i % GABUNG_CONTOH.length],
         sejak: bulanLalu(2 + Math.floor(i / 3)) };
+      /* jawaban formulir gabung, disimpan per id pertanyaan seperti pendaftar sungguhan —
+         tampil lengkap di Tinjau jawaban (termasuk alasan bergabung) */
+      const m = D.mem[a[0]];
+      m.jwb = jawabPerId({ tahun: a[3], alasan: m.alasan, teks: [SUMBER_CONTOH[i % SUMBER_CONTOH.length], a[4]] });
+      Object.defineProperty(m, 'jawaban', { enumerable: true, get: function(){
+        return pertanyaanPengurus().map(function(t){
+          const ada = Object.prototype.hasOwnProperty.call(m.jwb, t.id);
+          return { id: t.id, judul: t.judul || 'Pertanyaan', nilai: ada ? m.jwb[t.id] : '—', kosong: !ada };
+        });
+      }});
       D.anggotaBiasa.push(a[0]);
     });
     D.minta = SEED.map(function(s, i){
@@ -10329,9 +10339,30 @@ function hitung(){}
   ];
   const CARI_CONTOH = ['Teman diskusi seprofesi.', 'Info lowongan dan peluang kolaborasi.', 'Kegiatan sosial yang rutin.',
     'Mentor untuk pengembangan karier.', 'Teman olahraga akhir pekan.', 'Relasi untuk usaha.'];
-  const GABUNG_CONTOH = ['Ingin kenal lagi teman-teman seangkatan.', 'Mau ikut program mentoring adik kelas.',
-    'Cari relasi seprofesi di komunitas ini.', 'Ingin bantu kegiatan sosial komunitas.',
-    'Kangen kumpul dengan teman lama.', 'Ingin berbagi pengalaman kerja.'];
+  /* jawaban "alasan bergabung" anggota contoh — panjang & beragam (kontribusi, karier, usaha,
+     nostalgia, keluarga, relawan), supaya Tinjau jawaban dan Kelompokkan punya bahan nyata */
+  const GABUNG_CONTOH = [
+    'Ingin kenal lagi teman-teman seangkatan dan bantu desain tempat kalau ada reuni.',
+    'Mau berbagi soal kesehatan ke sesama alumni, sekalian cari teman diskusi sesama dokter.',
+    'Cari relasi seprofesi di bidang teknologi dan siap bantu kalau komunitas butuh situs atau formulir.',
+    'Ingin bantu urusan keuangan acara supaya laporannya rapi dan bisa dipertanggungjawabkan.',
+    'Usaha saya butuh jaringan; sekalian bisa bantu vendor tenda dan sound kalau ada acara.',
+    'Kangen suasana sekolah, ingin ikut kegiatan mengajar untuk adik-adik kelas.',
+    'Suka dokumentasi kegiatan, ingin jadi fotografer di acara komunitas.',
+    'Ingin ikut kegiatan sosial dan siap jaga pos kesehatan saat acara di luar ruangan.',
+    'Kerja di kelurahan, bisa bantu urusan izin keramaian kalau komunitas bikin acara.',
+    'Ingin menyumbang desain poster dan materi publikasi untuk kegiatan komunitas.',
+    'Cari teman diskusi soal pajak usaha kecil, sekalian berbagi ke anggota yang butuh.',
+    'Ingin ikut bakti sosial dan bantu sediakan obat-obatan dasar untuk kegiatan.',
+    'Diajak teman seangkatan; siap bantu urusan teknis listrik dan lampu waktu acara.',
+    'Ingin bantu kelola media sosial komunitas supaya kegiatan lebih dikenal.',
+    'Ingin jadi pembicara soal studi lanjut dan beasiswa untuk alumni muda.',
+    'Ingin berbagi soal kesehatan ibu dan anak di kegiatan keluarga komunitas.',
+    'Usaha kuliner saya bisa bantu konsumsi acara, sekalian kenal lebih banyak alumni.',
+    'Cari koneksi untuk pengembangan karier dan siap berbagi tips melamar kerja.'
+  ];
+  const SUMBER_CONTOH = ['Diajak teman seangkatan', 'Dari grup WhatsApp angkatan', 'Lihat unggahan di Instagram komunitas',
+    'Diajak pengurus', 'Nemu halaman ini di Kolavo', 'Diundang lewat tautan pengurus'];
   const NAMA_BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
   /* "Anggota sejak" — bulan dan tahun diterima, n minggu lalu */
   function bulanLalu(minggu){

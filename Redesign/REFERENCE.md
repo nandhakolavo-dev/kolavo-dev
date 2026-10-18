@@ -1774,3 +1774,7 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   **atas** nama di Komunitasku & kartu Dashboard, dan tampil di kartu Jelajahi/etalase (`.ccard-al`,
   disisipkan `pasangAlias()` dari `data-alias`). **Tinjau jawaban** hanya menampilkan anggota yang sudah
   diterima — pendaftar menunggu ditinjau di Permintaan gabung (segmen Semua/Menunggu dihapus).
+- **Tinjau jawaban punya sampel lengkap (18 Okt 2026).** 18 anggota contoh komunitas baru kini
+  menyimpan jawaban formulir gabung per id pertanyaan (`m.jwb` + getter `jawaban`, sama seperti
+  pendaftar sungguhan): tahun, sumber info (`SUMBER_CONTOH`), dan **alasan bergabung** panjang &
+  beragam (`GABUNG_CONTOH`, 18 kalimat). Pertanyaan yang diubah di layar Buat ikut terbaca ulang.
