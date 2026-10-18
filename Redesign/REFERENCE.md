@@ -1778,3 +1778,6 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
   menyimpan jawaban formulir gabung per id pertanyaan (`m.jwb` + getter `jawaban`, sama seperti
   pendaftar sungguhan): tahun, sumber info (`SUMBER_CONTOH`), dan **alasan bergabung** panjang &
   beragam (`GABUNG_CONTOH`, 18 kalimat). Pertanyaan yang diubah di layar Buat ikut terbaca ulang.
+- **Simpan pengaturan komunitas → kembali ke halaman komunitas (18 Okt 2026).** Mode sunting layar
+  Buat (dari ikon pensil halaman komunitas atau menu ⋯ Komunitasku) kini membuka
+  `KolavoBukaKomunitasDibuat()` setelah Simpan, bukan Profil & Setting.
