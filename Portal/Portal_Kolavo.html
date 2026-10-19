@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal Kolavo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2D6BE4; --primary-hover:#0045CD; --accent:#FF683D;
+  --ink:#222222; --muted:#6B7280; --faint:#9CA3AF; --line:#EFEFEF;
+  --bg:#F3F5F9; --surface:#FFFFFF; --surface-2:#F7F8FA;
+  --sidebar:#101830; --sidebar-ink:#C7D0E4; --sidebar-active:#1C2A4D;
+  --ok:#16A34A; --ok-bg:#E7F6EC; --warn:#B45309; --warn-bg:#FEF3DF;
+  --danger:#DC2626; --danger-bg:#FCE8E8; --info-bg:#E8F0FD;
+  --r-pill:100px; --r-card:13px; --r-modal:32px;
+  --shadow:0 1px 2px rgba(16,24,48,.04), 0 8px 24px rgba(16,24,48,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3F5F9; --muted:#9BA6BC; --faint:#6B7688; --line:#273149;
+    --bg:#0B1120; --surface:#131B2E; --surface-2:#0F1626;
+    --sidebar:#0A0F1E; --sidebar-ink:#A9B4CC; --sidebar-active:#18233F;
+    --ok-bg:#12301F; --warn-bg:#352404; --danger-bg:#3A1414; --info-bg:#122440;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3F5F9; --muted:#9BA6BC; --faint:#6B7688; --line:#273149;
+  --bg:#0B1120; --surface:#131B2E; --surface-2:#0F1626;
+  --sidebar:#0A0F1E; --sidebar-ink:#A9B4CC; --sidebar-active:#18233F;
+  --ok-bg:#12301F; --warn-bg:#352404; --danger-bg:#3A1414; --info-bg:#122440;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--bg); color:var(--ink); font-size:14px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0; font-weight:600; letter-spacing:-.01em}
+a{color:inherit}
+button{font-family:inherit; cursor:pointer}
+
+/* ---------- Layout ---------- */
+.app{display:grid; grid-template-columns:248px 1fr; min-height:100vh}
+.side{
+  background:var(--sidebar); color:var(--sidebar-ink); padding:22px 16px;
+  display:flex; flex-direction:column; gap:4px; position:sticky; top:0; height:100vh;
+}
+.brand{display:flex; align-items:center; gap:10px; padding:4px 8px 18px}
+.brand .mark{width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--primary),#5B8DEF);
+  display:grid; place-items:center; color:#fff; font-weight:700; font-size:17px}
+.brand .name{color:#fff; font-weight:600; font-size:16px; line-height:1.1}
+.brand .name small{display:block; color:var(--sidebar-ink); font-weight:500; font-size:11px; letter-spacing:.02em}
+.navlabel{color:var(--faint); font-size:10.5px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:14px 10px 6px}
+.navbtn{
+  display:flex; align-items:center; gap:11px; width:100%; text-align:left;
+  background:transparent; border:0; color:var(--sidebar-ink); padding:10px 11px;
+  border-radius:10px; font-size:13.5px; font-weight:500;
+}
+.navbtn svg{width:18px; height:18px; flex:none; opacity:.9}
+.navbtn:hover{background:var(--sidebar-active); color:#fff}
+.navbtn.active{background:var(--sidebar-active); color:#fff; font-weight:600}
+.navbtn .badge{margin-left:auto; background:var(--accent); color:#fff; font-size:10.5px; font-weight:600;
+  border-radius:100px; padding:1px 7px; line-height:1.6}
+.side .foot{margin-top:auto; padding:10px; border-top:1px solid rgba(255,255,255,.08); display:flex; align-items:center; gap:10px}
+.side .foot .av{width:32px; height:32px; border-radius:50%; background:#2A3A63; display:grid; place-items:center; color:#fff; font-weight:600; font-size:12px}
+.side .foot .who{font-size:12px; color:#fff; font-weight:500; line-height:1.2}
+.side .foot .who small{display:block; color:var(--sidebar-ink); font-weight:400}
+
+.main{min-width:0; display:flex; flex-direction:column}
+.topbar{
+  display:flex; align-items:center; gap:16px; padding:16px 28px;
+  background:var(--surface); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:20;
+}
+.topbar h1{font-size:20px}
+.topbar .sub{color:var(--muted); font-size:12.5px; margin-top:1px}
+.topbar .spacer{flex:1}
+.search{display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--line);
+  border-radius:var(--r-pill); padding:0 14px; height:40px; min-width:210px}
+.search input{border:0; background:transparent; outline:none; color:var(--ink); font-family:inherit; font-size:13px; width:100%}
+.search svg{width:16px; height:16px; color:var(--faint)}
+.iconbtn{width:40px; height:40px; border-radius:50%; border:1px solid var(--line); background:var(--surface);
+  display:grid; place-items:center; color:var(--muted)}
+.iconbtn:hover{color:var(--primary); border-color:var(--primary)}
+.iconbtn svg{width:18px; height:18px}
+
+.content{padding:24px 28px 56px; max-width:1240px; width:100%}
+.screen{display:none}
+.screen.show{display:block; animation:fade .25s ease}
+@keyframes fade{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:none}}
+
+/* ---------- Cards / KPI ---------- */
+.grid{display:grid; gap:16px}
+.kpis{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); box-shadow:var(--shadow)}
+.kpi{padding:18px}
+.kpi .top{display:flex; align-items:center; justify-content:space-between}
+.kpi .ico{width:38px; height:38px; border-radius:10px; display:grid; place-items:center}
+.kpi .ico svg{width:19px; height:19px}
+.kpi .ico.b{background:var(--info-bg); color:var(--primary)}
+.kpi .ico.o{background:#FFE9E2; color:var(--accent)}
+.kpi .ico.g{background:var(--ok-bg); color:var(--ok)}
+.kpi .ico.p{background:#EDE7FB; color:#7C3AED}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .kpi .ico.o{background:#3A1E12}:root:not([data-theme="light"]) .kpi .ico.p{background:#241A3D}}
+:root[data-theme="dark"] .kpi .ico.o{background:#3A1E12}
+:root[data-theme="dark"] .kpi .ico.p{background:#241A3D}
+.kpi .val{font-size:27px; font-weight:700; margin-top:14px; letter-spacing:-.02em}
+.kpi .lbl{color:var(--muted); font-size:12.5px; margin-top:2px}
+.kpi .delta{font-size:11.5px; font-weight:600; margin-top:8px; display:inline-flex; align-items:center; gap:4px}
+.kpi .delta.up{color:var(--ok)} .kpi .delta.down{color:var(--danger)}
+
+.sec-h{display:flex; align-items:center; justify-content:space-between; margin:28px 0 14px}
+.sec-h h2{font-size:16px}
+.sec-h .hint{color:var(--muted); font-size:12px}
+
+.two{grid-template-columns:1.6fr 1fr}
+.panel{padding:20px}
+.panel h3{font-size:14.5px}
+.panel .ph-sub{color:var(--muted); font-size:12px; margin-top:2px}
+
+/* chart */
+.chart{width:100%; height:200px; margin-top:12px}
+.bar{fill:var(--primary)}
+.axis{stroke:var(--line)}
+.axislbl{fill:var(--faint); font-size:10px}
+.legend{display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; font-size:12px; color:var(--muted)}
+.legend b{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; vertical-align:-1px}
+
+.bars-row{display:flex; flex-direction:column; gap:12px; margin-top:6px}
+.bars-row .r{display:grid; grid-template-columns:120px 1fr auto; align-items:center; gap:12px; font-size:12.5px}
+.bars-row .track{height:9px; background:var(--surface-2); border-radius:100px; overflow:hidden}
+.bars-row .fill{height:100%; border-radius:100px; background:var(--primary)}
+.bars-row .amt{font-weight:600; font-variant-numeric:tabular-nums}
+
+/* ---------- Table ---------- */
+.toolbar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px}
+.chip{border:1px solid var(--line); background:var(--surface); color:var(--muted); border-radius:var(--r-pill);
+  height:36px; padding:0 15px; font-size:12.5px; font-weight:500; display:inline-flex; align-items:center; gap:7px}
+.chip.active{background:var(--primary); color:#fff; border-color:var(--primary)}
+.chip:hover:not(.active){border-color:var(--primary); color:var(--primary)}
+.tbl-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--r-card); background:var(--surface)}
+table{width:100%; border-collapse:collapse; font-size:13px; min-width:640px}
+thead th{text-align:left; color:var(--muted); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;
+  padding:13px 16px; border-bottom:1px solid var(--line); white-space:nowrap; background:var(--surface-2)}
+tbody td{padding:13px 16px; border-bottom:1px solid var(--line); vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--surface-2)}
+.num{text-align:right; font-variant-numeric:tabular-nums}
+.cell-main{font-weight:600}
+.cell-sub{color:var(--muted); font-size:11.5px}
+.tag{display:inline-flex; align-items:center; gap:5px; border-radius:100px; padding:3px 10px; font-size:11.5px; font-weight:600; white-space:nowrap}
+.tag .dot{width:6px; height:6px; border-radius:50%; background:currentColor}
+.tag.free{background:var(--surface-2); color:var(--muted)}
+.tag.adv{background:var(--info-bg); color:var(--primary)}
+.tag.big{background:#EDE7FB; color:#7C3AED}
+.tag.ok{background:var(--ok-bg); color:var(--ok)}
+.tag.warn{background:var(--warn-bg); color:var(--warn)}
+.tag.danger{background:var(--danger-bg); color:var(--danger)}
+.tag.pending{background:var(--warn-bg); color:var(--warn)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tag.big{background:#241A3D; color:#B794F6}}
+:root[data-theme="dark"] .tag.big{background:#241A3D; color:#B794F6}
+
+.btn{border:0; border-radius:var(--r-pill); font-weight:600; font-size:13px; height:40px; padding:0 18px;
+  display:inline-flex; align-items:center; gap:8px; background:var(--primary); color:#fff}
+.btn:hover{background:var(--primary-hover)}
+.btn svg{width:16px; height:16px}
+.btn.sm{height:32px; padding:0 13px; font-size:12px}
+.btn.ghost{background:transparent; color:var(--primary); border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--info-bg); border-color:var(--primary)}
+.btn.danger{background:var(--danger)} .btn.danger:hover{background:#B91C1C}
+.btn.lg{height:48px; padding:0 24px; font-size:14px}
+.btn:disabled{opacity:.5; cursor:not-allowed}
+.linkbtn{background:transparent; border:0; color:var(--primary); font-weight:600; font-size:12.5px; padding:4px 6px}
+.linkbtn:hover{color:var(--primary-hover)}
+
+/* ---------- Modal ---------- */
+.overlay{position:fixed; inset:0; background:rgba(16,24,48,.5); backdrop-filter:blur(2px); display:none;
+  place-items:center; z-index:60; padding:20px}
+.overlay.show{display:grid; animation:fade .2s ease}
+.modal{background:var(--surface); border-radius:var(--r-modal); width:100%; max-width:520px; box-shadow:0 24px 70px rgba(0,0,0,.35);
+  max-height:90vh; overflow:auto}
+.modal.wide{max-width:680px}
+.modal .mh{display:flex; align-items:flex-start; justify-content:space-between; padding:26px 28px 6px}
+.modal .mh h3{font-size:18px}
+.modal .mh p{color:var(--muted); font-size:12.5px; margin:4px 0 0}
+.modal .mb{padding:14px 28px 4px}
+.modal .mf{padding:18px 28px 26px; display:flex; gap:10px; justify-content:flex-end}
+.x{background:transparent; border:0; color:var(--faint); width:30px; height:30px; border-radius:8px; display:grid; place-items:center; flex:none}
+.x:hover{background:var(--surface-2); color:var(--ink)}
+.x svg{width:18px; height:18px}
+
+label.fld{display:block; margin-bottom:14px}
+label.fld .l{font-size:12.5px; font-weight:600; margin-bottom:6px; display:block}
+.input,textarea.input,select.input{width:100%; border:1px solid var(--line); background:var(--surface-2); color:var(--ink);
+  border-radius:12px; padding:11px 13px; font-family:inherit; font-size:13.5px; outline:none}
+textarea.input{resize:vertical; min-height:120px; line-height:1.55}
+.input:focus,textarea.input:focus,select.input:focus{border-color:var(--primary); background:var(--surface)}
+.rowbox{display:flex; align-items:center; justify-content:space-between; background:var(--surface-2); border:1px solid var(--line);
+  border-radius:12px; padding:13px 15px; margin-bottom:12px}
+.rowbox .k{color:var(--muted); font-size:12.5px}
+.rowbox .v{font-weight:700; font-size:16px; font-variant-numeric:tabular-nums}
+.note{display:flex; gap:10px; background:var(--warn-bg); color:var(--warn); border-radius:12px; padding:12px 14px; font-size:12.5px; line-height:1.5}
+.note svg{width:16px; height:16px; flex:none; margin-top:1px}
+.note.info{background:var(--info-bg); color:var(--primary)}
+
+/* broadcast preview */
+.compose{display:grid; grid-template-columns:1fr 340px; gap:20px}
+.preview{border:1px solid var(--line); border-radius:var(--r-card); overflow:hidden; background:var(--surface-2)}
+.preview .pv-top{background:var(--surface); border-bottom:1px solid var(--line); padding:12px 16px; font-size:12px; color:var(--muted)}
+.preview .pv-body{padding:20px 18px; background:#fff; color:#222}
+.preview .pv-body .em-mark{width:40px; height:40px; border-radius:10px; background:var(--primary); color:#fff; display:grid; place-items:center; font-weight:700; margin-bottom:14px}
+.preview .pv-body h4{color:#222; font-size:16px; margin-bottom:8px}
+.preview .pv-body p{color:#444; font-size:13px; white-space:pre-wrap; margin:0}
+.preview .pv-body .cta{display:inline-block; margin-top:16px; background:var(--accent); color:#fff; font-weight:600; font-size:13px; padding:9px 18px; border-radius:100px}
+.preview .pv-foot{padding:12px 18px; background:#fff; color:#999; font-size:10.5px; border-top:1px solid #eee}
+
+.stat-strip{display:flex; gap:22px; flex-wrap:wrap; margin-top:4px}
+.stat-strip .s .n{font-size:22px; font-weight:700}
+.stat-strip .s .t{color:var(--muted); font-size:12px}
+
+/* toast */
+.toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px); background:var(--ink); color:var(--bg);
+  padding:12px 20px; border-radius:100px; font-size:13px; font-weight:500; box-shadow:0 12px 40px rgba(0,0,0,.3);
+  opacity:0; pointer-events:none; transition:.3s; z-index:90; display:flex; align-items:center; gap:9px}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+.toast svg{width:16px; height:16px; color:#4ADE80}
+
+.mobile-nav{display:none}
+.empty{text-align:center; color:var(--muted); padding:40px 20px; font-size:13px}
+
+/* ---------- Responsive ---------- */
+@media (max-width:980px){
+  .app{grid-template-columns:1fr}
+  .side{display:none}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .two{grid-template-columns:1fr}
+  .compose{grid-template-columns:1fr}
+  .mobile-nav{display:flex; position:sticky; bottom:0; z-index:30; background:var(--surface); border-top:1px solid var(--line);
+    padding:8px; gap:4px; justify-content:space-around}
+  .mobile-nav button{flex:1; background:transparent; border:0; color:var(--muted); display:flex; flex-direction:column; align-items:center; gap:3px; font-size:10px; font-weight:500; padding:4px}
+  .mobile-nav button svg{width:20px; height:20px}
+  .mobile-nav button.active{color:var(--primary)}
+  .content{padding:18px 16px 40px}
+  .topbar{padding:14px 16px}
+  .search{display:none}
+}
+@media (max-width:560px){ .kpis{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="side">
+    <div class="brand">
+      <div class="mark">K</div>
+      <div class="name">Kolavo<small>Portal Tim · Internal</small></div>
+    </div>
+    <div class="navlabel">Operasional</div>
+    <button class="navbtn active" data-go="scrRingkasan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Ringkasan
+    </button>
+    <button class="navbtn" data-go="scrLangganan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"/><circle cx="7" cy="7" r="0" fill="currentColor"/></svg>
+      Langganan
+    </button>
+    <button class="navbtn" data-go="scrKredit">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+      Top Up Kredit
+    </button>
+    <button class="navbtn" data-go="scrRefund">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-1"/></svg>
+      Refund <span class="badge" id="refBadge">3</span>
+    </button>
+    <div class="navlabel">Pertumbuhan</div>
+    <button class="navbtn" data-go="scrBroadcast">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+      Broadcast Email
+    </button>
+    <div class="foot">
+      <div class="av">YT</div>
+      <div class="who">Yunandha<small>Tim Kolavo</small></div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">Ringkasan</h1>
+        <div class="sub" id="pageSub">Pantauan singkat kesehatan bisnis Kolavo</div>
+      </div>
+      <div class="spacer"></div>
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <input placeholder="Cari komunitas, pengguna…">
+      </div>
+      <button class="iconbtn" id="themeBtn" title="Ganti tema">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+      </button>
+    </header>
+
+    <div class="content">
+
+      <!-- ============ RINGKASAN ============ -->
+      <section class="screen show" id="scrRingkasan">
+        <div class="grid kpis" id="kpiGrid"></div>
+
+        <div class="grid two" style="margin-top:20px">
+          <div class="card panel">
+            <div class="sec-h" style="margin:0 0 4px"><h3>Pendapatan 6 bulan terakhir</h3></div>
+            <div class="ph-sub">Langganan Advance + penjualan kredit (Rp juta)</div>
+            <div id="revChart"></div>
+            <div class="legend">
+              <span><b style="background:var(--primary)"></b>Langganan</span>
+              <span><b style="background:var(--accent)"></b>Kredit</span>
+            </div>
+          </div>
+          <div class="card panel">
+            <div class="sec-h" style="margin:0 0 10px"><h3>Komunitas teratas (MRR)</h3></div>
+            <div class="bars-row" id="topComm"></div>
+          </div>
+        </div>
+
+        <div class="sec-h"><h2>Perlu perhatian</h2><button class="linkbtn" data-go="scrLangganan">Lihat semua langganan →</button></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Komunitas</th><th>Paket</th><th class="num">Tarif/bln</th><th>Status</th><th>Perpanjangan</th><th></th></tr></thead>
+            <tbody id="attnBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ LANGGANAN ============ -->
+      <section class="screen" id="scrLangganan">
+        <div class="grid kpis" id="subKpi" style="grid-template-columns:repeat(4,1fr)"></div>
+        <div class="toolbar" style="margin-top:20px">
+          <button class="chip active" data-filter="all" data-scope="sub">Semua</button>
+          <button class="chip" data-filter="Advance" data-scope="sub">Advance</button>
+          <button class="chip" data-filter="FREE" data-scope="sub">Esensial (FREE)</button>
+          <button class="chip" data-filter="Big Org" data-scope="sub">Big Organization</button>
+          <button class="chip" data-filter="tertunggak" data-scope="sub">Tertunggak</button>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Komunitas</th><th>Paket</th><th class="num">Anggota</th><th class="num">Peninjau</th><th class="num">Tarif/bln</th><th>Status</th><th>Perpanjangan</th><th></th></tr></thead>
+            <tbody id="subBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ KREDIT ============ -->
+      <section class="screen" id="scrKredit">
+        <div class="grid kpis" id="creditKpi" style="grid-template-columns:repeat(4,1fr)"></div>
+        <div class="sec-h"><h2>Transaksi top up kredit</h2><div class="hint">1 paket = 100 kredit = Rp50.000 · via QRIS</div></div>
+        <div class="toolbar">
+          <button class="chip active" data-filter="all" data-scope="cr">Semua</button>
+          <button class="chip" data-filter="diterima" data-scope="cr">Diterima</button>
+          <button class="chip" data-filter="pending" data-scope="cr">Menunggu</button>
+          <button class="chip" data-filter="gagal" data-scope="cr">Gagal</button>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Pengguna</th><th class="num">Paket</th><th class="num">Kredit</th><th class="num">Nominal</th><th>Metode</th><th>Status</th><th>Waktu</th><th></th></tr></thead>
+            <tbody id="crBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ REFUND ============ -->
+      <section class="screen" id="scrRefund">
+        <div class="note info" style="margin-bottom:18px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          Refund hanya untuk transaksi bermasalah (pembayaran ganda, kredit/langganan gagal masuk, salah nominal). Setiap refund tercatat dan masuk audit.
+        </div>
+        <div class="grid two">
+          <div class="card panel">
+            <h3>Ajukan refund</h3>
+            <div class="ph-sub" style="margin-bottom:16px">Pilih transaksi, verifikasi masalah, lalu proses.</div>
+            <label class="fld"><span class="l">Transaksi</span>
+              <select class="input" id="refTx"></select></label>
+            <label class="fld"><span class="l">Alasan refund</span>
+              <select class="input" id="refReason">
+                <option>Pembayaran ganda (double charge)</option>
+                <option>Kredit tidak masuk setelah bayar</option>
+                <option>Langganan gagal aktif</option>
+                <option>Salah nominal / kelebihan bayar</option>
+                <option>Permintaan pengguna (lainnya)</option>
+              </select></label>
+            <label class="fld"><span class="l">Catatan untuk audit</span>
+              <textarea class="input" id="refNote" style="min-height:80px" placeholder="Mis. tiket #4821 — QRIS terdebit 2x, konfirmasi dari pengguna sudah ada."></textarea></label>
+            <div class="rowbox"><span class="k">Jumlah dikembalikan</span><span class="v" id="refAmt">Rp 0</span></div>
+            <button class="btn danger lg" id="refProcess" style="width:100%">Proses refund</button>
+          </div>
+          <div class="card panel">
+            <h3>Riwayat refund</h3>
+            <div class="ph-sub" style="margin-bottom:12px">Terbaru di atas.</div>
+            <div id="refList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ BROADCAST ============ -->
+      <section class="screen" id="scrBroadcast">
+        <div class="card panel" style="margin-bottom:18px">
+          <div class="stat-strip">
+            <div class="s"><div class="n" style="color:var(--primary)" id="optinCount">2.418</div><div class="t">Setuju terima email promosi</div></div>
+            <div class="s"><div class="n" id="totalUsers">6.740</div><div class="t">Total pengguna Kolavo.app</div></div>
+            <div class="s"><div class="n" id="optinRate">35,9%</div><div class="t">Rasio opt-in</div></div>
+            <div class="s"><div class="n" id="lastSent">4 hari lalu</div><div class="t">Broadcast terakhir</div></div>
+          </div>
+          <div class="note info" style="margin-top:16px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            Hanya dikirim ke pengguna yang mencentang <b>“Bersedia menerima email promosi”</b> di Kolavo.app. Setiap email memuat tautan berhenti berlangganan otomatis.
+          </div>
+        </div>
+
+        <div class="compose">
+          <div class="card panel">
+            <h3>Susun broadcast</h3>
+            <div class="ph-sub" style="margin-bottom:16px">Pratinjau di samping diperbarui saat kamu mengetik.</div>
+            <label class="fld"><span class="l">Segmen penerima</span>
+              <select class="input" id="bcSeg">
+                <option data-n="2418">Semua yang opt-in (2.418)</option>
+                <option data-n="1860">Pengurus komunitas (1.860)</option>
+                <option data-n="980">Pengguna paket FREE (980)</option>
+                <option data-n="612">Belum pernah top up kredit (612)</option>
+              </select></label>
+            <label class="fld"><span class="l">Subjek email</span>
+              <input class="input" id="bcSubj" value="Komunitasmu tumbuh? Saatnya naik ke Advance 🚀" oninput="PV()"></label>
+            <label class="fld"><span class="l">Isi pesan</span>
+              <textarea class="input" id="bcBody" oninput="PV()">Halo, Pengurus Kolavo!
+
+Komunitasmu makin ramai? Paket Advance membuka anggota tanpa batas, lebih banyak peninjau, dan konten premium untuk anggotamu.
+
+Naik paket sekarang dan nikmati diskon hingga 10% untuk langganan 2 tahun.</textarea></label>
+            <label class="fld"><span class="l">Teks tombol (CTA)</span>
+              <input class="input" id="bcCta" value="Lihat paket Advance" oninput="PV()"></label>
+            <div style="display:flex; gap:10px">
+              <button class="btn ghost" id="bcTest">Kirim uji ke diriku</button>
+              <button class="btn lg" id="bcSend" style="flex:1">Kirim ke <span id="bcSendN">2.418</span> penerima</button>
+            </div>
+          </div>
+          <div>
+            <div class="preview">
+              <div class="pv-top">Dari: <b>Kolavo</b> &lt;promo@kolavo.app&gt;</div>
+              <div class="pv-body">
+                <div class="em-mark">K</div>
+                <h4 id="pvSubj"></h4>
+                <p id="pvBody"></p>
+                <span class="cta" id="pvCta"></span>
+              </div>
+              <div class="pv-foot">Kamu menerima ini karena setuju menerima promosi di Kolavo.app · <u>Berhenti berlangganan</u></div>
+            </div>
+            <div class="card panel" style="margin-top:16px">
+              <h3 style="font-size:13.5px">Broadcast terakhir</h3>
+              <div id="bcHistory" style="margin-top:8px"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Mobile nav -->
+    <nav class="mobile-nav">
+      <button class="active" data-go="scrRingkasan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Ringkasan</button>
+      <button data-go="scrLangganan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg>Langganan</button>
+      <button data-go="scrKredit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Kredit</button>
+      <button data-go="scrRefund"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-1"/></svg>Refund</button>
+      <button data-go="scrBroadcast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>Email</button>
+    </nav>
+  </div>
+</div>
+
+<!-- Confirm modal -->
+<div class="overlay" id="ov">
+  <div class="modal" id="ovModal"></div>
+</div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span id="toastMsg"></span></div>
+
+<script>
+/* ---------- Helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const rp=n=>'Rp '+Math.round(n).toLocaleString('id-ID');
+const num=n=>n.toLocaleString('id-ID');
+
+/* ---------- Data ---------- */
+const subs=[
+  {nama:'Ikatan Alumni Teknik UI', alias:'IATUI', paket:'Advance', anggota:420, peninjau:3, tarif:78400, status:'aktif', renew:'12 Nov 2026'},
+  {nama:'Komunitas UMKM Surabaya', alias:'UMKM SBY', paket:'Advance', anggota:300, peninjau:2, tarif:56700, status:'aktif', renew:'2 Des 2026'},
+  {nama:'Himpunan Pengusaha Muda Bandung', alias:'HIPMI BDG', paket:'Advance', anggota:150, peninjau:2, tarif:29100, status:'aktif', renew:'1 Nov 2026'},
+  {nama:'Asosiasi Dokter Hewan Jakarta', alias:'ADHJ', paket:'Advance', anggota:90, peninjau:1, tarif:17850, status:'akan berakhir', renew:'24 Okt 2026'},
+  {nama:'Perkumpulan Fotografer Jogja', alias:'Fotojogja', paket:'Advance', anggota:60, peninjau:1, tarif:11900, status:'tertunggak', renew:'10 Okt 2026'},
+  {nama:'Forum Pastara Nusantara', alias:'Forpastara', paket:'Big Org', anggota:1240, peninjau:5, tarif:198000, status:'aktif', renew:'15 Jan 2027'},
+  {nama:'Komunitas Lari Pagi Senayan', alias:'Lari Senayan', paket:'FREE', anggota:18, peninjau:1, tarif:0, status:'aktif', renew:'—'},
+  {nama:'Ikatan Guru Matematika', alias:'IGM', paket:'FREE', anggota:20, peninjau:1, tarif:0, status:'aktif', renew:'—'},
+  {nama:'Asosiasi Startup Digital', alias:'ASDig', paket:'Advance', anggota:210, peninjau:2, tarif:40100, status:'aktif', renew:'28 Nov 2026'},
+  {nama:'Paguyuban Pedagang Pasar Minggu', alias:'P3M', paket:'Advance', anggota:130, peninjau:1, tarif:25400, status:'akan berakhir', renew:'22 Okt 2026'},
+];
+let creditTx=[
+  {user:'Wahyu Santoso', komunitas:'IATUI', paket:2, kredit:200, nominal:100000, metode:'QRIS', status:'diterima', waktu:'18 Okt 2026, 09.14'},
+  {user:'Rina Halim', komunitas:'HIPMI BDG', paket:1, kredit:100, nominal:50000, metode:'QRIS', status:'diterima', waktu:'18 Okt 2026, 08.02'},
+  {user:'Budi Prakoso', komunitas:'UMKM SBY', paket:3, kredit:300, nominal:150000, metode:'QRIS', status:'pending', waktu:'19 Okt 2026, 07.40'},
+  {user:'Siti Nuraini', komunitas:'ASDig', paket:1, kredit:100, nominal:50000, metode:'QRIS', status:'diterima', waktu:'17 Okt 2026, 20.11'},
+  {user:'Andi Gunawan', komunitas:'Fotojogja', paket:2, kredit:200, nominal:100000, metode:'QRIS', status:'gagal', waktu:'17 Okt 2026, 15.33'},
+  {user:'Dewi Lestari', komunitas:'Forpastara', paket:5, kredit:500, nominal:250000, metode:'QRIS', status:'diterima', waktu:'16 Okt 2026, 11.27'},
+  {user:'Fajar Nugroho', komunitas:'IATUI', paket:1, kredit:100, nominal:50000, metode:'QRIS', status:'diterima', waktu:'16 Okt 2026, 09.50'},
+  {user:'Maya Putri', komunitas:'P3M', paket:1, kredit:100, nominal:50000, metode:'QRIS', status:'pending', waktu:'19 Okt 2026, 06.18'},
+];
+let refunds=[
+  {user:'Andi Gunawan', nominal:100000, alasan:'Kredit tidak masuk setelah bayar', waktu:'17 Okt 2026, 16.05', status:'selesai'},
+  {user:'Toni Wijaya', nominal:50000, alasan:'Pembayaran ganda (double charge)', waktu:'15 Okt 2026, 10.22', status:'selesai'},
+];
+const bcHistory=[
+  {subj:'Fitur baru: Kabar Komunitas', seg:'Semua opt-in', n:2290, waktu:'15 Okt 2026', open:'41%'},
+  {subj:'Diskon 10% langganan 2 tahun', seg:'Pengurus komunitas', n:1740, waktu:'3 Okt 2026', open:'38%'},
+];
+
+/* ---------- Page meta ---------- */
+const meta={
+  scrRingkasan:['Ringkasan','Pantauan singkat kesehatan bisnis Kolavo'],
+  scrLangganan:['Langganan','Monitoring paket & status langganan komunitas'],
+  scrKredit:['Top Up Kredit','Transaksi pembelian kredit kenalan'],
+  scrRefund:['Refund','Kelola pengembalian dana untuk transaksi bermasalah'],
+  scrBroadcast:['Broadcast Email','Kirim promosi ke pengguna yang bersedia menerima email'],
+};
+
+/* ---------- Router ---------- */
+function go(id){
+  $$('.screen').forEach(s=>s.classList.toggle('show', s.id===id));
+  $$('.navbtn').forEach(b=>b.classList.toggle('active', b.dataset.go===id));
+  $$('.mobile-nav button').forEach(b=>b.classList.toggle('active', b.dataset.go===id));
+  $('#pageTitle').textContent=meta[id][0]; $('#pageSub').textContent=meta[id][1];
+  window.scrollTo(0,0);
+}
+$$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+
+/* ---------- Toast ---------- */
+let tT; function toast(m){ $('#toastMsg').textContent=m; $('#toast').classList.add('show'); clearTimeout(tT); tT=setTimeout(()=>$('#toast').classList.remove('show'),2600); }
+
+/* ---------- Modal ---------- */
+function modal(html){ $('#ovModal').innerHTML=html; $('#ov').classList.add('show'); }
+function closeModal(){ $('#ov').classList.remove('show'); }
+$('#ov').addEventListener('click',e=>{ if(e.target.id==='ov') closeModal(); });
+
+/* ---------- Theme ---------- */
+$('#themeBtn').addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme');
+  const dark=cur? cur==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.setAttribute('data-theme', dark?'light':'dark');
+});
+
+/* ---------- Tags ---------- */
+function paketTag(p){ const m={'Advance':'adv','FREE':'free','Big Org':'big'}; const t={'Advance':'Advance','FREE':'Esensial','Big Org':'Big Org'}; return `<span class="tag ${m[p]}">${t[p]}</span>`; }
+function statusTag(s){ const m={'aktif':'ok','akan berakhir':'warn','tertunggak':'danger','diterima':'ok','pending':'pending','gagal':'danger','selesai':'ok'}; const t={'akan berakhir':'Akan berakhir','tertunggak':'Tertunggak'}; return `<span class="tag ${m[s]}"><span class="dot"></span>${t[s]||s.charAt(0).toUpperCase()+s.slice(1)}</span>`; }
+
+/* ---------- KPIs ---------- */
+function icon(n){const I={
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  money:'<path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/>',
+  card:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>',
+  up:'<path d="M23 6 13.5 15.5 8.5 10.5 1 18"/><path d="M17 6h6v6"/>',
+  people:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',
+};return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${I[n]}</svg>`;}
+function kpi(c){ return `<div class="card kpi"><div class="top"><div class="ico ${c.c}">${icon(c.i)}</div>${c.d?`<span class="delta ${c.d>0?'up':'down'}">${c.d>0?'▲':'▼'} ${Math.abs(c.d)}%</span>`:''}</div><div class="val">${c.v}</div><div class="lbl">${c.l}</div></div>`; }
+
+$('#kpiGrid').innerHTML=[
+  {i:'grid', c:'b', v:'48', l:'Komunitas aktif', d:6},
+  {i:'money', c:'g', v:'Rp 6,24 jt', l:'MRR (langganan)', d:12},
+  {i:'users', c:'p', v:num(3120), l:'Anggota berbayar', d:8},
+  {i:'card', c:'o', v:'Rp 2,40 jt', l:'Pendapatan kredit (bln ini)', d:19},
+].map(kpi).join('');
+
+$('#subKpi').innerHTML=[
+  {i:'up', c:'b', v:'31', l:'Pelanggan Advance'},
+  {i:'grid', c:'p', v:'15', l:'Komunitas FREE'},
+  {i:'money', c:'g', v:'Rp 6,24 jt', l:'MRR total'},
+  {i:'card', c:'o', v:'4', l:'Perlu perhatian'},
+].map(kpi).join('');
+
+const totKredit=creditTx.filter(t=>t.status==='diterima').reduce((a,b)=>a+b.kredit,0);
+const totKreditRp=creditTx.filter(t=>t.status==='diterima').reduce((a,b)=>a+b.nominal,0);
+const orgTopup=new Set(creditTx.filter(t=>t.status==='diterima').map(t=>t.user)).size;
+$('#creditKpi').innerHTML=[
+  {i:'people', c:'b', v:num(orgTopup), l:'Orang top up (diterima)'},
+  {i:'card', c:'o', v:num(totKredit), l:'Kredit terjual'},
+  {i:'money', c:'g', v:rp(totKreditRp), l:'Pendapatan kredit'},
+  {i:'up', c:'p', v:creditTx.filter(t=>t.status==='pending').length, l:'Menunggu pembayaran'},
+].map(kpi).join('');
+
+/* ---------- Revenue chart ---------- */
+(function(){
+  const data=[['Mei',4.1,1.2],['Jun',4.6,1.5],['Jul',5.0,1.7],['Agu',5.4,1.9],['Sep',5.8,2.1],['Okt',6.2,2.4]];
+  const W=560,H=200,pad=28,bw=46,gap=(W-pad*2)/data.length;
+  const max=9;
+  let bars='';
+  data.forEach((d,i)=>{
+    const x=pad+gap*i+gap/2;
+    const h1=(d[1]/max)*(H-pad-24), h2=(d[2]/max)*(H-pad-24);
+    bars+=`<rect class="bar" x="${x-bw/2}" y="${H-24-h1}" width="${bw/2-2}" height="${h1}" rx="3"/>`;
+    bars+=`<rect x="${x+1}" y="${H-24-h2}" width="${bw/2-2}" height="${h2}" rx="3" fill="var(--accent)"/>`;
+    bars+=`<text class="axislbl" x="${x}" y="${H-7}" text-anchor="middle">${d[0]}</text>`;
+  });
+  $('#revChart').innerHTML=`<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <line class="axis" x1="${pad}" y1="${H-24}" x2="${W-pad}" y2="${H-24}"/>${bars}</svg>`;
+})();
+
+/* ---------- Top communities bar ---------- */
+(function(){
+  const top=[...subs].filter(s=>s.tarif>0).sort((a,b)=>b.tarif-a.tarif).slice(0,5);
+  const mx=top[0].tarif;
+  $('#topComm').innerHTML=top.map(s=>`<div class="r"><span class="cell-sub" style="color:var(--ink);font-weight:500">${s.alias}</span><div class="track"><div class="fill" style="width:${(s.tarif/mx*100)}%"></div></div><span class="amt">${rp(s.tarif)}</span></div>`).join('');
+})();
+
+/* ---------- Attention table (ringkasan) ---------- */
+$('#attnBody').innerHTML=subs.filter(s=>s.status!=='aktif').map(s=>`
+  <tr><td><div class="cell-main">${s.nama}</div><div class="cell-sub">${s.alias} · ${num(s.anggota)} anggota</div></td>
+  <td>${paketTag(s.paket)}</td><td class="num">${rp(s.tarif)}</td><td>${statusTag(s.status)}</td><td class="cell-sub">${s.renew}</td>
+  <td><button class="linkbtn" onclick="go('scrLangganan')">Kelola</button></td></tr>`).join('');
+
+/* ---------- Subscriptions table ---------- */
+let subFilter='all';
+function renderSubs(){
+  const rows=subs.filter(s=> subFilter==='all' ? true : subFilter==='tertunggak' ? s.status==='tertunggak' : s.paket===subFilter);
+  $('#subBody').innerHTML = rows.length? rows.map(s=>`
+    <tr><td><div class="cell-main">${s.nama}</div><div class="cell-sub">${s.alias}</div></td>
+    <td>${paketTag(s.paket)}</td><td class="num">${num(s.anggota)}</td><td class="num">${s.peninjau}</td>
+    <td class="num">${rp(s.tarif)}</td><td>${statusTag(s.status)}</td><td class="cell-sub">${s.renew}</td>
+    <td><button class="linkbtn" onclick="toast('Detail ${s.alias} dibuka')">Detail</button></td></tr>`).join('')
+    : `<tr><td colspan="8" class="empty">Tidak ada komunitas pada filter ini.</td></tr>`;
+}
+renderSubs();
+
+/* ---------- Credit table ---------- */
+let crFilter='all';
+function renderCredit(){
+  const rows=creditTx.filter(t=> crFilter==='all'? true : t.status===crFilter);
+  $('#crBody').innerHTML = rows.length? rows.map((t,idx)=>`
+    <tr><td><div class="cell-main">${t.user}</div><div class="cell-sub">${t.komunitas}</div></td>
+    <td class="num">${t.paket}×</td><td class="num">${num(t.kredit)}</td><td class="num">${rp(t.nominal)}</td>
+    <td><span class="tag free">${t.metode}</span></td><td>${statusTag(t.status)}</td><td class="cell-sub">${t.waktu}</td>
+    <td>${t.status==='diterima'?`<button class="btn ghost sm" onclick="openRefund(${creditTx.indexOf(t)})">Refund</button>`:''}</td></tr>`).join('')
+    : `<tr><td colspan="8" class="empty">Tidak ada transaksi pada filter ini.</td></tr>`;
+}
+renderCredit();
+
+/* ---------- Filters ---------- */
+$$('.chip').forEach(c=>c.addEventListener('click',()=>{
+  const scope=c.dataset.scope;
+  $$('.chip[data-scope="'+scope+'"]').forEach(x=>x.classList.toggle('active',x===c));
+  if(scope==='sub'){ subFilter=c.dataset.filter; renderSubs(); }
+  else { crFilter=c.dataset.filter; renderCredit(); }
+}));
+
+/* ---------- Refund ---------- */
+function fillRefTx(){
+  $('#refTx').innerHTML=creditTx.filter(t=>t.status==='diterima').map(t=>`<option value="${creditTx.indexOf(t)}" data-amt="${t.nominal}">${t.user} · ${t.komunitas} · ${rp(t.nominal)} · ${t.waktu}</option>`).join('');
+  syncRefAmt();
+}
+function syncRefAmt(){ const o=$('#refTx').selectedOptions[0]; $('#refAmt').textContent = o? rp(+o.dataset.amt):'Rp 0'; }
+$('#refTx').addEventListener('change',syncRefAmt);
+function openRefund(i){ go('scrRefund'); fillRefTx(); $('#refTx').value=i; syncRefAmt(); }
+function renderRefunds(){
+  $('#refBadge').textContent = creditTx.filter(t=>t.status==='pending').length;
+  $('#refList').innerHTML = refunds.map(r=>`<div class="rowbox"><div><div class="cell-main">${r.user}</div><div class="cell-sub">${r.alasan} · ${r.waktu}</div></div><div style="text-align:right"><div class="v" style="font-size:14px">${rp(r.nominal)}</div>${statusTag(r.status)}</div></div>`).join('');
+}
+fillRefTx(); renderRefunds();
+
+$('#refProcess').addEventListener('click',()=>{
+  const o=$('#refTx').selectedOptions[0]; if(!o) return;
+  const amt=+o.dataset.amt, label=o.textContent.split(' · ')[0];
+  modal(`<div class="mh"><div><h3>Konfirmasi refund</h3><p>Dana dikembalikan ke metode pembayaran asal.</p></div><button class="x" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div class="mb"><div class="rowbox"><span class="k">Penerima</span><span class="cell-main">${label}</span></div>
+  <div class="rowbox"><span class="k">Jumlah</span><span class="v">${rp(amt)}</span></div>
+  <div class="rowbox"><span class="k">Alasan</span><span class="cell-main" style="text-align:right;max-width:60%">${$('#refReason').value}</span></div>
+  <div class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Tindakan ini tercatat permanen dan tidak bisa dibatalkan.</div></div>
+  <div class="mf"><button class="btn ghost" onclick="closeModal()">Batal</button><button class="btn danger" id="refConfirm">Ya, proses refund ${rp(amt)}</button></div>`);
+  $('#refConfirm').addEventListener('click',()=>{
+    const i=+$('#refTx').value; const t=creditTx[i];
+    refunds.unshift({user:t.user, nominal:t.nominal, alasan:$('#refReason').value, waktu:'19 Okt 2026, '+new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}).replace(':','.'), status:'selesai'});
+    t.status='gagal'; // ditandai sudah di-refund
+    closeModal(); renderRefunds(); renderCredit(); fillRefTx();
+    toast('Refund '+rp(t.nominal)+' untuk '+t.user+' diproses');
+  });
+});
+
+/* ---------- Broadcast ---------- */
+function PV(){
+  $('#pvSubj').textContent=$('#bcSubj').value||'(tanpa subjek)';
+  $('#pvBody').textContent=$('#bcBody').value;
+  $('#pvCta').textContent=$('#bcCta').value||'Tombol';
+}
+PV();
+$('#bcSeg').addEventListener('change',e=>{ const n=e.target.selectedOptions[0].dataset.n; $('#bcSendN').textContent=num(+n); });
+$('#bcHistory').innerHTML=bcHistory.map(h=>`<div class="rowbox"><div><div class="cell-main">${h.subj}</div><div class="cell-sub">${h.seg} · ${h.waktu}</div></div><div style="text-align:right"><div class="cell-main">${num(h.n)}</div><div class="cell-sub">dibuka ${h.open}</div></div></div>`).join('');
+
+$('#bcTest').addEventListener('click',()=>toast('Email uji dikirim ke yunandha.i@gmail.com'));
+
+$('#bcSend').addEventListener('click',()=>{
+  const n=$('#bcSeg').selectedOptions[0].dataset.n, seg=$('#bcSeg').selectedOptions[0].textContent.split(' (')[0];
+  const subj=$('#bcSubj').value;
+  modal(`<div class="mh"><div><h3>Kirim broadcast?</h3><p>Email promosi akan dikirim ke penerima yang opt-in.</p></div><button class="x" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div class="mb"><div class="rowbox"><span class="k">Segmen</span><span class="cell-main">${seg}</span></div>
+  <div class="rowbox"><span class="k">Penerima</span><span class="v">${num(+n)}</span></div>
+  <div class="rowbox"><span class="k">Subjek</span><span class="cell-main" style="text-align:right;max-width:60%">${subj}</span></div>
+  <div class="note info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>Semua penerima sudah menyetujui email promosi & bisa berhenti berlangganan dari email.</div></div>
+  <div class="mf"><button class="btn ghost" onclick="closeModal()">Batal</button><button class="btn" id="bcConfirm">Kirim ke ${num(+n)} penerima</button></div>`);
+  $('#bcConfirm').addEventListener('click',()=>{
+    bcHistory.unshift({subj:subj, seg:seg, n:+n, waktu:'19 Okt 2026', open:'—'});
+    $('#bcHistory').innerHTML=bcHistory.map(h=>`<div class="rowbox"><div><div class="cell-main">${h.subj}</div><div class="cell-sub">${h.seg} · ${h.waktu}</div></div><div style="text-align:right"><div class="cell-main">${num(h.n)}</div><div class="cell-sub">dibuka ${h.open}</div></div></div>`).join('');
+    $('#lastSent').textContent='baru saja';
+    closeModal(); toast('Broadcast dikirim ke '+num(+n)+' penerima');
+  });
+});
+</script>
+</body>
+</html>
