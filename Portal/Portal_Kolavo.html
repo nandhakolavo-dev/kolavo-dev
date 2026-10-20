@@ -763,15 +763,15 @@ function flashHTML(){ if(!UI.flash) return ''; const f=UI.flash; UI.flash=null;
 const PAGES={};
 const T=(pg,p,k)=>typeof pg[k]==='function'?pg[k](p):pg[k];
 
-/* ----- Ringkasan ----- */
-PAGES.scrRingkasan={title:'Ringkasan',sub:'Kesehatan komersial Kolavo · per '+fd(TODAY),render(){
+/* ----- Summary ----- */
+PAGES.scrRingkasan={title:'Summary',sub:'Kesehatan komersial Kolavo · per '+fd(TODAY),render(){
   const paid=paidActive(), act=subs.filter(s=>!['berhenti','ditangguhkan'].includes(subStatus(s)));
   const mrr=sum(paid,perBln), months=lastMonths(6), att=subs.filter(perhatian);
   const top=paid.slice().sort((a,b)=>perBln(b)-perBln(a)).slice(0,5);
   return `<div class="grid kpis">
     ${kpi({i:'grid',c:'b',v:num(act.length),l:`Komunitas aktif · ${paid.length} berbayar`,go:'scrLangganan'})}
-    ${kpi({i:'money',c:'g',v:rp(mrr),l:'MRR · pendapatan berulang / bulan',d:delta(mrr,mrrAt('2026-09')),go:'scrAnalitik'})}
     ${kpi({i:'users',c:'p',v:num(sum(paid,s=>s.anggota)),l:'Anggota di komunitas berbayar',go:'scrLangganan'})}
+    ${kpi({i:'money',c:'g',v:rp(mrr),l:'MRR · pendapatan berulang / bulan',d:delta(mrr,mrrAt('2026-09')),go:'scrAnalitik'})}
     ${kpi({i:'card',c:'o',v:rp(cashCr(MONTH_NOW)),l:'Penjualan kredit · Okt 2026',d:delta(cashCr(MONTH_NOW),cashCr('2026-09')),go:'scrKredit'})}
   </div>
   <div class="grid two" style="margin-top:16px">
@@ -1377,7 +1377,7 @@ PAGES.scrMenu={title:'Menu',sub:'Semua halaman portal',render(){
    ===================================================================== */
 const NAV=[
  {label:'Operasional'},
- {id:'scrRingkasan',t:'Ringkasan',i:'grid',d:'Kesehatan komersial'},
+ {id:'scrRingkasan',t:'Summary',i:'grid',d:'Kesehatan komersial'},
  {id:'scrLangganan',t:'Langganan',i:'list',d:'Paket & status komunitas'},
  {id:'scrTagihan',t:'Tagihan',i:'doc',d:'Faktur & pembayaran'},
  {id:'scrKredit',t:'Top Up Kredit',i:'card',d:'Pembelian kredit kenalan'},
@@ -1389,7 +1389,7 @@ const NAV=[
  {id:'scrLog',t:'Log Audit',i:'shield',d:'Jejak tindakan tim'},
 ];
 $('#sideNav').innerHTML=NAV.map(n=>n.label?`<div class="navlabel">${n.label}</div>`:`<button class="navbtn" ${G(n.id)} data-nav="${n.id}">${ic(n.i)}${n.t}${n.badge?'<span class="badge" id="refBadge"></span>':''}</button>`).join('');
-$('#mnav').innerHTML=[['scrRingkasan','Ringkasan','grid'],['scrLangganan','Langganan','list'],['scrTagihan','Tagihan','doc'],['scrKredit','Kredit','card'],['scrMenu','Lainnya','more']]
+$('#mnav').innerHTML=[['scrRingkasan','Summary','grid'],['scrLangganan','Langganan','list'],['scrTagihan','Tagihan','doc'],['scrKredit','Kredit','card'],['scrMenu','Lainnya','more']]
   .map(([id,t,i])=>`<button ${G(id)} data-nav="${id}">${ic(i)}${t}</button>`).join('');
 
 const R={stack:[],cur:{id:'scrRingkasan',p:{}}};
