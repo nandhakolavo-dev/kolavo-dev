@@ -1,0 +1,172 @@
+openapi: 3.1.0
+info:
+  title: Kolavo API (DRAFT)
+  version: 0.1.0-draft
+  description: |
+    DRAFT contract proposed by the frontend (kolavo-web) while the backend does not exist.
+    The built-in mock (`src/mocks/backend.ts`) implements exactly this. Review with the
+    backend team before they build; change this file first, then mocks and services.
+
+    Open questions for the backend team:
+    - Members are flat here (`/members`). Real members belong to a community; likely
+      `/communities/{communityId}/members`, with permissions per community.
+    - Token lifetime and refresh (`/auth/refresh`?).
+    - The final list of permission codes.
+servers:
+  - url: http://localhost:3000/api/mock
+    description: Built-in mock (API_MOCKING=true)
+security:
+  - bearer: []
+paths:
+  /auth/google:
+    get:
+      summary: Start Google sign-in (browser redirect)
+      security: []
+      parameters:
+        - { name: redirectUri, in: query, required: true, schema: { type: string, format: uri } }
+      responses:
+        '302':
+          description: To Google, then back to `redirectUri?code=<one-time code>`.
+  /auth/token:
+    post:
+      summary: Exchange the one-time code for an access token (server to server)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code, redirectUri]
+              properties:
+                code: { type: string }
+                redirectUri: { type: string, format: uri }
+      responses:
+        '200':
+          description: Token
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [accessToken, expiresIn]
+                properties:
+                  accessToken: { type: string }
+                  expiresIn: { type: integer, description: Seconds }
+        '400': { $ref: '#/components/responses/Error' }
+  /me:
+    get:
+      summary: The signed-in user and their permissions
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CurrentUser' }
+        '401': { $ref: '#/components/responses/Error' }
+  /members:
+    get:
+      summary: List members (requires members.read)
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 10 } }
+        - { name: search, in: query, description: Name or email contains, schema: { type: string } }
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/MemberStatus' } }
+      responses:
+        '200':
+          description: One page of members
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ListMeta'
+                  - type: object
+                    required: [items]
+                    properties:
+                      items: { type: array, items: { $ref: '#/components/schemas/Member' } }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+    post:
+      summary: Add a member (requires members.create)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateMember' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Member' }
+        '403': { $ref: '#/components/responses/Error' }
+        '409':
+          description: Email already registered (`code = email_taken`)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /members/{id}:
+    delete:
+      summary: Remove a member (requires members.delete)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '204': { description: Deleted }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+components:
+  securitySchemes:
+    bearer: { type: http, scheme: bearer }
+  responses:
+    Error:
+      description: Error envelope
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string, examples: [unauthenticated, forbidden, not_found, email_taken] }
+            message: { type: string, description: Human-readable, in the user's language }
+    ListMeta:
+      type: object
+      required: [total, page, pageSize]
+      properties:
+        total: { type: integer }
+        page: { type: integer }
+        pageSize: { type: integer }
+    CurrentUser:
+      type: object
+      required: [id, name, email, role, permissions]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        email: { type: string, format: email }
+        role: { type: string, enum: [admin, member] }
+        permissions:
+          type: array
+          items: { type: string, enum: [members.read, members.create, members.delete] }
+    MemberStatus:
+      type: string
+      enum: [active, pending]
+    Member:
+      type: object
+      required: [id, name, email, status, joinedAt]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        email: { type: string, format: email }
+        status: { $ref: '#/components/schemas/MemberStatus' }
+        joinedAt: { type: string, format: date-time }
+    CreateMember:
+      type: object
+      required: [name, email, status]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 100 }
+        email: { type: string, format: email }
+        status: { $ref: '#/components/schemas/MemberStatus' }

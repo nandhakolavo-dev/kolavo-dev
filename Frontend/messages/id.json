@@ -1,0 +1,106 @@
+{
+  "Metadata": {
+    "title": "Kolavo",
+    "description": "Basecamp digital komunitasmu. Kenali anggotamu, kenalkan komunitasmu."
+  },
+  "Common": {
+    "brandLine": "Basecamp digital komunitasmu",
+    "cancel": "Batal",
+    "retry": "Coba lagi",
+    "saving": "Menyimpan…",
+    "toggleTheme": "Ganti tema warna",
+    "backHome": "Kembali ke beranda"
+  },
+  "NotFound": {
+    "title": "Halaman tidak ditemukan",
+    "description": "Halaman yang kamu cari tidak ada."
+  },
+  "NoPermission": {
+    "title": "Kamu tidak punya akses",
+    "description": "Halaman ini hanya untuk pengurus dengan izin yang sesuai. Hubungi pengurus komunitasmu bila perlu."
+  },
+  "Landing": {
+    "title": "Kenali anggotamu. Kenalkan komunitasmu.",
+    "description": "Satu tempat untuk profil komunitas, data anggota yang terkumpul sekali, dan satu profil untuk semua komunitas anggotamu.",
+    "signIn": "Masuk",
+    "cta": "Buat komunitas"
+  },
+  "SignIn": {
+    "metaTitle": "Masuk",
+    "title": "Masuk ke Kolavo",
+    "description": "Gunakan akun Google untuk masuk ke Kolavo App.",
+    "google": "Masuk dengan Google",
+    "mockTitle": "Mode tiruan (API belum tersedia)",
+    "mockDescription": "Pilih peran untuk mencoba hak akses yang berbeda.",
+    "mockAs": "Masuk sebagai {role}",
+    "roles": {
+      "admin": "Pengurus",
+      "member": "Anggota"
+    },
+    "failed": "Gagal masuk. Silakan coba lagi."
+  },
+  "Shell": {
+    "mainNav": "Navigasi utama",
+    "members": "Anggota",
+    "signOut": "Keluar"
+  },
+  "Members": {
+    "metaTitle": "Anggota",
+    "metaDescription": "Daftar anggota komunitas.",
+    "title": "Anggota",
+    "count": "{count, plural, other {# anggota}}",
+    "loading": "Memuat anggota",
+    "loadFailed": "Daftar anggota gagal dimuat.",
+    "loadFailedHint": "Silakan coba lagi.",
+    "columns": {
+      "name": "Nama",
+      "email": "Email",
+      "status": "Status",
+      "joinedAt": "Bergabung",
+      "actions": "Aksi"
+    },
+    "status": {
+      "all": "Semua status",
+      "active": "Aktif",
+      "pending": "Menunggu"
+    },
+    "searchLabel": "Cari anggota",
+    "searchPlaceholder": "Cari nama atau email",
+    "filterStatus": "Saring menurut status",
+    "emptyTitle": "Belum ada anggota",
+    "emptyHint": "Tambahkan anggota pertama untuk memulai.",
+    "noMatchTitle": "Tidak ada anggota yang cocok",
+    "noMatchHint": "Coba kata kunci atau status lain.",
+    "pagination": {
+      "label": "Halaman",
+      "rowsPerPage": "Baris per halaman",
+      "pageOf": "Halaman {page} dari {total}",
+      "previous": "Halaman sebelumnya",
+      "next": "Halaman berikutnya"
+    },
+    "create": {
+      "open": "Tambah anggota",
+      "title": "Tambah anggota",
+      "description": "Data anggota bisa diubah nanti.",
+      "submit": "Simpan anggota",
+      "success": "Anggota ditambahkan.",
+      "error": "Anggota gagal ditambahkan."
+    },
+    "delete": {
+      "label": "Hapus {name}",
+      "title": "Hapus {name}?",
+      "description": "Tindakan ini tidak bisa dibatalkan.",
+      "confirm": "Hapus",
+      "success": "{name} dihapus.",
+      "error": "{name} gagal dihapus."
+    },
+    "form": {
+      "name": "Nama",
+      "email": "Email",
+      "status": "Status",
+      "nameRequired": "Nama wajib diisi",
+      "nameTooLong": "Nama terlalu panjang",
+      "emailInvalid": "Masukkan alamat email yang valid"
+    }
+  }
+}
