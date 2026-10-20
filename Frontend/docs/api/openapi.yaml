@@ -53,6 +53,20 @@ paths:
                   accessToken: { type: string }
                   expiresIn: { type: integer, description: Seconds }
         '400': { $ref: '#/components/responses/Error' }
+  /communities/featured:
+    get:
+      summary: Curated communities for the public landing page
+      security: []
+      responses:
+        '200':
+          description: Featured communities, in display order
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/FeaturedCommunity' } }
   /me:
     get:
       summary: The signed-in user and their permissions
@@ -151,6 +165,22 @@ components:
         permissions:
           type: array
           items: { type: string, enum: [members.read, members.create, members.delete] }
+    FeaturedCommunity:
+      type: object
+      description: Public card data. Never includes member names or contacts.
+      required:
+        [slug, name, alias, type, location, description, memberCount, verified, logoUrl, memberInitials]
+      properties:
+        slug: { type: string, description: 'Profile URL is /k/{slug}' }
+        name: { type: string }
+        alias: { type: [string, 'null'] }
+        type: { type: string, enum: [Organisasi, Asosiasi, Ikatan Alumni, Himpunan] }
+        location: { type: string, examples: ['Kabupaten Bekasi, Jawa Barat'] }
+        description: { type: string }
+        memberCount: { type: integer }
+        verified: { type: boolean, description: Paid (Advance) community }
+        logoUrl: { type: string }
+        memberInitials: { type: array, maxItems: 3, items: { type: string } }
     MemberStatus:
       type: string
       enum: [active, pending]

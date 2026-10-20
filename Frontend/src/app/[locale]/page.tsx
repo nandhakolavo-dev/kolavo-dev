@@ -1,38 +1,51 @@
 import type { Metadata } from 'next'
 import { useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
+import { Suspense } from 'react'
 
-import { Button } from '@/components/ui/button'
-import { Link } from '@/i18n/navigation'
+import { Hero } from './_components/Hero'
+import { LandingFooter } from './_components/LandingFooter'
+import { LandingHeader } from './_components/LandingHeader'
+import { Pillars } from './_components/Pillars'
+import { Pricing } from './_components/Pricing'
+import { SectionHeading } from './_components/SectionHeading'
+import { Showcase, ShowcaseSkeleton } from './_components/Showcase'
+import { Steps } from './_components/Steps'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Landing')
-  return { title: { absolute: `Kolavo — ${t('title')}` }, description: t('description') }
+  return {
+    title: { absolute: t('metaTitle') },
+    description: t('metaDescription'),
+    openGraph: { title: t('metaTitle'), description: t('metaDescription'), type: 'website', locale: 'id_ID' }
+  }
 }
 
 /**
- * Public landing page: fully static HTML for search engines and link previews.
- * Placeholder hero; the full landing design lives in Redesign/ (scrBeranda).
+ * Public landing page (prototype scrBeranda, V4) for prospective community leaders.
+ * Everything is static HTML except the showcase, which streams in from the API.
  */
 export default function LandingPage() {
-  const t = useTranslations()
+  const t = useTranslations('Landing.showcase')
 
   return (
-    <div className='min-h-svh'>
-      <header className='mx-auto flex h-16 max-w-6xl items-center justify-between px-4'>
-        <span className='text-lg font-semibold'>Kolavo</span>
-        <Button asChild variant='outline'>
-          <Link href='/masuk'>{t('Landing.signIn')}</Link>
-        </Button>
-      </header>
-      <main className='mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-20'>
-        <p className='text-sm font-medium tracking-wide text-primary uppercase'>{t('Common.brandLine')}</p>
-        <h1 className='max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl'>{t('Landing.title')}</h1>
-        <p className='max-w-xl text-lg text-muted-foreground'>{t('Landing.description')}</p>
-        <Button asChild size='lg'>
-          <Link href='/masuk'>{t('Landing.cta')}</Link>
-        </Button>
+    <>
+      <LandingHeader />
+      <main>
+        <Hero />
+        <Pillars />
+        <section id='etalase' aria-labelledby='etalase-title' className='py-[78px]'>
+          <div className='mx-auto max-w-[1160px] px-[22px]'>
+            <SectionHeading id='etalase-title' kicker={t('kicker')} title={t('title')} lede={t('lede')} />
+            <Suspense fallback={<ShowcaseSkeleton label={t('loading')} />}>
+              <Showcase />
+            </Suspense>
+          </div>
+        </section>
+        <Steps />
+        <Pricing />
       </main>
-    </div>
+      <LandingFooter />
+    </>
   )
 }

@@ -1,7 +1,7 @@
 import type { Role } from '@/services/auth'
 import type { CreateMemberPayload, Member } from '@/services/members'
 
-import { mockDb, mockUsers } from './data'
+import { featuredCommunities, mockDb, mockUsers } from './data'
 
 /**
  * A fake backend that follows docs/api/openapi.yaml. Served at /api/mock in development
@@ -33,6 +33,9 @@ export async function handleMockRequest(request: Request, path: string): Promise
     if (!role) return fail(400, 'invalid_code', 'Kode masuk tidak valid.')
     return json({ accessToken: `mock-token-${role}`, expiresIn: 60 * 60 * 24 * 7 })
   }
+
+  // Public endpoints: no token required.
+  if (method === 'GET' && path === '/communities/featured') return json({ items: featuredCommunities })
 
   const user = currentUser(request)
   if (!user) return fail(401, 'unauthenticated', 'Silakan masuk terlebih dahulu.')

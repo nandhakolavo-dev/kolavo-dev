@@ -157,6 +157,11 @@ async function MembersPrefetch({ searchParams }) {
 ```
 
 - `staleTime` above zero so the client does not refetch what the server just sent.
+- **Display-only public data** (nothing on the client reads or mutates it, e.g. the landing
+  showcase) may skip the query cache: an async Server Component calls the service with
+  `publicServerHttp` inside `<Suspense>`, after `await io()` (from `next/cache`) so it is
+  fetched per request instead of during prerender. See `src/app/[locale]/_components/Showcase.tsx`.
+- Per-user pages call `await connection()` before prefetching (TanStack stamps `Date.now()`).
 - Mutations run in the browser: `http` → `/api/backend/*` → backend. They never need the
   server client.
 - Errors: the backend answers `{ "error": { "code", "message" } }`; `HttpError.message`
@@ -264,6 +269,11 @@ decorative icons `aria-hidden`; everything keyboard-operable.
 hoc. Kolavo tokens (from `Redesign/REFERENCE.md`): primary `#2D6BE4`, hover `#0045CD`
 (`bg-brand-hover`), accent `#FF683D` (`text-brand-accent`), card radius 13px. Dark mode is
 the `.dark` block; never write literal colors outside the token blocks.
+
+Buttons are pills (`rounded-full`, brand spec). Sizes: `hero` 56px (landing lead CTA), `xl`
+52px (primary page actions), `lg`/`default`/`sm` for dense UI. Hover on primary is `--brand-hover`.
+Section surfaces: `bg-surface-alt` (alternate sections), `bg-brand-wash`/`bg-brand-tint`,
+`bg-accent-wash` + `text-accent-ink`, `bg-success-wash` + `text-success`.
 
 Fonts: Poppins from `@fontsource/poppins`, mono from `geist`. Never `next/font/google`
 (builds must not need the internet).

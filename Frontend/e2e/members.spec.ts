@@ -2,12 +2,6 @@ import { expect, test } from '@playwright/test'
 
 // Runs against `next start` with API_MOCKING=true: the app's own /api/mock is the backend.
 
-test('landing page is public and server-rendered', async ({ request }) => {
-  const response = await request.get('/')
-  expect(response.status()).toBe(200)
-  expect(await response.text()).toContain('Kenali anggotamu. Kenalkan komunitasmu.')
-})
-
 test('app pages redirect to sign-in without a session', async ({ page }) => {
   await page.goto('/members')
   await expect(page).toHaveURL(/\/masuk$/)

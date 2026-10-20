@@ -1,5 +1,6 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
+import { connection } from 'next/server'
 import { getTranslations } from 'next-intl/server'
 import { Suspense } from 'react'
 
@@ -34,6 +35,8 @@ export default function MembersPage({ searchParams }: PageProps<'/[locale]/membe
  * contains the list, then hand the cache to the client. One cache, one service layer.
  */
 async function MembersPrefetch({ searchParams }: Pick<PageProps<'/[locale]/members'>, 'searchParams'>) {
+  // Per-user data: render only for a real request (TanStack stamps Date.now() while prefetching).
+  await connection()
   const { allowed } = await checkPermission(PERMISSIONS.MEMBERS_READ)
   if (!allowed) return <NoPermission />
 

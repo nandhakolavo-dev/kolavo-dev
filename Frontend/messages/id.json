@@ -20,10 +20,278 @@
     "description": "Halaman ini hanya untuk pengurus dengan izin yang sesuai. Hubungi pengurus komunitasmu bila perlu."
   },
   "Landing": {
-    "title": "Kenali anggotamu. Kenalkan komunitasmu.",
-    "description": "Satu tempat untuk profil komunitas, data anggota yang terkumpul sekali, dan satu profil untuk semua komunitas anggotamu.",
-    "signIn": "Masuk",
-    "cta": "Buat komunitas"
+    "metaTitle": "Kolavo — Basecamp digital komunitasmu",
+    "metaDescription": "Kolavo memperkenalkan siapa saja anggota komunitasmu: profil komunitas yang menunjukkan orang-orangnya, data anggota terkumpul sekali, dan satu link pendaftaran.",
+    "nav": {
+      "label": "Navigasi beranda",
+      "solutions": "Solusi",
+      "workflow": "Alur Kerja",
+      "pricing": "Paket Harga",
+      "create": "Buat komunitas",
+      "signIn": "Masuk",
+      "home": "Kolavo, ke beranda"
+    },
+    "hero": {
+      "brandLine": "Basecamp digital komunitasmu",
+      "titleLine1": "Kenali anggotamu.",
+      "titleLine2": "Kenalkan",
+      "rotatingWords": ["komunitasmu", "organisasimu", "asosiasimu", "alumnimu", "himpunanmu"],
+      "description": "Kolavo memperkenalkan siapa saja anggota komunitasmu. Kamu jadi lebih kenal mereka, dari karier sampai pendidikannya, lebih mudah menyusun program, dan orang luar pun tertarik mengenal komunitasmu.",
+      "ctaPrimary": "Buat Halaman Komunitas",
+      "ctaSecondary": "Lihat komunitas di Kolavo",
+      "points": [
+        "Satu link pendaftaran, pendataan anggota jadi mudah",
+        "Profil komunitas yang mudah ditemukan banyak orang",
+        "Nama dan kontak anggota tetap tertutup untuk publik"
+      ]
+    },
+    "art": {
+      "communityName": "Ikatan Alumni SMAN 52",
+      "communityMeta": "Ikatan Alumni · Jakarta Utara",
+      "faces": "Fajar (Ketua), Ayu (Humas), dan 84 anggota lain",
+      "panelTitle": "Siapa saja di dalamnya",
+      "panelBadge": "Profil publik",
+      "stats": [
+        {
+          "value": "86",
+          "label": "anggota"
+        },
+        {
+          "value": "14",
+          "label": "profesi"
+        },
+        {
+          "value": "9",
+          "label": "kota"
+        }
+      ],
+      "career": "Karier",
+      "careerRows": [
+        {
+          "label": "Karyawan swasta",
+          "value": 28,
+          "width": 33
+        },
+        {
+          "label": "Wiraswasta",
+          "value": 17,
+          "width": 20
+        },
+        {
+          "label": "Guru & dosen",
+          "value": 12,
+          "width": 14
+        }
+      ],
+      "education": "Pendidikan",
+      "educationRows": [
+        {
+          "label": "Sarjana (S1)",
+          "value": 47,
+          "width": 55
+        },
+        {
+          "label": "Magister (S2)",
+          "value": 14,
+          "width": 16
+        }
+      ],
+      "personName": "Rani Setiawati",
+      "personTags": ["Desainer Produk", "Sarjana (S1)", "Jakarta Selatan"],
+      "chipTitle": "Ajakan kenalan diterima",
+      "chipText": "Kontak Rani sekarang terbuka"
+    },
+    "pillars": {
+      "kicker": "Satu platform, tiga kebutuhan",
+      "title": "Apa pun peranmu sebagai pengurus, Kolavo meringankan tugasmu.",
+      "lede": "Profil komunitas, data anggota, dan pendaftaran yang mudah, semuanya di satu tempat.",
+      "items": [
+        {
+          "for": "Untuk tim humas",
+          "title": "Perkenalkan komunitasmu lewat orang-orangnya",
+          "text": "Media sosial menampilkan kegiatan. Profil komunitas di Kolavo menampilkan siapa saja anggotanya.",
+          "points": [
+            "Persebaran karier dan pendidikan anggota",
+            "Pengurus tampil dengan nama dan jabatan",
+            "Satu tautan untuk dibagikan ke publik"
+          ]
+        },
+        {
+          "for": "Untuk pengurus komunitas",
+          "title": "Kumpulkan data anggota tanpa rekap manual",
+          "text": "Data pendaftar langsung tersusun dan siap dipakai pengurus untuk merancang kegiatan.",
+          "points": [
+            "Pertanyaan pendaftaran bisa diatur sendiri",
+            "Kegiatan dirancang sesuai demografi anggota",
+            "Mudah menemukan anggota untuk diajak kolaborasi"
+          ]
+        },
+        {
+          "for": "Untuk anggota",
+          "title": "Mudahkan anggotamu bergabung dan saling kenal",
+          "text": "Anggota mendaftar lewat satu link, lalu bisa saling mencari dan berkenalan di daftar anggota.",
+          "points": [
+            "Daftar anggota hanya untuk sesama anggota",
+            "Kontak terbuka setelah ajakan kenalan diterima",
+            "Satu profil untuk banyak komunitas"
+          ]
+        }
+      ]
+    },
+    "showcase": {
+      "kicker": "Komunitas yang sudah join Kolavo",
+      "title": "Lihat profil komunitas lain.",
+      "lede": "Komunitas yang sudah memperkenalkan orang-orangnya lewat Kolavo. Buka profilnya untuk mulai bergabung.",
+      "members": "{count, plural, other {# anggota}}",
+      "more": "{count}+",
+      "verified": "Komunitas terverifikasi",
+      "logo": "Logo {name}",
+      "view": "Lihat profil",
+      "loading": "Memuat komunitas",
+      "empty": "Komunitas pertama segera hadir di sini.",
+      "failed": "Daftar komunitas belum bisa dimuat. Coba muat ulang halaman."
+    },
+    "steps": {
+      "kicker": "Cara mulai",
+      "title": "Empat langkah, profil komunitasmu siap.",
+      "lede": "Cukup buat halaman, bagikan link, dan setujui pendaftar. Profil komunitasmu siap ditampilkan.",
+      "items": [
+        {
+          "title": "Buat halaman komunitas",
+          "text": "Isi nama, bentuk, lokasi, dan satu kalimat ajakan."
+        },
+        {
+          "title": "Sebar satu link",
+          "text": "Bagikan ke grup komunitasmu."
+        },
+        {
+          "title": "Setujui pendaftar",
+          "text": "Tinjau siapa yang mendaftar, lalu terima."
+        },
+        {
+          "title": "Profil komunitas terisi",
+          "text": "Persebaran anggota tampil di halaman publik."
+        }
+      ],
+      "art": {
+        "nameLabel": "Nama komunitas",
+        "nameValue": "Ikatan Alumni SMAN 52",
+        "typeOn": "Ikatan Alumni",
+        "typeOff": "Asosiasi",
+        "url": "kolavo.app/k/sman52",
+        "copied": "Link tersalin",
+        "applicant": "Rani Setiawati",
+        "applicantMeta": "Desainer Produk · 2014",
+        "approve": "Setujui",
+        "reject": "Tolak",
+        "stats": "86 anggota · 14 profesi"
+      },
+      "ctaPrimary": "Buat Halaman Komunitas",
+      "ctaSecondary": "Lihat contoh halaman",
+      "privacy": "Profil komunitas terbuka untuk publik. Daftar anggota hanya untuk sesama anggota."
+    },
+    "pricing": {
+      "kicker": "Harga",
+      "title": "Mulai gratis, naik paket saat komunitasmu tumbuh.",
+      "lede": "Pilih paket sesuai jumlah anggota dan pengurusmu.",
+      "essential": {
+        "name": "Esensial",
+        "price": "FREE",
+        "limit": "1 peninjau · 20 anggota",
+        "text": "Untuk komunitas yang baru mulai, diurus satu orang.",
+        "points": [
+          "Halaman komunitas publik dengan persebaran anggota",
+          "Formulir pendaftaran dengan pertanyaan sendiri",
+          "Satu peninjau pendaftaran",
+          "Daftar anggota tertutup, hingga 20 anggota"
+        ],
+        "cta": "Buat Halaman Komunitas"
+      },
+      "advance": {
+        "name": "Advance",
+        "price": "Rp 199",
+        "per": "/ anggota / bulan",
+        "limit": "30 sampai 1.000 anggota",
+        "text": "Peninjau pertama Rp 15.000, tiap tambahan Rp 3.000 per bulan. Semua yang ada di Esensial, ditambah:",
+        "points": [
+          "Struktur kepengurusan dengan nama jabatan sendiri",
+          "Akses dashboard untuk tiap pengurus",
+          "Dashboard pertumbuhan anggota",
+          "Pengumuman, tautan grup, dan dokumen komunitas",
+          "Onboarding anggota baru",
+          "Jawaban pendaftar dikelompokkan jadi persebaran pilihanmu"
+        ],
+        "cta": "Buat Halaman Komunitas",
+        "calculator": "Simulasi biaya"
+      },
+      "big": {
+        "name": "Big Organization",
+        "price": "Hubungi kami",
+        "limit": "di atas 1.000 anggota",
+        "text": "Untuk komunitas besar, atau yang butuh pendampingan. Semua yang ada di Advance, ditambah:",
+        "points": [
+          "Harga spesial untuk lebih dari 1.000 anggota",
+          "Konsultasi pengembangan komunitas",
+          "Pendampingan langsung dari tim Kolavo"
+        ],
+        "cta": "Hubungi kami",
+        "emailSubject": "Paket Big Organization Kolavo"
+      }
+    },
+    "calculator": {
+      "eyebrow": "Simulasi biaya",
+      "perMonth": "/ bulan",
+      "heroMonthly": "{members} anggota dan {reviewers} peninjau, ditagih bulanan",
+      "heroDiscount": "Rata-rata per bulan dengan diskon {percent}% · total {duration} {total}",
+      "members": "Jumlah anggota",
+      "membersQuick": "Pilihan cepat jumlah anggota",
+      "reviewers": "Jumlah peninjau",
+      "reviewersInfo": "Apa itu peninjau?",
+      "reviewersTip": "Peninjau adalah pengurus yang memeriksa pendaftaran anggota baru, lalu menerima atau menolaknya. Tambah peninjau supaya tugas ini bisa dibagi.",
+      "reviewersLess": "Kurangi peninjau",
+      "reviewersMore": "Tambah peninjau",
+      "duration": "Durasi langganan",
+      "durations": [
+        {
+          "months": 1,
+          "label": "1 bulan",
+          "note": "Harga normal"
+        },
+        {
+          "months": 6,
+          "label": "6 bulan",
+          "note": "Hemat 5%"
+        },
+        {
+          "months": 12,
+          "label": "12 bulan",
+          "note": "Hemat 5%"
+        },
+        {
+          "months": 24,
+          "label": "2 tahun",
+          "note": "Hemat 10%"
+        }
+      ],
+      "discountNote": "Diskon durasi berlaku untuk pembelian pertama.",
+      "estimate": "Perkiraan tagihan Advance",
+      "membersLine": "{members} anggota × {rate}",
+      "reviewersLine": "{count} peninjau",
+      "monthly": "Per bulan",
+      "discountLine": "Diskon {percent}% · {duration}",
+      "total": "Total {duration}",
+      "monthsShort": "{count} bulan",
+      "years": "{count} tahun",
+      "big": "Lebih dari 1.000 anggota? Pilih paket Big Organization.",
+      "cta": "Buat Halaman Komunitas",
+      "close": "Tutup simulasi biaya"
+    },
+    "footer": {
+      "tagline": "Basecamp digital komunitasmu.",
+      "communities": "Komunitas",
+      "create": "Buat Halaman",
+      "pricing": "Paket Harga"
+    }
   },
   "SignIn": {
     "metaTitle": "Masuk",

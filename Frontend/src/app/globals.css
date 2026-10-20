@@ -8,6 +8,14 @@
   --radius: 0.8125rem;
   --brand-hover: oklch(0.457 0.218 262.4);
   --brand-accent: oklch(0.701 0.193 36.5);
+  /* #EBF1FD blue wash · #F5F8FE blue tint · #FFF1EC / #C64216 orange wash/ink · #E8F5EF / #12855F green · #FAFAFA alt section */
+  --brand-wash: oklch(0.955 0.02 262);
+  --brand-tint: oklch(0.977 0.01 262);
+  --accent-wash: oklch(0.966 0.017 40);
+  --accent-ink: oklch(0.548 0.18 36);
+  --success: oklch(0.537 0.11 160);
+  --success-wash: oklch(0.962 0.018 160);
+  --surface-alt: oklch(0.985 0 0);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -29,6 +37,15 @@
 }
 
 .dark {
+  --brand-hover: oklch(0.62 0.18 262);
+  --brand-accent: oklch(0.74 0.17 38);
+  --brand-wash: oklch(0.3 0.07 262);
+  --brand-tint: oklch(0.2 0.03 262);
+  --accent-wash: oklch(0.3 0.06 38);
+  --accent-ink: oklch(0.78 0.13 40);
+  --success: oklch(0.72 0.13 160);
+  --success-wash: oklch(0.3 0.05 160);
+  --surface-alt: oklch(0.18 0 0);
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -76,11 +93,22 @@
   --color-ring: var(--ring);
   --color-brand-hover: var(--brand-hover);
   --color-brand-accent: var(--brand-accent);
+  --color-brand-wash: var(--brand-wash);
+  --color-brand-tint: var(--brand-tint);
+  --color-accent-wash: var(--accent-wash);
+  --color-accent-ink: var(--accent-ink);
+  --color-success: var(--success);
+  --color-success-wash: var(--success-wash);
+  --color-surface-alt: var(--surface-alt);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
+  }
+  html {
+    /* In-page anchors (#harga) land below the sticky landing header. */
+    scroll-padding-top: 5.5rem;
   }
   body {
     @apply bg-background text-foreground;

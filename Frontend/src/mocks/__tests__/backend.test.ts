@@ -8,6 +8,13 @@ const request = (method: string, path: string, token?: string, body?: unknown) =
   })
 
 describe('mock backend', () => {
+  it('serves featured communities without a token', async () => {
+    const response = await handleMockRequest(request('GET', '/communities/featured'), '/communities/featured')
+    expect(response.status).toBe(200)
+    const body = (await response.json()) as { items: { slug: string }[] }
+    expect(body.items.map(item => item.slug)).toContain('sman52')
+  })
+
   it('rejects requests without a token', async () => {
     const response = await handleMockRequest(request('GET', '/members'), '/members')
     expect(response.status).toBe(401)
