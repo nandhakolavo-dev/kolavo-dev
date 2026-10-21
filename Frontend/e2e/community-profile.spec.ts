@@ -51,11 +51,13 @@ test('an Esensial community shows only its creator', async ({ page }) => {
   await expect(board.getByText('Community Creator')).toBeVisible()
 })
 
-test('an unknown slug renders not-found and is never indexed', async ({ page }) => {
-  await page.goto('/k/tidak-ada')
+test('an unknown slug answers 404 with the not-found page', async ({ page, request }) => {
+  expect((await request.get('/k/tidak-ada')).status()).toBe(404)
+  expect((await request.get('/k/sman52')).status()).toBe(200)
+
+  const response = await page.goto('/k/tidak-ada')
+  expect(response?.status()).toBe(404)
   await expect(page.getByRole('heading', { name: 'Komunitas tidak ditemukan' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Lihat komunitas lain' })).toHaveAttribute('href', '/#etalase')
-  // notFound() runs inside Suspense after the shell has streamed, so the HTTP status stays 200;
-  // Next.js marks the page noindex instead (docs: not-found, "Status codes").
   await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute('content', /noindex/)
 })

@@ -88,6 +88,7 @@ take an optional `client: HttpClient` (default: browser `http`); the server pass
 ```text
 src/
   proxy.ts                    next-intl routing + optimistic sign-in redirect (not security)
+                              + real 404 for unknown /k/<slug> (streamed pages can't change status)
   env.ts                      server-only env, Zod, SKIP_ENV_VALIDATION for Docker builds
   i18n/                       routing, navigation, request config
   lib/http.ts                 createHttpClient, HttpError, browser `http`
