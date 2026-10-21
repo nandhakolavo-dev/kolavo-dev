@@ -1,7 +1,8 @@
 import type { Role } from '@/services/auth'
+import type { CommunityProfile } from '@/services/communities'
 import type { CreateMemberPayload, Member } from '@/services/members'
 
-import { featuredCommunities, mockDb, mockUsers } from './data'
+import { communityDetails, featuredCommunities, mockDb, mockUsers } from './data'
 
 /**
  * A fake backend that follows docs/api/openapi.yaml. Served at /api/mock in development
@@ -23,6 +24,31 @@ function currentUser(request: Request) {
   return role ? mockUsers[role] : null
 }
 
+function communityProfile(slug: string) {
+  const card = featuredCommunities.find(community => community.slug === slug)
+  const details = communityDetails[slug]
+  if (!card || !details) return fail(404, 'not_found', 'Komunitas tidak ditemukan.')
+  // Plan rule (prototype V4): Esensial shows only the creator; a named board is an Advance feature.
+  const board = card.verified
+    ? details.board
+    : details.board.slice(0, 1).map(member => ({ ...member, role: 'Community Creator' }))
+  const profile: CommunityProfile = {
+    slug: card.slug,
+    name: card.name,
+    alias: card.alias,
+    type: card.type,
+    location: card.location,
+    description: card.description,
+    memberCount: card.memberCount,
+    verified: card.verified,
+    logoUrl: card.logoUrl,
+    board,
+    cohortRange: details.cohortRange,
+    spread: details.spread
+  }
+  return json(profile)
+}
+
 /** `path` is the API path without the base, e.g. `/members/mem_1`. */
 export async function handleMockRequest(request: Request, path: string): Promise<Response> {
   const method = request.method.toUpperCase()
@@ -36,6 +62,8 @@ export async function handleMockRequest(request: Request, path: string): Promise
 
   // Public endpoints: no token required.
   if (method === 'GET' && path === '/communities/featured') return json({ items: featuredCommunities })
+  const communitySlug = /^\/communities\/([^/]+)$/.exec(path)?.[1]
+  if (method === 'GET' && communitySlug) return communityProfile(decodeURIComponent(communitySlug))
 
   const user = currentUser(request)
   if (!user) return fail(401, 'unauthenticated', 'Silakan masuk terlebih dahulu.')

@@ -17,3 +17,28 @@ export interface FeaturedCommunity {
   /** Up to three members' initials for the avatar stack. */
   memberInitials: string[]
 }
+
+export interface BoardMember {
+  name: string
+  /** "Ketua", "Sekretaris"… Esensial communities show only their creator as "Community Creator". */
+  role: string
+  photoUrl: string | null
+}
+
+export type SpreadDimensionKey = 'occupation' | 'education' | 'domicile'
+
+/** Member counts per value of one profile field. Never names. */
+export interface SpreadDimension {
+  dimension: SpreadDimensionKey
+  /** Sorted by count, descending. */
+  buckets: { label: string; count: number }[]
+  /** Members in values too small to list ("Lainnya"). */
+  otherCount: number
+}
+
+/** `GET /communities/{slug}` (DRAFT): the public profile at `/k/<slug>`. Never member names or contacts. */
+export interface CommunityProfile extends Omit<FeaturedCommunity, 'memberInitials'> {
+  board: BoardMember[]
+  cohortRange: { from: number; to: number } | null
+  spread: SpreadDimension[]
+}

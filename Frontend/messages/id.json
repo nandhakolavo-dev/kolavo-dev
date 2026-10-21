@@ -370,5 +370,58 @@
       "nameTooLong": "Nama terlalu panjang",
       "emailInvalid": "Masukkan alamat email yang valid"
     }
+  },
+  "CommunityProfile": {
+    "metaTitle": "{name}",
+    "metaDescription": "{description} · {type} di {location}, {count, plural, other {# anggota}} di Kolavo.",
+    "nav": {
+      "home": "Kolavo, ke beranda",
+      "signIn": "Masuk"
+    },
+    "breadcrumb": {
+      "label": "Remah navigasi",
+      "home": "Beranda"
+    },
+    "logo": "Logo {name}",
+    "verified": "Komunitas terverifikasi",
+    "members": "{count, plural, other {# anggota}}",
+    "join": "Gabung",
+    "joinNote": "Pengurus yang memutuskan diterima atau tidak.",
+    "loading": "Memuat profil komunitas",
+    "stats": {
+      "label": "Ringkasan komunitas",
+      "members": "anggota",
+      "cities": "kota",
+      "occupations": "bidang pekerjaan",
+      "cohort": "rentang angkatan",
+      "atLeast": "{count}+",
+      "unknown": "—"
+    },
+    "spread": {
+      "title": "Siapa saja yang ada di dalam",
+      "lede": "Gambaran siapa saja yang ada di komunitas ini.",
+      "occupation": "Pekerjaan & keahlian",
+      "education": "Pendidikan",
+      "domicile": "Domisili",
+      "other": "Lainnya",
+      "showMore": "Tampilkan {count} lainnya",
+      "empty": "Belum ada data anggota yang bisa ditampilkan.",
+      "privacy": "Nama dan kontak anggota cuma kebuka buat sesama anggota."
+    },
+    "board": {
+      "title": "Pengurus",
+      "lede": "Mereka yang mengurus komunitas ini.",
+      "photo": "Foto profil {name}, gambar AI",
+      "empty": "Pengurus belum dicantumkan."
+    },
+    "error": {
+      "title": "Profil komunitas belum bisa dimuat.",
+      "description": "Coba lagi sebentar lagi."
+    },
+    "notFound": {
+      "title": "Komunitas tidak ditemukan",
+      "description": "Tautan komunitas ini tidak ada atau sudah tidak aktif.",
+      "back": "Lihat komunitas lain"
+    }
   }
 }

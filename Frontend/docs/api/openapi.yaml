@@ -12,6 +12,9 @@ info:
       `/communities/{communityId}/members`, with permissions per community.
     - Token lifetime and refresh (`/auth/refresh`?).
     - The final list of permission codes.
+    - `GET /communities/{slug}` (DRAFT, frontend proposal Oct 2026): should the spread hide
+      buckets below a minimum size so tiny communities cannot reveal one person's job or city?
+      Should Advance communities expose their own spread dimensions (beyond the three below)?
 servers:
   - url: http://localhost:3000/api/mock
     description: Built-in mock (API_MOCKING=true)
@@ -67,6 +70,25 @@ paths:
                 required: [items]
                 properties:
                   items: { type: array, items: { $ref: '#/components/schemas/FeaturedCommunity' } }
+  /communities/{slug}:
+    get:
+      summary: Public community profile (DRAFT)
+      description: |
+        DRAFT, proposed by the frontend for the public page `/k/{slug}`. No sign-in. Shows who
+        runs the community and what its members look like in aggregate; never member names,
+        contacts or the member list. The backend applies the plan rule for `board`: Esensial
+        (unverified) communities return only their creator, with role "Community Creator";
+        Advance communities return the full board with their own role names.
+      security: []
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Community profile
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommunityProfile' }
+        '404': { $ref: '#/components/responses/Error' }
   /me:
     get:
       summary: The signed-in user and their permissions
@@ -181,6 +203,74 @@ components:
         verified: { type: boolean, description: Paid (Advance) community }
         logoUrl: { type: string }
         memberInitials: { type: array, maxItems: 3, items: { type: string } }
+    CommunityProfile:
+      type: object
+      description: DRAFT. Public profile. Never includes member names or contacts.
+      required:
+        [
+          slug,
+          name,
+          alias,
+          type,
+          location,
+          description,
+          memberCount,
+          verified,
+          logoUrl,
+          board,
+          cohortRange,
+          spread
+        ]
+      properties:
+        slug: { type: string }
+        name: { type: string }
+        alias: { type: [string, 'null'] }
+        type: { type: string, enum: [Organisasi, Asosiasi, Ikatan Alumni, Himpunan] }
+        location: { type: string }
+        description: { type: string }
+        memberCount: { type: integer }
+        verified: { type: boolean, description: Paid (Advance) community }
+        logoUrl: { type: string }
+        board:
+          type: array
+          description: Esensial returns only the creator; Advance returns the full board.
+          items: { $ref: '#/components/schemas/BoardMember' }
+        cohortRange:
+          description: Earliest and latest cohort year among members, or null when unknown.
+          oneOf:
+            - type: 'null'
+            - type: object
+              required: [from, to]
+              properties:
+                from: { type: integer, examples: [2009] }
+                to: { type: integer, examples: [2016] }
+        spread:
+          type: array
+          items: { $ref: '#/components/schemas/SpreadDimension' }
+    BoardMember:
+      type: object
+      required: [name, role, photoUrl]
+      properties:
+        name: { type: string }
+        role: { type: string, examples: [Ketua, Sekretaris, Community Creator] }
+        photoUrl: { type: [string, 'null'] }
+    SpreadDimension:
+      type: object
+      description: Member counts per value of one profile field. Buckets plus otherCount sum to at most memberCount.
+      required: [dimension, buckets, otherCount]
+      properties:
+        dimension: { type: string, enum: [occupation, education, domicile] }
+        buckets:
+          type: array
+          description: Sorted by count, descending.
+          items:
+            type: object
+            required: [label, count]
+            properties:
+              label: { type: string, examples: ['Karyawan swasta', 'Sarjana (S1)', 'Kota Bekasi'] }
+              count: { type: integer, minimum: 1 }
+        otherCount:
+          { type: integer, minimum: 0, description: 'Members in values too small to list ("Lainnya")' }
     MemberStatus:
       type: string
       enum: [active, pending]

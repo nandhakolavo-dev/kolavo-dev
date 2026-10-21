@@ -1,5 +1,5 @@
 import type { CurrentUser, Role } from '@/services/auth'
-import type { FeaturedCommunity } from '@/services/communities'
+import type { BoardMember, FeaturedCommunity, SpreadDimension } from '@/services/communities'
 import type { Member } from '@/services/members'
 
 /** In-memory data for the mock backend. Reset between tests with `resetMockData()`. */
@@ -85,3 +85,176 @@ export const featuredCommunities: FeaturedCommunity[] = [
     memberInitials: ['YA', 'NK', 'BS']
   }
 ]
+
+interface CommunityDetails {
+  /** The full board as the community entered it; the handler applies the Esensial rule. */
+  board: BoardMember[]
+  cohortRange: { from: number; to: number } | null
+  spread: SpreadDimension[]
+}
+
+const photo = (name: string) => `/images/people/${name}.jpg`
+
+/**
+ * Profile details per slug (prototype DATA in 50-js-layar-komunitas), scaled so every
+ * dimension sums to the card's member count. Photos are the AI personas only.
+ */
+export const communityDetails: Record<string, CommunityDetails> = {
+  forpastara: {
+    board: [
+      { name: 'Ayu Lestari', role: 'Ketua', photoUrl: photo('ayu') },
+      { name: 'Rizal Hakim', role: 'Sekretaris', photoUrl: null }
+    ],
+    cohortRange: { from: 2009, to: 2023 },
+    spread: [
+      {
+        dimension: 'occupation',
+        buckets: [
+          { label: 'Pelajar & mahasiswa', count: 6 },
+          { label: 'Karyawan swasta', count: 5 },
+          { label: 'Wiraswasta', count: 4 },
+          { label: 'PNS', count: 3 },
+          { label: 'Apoteker', count: 2 }
+        ],
+        otherCount: 2
+      },
+      {
+        dimension: 'education',
+        buckets: [
+          { label: 'Sarjana (S1)', count: 11 },
+          { label: 'SMA / SMK sederajat', count: 6 },
+          { label: 'Diploma (D1–D4)', count: 3 },
+          { label: 'Magister (S2)', count: 2 }
+        ],
+        otherCount: 0
+      },
+      {
+        dimension: 'domicile',
+        buckets: [
+          { label: 'Kab. Bekasi', count: 9 },
+          { label: 'Kota Bekasi', count: 6 },
+          { label: 'Jakarta Timur', count: 3 },
+          { label: 'Depok', count: 2 }
+        ],
+        otherCount: 2
+      }
+    ]
+  },
+  'ika-tik-pnj': {
+    board: [{ name: 'Rani Setiawati', role: 'Ketua', photoUrl: photo('rani') }],
+    cohortRange: { from: 2011, to: 2021 },
+    spread: [
+      {
+        dimension: 'occupation',
+        buckets: [
+          { label: 'Software engineer', count: 4 },
+          { label: 'Data analyst', count: 2 },
+          { label: 'Desainer produk', count: 1 },
+          { label: 'Dosen', count: 1 },
+          { label: 'Wiraswasta', count: 1 }
+        ],
+        otherCount: 0
+      },
+      {
+        dimension: 'education',
+        buckets: [
+          { label: 'Sarjana (S1)', count: 5 },
+          { label: 'Diploma (D1–D4)', count: 2 },
+          { label: 'Magister (S2)', count: 2 }
+        ],
+        otherCount: 0
+      },
+      {
+        dimension: 'domicile',
+        buckets: [
+          { label: 'Depok', count: 4 },
+          { label: 'Jakarta Selatan', count: 3 },
+          { label: 'Bandung', count: 1 }
+        ],
+        otherCount: 1
+      }
+    ]
+  },
+  sman52: {
+    board: [
+      { name: 'Fajar Nugroho', role: 'Ketua', photoUrl: photo('fajar') },
+      { name: 'Rani Setiawati', role: 'Bendahara', photoUrl: photo('rani') }
+    ],
+    cohortRange: { from: 1999, to: 2016 },
+    spread: [
+      {
+        dimension: 'occupation',
+        buckets: [
+          { label: 'Karyawan swasta', count: 28 },
+          { label: 'Wiraswasta', count: 14 },
+          { label: 'Guru', count: 10 },
+          { label: 'PNS', count: 8 },
+          { label: 'Kontraktor', count: 6 },
+          { label: 'Desainer produk', count: 5 },
+          { label: 'Apoteker', count: 4 }
+        ],
+        otherCount: 11
+      },
+      {
+        dimension: 'education',
+        buckets: [
+          { label: 'Sarjana (S1)', count: 43 },
+          { label: 'Magister (S2)', count: 15 },
+          { label: 'SMA / SMK sederajat', count: 15 },
+          { label: 'Diploma (D1–D4)', count: 13 }
+        ],
+        otherCount: 0
+      },
+      {
+        dimension: 'domicile',
+        buckets: [
+          { label: 'Jakarta Utara', count: 41 },
+          { label: 'Jakarta Selatan', count: 12 },
+          { label: 'Bekasi', count: 11 },
+          { label: 'Depok', count: 8 },
+          { label: 'Jakarta Timur', count: 6 }
+        ],
+        otherCount: 8
+      }
+    ]
+  },
+  ppiju: {
+    board: [
+      { name: 'Dedi Kurniawan', role: 'Ketua', photoUrl: null },
+      { name: 'Ayu Lestari', role: 'Humas', photoUrl: photo('ayu') }
+    ],
+    cohortRange: { from: 2015, to: 2022 },
+    spread: [
+      {
+        dimension: 'occupation',
+        buckets: [
+          { label: 'Karyawan swasta', count: 7 },
+          { label: 'Pelajar & mahasiswa', count: 4 },
+          { label: 'PNS', count: 3 },
+          { label: 'TNI/Polri', count: 3 },
+          { label: 'Wiraswasta', count: 2 }
+        ],
+        otherCount: 1
+      },
+      {
+        dimension: 'education',
+        buckets: [
+          { label: 'Sarjana (S1)', count: 8 },
+          { label: 'SMA / SMK sederajat', count: 8 },
+          { label: 'Diploma (D1–D4)', count: 3 },
+          { label: 'Magister (S2)', count: 1 }
+        ],
+        otherCount: 0
+      },
+      {
+        dimension: 'domicile',
+        buckets: [
+          { label: 'Jakarta Utara', count: 14 },
+          { label: 'Jakarta Pusat', count: 3 },
+          { label: 'Bekasi', count: 2 }
+        ],
+        otherCount: 1
+      }
+    ]
+  }
+}
