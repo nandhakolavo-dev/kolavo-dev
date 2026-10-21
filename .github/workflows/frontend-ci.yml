@@ -50,4 +50,5 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       # Builds the image to prove the Dockerfile works. Pushing to a registry is added once one is chosen.
-      - run: docker build -t kolavo-web:${{ github.sha }} Frontend
+      # Runs in Frontend/ (workflow default working-directory), so the build context is `.`.
+      - run: docker build -t kolavo-web:${{ github.sha }} .
