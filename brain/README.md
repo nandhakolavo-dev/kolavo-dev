@@ -37,7 +37,7 @@ aset, dan keputusan; `CLAUDE.md` untuk cara menyuntingnya (wajib lewat
 | `REFERENCE.md` | acuan token desain, komponen, aset, dan keputusan lama — baca sebelum membuat layar baru. |
 | `archive/` | tiga versi beku, jangan disunting: `ReDesign_Kolavo_1.html` (pra-basecamp), `ReDesign_Kolavo_2.html` (homepage, sumber kit diekstrak dulu), `ReDesign_Kolavo_Masuk.html` (pembanding modal masuk). |
 | `kit/` | alat penyuntingan (`edit.py`, `peta.py`, `audit.py`) dan komponen yang pernah diekstrak dari v2 — beku bersama arsip, `extract.py` jangan dijalankan lagi. |
-| `assets/` | `logo-kolavo.png`, `logos/` (logo komunitas asli), `photos/` (4 foto profil hasil AI + prompt-nya). Sumber aset yang ditanam sebagai base64 di dalam HTML. |
+| `assets/` | `logo-kolavo-mask.png` (logo tanpa Beta), `logos/` (logo komunitas asli), `photos/` (4 foto profil hasil AI + prompt-nya). Sumber aset yang ditanam sebagai base64 di dalam HTML. |
 
 ## Q2/ — EPIC per fitur
 
