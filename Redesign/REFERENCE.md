@@ -102,8 +102,7 @@ di dalamnya · `.locpanel` · `.empty` (keadaan kosong) · `.lgn` (modal masuk) 
 
 | Berkas | Isi |
 |---|---|
-| `assets/logo-kolavo.png` | dipotong dari render Figma, agak lembut di layar retina — **ganti dengan SVG** kalau sempat. Masih memuat tulisan "Beta" — **tidak dipakai lagi** di v4 |
-| `assets/logo-kolavo-mask.png` | logo **tanpa "Beta"** — versi buatan pengguna (22 Okt 2026), hanya kanal alfa, 760×166 (rasio 4,58:1). Dipakai `.logo` sebagai `mask`; warnanya dari token (huruf `--blue`, titik `--orange` mulai 93,3% lebar) sehingga dark mode ikut otomatis — filter `brightness` lama dihapus. Ukuran: nav 133×29, `.sm` dan HP 110×24 |
+| `assets/logo-kolavo-mask.png` | logo **tanpa "Beta"** (PNG lama ber-"Beta" `logo-kolavo.png` dihapus 22 Okt 2026; arsip v1–v3 tetap memuatnya sebagai base64) — versi buatan pengguna (22 Okt 2026), hanya kanal alfa, 760×166 (rasio 4,58:1). Dipakai `.logo` sebagai `mask`; warnanya dari token (huruf `--blue`, titik `--orange` mulai 93,3% lebar) sehingga dark mode ikut otomatis — filter `brightness` lama dihapus. Ukuran: nav 133×29, `.sm` dan HP 110×24 |
 | `assets/logos/*.jpg` | 4 logo komunitas asli, diunduh dari kolavo.app |
 | `assets/logos/*-tile.jpg` | versi 128×128 siap pakai untuk kartu |
 | `assets/photos/*.png` | 4 foto profil hasil AI (Rani, Bagas, Ayu, Fajar) |
