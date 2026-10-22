@@ -2,6 +2,8 @@
   <div class="kom">
     <div class="shell">
       <p class="kom-jalur">
+        <button type="button" data-ke="scrDasbor">Dashboard</button>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
         <button type="button" data-komunitas-dibuat id="klJalurKom">Halaman komunitas</button>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
         <span class="kini" id="klJalurNm">Dashboard pengurus</span>
@@ -29,6 +31,7 @@
         <span class="kl-nav-h sek">Advance</span>
         <button type="button" class="kl-tab" data-tab="dasbor" data-sek role="tab"><i class="kl-tab-ic" data-ic="dasbor"></i>Dashboard</button>
         <button type="button" class="kl-tab" data-tab="info" data-sek role="tab"><i class="kl-tab-ic" data-ic="info"></i>Info komunitas</button>
+        <!-- Broadcast dibuka lagi (18 Okt 2026): kabar pengurus tampil di Kabar Komunitas halaman komunitas -->
         <button type="button" class="kl-tab" data-tab="broadcast" data-sek role="tab"><i class="kl-tab-ic" data-ic="toa"></i>Broadcast</button>
         <button type="button" class="kl-tab" data-tab="onboard" data-sek role="tab"><i class="kl-tab-ic" data-ic="onboard"></i>Onboarding</button>
         <button type="button" class="kl-tab kl-induk" data-induk="jawaban" data-sek aria-expanded="false"><i class="kl-tab-ic" data-ic="jawaban"></i>Jawaban pendaftar<svg class="kl-induk-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
@@ -36,24 +39,21 @@
           <button type="button" class="kl-tab sub" data-tab="jawab" data-sek role="tab"><i class="kl-tab-ic" data-ic="mata"></i>Tinjau jawaban</button>
           <button type="button" class="kl-tab sub" data-tab="kelompok" data-sek role="tab"><i class="kl-tab-ic" data-ic="kelompok"></i>Kelompokkan</button>
           <button type="button" class="kl-tab sub" data-tab="rapi" data-sek role="tab"><i class="kl-tab-ic" data-ic="rapi"></i>Rapikan tulisan</button>
+          <button type="button" class="kl-tab sub" data-tab="sebaran" data-sek role="tab"><i class="kl-tab-ic" data-ic="sebaran"></i>Persebaran</button>
         </div>
         <button type="button" class="kl-tab" data-tab="email" data-sek role="tab"><i class="kl-tab-ic" data-ic="email"></i>Template email</button>
         <button type="button" class="kl-tab kl-induk" data-induk="setting" data-sek aria-expanded="false"><i class="kl-tab-ic" data-ic="setting"></i>Setting<svg class="kl-induk-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="kl-subnav" data-grup="setting">
           <button type="button" class="kl-tab sub" data-tab="akun" data-sek role="tab"><i class="kl-tab-ic" data-ic="akun"></i>Akun</button>
           <button type="button" class="kl-tab sub" data-tab="notif" data-sek role="tab"><i class="kl-tab-ic" data-ic="notif"></i>Notifikasi</button>
-          <button type="button" class="kl-tab sub" data-tab="tagihan" data-sek role="tab"><i class="kl-tab-ic" data-ic="tagihan"></i>Tagihan</button>
+          <button type="button" class="kl-tab sub" data-tab="tagihan" data-sek role="tab"><i class="kl-tab-ic" data-ic="tagihan"></i>Langganan</button>
           <button type="button" class="kl-tab sub" data-tab="akses" data-sek role="tab"><i class="kl-tab-ic" data-ic="akses"></i>Akses pengurus</button>
         </div>
         <span class="kl-nav-h">Kelola</span>
         <button type="button" class="kl-tab on" data-tab="minta" role="tab"><i class="kl-tab-ic" data-ic="tambahOrang"></i>Permintaan gabung<span class="kl-badge" id="klMintaN">0</span></button>
         <button type="button" class="kl-tab" data-tab="anggota" role="tab"><i class="kl-tab-ic" data-ic="orang"></i>Anggota<span class="kl-badge" id="klAnggotaN">0</span></button>
-        <button type="button" class="kl-tab kl-induk" data-induk="pengurus" aria-expanded="false"><i class="kl-tab-ic" data-ic="pengurus"></i>Kepengurusan<svg class="kl-induk-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-        <div class="kl-subnav" data-grup="pengurus">
-          <button type="button" class="kl-tab sub" data-tab="pengurus" role="tab"><i class="kl-tab-ic" data-ic="kartuId"></i>Struktur Kepengurusan</button>
-          <button type="button" class="kl-tab sub" data-tab="serah" data-sek role="tab"><i class="kl-tab-ic" data-ic="serah"></i>Serah terima</button>
-        </div>
-        <button type="button" class="kl-tab" data-tab="riwayat" role="tab"><i class="kl-tab-ic" data-ic="riwayat"></i>Riwayat<span class="kl-badge" id="klRiwayatN">0</span></button>
+        <!-- V4: Serah terima ditahan, jadi tak ada sub-menu. Labelnya diisi JS: "Peninjau" (Esensial) / "Struktur Kepengurusan" (Advance) -->
+        <button type="button" class="kl-tab" data-tab="pengurus" role="tab"><i class="kl-tab-ic" data-ic="pengurus"></i><span id="klTabPengurusL">Peninjau</span></button>
       </nav>
 
       <div class="kl-main">
@@ -66,17 +66,16 @@
       </section>
 
       <section class="kl-panel" id="klPanelAnggota" data-panel="anggota" role="tabpanel" hidden>
-        <p class="kl-sub">Semua yang sudah kamu setujui. Angkat siapa pun jadi pengurus untuk berbagi tugas mengurus komunitas.</p>
+        <p class="kl-sub">Semua yang sudah diterima, lengkap dengan siapa yang menerimanya dan catatan keputusannya.</p>
+        <div id="klAnggotaSeg"></div>
         <div id="klAnggotaList"></div>
+        <div id="klAnggotaPager"></div>
+        <!-- V4: tab Riwayat dilebur ke sini — catatan keputusan ikut di baris anggota, yang ditolak di bawahnya -->
+        <div id="klRiwayatList"></div>
       </section>
 
       <section class="kl-panel" id="klPanelPengurus" data-panel="pengurus" role="tabpanel" hidden>
         <div id="klPengurusList"></div>
-      </section>
-
-      <section class="kl-panel" id="klPanelRiwayat" data-panel="riwayat" role="tabpanel" hidden>
-        <p class="kl-sub">Catatan siapa yang sudah ditinjau — diterima atau ditolak — dan oleh pengurus mana. Semua pengurus melihat catatan yang sama.</p>
-        <div id="klRiwayatList"></div>
       </section>
 
       <!-- ===== Advance: panel berlangganan. Isinya digambar 50-js-sekretariat. ===== -->
@@ -87,6 +86,7 @@
       <section class="kl-panel" id="klPanelJawab" data-panel="jawab" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelKelompok" data-panel="kelompok" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelRapi" data-panel="rapi" role="tabpanel" hidden></section>
+      <section class="kl-panel" id="klPanelSebaran" data-panel="sebaran" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelEmail" data-panel="email" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelAkun" data-panel="akun" role="tabpanel" hidden></section>
       <section class="kl-panel" id="klPanelNotif" data-panel="notif" role="tabpanel" hidden></section>

@@ -1,0 +1,111 @@
+<script>
+/* ============================================================
+   Kalkulator harga Advance di beranda (V4). Aturan: Redesign/PROMPT-HARGA.md
+     anggota  : ditagih per kelipatan 10, 30–1.000; SEMUA anggota kena tarif
+     tarif(n) : 199 − ((n − 30) / 10 × 0,13)   ← penurunan 0,13 per 10 anggota (17 Okt 2026; dulu 0,04167)
+     peninjau : 15.000 untuk yang pertama + 3.000 tiap tambahan, per bulan
+     diskon   : 1–5 bulan 0% · 6–12 bulan 5% · langsung 2 tahun (24 bulan) 10% (pembelian pertama)
+   Dibuka ke window.KolavoHarga supaya angkanya bisa diuji tanpa DOM.
+   ============================================================ */
+(function(){
+  const TARIF = 199, TURUN = 0.13, MIN = 30, MAKS = 1000;
+  const PENINJAU_1 = 15000, PENINJAU_N = 3000;
+  function hitung(anggota, peninjau, bulan){
+    const n = Math.min(MAKS, Math.max(MIN, Math.ceil(anggota / 10) * 10));
+    const p = Math.max(1, peninjau | 0), b = Math.max(1, bulan | 0);
+    const tarif = TARIF - ((n - MIN) / 10 * TURUN);
+    const biayaAnggota = n * tarif;
+    const biayaPeninjau = PENINJAU_1 + PENINJAU_N * (p - 1);
+    const perBulan = biayaAnggota + biayaPeninjau;
+    const diskon = b >= 24 ? 0.10 : b >= 6 ? 0.05 : 0;
+    const kotor = perBulan * b;
+    return { n: n, p: p, bulan: b, tarif: tarif, biayaAnggota: biayaAnggota, biayaPeninjau: biayaPeninjau,
+             perBulan: perBulan, diskon: diskon, potongan: kotor * diskon, total: Math.round(kotor * (1 - diskon)) };
+  }
+  window.KolavoHarga = hitung;
+
+  const el = function(id){ return document.getElementById(id); };
+  const geser = el('kalkN');
+  if(!geser) return;
+  const rp = function(x){ return 'Rp ' + Math.round(x).toLocaleString('id-ID'); };
+  const rpTarif = function(x){ return 'Rp ' + x.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  const durasi = function(b){ return b % 12 === 0 && b >= 24 ? (b / 12) + ' tahun' : b + ' bulan'; };
+  let peninjau = 1, bulan = 1;
+
+  function gambar(){
+    const h = hitung(+geser.value, peninjau, bulan);
+    el('kalkNV').textContent = h.n.toLocaleString('id-ID');
+    el('kalkP').textContent = h.p;
+    el('kalkPMin').disabled = h.p <= 1;
+    el('kalkPPlus').disabled = h.p >= 20;
+    el('kalkAL').textContent = h.n.toLocaleString('id-ID') + ' anggota × ' + rpTarif(h.tarif);
+    el('kalkA').textContent = rp(h.biayaAnggota);
+    el('kalkRL').textContent = h.p + ' peninjau';
+    el('kalkR').textContent = rp(h.biayaPeninjau);
+    el('kalkBln').textContent = rp(h.perBulan);
+    el('kalkDW').hidden = !h.diskon;
+    el('kalkDL').textContent = 'Diskon ' + Math.round(h.diskon * 100) + '% · ' + durasi(h.bulan);
+    el('kalkD').textContent = '− ' + rp(h.potongan);
+    el('kalkTL').textContent = 'Total ' + durasi(h.bulan);
+    el('kalkT').textContent = rp(h.total);
+    el('kalkBesar').hidden = h.n < MAKS;
+    /* angka utama modal: rata-rata per bulan setelah diskon */
+    el('kalkHero').textContent = rp(h.total / h.bulan);
+    el('kalkHeroKet').textContent = h.diskon
+      ? 'Rata-rata per bulan dengan diskon ' + Math.round(h.diskon * 100) + '% · total ' + durasi(h.bulan) + ' ' + rp(h.total)
+      : h.n.toLocaleString('id-ID') + ' anggota dan ' + h.p + ' peninjau, ditagih bulanan';
+    el('kalkPreset').querySelectorAll('[data-n]').forEach(function(c){ c.classList.toggle('on', +c.dataset.n === h.n); });
+  }
+  geser.addEventListener('input', gambar);
+  el('kalkPreset').addEventListener('click', function(e){
+    const c = e.target.closest('[data-n]'); if(!c) return;
+    geser.value = c.dataset.n; gambar();
+  });
+  /* modal simulasi: dibuka dari kartu Advance, ditutup lewat scrim/x/Escape;
+     tombol Buat di dalamnya menutup modal dulu lalu modal masuk mengambil alih */
+  const modal = el('kalkModal');
+  function bukaKalk(){
+    modal.hidden = false;
+    void modal.offsetWidth;
+    modal.classList.add('on');
+    document.body.classList.add('lgn-open');
+    geser.focus();
+  }
+  function tutupKalk(){
+    modal.classList.remove('on');
+    document.body.classList.remove('lgn-open');
+    setTimeout(function(){ if(!modal.classList.contains('on')) modal.hidden = true; }, 170);
+  }
+  document.addEventListener('click', function(e){ if(e.target.closest('[data-kalk-buka]')){ e.preventDefault(); bukaKalk(); } });
+  modal.addEventListener('click', function(e){ if(e.target.closest('[data-kalk-tutup],[data-login]')) tutupKalk(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !modal.hidden && !infoW.classList.contains('buka')) tutupKalk(); });
+  el('kalkPMin').addEventListener('click', function(){ peninjau = Math.max(1, peninjau - 1); gambar(); });
+  el('kalkPPlus').addEventListener('click', function(){ peninjau = Math.min(20, peninjau + 1); gambar(); });
+  el('kalkBulan').addEventListener('click', function(e){
+    const b = e.target.closest('[data-bulan]'); if(!b) return;
+    bulan = +b.dataset.bulan;
+    el('kalkBulan').querySelectorAll('[data-bulan]').forEach(function(x){
+      const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+    gambar();
+  });
+  /* info peninjau: hover/fokus ditangani CSS; klik menahan terbuka (layar sentuh),
+     klik di luar atau Escape menutup */
+  const infoW = el('kalkInfoW'), info = el('kalkInfo');
+  function tutupInfo(){ infoW.classList.remove('buka'); info.setAttribute('aria-expanded', 'false'); }
+  info.addEventListener('click', function(e){
+    e.preventDefault();
+    const buka = !infoW.classList.contains('buka');
+    infoW.classList.toggle('buka', buka);
+    info.setAttribute('aria-expanded', buka ? 'true' : 'false');
+  });
+  document.addEventListener('click', function(e){ if(!e.target.closest('#kalkInfoW')) tutupInfo(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ tutupInfo(); info.blur(); } });
+  /* paket Big Organization: belum ada formulir kontak di prototipe */
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('[data-hubungi]')) return;
+    if(window.KolavoToast) window.KolavoToast('Tim Kolavo akan menghubungimu. Mode demo — formulir kontaknya belum ada.');
+  });
+  gambar();
+})();
+</script>

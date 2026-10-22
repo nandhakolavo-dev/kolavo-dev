@@ -3,15 +3,31 @@
 <nav>
   <div class="shell nav-in">
     <div class="logo">Kolavo Beta</div>
+
+    <!-- nav Kolavo App (A3): tab ikon ala Facebook web. Hanya di mode app & sudah masuk
+         (router: body.m-tab). < 768px pindah ke bilah bawah. -->
+    <div class="nav-tab" id="navTab" role="navigation" aria-label="Menu Kolavo" hidden>
+      <a class="nt" href="#0" data-tab="home" data-ke="scrHome" title="Home"><i data-ic="beranda"></i><b>Home</b></a>
+      <a class="nt" href="#0" data-tab="komunitas" data-ke="scrApp" title="Komunitas"><i data-ic="komunitas"></i><b>Komunitas</b></a>
+      <a class="nt" href="#0" data-tab="dashboard" data-ke="scrDasbor" title="Dashboard"><i data-ic="panel"></i><b>Dashboard</b></a>
+    </div>
+    <!-- nav jualan (A6): hanya di landing, rata kiri setelah logo; mode app menyembunyikannya -->
+    <a class="nav-lnk" href="#untuk" data-ke="scrBeranda" data-anchor="untuk">Solusi</a>
+    <a class="nav-lnk" href="#pengurus" data-ke="scrBeranda" data-anchor="pengurus">Alur Kerja</a>
+    <a class="nav-lnk" href="#harga" data-ke="scrBeranda" data-anchor="harga">Paket Harga</a>
     <div class="nav-sp"></div>
-    <a class="btn secondary md" href="#pengurus" data-ke="scrBeranda" data-anchor="pengurus" id="navPengurus">
+    <a class="btn secondary md" href="#0" data-login="pengurus" id="navPengurus">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-      Halaman Komunitas
+      Buat komunitas
     </a>
+    <a class="btn md" href="#0" data-ke="scrHome" id="btnApp" hidden>Buka Kolavo</a>
     <a class="btn md" href="#0" data-login="nav" id="btnMasuk">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
       Masuk
     </a>
+
+    <!-- saldo kredit kenalan (mode app) — klik untuk top up -->
+    <button type="button" class="nav-kredit" id="navKredit" data-kredit-topup aria-label="Kredit kenalan, klik untuk top up" hidden><i data-ic="koin"></i><b data-kredit-saldo>0</b><span>kredit</span></button>
 
     <!-- notifikasi pengguna: tampil bersama menu akun (router), isinya digambar 50-js-notifikasi -->
     <div class="notif" id="notif" hidden>
@@ -44,19 +60,11 @@
           Masuk lewat Google · terverifikasi
         </div>
         <div class="acct-sep"></div>
+        <!-- satu pintu: profil sekaligus pengaturan akun (Komunitas ada di nav, kredit di tombol saldo) -->
         <a class="acct-i" href="#0" data-ke="scrProfil">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
-          Profil saya
+          Profil &amp; Setting
           <span class="pill" id="acctPill">Belum lengkap</span>
-        </a>
-        <a class="acct-i" href="#0">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
-          Komunitas saya
-          <span class="num">2</span>
-        </a>
-        <a class="acct-i" href="#0">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.7 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.56V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9v.09a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1.03Z"/></svg>
-          Pengaturan akun
         </a>
         <div class="acct-sep"></div>
         <a class="acct-i keluar" href="#0" id="keluar">

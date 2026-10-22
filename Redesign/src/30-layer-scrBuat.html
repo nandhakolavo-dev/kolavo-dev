@@ -51,6 +51,12 @@
       </div>
 
       <div class="f">
+        <label class="f-lbl" for="bkAlias">Nama panggilan komunitas<span class="opt">Opsional</span></label>
+        <input class="inp" id="bkAlias" type="text" maxlength="30" placeholder="IKA 52">
+        <p class="f-why">Sebutan singkat yang biasa dipakai anggota di grup. Tampil di atas nama resmi di halaman komunitas.</p>
+      </div>
+
+      <div class="f">
         <span class="f-lbl" id="bkLblBentuk">Bentuk komunitas<span class="must" aria-hidden="true">*</span></span>
         <div class="pills" role="group" aria-labelledby="bkLblBentuk">
           <label class="pill-r"><input type="radio" name="bkBentuk" value="Ikatan Alumni"><span>Ikatan Alumni</span></label>
@@ -111,8 +117,8 @@
       <div class="f">
         <span class="f-lbl" id="bkLblNomor">Nomor anggota<span class="opt">Opsional</span></span>
         <div class="pills" role="group" aria-labelledby="bkLblNomor">
-          <label class="pill-r"><input type="radio" name="bkNomor" value="auto" checked><span>Otomatis</span></label>
-          <label class="pill-r"><input type="radio" name="bkNomor" value="manual"><span>Manual saat menerima</span></label>
+          <label class="pill-r"><input type="radio" name="bkNomor" value="manual" checked><span>Format sendiri</span></label>
+          <label class="pill-r"><input type="radio" name="bkNomor" value="auto"><span>Otomatis dari Kolavo</span></label>
           <label class="pill-r"><input type="radio" name="bkNomor" value="off"><span>Tidak pakai</span></label>
         </div>
         <div class="nomor-kode" id="bkKodeWrap">
@@ -176,6 +182,7 @@
     <div class="linkrow">
       <span class="linkrow-url" id="bkDoneLink">kolavo.app/</span>
       <button type="button" class="btn outline sm" id="bkSalin">Salin link</button>
+      <button type="button" class="btn sm" id="bkQr">Tampilkan QR</button>
     </div>
 
     <ul class="steps">

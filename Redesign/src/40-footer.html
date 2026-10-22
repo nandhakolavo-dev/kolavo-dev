@@ -2,7 +2,20 @@
   <div class="shell foot">
     <div class="logo sm">Kolavo</div>
     <div class="tag-line">Basecamp digital komunitasmu.</div>
-    <div class="links"><span>Komunitas</span><span>Buat Halaman</span><span>Bantuan</span><span>Privasi</span></div>
+    <div class="links"><span>Komunitas</span><span>Buat Halaman</span><span>Bantuan</span>
+      <button type="button" data-legal="privasi">Kebijakan Privasi</button>
+      <button type="button" data-legal="tnc">Ketentuan Layanan</button></div>
   </div>
 </footer>
+
+<!-- POP UP NASKAH LEGAL — kerangka modal masuk (.lgn), isinya digambar 50-js-legal -->
+<div class="lgn" id="lglModal" hidden>
+  <div class="lgn-scrim" data-legal-tutup></div>
+  <div class="lgn-box ob-box" role="dialog" aria-modal="true" aria-labelledby="lglJudul">
+    <button class="lgn-x" type="button" aria-label="Tutup naskah" data-legal-tutup>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div id="lglIsi"></div>
+  </div>
+</div>
 

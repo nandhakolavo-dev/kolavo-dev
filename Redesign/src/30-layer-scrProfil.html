@@ -5,24 +5,37 @@
            jadi tanpa ini tidak ada yang memberitahu kamu sedang di mana -->
       <p class="pf-page">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
-        Profil saya
+        Profil &amp; Setting
       </p>
 
+      <!-- kepala profil: tanpa tombol "Ubah profil" — tiap isian di bawah punya tombol ubahnya sendiri -->
       <div class="pf-top">
-        <div class="pf-foto p-bagas" role="img" aria-label="Foto profil Bagas Prakoso — gambar AI"></div>
-        <div>
+        <!-- foto bisa diganti langsung dari sini (file lokal, tanpa jaringan) -->
+        <div class="pf-foto-w">
+          <div class="pf-foto p-bagas" role="img" aria-label="Foto profil Bagas Prakoso — gambar AI"></div>
+          <button type="button" class="pf-foto-btn" id="pfFotoGanti" aria-label="Ganti foto profil" data-tip="Ganti foto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          </button>
+          <input type="file" id="pfFotoFile" accept="image/*" hidden>
+          <button type="button" class="pf-foto-balik" id="pfFotoBalik" hidden>Pakai foto Google</button>
+        </div>
+        <div class="pf-top-t">
           <h1 class="pf-nm" id="pfNm">Bagas Prakoso</h1>
           <p class="pf-loc" id="pfLoc">—</p>
+          <div class="pf-tags" id="pfTags"></div>
         </div>
-        <div class="pf-tags" id="pfTags"></div>
-        <a class="btn outline sm" href="#0" data-ke="scrLengkapi">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-          Ubah profil
-        </a>
+        <div class="pf-lengkap" id="pfLengkap"></div>
       </div>
 
-      <h2 class="pf-h">Komunitas saya</h2>
-      <div class="pf-list" id="pfList"></div>
+      <!-- Profil & Setting: semua isian akun dalam satu tempat, tiap baris langsung ke kolomnya
+           di Lengkapi profil. Digambar router (isiProfil). -->
+      <h2 class="pf-h" id="pfDataH">Data akun</h2>
+      <div class="pf-data" id="pfData"></div>
+
+      <!-- "Komunitas saya" dihapus dari Profil & Setting (18 Okt 2026): halaman ini khusus data akun.
+           Komunitas yang diikuti ada di tab Komunitas, yang dikelola di tab Dashboard. -->
+
+      <!-- kredit kenalan tidak lagi di sini: top up lewat tombol saldo di nav (17 Okt 2026) -->
     </div>
   </div>
 </div><!-- /scrProfil -->

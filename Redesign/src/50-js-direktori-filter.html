@@ -3,8 +3,10 @@
 (function(){
   var q = document.getElementById('q');
   if(!q) return;
-  var cards   = [].slice.call(document.querySelectorAll('.ccard')),
-      chips   = [].slice.call(document.querySelectorAll('button.chip[data-bentuk]')),
+  /* kartu dibaca ulang tiap render: komunitas buatan pengguna bisa masuk/keluar
+     direktori kapan saja (50-js-app). Hanya kartu di #direktori, bukan etalase landing. */
+  function kartu(){ return [].slice.call(document.querySelectorAll('#direktori .grid .ccard')); }
+  var chips   = [].slice.call(document.querySelectorAll('button.chip[data-bentuk]')),
       bar     = document.getElementById('resultbar'),
       empty   = document.getElementById('empty'),
       msg     = document.getElementById('emptymsg'),
@@ -47,7 +49,12 @@
   }
 
   function render(){
-    var tampil = 0;
+    var tampil = 0, cards = kartu();
+    /* hitungan di chip bentuk mengikuti isi direktori */
+    chips.forEach(function(ch){
+      var cnt = ch.querySelector('.cnt');
+      if(cnt) cnt.textContent = cards.filter(function(c){ return !ch.dataset.bentuk || c.dataset.bentuk === ch.dataset.bentuk; }).length;
+    });
     cards.forEach(function(c){
       var ok = cocok(c);
       c.hidden = !ok;
@@ -87,7 +94,9 @@
     render();
   };
 
-  invite.addEventListener('click', function(){
+  /* V4: tombol 'ajak pengurusmu' dicabut dari keadaan kosong — beranda sekarang bicara
+     ke pengurus. Handlernya dibiarkan dan dijaga kalau tombolnya dikembalikan. */
+  if(invite) invite.addEventListener('click', function(){
     var teks = 'Halo pengurus! Yuk bikin halaman komunitas kita di Kolavo biar anggota bisa saling kenal: https://kolavo.app';
     var label = invite.textContent;
     function selesai(){
@@ -110,6 +119,7 @@
   });
 
   render();
+  window.KolavoSaringDirektori = render;
 })();
 </script>
 

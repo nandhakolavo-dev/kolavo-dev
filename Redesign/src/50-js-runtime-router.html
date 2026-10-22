@@ -7,6 +7,7 @@
 (function(){
   const App = {
     masuk: false,       /* sudah lewat modal Google? */
+    mode: 'landing',    /* 'landing' (halaman jualan, scrBeranda) | 'app' (semua layar lain) */
     lengkap: false,     /* profil sudah diisi? */
     niat: null,         /* 'anggota' | 'pengurus' | 'nav' — pemicu yang membawa ke sini */
     komunitas: null     /* {nama, kelas, jumlah} — kartu yang tadi diklik */
@@ -18,12 +19,15 @@
      dibuka dari data: URL dan iframe ber-sandbox, tempat hash tidak selalu
      bisa ditulis — di sana routing berbasis hash diam-diam tidak jalan.
      Anchor dalam halaman (#direktori, #pengurus) tetap seperti biasa. */
-  const LAYAR = ['scrBeranda', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
-  /* Halaman komunitas sengaja tidak perlu masuk — di kolavo.app pun publik.
-     Orang boleh menjelajah dulu; login baru diminta saat menekan Gabung. */
+  const LAYAR = ['scrBeranda', 'scrMasuk', 'scrHome', 'scrKenalan', 'scrApp', 'scrDasbor', 'scrLengkapi', 'scrProfil', 'scrKomunitas', 'scrAnggota', 'scrBuat', 'scrKelola'];
+  /* Dua pintu (PROMPT-APP): scrBeranda = landing jualan; layar lain = Kolavo App.
+     Tab app: Komunitas (scrApp) · Profil · Dashboard (scrDasbor). Layar terlindung
+     tanpa akun → scrMasuk + App.tujuan. Halaman komunitas sendiri tetap tanpa
+     penjaga (bisa dilihat sebelum Gabung), tapi pintunya kini lewat tautan/QR
+     undangan (KolavoBukaTautan) yang meminta masuk dulu. */
   /* detail anggota cuma bisa dicapai dari daftar yang sudah terbuka, tapi
      penjaganya tetap dipasang supaya tidak bisa dibuka lewat KolavoKe langsung */
-  const perluMasuk = { scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
+  const perluMasuk = { scrHome: true, scrKenalan: true, scrApp: true, scrDasbor: true, scrLengkapi: true, scrProfil: true, scrAnggota: true, scrBuat: true, scrKelola: true };
   let sekarang = 'scrBeranda';
 
   window.KolavoKe = function(id, anchor){ ke(id, anchor); };
@@ -40,13 +44,30 @@
   function gambar(){
     let id = sekarang;
     /* penjaga: layar yang butuh akun tidak bisa dibuka sebelum masuk */
-    if(perluMasuk[id] && !App.masuk) id = 'scrBeranda';
+    /* sudah masuk: halaman masuk tidak relevan lagi, teruskan ke tujuannya */
+    if(id === 'scrMasuk' && App.masuk){ id = App.tujuan || 'scrHome'; App.tujuan = null; }
+    /* belum masuk: layar terlindung diganti halaman masuk penuh (bukan modal),
+       tujuannya diingat supaya sesudah masuk langsung ke sana */
+    if(perluMasuk[id] && !App.masuk){ App.tujuan = id; id = 'scrMasuk'; }
     /* buat halaman juga menunggu profil beres — calon anggota perlu lihat
        pengurusnya orang asli, bukan akun kosong */
     if((id === 'scrProfil' || id === 'scrBuat') && !App.lengkap) id = 'scrLengkapi';
     /* dashboard pengurus baru ada setelah komunitasnya dibuat */
-    if(id === 'scrKelola' && !App.dibuat) id = App.lengkap ? 'scrBuat' : 'scrLengkapi';
+    /* ...atau komunitas orang lain yang mengangkatmu sedang dibuka di dashboard */
+    const D = window.KolavoDashboard;
+    if(id === 'scrKelola' && !App.dibuat && !(D && D.built && D.kom && D.kom.diangkat && App.diangkat)) id = 'scrDasbor';
     sekarang = id;
+    /* dua pintu: landing untuk jualan ke pengurus, app untuk yang sudah punya akun.
+       Nav & footer membaca kelas body ini, bukan memeriksa layar satu per satu. */
+    App.mode = id === 'scrBeranda' ? 'landing' : 'app';
+    document.body.classList.toggle('m-app', App.mode === 'app');
+    /* halaman masuk berdiri sendiri, tanpa nav */
+    document.body.classList.toggle('m-masuk', id === 'scrMasuk');
+    document.body.dataset.layar = id;
+    tabNav(id);
+    if(id === 'scrMasuk' && window.KolavoIsiMasuk){
+      window.KolavoIsiMasuk(App.undangan ? 'undangan' : (App.niatMasuk || 'nav'), App.undangan || null);
+    }
 
     LAYAR.forEach(function(n){
       const el = document.getElementById(n);
@@ -54,6 +75,40 @@
     });
     window.scrollTo(0, 0);
     if(id === 'scrProfil') isiProfil();
+    if(id === 'scrKenalan' && window.KolavoGambarKenalan) window.KolavoGambarKenalan();
+    /* remah halaman komunitas: pengunjung (dari etalase landing) kembali ke landing,
+       pengguna yang sudah masuk kembali ke tab Komunitas */
+    if(id === 'scrKomunitas'){
+      /* profil publik (pengunjung belum masuk): Kabar & Daftar anggota disembunyikan */
+      document.getElementById('scrKomunitas').toggleAttribute('data-publik', !App.masuk);
+      const j = document.querySelector('#scrKomunitas .kom-jalur button');
+      if(j){
+        j.textContent = App.masuk ? 'Komunitas' : 'Beranda';
+        j.dataset.ke = App.masuk ? 'scrApp' : 'scrBeranda';
+        j.dataset.anchor = App.masuk ? 'direktori' : 'etalase';
+      }
+    }
+    if((id === 'scrBeranda' || id === 'scrHome' || id === 'scrApp' || id === 'scrDasbor') && window.KolavoGambarApp) window.KolavoGambarApp(id);
+  }
+
+  /* ---------- tab nav Kolavo App (A3) ----------
+     Tab aktif mengikuti layar, bukan klik terakhir: layar yang dibuka lewat
+     tautan lain (kartu, notifikasi) tetap menyalakan tab induknya. */
+  /* Profil & Lengkapi dibuka dari avatar — tidak menyalakan tab mana pun (PROMPT-HOME H1) */
+  const TAB = { scrHome: 'home', scrKenalan: 'home', scrApp: 'komunitas', scrKomunitas: 'komunitas', scrAnggota: 'komunitas',
+                scrDasbor: 'dashboard', scrKelola: 'dashboard', scrBuat: 'dashboard' };
+  function tabNav(id){
+    const ada = App.mode === 'app' && App.masuk && id !== 'scrMasuk';
+    document.body.classList.toggle('m-tab', ada);
+    const tab = document.getElementById('navTab');
+    if(tab) tab.hidden = !ada;
+    const kredit = document.getElementById('navKredit');
+    if(kredit) kredit.hidden = !ada;
+    document.querySelectorAll('#navTab .nt').forEach(function(t){
+      const on = ada && t.dataset.tab === TAB[id];
+      t.classList.toggle('on', on);
+      if(on) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current');
+    });
   }
 
   /* ---------- keadaan masuk di nav ---------- */
@@ -63,6 +118,8 @@
           warn  = document.querySelector('.acct-warn'),
           pill  = document.getElementById('acctPill');
     if(masuk) masuk.hidden = App.masuk;
+    const bukaApp = document.getElementById('btnApp');
+    if(bukaApp) bukaApp.hidden = !App.masuk;
     if(acct)  acct.hidden  = !App.masuk;
     const notif = document.getElementById('notif');
     if(notif) notif.hidden = !App.masuk;
@@ -85,6 +142,7 @@
   /* ---------- masuk selesai: dipanggil dari modal ---------- */
   window.KolavoMasuk = function(niat, kartu){
     App.masuk = true;
+    App.undangan = null;
     App.niat = niat;
     App.kartu = kartu || null;
     if(kartu){
@@ -110,8 +168,10 @@
     } else if(kartu && window.KolavoBukaKomunitas){
       window.KolavoBukaKomunitas(kartu);
       ke('scrKomunitas');
+    } else if(App.tujuan){
+      const t = App.tujuan; App.tujuan = null; ke(t);
     } else {
-      ke('scrProfil');
+      ke('scrHome');
     }
   };
 
@@ -176,6 +236,12 @@
         kolom = document.createElement('input');
         kolom.className = 'inp';
         kolom.type = 'text';
+        /* V4: jawaban angka — keypad angka di ponsel, huruf dibuang saat mengetik */
+        if(t.tipe === 'angka'){
+          kolom.inputMode = 'numeric';
+          kolom.placeholder = 'Tulis angka';
+          kolom.addEventListener('input', function(){ kolom.value = kolom.value.replace(/[^0-9.,]/g, ''); });
+        }
       }
       kolom.id = 'tanya-' + t.id;
       kolom.dataset.tanyaId = t.id;
@@ -239,8 +305,157 @@
       if(!pertama) pertama = f;
     }
 
+    /* persetujuan TnC + Kebijakan Privasi: tanpa ini profil tidak boleh dikirim.
+       Yang opsional (#setujuKabar) sengaja tidak diperiksa. */
+    const legal = document.getElementById('setujuLegal');
+    if(legal && !legal.checked){
+      const f = legal.closest('.f');
+      if(f) f.classList.add('salah');
+      if(!pertama) pertama = f || legal;
+    }
+
     return pertama;
   }
+
+  /* komunitas yang diikuti — satu sumber untuk Profil dan tab Komunitas (A4) */
+  /* dibangun dari status keanggotaan per komunitas (App.diajukan), BUKAN dari
+     App.komunitas — itu "komunitas yang terakhir dibuka" dan berubah setiap kali
+     pengguna melihat profil komunitas lain */
+  function itemIkut(){
+    const dj = App.diajukan || {};
+    return Object.keys(dj).filter(function(k){ return dj[k] === 'anggota' || dj[k] === 'menunggu'; }).map(function(kelas){
+      const l = document.querySelector('#direktori .ccard .logo-sq.' + kelas);
+      const kartu = l && l.closest('.ccard');
+      if(!kartu) return '';
+      const nama = kartu.querySelector('h3').firstChild.textContent.trim(), alias = kartu.dataset.alias || '';
+      const jumlah = (kartu.querySelector('.mem') || {}).textContent || '';
+      const jawab = App.komunitas && App.komunitas.kelas === kelas && window.KolavoJawaban ? window.KolavoJawaban() : [];
+      return '<div class="pf-item"><div class="pf-open" data-komunitas-anggota="' + kelas + '" role="button" tabindex="0" title="Buka halaman komunitas">' +
+        '<span class="logo-sq ' + kelas + '" role="img" aria-label="Logo komunitas"></span>' +
+        '<div class="t">' + (alias ? '<div class="al">' + alias + '</div>' : '') + '<div class="n">' + nama + '</div>' +
+        '<div class="s">' + [jumlah].concat(jawab).filter(Boolean).join(' · ') + '</div></div></div>' +
+        (dj[kelas] === 'anggota'
+          ? '<span class="status anggota">Anggota</span></div>'
+          : '<span class="status tunggu">Menunggu persetujuan</span></div>');
+    }).join('');
+  }
+  window.KolavoKomunitasKu = function(){
+    return (window.KolavoDibuatItem ? window.KolavoDibuatItem() : '') + itemIkut();
+  };
+
+  /* ---------- Profil & Setting: sunting langsung di halaman ----------
+     Tiap isian dibuka jadi kontrol yang sama dengan formulir Lengkapi profil (teks, telepon,
+     tanggal, wilayah bertingkat, daftar pilihan, kotak cerita, media sosial). Simpan menulis
+     ke formulir Lengkapi — satu sumber data — lalu halaman digambar ulang. */
+  let pfEdit = null, pfSos = null;
+  const elv = function(id){ const e = document.getElementById(id); return e ? e.value : ''; };
+  const escA = function(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  function opsi(daftar, pilih, kosong){
+    return '<option value="">' + kosong + '</option>' + daftar.map(function(n){ return '<option' + (n === pilih ? ' selected' : '') + '>' + escA(n) + '</option>'; }).join('');
+  }
+  function editorDom(neg, prov, kota){
+    const W = window.KolavoWilayah || {}, P = W[neg] || {}, K = P[prov] || [];
+    return '<div class="pf-ed-g3">' +
+      '<select class="sel" id="pfENeg" aria-label="Negara">' + opsi(Object.keys(W), neg, 'Negara') + '</select>' +
+      '<select class="sel" id="pfEProv" aria-label="Provinsi"' + (neg ? '' : ' disabled') + '>' + opsi(Object.keys(P), prov, 'Provinsi') + '</select>' +
+      '<select class="sel" id="pfEKota" aria-label="Kota atau kabupaten"' + (prov ? '' : ' disabled') + '>' + opsi(K, kota, 'Kota/kabupaten') + '</select></div>';
+  }
+  function editorSos(){
+    const PL = window.KolavoSosmedPlatform || [];
+    return '<div class="pf-ed-sos">' + pfSos.map(function(b, i){
+      return '<div class="pf-ed-sos-i"><select class="sel" data-pf-sos-p="' + i + '" aria-label="Platform">' +
+        PL.map(function(p){ return '<option value="' + p[0] + '"' + (p[0] === b.p ? ' selected' : '') + '>' + p[1] + '</option>'; }).join('') + '</select>' +
+        '<input class="inp" data-pf-sos-h="' + i + '" maxlength="60" value="' + escA(b.h) + '" placeholder="@namaakun" aria-label="Nama akun">' +
+        '<button type="button" class="pf-ed-x" data-pf-sos-x="' + i + '" aria-label="Hapus akun">×</button></div>';
+    }).join('') + (pfSos.length < 5 ? '<button type="button" class="pf-ed-tambah" data-pf-sos-tambah>+ Tambah akun</button>' : '') + '</div>';
+  }
+  function editorIsian(k){
+    let isi = '';
+    if(k === 'nama') isi = '<input class="inp" id="pfE" maxlength="60" value="' + escA((document.getElementById('idNama') || {}).textContent || '') + '" aria-label="Nama lengkap">';
+    else if(k === 'wa') isi = '<div class="tel"><span class="tel-pfx">🇮🇩 +62</span><input id="pfE" type="tel" inputmode="numeric" placeholder="812 3456 7890" value="' + escA(elv('wa')) + '" aria-label="Nomor WhatsApp"></div>';
+    else if(k === 'lahir') isi = '<input class="inp" id="pfE" type="date" max="' + new Date().toISOString().slice(0, 10) + '" value="' + escA(elv('lahir')) + '" aria-label="Tanggal lahir">';
+    else if(k === 'dom') isi = editorDom(elv('negara') || 'Indonesia', elv('provinsi'), elv('kota'));
+    else if(k === 'kerja'){
+      const src = document.getElementById('kerja'), lain = elv('kerja') === '__lain__';
+      isi = '<select class="sel" id="pfE" aria-label="Pekerjaan atau keahlian">' + (src ? src.innerHTML : '') + '</select>' +
+        '<input class="inp" id="pfE2" maxlength="40" placeholder="Tulis pekerjaanmu" value="' + escA(elv('kerjaLain')) + '"' + (lain ? '' : ' hidden') + ' aria-label="Pekerjaan lainnya">';
+    }
+    else if(k === 'didik'){
+      const src = document.getElementById('didik');
+      isi = '<div class="pf-ed-g2"><select class="sel" id="pfE" aria-label="Jenjang">' + (src ? src.innerHTML : '') + '</select>' +
+        '<input class="inp" id="pfE2" maxlength="60" placeholder="Jurusan dan kampus atau sekolah" value="' + escA(elv('didikDi')) + '" aria-label="Jurusan dan kampus"></div>';
+    }
+    else if(k === 'beri' || k === 'bio'){
+      const src = document.getElementById(k);
+      isi = '<textarea class="ta" id="pfE" rows="3" maxlength="' + ((src && src.maxLength > 0) ? src.maxLength : 200) + '" placeholder="' + escA(src ? src.placeholder : '') + '">' + escA(elv(k)) + '</textarea>';
+    }
+    else if(k === 'sos') isi = editorSos();
+    return isi + '<div class="pf-ed-aksi"><button type="button" class="btn sm" data-pf-simpan>Simpan</button><button type="button" class="btn outline sm" data-pf-batal>Batal</button></div>';
+  }
+  /* tulis ke kontrol formulir Lengkapi + picu event-nya, supaya progres & logika formulir ikut */
+  function tulis(id, v, ev){
+    const e = document.getElementById(id); if(!e) return;
+    e.value = v; e.dispatchEvent(new Event(ev || 'input', { bubbles: true }));
+  }
+  function simpanIsian(){
+    const k = pfEdit, v = elv('pfE');
+    if(k === 'nama'){ if(!window.KolavoGantiNama || !window.KolavoGantiNama(v)){ toastP('Nama tidak boleh kosong.'); return; } }
+    else if(k === 'wa') tulis('wa', v.trim());
+    else if(k === 'lahir'){ if(window.KolavoSetLahir) window.KolavoSetLahir(v); }
+    else if(k === 'dom'){ tulis('negara', elv('pfENeg'), 'change'); tulis('provinsi', elv('pfEProv'), 'change'); tulis('kota', elv('pfEKota'), 'change'); }
+    else if(k === 'kerja'){ tulis('kerja', v, 'change'); if(v === '__lain__') tulis('kerjaLain', elv('pfE2').trim()); }
+    else if(k === 'didik'){ tulis('didik', v, 'change'); tulis('didikDi', elv('pfE2').trim()); }
+    else if(k === 'beri' || k === 'bio') tulis(k, v.trim());
+    else if(k === 'sos'){ if(window.KolavoSosmedPasang) window.KolavoSosmedPasang(pfSos); }
+    pfEdit = null; pfSos = null;
+    isiProfil();
+    toastP('Tersimpan.');
+  }
+  function toastP(t){ if(window.KolavoToast) window.KolavoToast(t); }
+  document.addEventListener('click', function(e){
+    const u = e.target.closest('[data-pf-ubah]');
+    if(u){
+      pfEdit = u.dataset.pfUbah;
+      pfSos = pfEdit === 'sos' && window.KolavoSosmedBaris ? window.KolavoSosmedBaris() : null;
+      isiProfil();
+      const f = document.querySelector('.pf-ed #pfE, .pf-ed select, .pf-ed input');
+      if(f){ f.focus(); if(pfEdit === 'kerja') f.value = elv('kerja'); if(pfEdit === 'didik') f.value = elv('didik'); }
+      return;
+    }
+    if(!pfEdit) return;
+    if(e.target.closest('[data-pf-batal]')){ pfEdit = null; pfSos = null; isiProfil(); return; }
+    if(e.target.closest('[data-pf-simpan]')){ simpanIsian(); return; }
+    const sx = e.target.closest('[data-pf-sos-x]');
+    if(sx){ pfSos.splice(+sx.dataset.pfSosX, 1); if(!pfSos.length) pfSos.push({ p: 'instagram', h: '' }); isiProfil(); return; }
+    if(e.target.closest('[data-pf-sos-tambah]')){
+      const pakai = pfSos.map(function(b){ return b.p; }), PL = window.KolavoSosmedPlatform || [];
+      const sisa = PL.filter(function(p){ return pakai.indexOf(p[0]) < 0; })[0];
+      pfSos.push({ p: sisa ? sisa[0] : 'web', h: '' }); isiProfil(); return;
+    }
+  });
+  document.addEventListener('input', function(e){
+    const h = e.target.getAttribute && e.target.getAttribute('data-pf-sos-h');
+    if(h !== null && pfSos) pfSos[+h].h = e.target.value;
+  });
+  document.addEventListener('change', function(e){
+    if(!pfEdit) return;
+    const t = e.target;
+    const p = t.getAttribute && t.getAttribute('data-pf-sos-p');
+    if(p !== null && pfSos){ pfSos[+p].p = t.value; return; }
+    if(t.id === 'pfENeg' || t.id === 'pfEProv'){
+      const w = t.closest('.pf-ed');
+      const neg = elv('pfENeg'), prov = t.id === 'pfENeg' ? '' : elv('pfEProv');
+      const wadah = w.querySelector('.pf-ed-g3');
+      wadah.outerHTML = editorDom(neg, prov, '');
+      return;
+    }
+    if(t.id === 'pfE' && pfEdit === 'kerja'){ const l = document.getElementById('pfE2'); if(l) l.hidden = t.value !== '__lain__'; }
+  });
+  document.addEventListener('keydown', function(e){
+    if(!pfEdit || !e.target.closest || !e.target.closest('.pf-ed')) return;
+    if(e.key === 'Escape'){ pfEdit = null; pfSos = null; isiProfil(); }
+    if(e.key === 'Enter' && e.target.tagName === 'INPUT'){ e.preventDefault(); simpanIsian(); }
+  });
 
   function isiProfil(){
     const nilai = function(id){ const e = document.getElementById(id); return e ? e.value : ''; };
@@ -266,12 +481,132 @@
          kalau belum diisi — sekaligus jadi tag pertama yang selalu ada */
       pasang(nilai('kerja') || window.KolavoKerjaDefault || 'Anggota komunitas', true);
       pasang(nilai('kota'), false);
+      pasang([nilai('didik'), nilai('didikDi').trim()].filter(Boolean).join(' · '), false);
       if(!tags.children.length){
         const s = document.createElement('span');
         s.className = 'tag kosong';
         s.textContent = 'Belum ada keahlian yang diisi';
         tags.appendChild(s);
       }
+    }
+
+    /* V4: memberi & mengambil */
+    const gt = document.getElementById('pfGt');
+    if(gt){
+      const beri = nilai('beri').trim(), dapat = nilai('bio').trim();
+      gt.hidden = !(beri || dapat);
+      gt.innerHTML = '';
+      [['Bisa saya bagikan', beri], ['Yang saya cari', dapat]].forEach(function(x){
+        if(!x[1]) return;
+        const d = document.createElement('div');
+        d.className = 'pf-gt-i';
+        d.innerHTML = '<span class="pf-gt-l"></span><p></p>';
+        d.firstChild.textContent = x[0];
+        d.lastChild.textContent = x[1];
+        gt.appendChild(d);
+      });
+    }
+
+    /* Profil & Setting: semua isian Lengkapi profil, dikelompokkan seperti formulirnya.
+       Tiap baris punya tombol Ubah yang membuka Lengkapi profil tepat di kolomnya. */
+    const data = document.getElementById('pfData');
+    if(data){
+      const esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+      const teks = function(id){ const e = document.getElementById(id); return e ? e.textContent.trim() : ''; };
+      const kerja = nilai('kerja') === '__lain__' ? nilai('kerjaLain').trim() : nilai('kerja');
+      const lahir = nilai('lahir') ? teks('lahirBtn') : '';
+      const sos = [].map.call(document.querySelectorAll('#sosmedList [data-sosmed-h]'), function(inp){
+        const sel = document.querySelector('#sosmedList [data-sosmed-p="' + inp.getAttribute('data-sosmed-h') + '"]');
+        const v = inp.value.trim();
+        return v ? (sel ? sel.options[sel.selectedIndex].text : '') + ' · ' + v : '';
+      }).filter(Boolean);
+      /* media sosial: satu label per akun — ikon platform + nama akun */
+      const IK_SOS = {
+        'Instagram': '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor"/>',
+        'LinkedIn': '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.5V16M8 7.6v.1M11.5 16v-5.5M11.5 13c0-1.6 1-2.6 2.3-2.6s2.2.9 2.2 2.6V16"/>',
+        'TikTok': '<path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.4 2 4 4.5 4.3"/>',
+        'X (Twitter)': '<path d="M5 5l14 14M19 5 5 19"/>',
+        'Facebook': '<path d="M14 8h2V4.5h-2.5A3.5 3.5 0 0 0 10 8v2.5H8V14h2v6.5h3.5V14H16l.5-3.5h-3V8.5c0-.3.2-.5.5-.5Z"/>',
+        'YouTube': '<rect x="2.5" y="6" width="19" height="12" rx="4"/><path d="m10.5 9.5 4 2.5-4 2.5Z"/>',
+        'Situs web': '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 2.5 15.2 0 18M12 3c-2.5 2.8-2.5 15.2 0 18"/>'
+      };
+      const labelSos = function(){
+        const daftar = window.KolavoSosmed ? window.KolavoSosmed() : [];
+        return '<span class="pf-sos">' + daftar.map(function(s){
+          return '<span class="pf-sos-i" title="' + esc(s.platform) + '">' + ik(IK_SOS[s.platform] || IK_SOS['Situs web']) +
+            '<span class="sr-only">' + esc(s.platform) + ': </span>' + esc(s.akun) + '</span>';
+        }).join('') + '</span>';
+      };
+      /* ikon garis 24px untuk judul kelompok, tiap isian, dan tombol ubah */
+      const ik = function(isi){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + isi + '</svg>'; };
+      const IKN = {
+        google: '<path d="M21 12.2c0-.7-.1-1.3-.2-1.9H12v3.6h5.1a4.4 4.4 0 0 1-1.9 2.9v2.4h3.1c1.8-1.7 2.7-4.1 2.7-7Z"/><path d="M12 21c2.6 0 4.7-.9 6.3-2.3l-3.1-2.4c-.9.6-1.9.9-3.2.9-2.5 0-4.5-1.7-5.3-3.9H3.5v2.5A9.5 9.5 0 0 0 12 21Z"/><path d="M6.7 13.3a5.7 5.7 0 0 1 0-3.6V7.2H3.5a9.5 9.5 0 0 0 0 8.6l3.2-2.5Z"/><path d="M12 6.8c1.4 0 2.7.5 3.7 1.4l2.7-2.7A9.5 9.5 0 0 0 3.5 7.2l3.2 2.5C7.5 8.5 9.5 6.8 12 6.8Z"/>',
+        perisai: '<path d="M12 3 4 6v5c0 4.5 3.4 8 8 10 4.6-2 8-5.5 8-10V6l-8-3Z"/><rect x="9" y="11" width="6" height="5" rx="1"/><path d="M10.5 11V9.5a1.5 1.5 0 0 1 3 0V11"/>',
+        orang2: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M21.5 20c0-2.7-1.6-4.8-4-5.6"/>',
+        orang: '<circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/>',
+        surat: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/>',
+        telp: '<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20Z"/><path d="M9 9.5c.3 1.9 1.7 3.6 3.6 4.4l1.2-1.2 2 .9c-.2 1-1 1.7-2 1.7A6.4 6.4 0 0 1 7.6 9c0-1 .7-1.8 1.7-2l.9 2-1.2.5Z"/>',
+        kalender: '<rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',
+        pin: '<path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/>',
+        tas: '<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5h6v2M3 12h18"/>',
+        toga: '<path d="M3 9l9-4 9 4-9 4-9-4Z"/><path d="M7 11v4c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5v-4"/>',
+        tangan: '<path d="M12 20s-7-4.3-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.7-7 10-7 10Z"/>',
+        cari: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
+        tautan: '<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/>',
+        pensil: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+        tambah: '<path d="M12 5v14M5 12h14"/>'
+      };
+      const KELOMPOK = [
+        ['google', 'Dari akun Google', 'Diambil dari Google saat masuk.', [
+          ['orang', 'Nama lengkap', teks('idNama') || (nm ? nm.textContent : ''), 'Pengurus komunitas', 'idKartu', 'nama'],
+          ['surat', 'Email', (document.querySelector('.acct-em') || {}).textContent || '', 'Hanya kamu', 'idKartu', '']]],
+        ['perisai', 'Cuma buat pengurus', 'Tidak tampil di daftar anggota.', [
+          ['telp', 'Nomor WhatsApp', nilai('wa') ? '+62 ' + nilai('wa') : '', 'Pengurus & anggota yang kenalan denganmu', 'wa', 'wa'],
+          ['kalender', 'Tanggal lahir', lahir, 'Pengurus komunitas', 'lblLahir', 'lahir']]],
+        ['orang2', 'Dilihat sesama anggota', 'Dipakai di semua komunitas yang kamu ikuti.', [
+          ['pin', 'Domisili', [nilai('kota'), nilai('provinsi'), nilai('negara')].filter(Boolean).join(', '), 'Sesama anggota', 'lblDom', 'dom'],
+          ['tas', 'Pekerjaan atau keahlian', kerja, 'Sesama anggota', 'kerja', 'kerja'],
+          ['toga', 'Pendidikan terakhir', [nilai('didik'), nilai('didikDi').trim()].filter(Boolean).join(' · '), 'Hanya angka persebaran', 'didik', 'didik'],
+          ['tangan', 'Kontribusi', nilai('beri').trim(), 'Sesama anggota', 'beri', 'beri'],
+          ['cari', 'Yang dicari', nilai('bio').trim(), 'Sesama anggota', 'bio', 'bio'],
+          ['tautan', 'Media sosial', sos.join('\n'), 'Anggota yang kenalan denganmu', 'lblSosmed', 'sos']]]
+      ];
+      let kosong = 0, total = 0;
+      data.innerHTML = KELOMPOK.map(function(g){
+        return '<section class="pf-data-g"><div class="pf-data-gh"><span class="pf-data-gi">' + ik(IKN[g[0]]) + '</span><span class="t"><b>' + g[1] + '</b><span>' + g[2] + '</span></span></div>' + g[3].map(function(r){
+          total++; if(!r[2]) kosong++;
+          const sunting = r[5] && pfEdit === r[5];
+          const tombol = !r[5]
+            ? '<span class="pf-data-kunci" title="Dari akun Google" aria-label="Dari akun Google">' + ik('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>') + '</span>'
+            : sunting ? '<span class="pf-data-sp" aria-hidden="true"></span>'
+            : '<button type="button" class="pf-data-ubah' + (r[2] ? '' : ' isi') + '" data-pf-ubah="' + r[5] + '" aria-label="' + (r[2] ? 'Ubah ' : 'Isi ') + r[1] + '" data-tip="' + (r[2] ? 'Ubah' : 'Isi') + '">' + ik(IKN[r[2] ? 'pensil' : 'tambah']) + '</button>';
+          return '<div class="pf-data-r' + (sunting ? ' sunting' : '') + '"><span class="pf-data-ri">' + ik(IKN[r[0]]) + '</span><div class="t"><span class="pf-data-l">' + r[1] + '</span>' +
+            (sunting ? '<div class="pf-ed">' + editorIsian(r[5]) + '</div>'
+              : (r[2] ? (r[5] === 'sos' ? labelSos() : '<span class="pf-data-v">' + esc(r[2]).replace(/\n/g, '<br>') + '</span>') : '<span class="pf-data-v kosong">Belum diisi</span>') +
+                '<span class="pf-data-s">Dilihat: ' + r[3] + '</span>') +
+            '</div>' + tombol + '</div>';
+        }).join('') + '</section>';
+      }).join('');
+      /* kepala profil: kelengkapan data akun */
+      const lk = document.getElementById('pfLengkap');
+      if(lk){
+        const isi = total - kosong, pct = Math.round(isi / total * 100);
+        lk.innerHTML = '<span class="pf-lengkap-n"><b>' + pct + '%</b> lengkap</span>' +
+          '<span class="pf-lengkap-bar" aria-hidden="true"><i style="width:' + pct + '%"></i></span>' +
+          '<span class="pf-lengkap-s">' + (kosong ? kosong + ' isian belum diisi' : 'Semua isian sudah diisi') + '</span>';
+      }
+      const h = document.getElementById('pfDataH');
+      if(h) h.innerHTML = 'Data akun' + (kosong ? '<span class="pf-data-n">' + kosong + ' belum diisi</span>' : '');
+    }
+
+    /* kredit kenalan (15 Okt 2026): saldo, 10 kredit per ajakan, top up 100 kredit = Rp50.000 */
+    const kr = document.getElementById('pfKredit');
+    if(kr){
+      const K = window.KolavoKredit;
+      kr.innerHTML = '<div class="pf-item"><span class="pf-kredit-ic" aria-hidden="true">' + (window.KolavoIkon ? window.KolavoIkon('koin') : '') + '</span>' +
+        '<div class="t"><div class="n">Kredit kenalan · <span data-kredit-saldo>' + (K ? K.saldo() : 0) + '</span> kredit</div>' +
+        '<div class="s">Setiap ajakan kenalan memakai 10 kredit dan berlaku di semua komunitasmu. Begitu ajakan diterima, nomor WhatsApp dan media sosial kalian saling terbuka.</div></div>' +
+        '<div class="pf-item-aksi"><span class="pf-harga">100 kredit · Rp50.000</span><button type="button" class="btn sm" data-kredit-topup>Top up kredit</button></div></div>';
     }
 
     if(list){
@@ -281,14 +616,9 @@
       const buat = window.KolavoDibuatItem ? window.KolavoDibuatItem() : '';
       list.classList.toggle('pf-list', !!(App.komunitas || buat));
       if(buat) list.insertAdjacentHTML('beforeend', buat);
-      if(App.komunitas){
-        list.insertAdjacentHTML('beforeend',
-          '<div class="pf-item"><span class="logo-sq ' + App.komunitas.kelas + '" role="img" aria-label="Logo komunitas"></span>' +
-          '<div class="t"><div class="n">' + App.komunitas.nama + '</div>' +
-          '<div class="s">' + [App.komunitas.jumlah].concat(window.KolavoJawaban()).join(' · ') + '</div></div>' +
-          ((App.diajukan || {})[App.komunitas.kelas] === 'anggota'
-            ? '<span class="status anggota">Anggota</span></div>'
-            : '<span class="status tunggu">Menunggu</span></div>'));
+      const ikut = itemIkut();
+      if(ikut){
+        list.insertAdjacentHTML('beforeend', ikut);
       } else if(!buat){
         /* keadaan kosong memakai komponen .empty yang sudah ada di kit —
            satu kalimat dengan tautan teks terlalu mudah terlewat di sini */
@@ -298,7 +628,7 @@
             '<h3>Belum gabung ke komunitas mana pun</h3>' +
             '<p>Profilmu sudah siap. Yang belum, komunitasnya — cari yang pengurusnya sudah bikin halaman, lalu minta gabung.</p>' +
             '<div class="empty-cta">' +
-              '<button type="button" class="btn" data-ke="scrBeranda" data-anchor="direktori">Cari komunitasku</button>' +
+              '<button type="button" class="btn" data-ke="scrApp" data-anchor="direktori">Cari komunitasku</button>' +
               '<button type="button" class="btn outline" data-ke="scrBuat">Bikin halaman komunitas</button>' +
             '</div>' +
             '<p class="empty-note">Kalau pengurusmu belum bikin halaman, kamu yang bisa mulai.</p>' +
@@ -325,6 +655,15 @@
   document.addEventListener('click', function(e){
     const t = e.target.closest('[data-ke]');
     if(t){ e.preventDefault(); ke(t.dataset.ke, t.dataset.anchor); return; }
+    /* V4: komunitas yang diikuti sebagai anggota bisa dibuka dari "Komunitas saya" */
+    const ka = e.target.closest('[data-komunitas-anggota]');
+    if(ka && ka.dataset.komunitasAnggota && window.KolavoLihatKomunitas){
+      const l = document.querySelector('#direktori .ccard .logo-sq.' + ka.dataset.komunitasAnggota);
+      if(l){ e.preventDefault(); window.KolavoLihatKomunitas(l.closest('.ccard')); return; }
+    }
+    if(ka && App.kartu && window.KolavoLihatKomunitas){
+      e.preventDefault(); window.KolavoLihatKomunitas(App.kartu); return;
+    }
 
     if(e.target.closest('#kirim')){
       const kurang = periksa();
@@ -336,6 +675,15 @@
       }
       if(galat) galat.hidden = true;
       App.lengkap = true;
+      /* jejak persetujuan disimpan bersama versinya — akuntabilitas pengendali
+         data: harus bisa dibuktikan kapan dan atas naskah versi mana orang setuju */
+      const kabar = document.getElementById('setujuKabar');
+      App.persetujuan = {
+        legal: true,
+        versi: (window.KolavoLegal && window.KolavoLegal.versi) || '',
+        kabar: !!(kabar && kabar.checked),
+        waktu: new Date().toISOString()
+      };
       gambarNav();
       /* datang dari kartu komunitas: antar ke halaman komunitasnya, bukan
          ke profil — gabungnya belum terjadi, baru profilnya yang beres */
@@ -346,8 +694,11 @@
         window.KolavoBukaKomunitas(App.kartu);
         ke('scrKomunitas');
         toast('Profil kamu sudah lengkap. Tinggal minta gabung.');
+      } else if(App.tujuan){
+        const t = App.tujuan; App.tujuan = null; ke(t);
+        toast('Profil kamu sudah lengkap.');
       } else {
-        ke('scrProfil');
+        ke('scrHome');
         toast('Profil kamu sudah lengkap.');
       }
       return;

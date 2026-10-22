@@ -1,0 +1,184 @@
+<!-- ============================================================
+     Kredit kenalan (15 Okt 2026): saldo per pengguna, berlaku di semua komunitas.
+     Tiap ajakan kenalan memotong 10 kredit; habis → top up berbayar
+     100 kredit = Rp50.000 per paket, bisa beberapa paket sekaligus; dibayar lewat QRIS dan
+     kredit baru bertambah setelah pembayaran diterima (disimulasikan di prototipe).
+     ============================================================ -->
+<div class="lgn" id="krd" hidden>
+  <div class="lgn-scrim" data-krd-tutup></div>
+  <div class="lgn-box krd-box" role="dialog" aria-modal="true" aria-labelledby="krdH">
+    <button class="lgn-x" type="button" data-krd-tutup aria-label="Tutup">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <!-- langkah 1: pilih jumlah kredit -->
+    <div class="krd-langkah" id="krdPilih">
+      <span class="krd-koin" aria-hidden="true"><i data-ic="koin"></i></span>
+      <h2 class="lgn-head" id="krdH">Top up kredit kenalan</h2>
+      <p class="lgn-sub" id="krdSub"></p>
+      <div class="krd-saldo">Saldo saat ini <b id="krdSaldo">0 kredit</b></div>
+      <div class="krd-cepat" id="krdCepat" role="radiogroup" aria-label="Jumlah kredit"></div>
+      <div class="krd-atur">
+        <span class="t"><b>Jumlah paket</b><small>1 paket = 100 kredit · Rp50.000</small></span>
+        <div class="kalk-step" role="group" aria-label="Jumlah paket">
+          <button type="button" id="krdKurang" aria-label="Kurangi paket">−</button>
+          <b id="krdN" aria-live="polite">1</b>
+          <button type="button" id="krdTambah" aria-label="Tambah paket">+</button>
+        </div>
+      </div>
+      <div class="krd-ringkas">
+        <span><b id="krdJml">100 kredit</b><small id="krdAjak">Cukup untuk 10 ajakan kenalan</small></span>
+        <strong id="krdTotal">Rp50.000</strong>
+      </div>
+      <button type="button" class="btn md krd-bayar" id="krdBayar">Bayar dengan QRIS</button>
+      <p class="krd-catat">Setiap ajakan kenalan memakai 10 kredit dan dikembalikan bila ajakan ditolak atau dibatalkan. Kredit berlaku di semua komunitas yang kamu ikuti dan tidak hangus.</p>
+    </div>
+
+    <!-- langkah 2: bayar dengan QRIS — kredit baru bertambah setelah pembayaran diterima -->
+    <div class="krd-langkah" id="krdQris" hidden>
+      <h2 class="lgn-head">Bayar dengan QRIS</h2>
+      <p class="lgn-sub">Pindai kode ini dengan aplikasi m-banking atau dompet digital apa pun.</p>
+      <div class="krd-qris">
+        <div class="krd-qris-h"><b>QRIS</b><span>Kolavo · Kredit kenalan</span></div>
+        <div class="krd-qr" id="krdQr"></div>
+        <div class="krd-qris-n"><small>Total bayar</small><strong id="krdQrTotal">Rp50.000</strong></div>
+      </div>
+      <p class="krd-tunggu"><span class="gspin"></span><span>Menunggu pembayaran · berlaku <b id="krdWaktu">10:00</b></span></p>
+      <button type="button" class="btn md krd-bayar" id="krdSudah">Simulasikan pembayaran berhasil</button>
+      <button type="button" class="krd-ganti" id="krdGanti">Ubah jumlah kredit</button>
+      <p class="krd-catat">Prototipe: di produk, status berubah otomatis begitu pembayaran QRIS diterima.</p>
+    </div>
+
+    <!-- langkah 3: berhasil -->
+    <div class="krd-langkah" id="krdOk" hidden>
+      <span class="krd-ok-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span>
+      <h2 class="lgn-head" id="krdOkH">+100 kredit masuk</h2>
+      <p class="lgn-sub" id="krdOkS">Pembayaran QRIS diterima.</p>
+      <button type="button" class="btn md krd-bayar" data-krd-tutup>Selesai</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const BIAYA = 10, PAKET = 100, HARGA_PAKET = 50000, HARGA = 'Rp50.000';
+  const CEPAT = [1, 2, 5, 10];   /* pilihan cepat: 100, 200, 500, 1.000 kredit */
+  /* saldo awal pengguna baru: 100 kredit = 10 ajakan (keputusan 15 Okt 2026) */
+  const AWAL = 100;
+  const App = function(){ const a = window.KolavoApp || (window.KolavoApp = {}); if(a.kreditSaldo == null) a.kreditSaldo = AWAL; return a; };
+  const el = function(id){ return document.getElementById(id); };
+  const toast = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
+  const rp = function(x){ return 'Rp' + x.toLocaleString('id-ID'); };
+  const krd = el('krd');
+  let pemicu = null, timer = null, hitung = null, paket = 1;
+
+  /* semua tampilan saldo (nav, Home, profil) disegarkan dari sini */
+  function segar(){
+    const s = App().kreditSaldo;
+    document.querySelectorAll('[data-kredit-saldo]').forEach(function(e){ e.textContent = s; });
+    if(window.KolavoGambarHome && document.getElementById('scrHome') && !document.getElementById('scrHome').hidden) window.KolavoGambarHome();
+    if(window.KolavoIsiProfil) window.KolavoIsiProfil();
+  }
+
+  function langkah(id){
+    ['krdPilih', 'krdQris', 'krdOk'].forEach(function(x){ el(x).hidden = x !== id; });
+    if(id !== 'krdQris'){ clearInterval(hitung); hitung = null; }
+  }
+  function gambarPilih(){
+    const kredit = paket * PAKET;
+    el('krdN').textContent = paket;
+    el('krdKurang').disabled = paket <= 1;
+    el('krdTambah').disabled = paket >= 20;
+    el('krdJml').textContent = kredit.toLocaleString('id-ID') + ' kredit';
+    el('krdAjak').textContent = 'Cukup untuk ' + (kredit / BIAYA).toLocaleString('id-ID') + ' ajakan kenalan';
+    el('krdTotal').textContent = rp(paket * HARGA_PAKET);
+    el('krdBayar').textContent = 'Bayar ' + rp(paket * HARGA_PAKET) + ' dengan QRIS';
+    el('krdCepat').innerHTML = CEPAT.map(function(n){
+      const on = n === paket;
+      return '<button type="button" role="radio" aria-checked="' + on + '" class="chip' + (on ? ' on' : '') + '" data-krd-paket="' + n + '">' + (n * PAKET).toLocaleString('id-ID') + ' kredit</button>';
+    }).join('');
+  }
+  /* QRIS dinamis: kode berisi nominal + nomor referensi, berlaku 10 menit */
+  function gambarQris(){
+    const total = paket * HARGA_PAKET, ref = 'KLV' + Date.now().toString().slice(-8);
+    el('krdQrTotal').textContent = rp(total);
+    el('krdQr').innerHTML = window.KolavoQR ? window.KolavoQR('https://kolavo.app/qris/' + ref + '?n=' + total, 'QRIS ' + rp(total)) : '';
+    let sisa = 600;
+    const tulis = function(){ el('krdWaktu').textContent = Math.floor(sisa / 60) + ':' + String(sisa % 60).padStart(2, '0'); };
+    tulis();
+    clearInterval(hitung);
+    hitung = setInterval(function(){
+      sisa--; tulis();
+      if(sisa <= 0){ clearInterval(hitung); langkah('krdPilih'); toast('Kode QRIS kedaluwarsa. Buat kode baru untuk membayar.'); }
+    }, 1000);
+    el('krdSudah').disabled = false; el('krdSudah').textContent = 'Simulasikan pembayaran berhasil';
+  }
+
+  function buka(alasan){
+    pemicu = document.activeElement;
+    const s = App().kreditSaldo;
+    paket = 1;
+    el('krdSub').textContent = alasan || 'Tambah kredit untuk mengajak lebih banyak anggota berkenalan.';
+    el('krdSaldo').textContent = s + ' kredit';
+    langkah('krdPilih'); gambarPilih();
+    if(window.KolavoIkonIsi) window.KolavoIkonIsi(krd);
+    krd.hidden = false;
+    document.body.classList.add('lgn-open');
+    requestAnimationFrame(function(){ krd.classList.add('on'); });
+    setTimeout(function(){ krd.classList.add('on'); }, 60);
+  }
+  function tutup(){
+    clearTimeout(timer); clearInterval(hitung); hitung = null;
+    krd.classList.remove('on');
+    document.body.classList.remove('lgn-open');
+    setTimeout(function(){ krd.hidden = true; }, 170);
+    if(pemicu && pemicu.focus) pemicu.focus({ preventScroll: true });
+  }
+
+  window.KolavoKredit = {
+    BIAYA: BIAYA, PAKET: PAKET, HARGA: HARGA,
+    saldo: function(){ return App().kreditSaldo; },
+    /* gerbang tunggal ajakan kenalan: potong kredit, atau buka top up bila kurang */
+    pakai: function(nama){
+      const a = App();
+      if(a.kreditSaldo < BIAYA){
+        buka('Kreditmu ' + a.kreditSaldo + '. Mengajak ' + String(nama || '').split(' ')[0] + ' berkenalan butuh ' + BIAYA + ' kredit.');
+        return false;
+      }
+      a.kreditSaldo -= BIAYA;
+      setTimeout(segar, 0);
+      return true;
+    },
+    /* ajakan dibatalkan sebelum dijawab, atau ditolak pihak lain: kredit dikembalikan */
+    kembalikan: function(){ App().kreditSaldo += BIAYA; setTimeout(segar, 0); },
+    bukaTopUp: buka
+  };
+
+  document.addEventListener('click', function(e){
+    if(e.target.closest('[data-kredit-topup]')){ e.preventDefault(); buka(); return; }
+    if(krd.hidden) return;
+    if(e.target.closest('[data-krd-tutup]')){ tutup(); return; }
+    const c = e.target.closest('[data-krd-paket]');
+    if(c){ paket = +c.dataset.krdPaket; gambarPilih(); return; }
+    if(e.target.closest('#krdKurang')){ paket = Math.max(1, paket - 1); gambarPilih(); return; }
+    if(e.target.closest('#krdTambah')){ paket = Math.min(20, paket + 1); gambarPilih(); return; }
+    if(e.target.closest('#krdBayar')){ langkah('krdQris'); gambarQris(); return; }
+    if(e.target.closest('#krdGanti')){ langkah('krdPilih'); gambarPilih(); return; }
+    const b = e.target.closest('#krdSudah');
+    if(b){
+      /* kredit baru ditambahkan setelah pembayaran QRIS diterima */
+      b.disabled = true;
+      b.innerHTML = '<span class="gspin"></span> Memeriksa pembayaran…';
+      timer = setTimeout(function(){
+        const tambah = paket * PAKET;
+        App().kreditSaldo += tambah;
+        segar();
+        el('krdOkH').textContent = '+' + tambah.toLocaleString('id-ID') + ' kredit masuk';
+        el('krdOkS').textContent = 'Pembayaran QRIS ' + rp(paket * HARGA_PAKET) + ' diterima. Saldomu sekarang ' + App().kreditSaldo.toLocaleString('id-ID') + ' kredit.';
+        langkah('krdOk');
+      }, 1100);
+    }
+  });
+  document.addEventListener('keydown', function(e){ if(!krd.hidden && e.key === 'Escape') tutup(); });
+  App(); segar();
+})();
+</script>

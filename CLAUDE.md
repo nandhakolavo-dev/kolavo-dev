@@ -8,8 +8,8 @@ Peta lengkap seluruh repo (bisnis, produk, riset, EPIC per fitur, RIIM) ada di
 
 ## Satu-satunya sumber kebenaran desain
 
-**Sumber yang disunting: `Redesign/src/`** — 21 modul per-fitur. Dirakit jadi
-`Redesign/ReDesign_Kolavo_3.html` (berkas terbangun, satu-satunya yang dipublish
+**Sumber yang disunting: `Redesign/src/`** — 36 modul per-fitur (urutan di `src/manifest.txt`). Dirakit jadi
+`Redesign/ReDesign_Kolavo_4.html` (berkas terbangun, satu-satunya yang dipublish
 ke Artifact). **Sunting modul di `src/`, bukan berkas terbangun langsung.**
 Rincian token, komponen, aset, dan keputusan: **`Redesign/REFERENCE.md`**.
 
@@ -26,9 +26,10 @@ transformasi: keluaran byte-identik dengan gabungan potongannya.
 | `archive/ReDesign_Kolavo_1.html` | arsip, sebelum brand line "basecamp" |
 | `archive/ReDesign_Kolavo_2.html` | arsip homepage, sumber kit diekstrak dulu |
 | `archive/ReDesign_Kolavo_Masuk.html` | arsip pembanding modal masuk |
+| `archive/ReDesign_Kolavo_3.html` + `archive/src-v3/` | V3 beku — rujukan kalau ada keputusan V4 yang perlu ditimbang ulang |
 
 Kalau ada perubahan menyeluruh (misal menghapus sebuah kata dari "seluruh web"),
-**terapkan di v3 saja** lalu catat di `REFERENCE.md`. Jangan merambat ke arsip —
+**terapkan di v4 saja** lalu catat di `REFERENCE.md`. Jangan merambat ke arsip —
 mengubahnya memalsukan catatan sejarah, dan tidak ada yang membacanya sebagai produk.
 
 `kit/` sekarang beku bersama v2. **Jangan jalankan `kit/extract.py`** — ia menarik
@@ -62,7 +63,7 @@ root repo, dan kalau anchor meleset ia langsung menampilkan baris kandidatnya. S
 menyunting modul `src/`, audit fragmen dilewati (fragmen tak bisa diaudit sendiri —
 CSS/HTML-nya tersebar); audit lengkap jalan di `bundle.py`.
 
-`ReDesign_Kolavo_3.html` (357 KB, ~½ base64) adalah **keluaran**, bukan sumber.
+`ReDesign_Kolavo_4.html` (357 KB, ~½ base64) adalah **keluaran**, bukan sumber.
 Kalau seseorang telanjur menyuntingnya langsung, `python3 Redesign/kit/split.py`
 memecahnya ulang ke `src/`; `split.py` lalu `bundle.py --check` harus 'identik'.
 
@@ -105,7 +106,7 @@ Saat riset referensi live (kolavo.app dkk.), pakai `get_page_text` dulu; `read_p
 elemen buat diklik dan tidak ketemu lewat `find`.
 
 **Publikasi Artifact: jangan `diff`/`cat` isi lama waktu ditolak "belum dilihat versi
-live".** Berkas lokal `ReDesign_Kolavo_3.html` satu-satunya sumber kebenaran di
+live".** Berkas lokal `ReDesign_Kolavo_4.html` satu-satunya sumber kebenaran di
 proyek ini — tidak ada yang menyuntingnya selain lewat `kit/edit.py`. Kalau tool
 Artifact menolak publish dengan alasan itu, baca secukupnya dari berkas tersimpan yang
 ditunjukkannya supaya lolos syarat "sudah dilihat", lalu publish ulang berkas lokal
@@ -133,12 +134,34 @@ radius: tombol 100 (pill), kartu 13, modal 32 · tinggi tombol 52/48/40/32
 Dark mode wajib lewat token. Jangan pernah menulis warna harfiah di dalam blok
 `@media` atau `[data-theme]` — itu bikin halaman tak terbaca di salah satu tema.
 
+## Dua pintu: landing vs Kolavo App (Okt 2026)
+
+Rencana & keputusan: `Redesign/PROMPT-APP.md`; rincian teknis di `REFERENCE.md`.
+- **Landing** (`scrBeranda`) = halaman jualan untuk calon pengurus: nav Solusi · Alur Kerja ·
+  Paket Harga (rata kiri) · Buat komunitas · Masuk (kanan), etalase 3 komunitas. Tanpa menu akun/notifikasi.
+- **Kolavo App** = semua layar lain. Pintu masuknya halaman login penuh `scrMasuk` (Google
+  SSO; varian undangan bila datang dari tautan/QR). Nav ikon ala Facebook: Home
+  (`scrHome`: apa yang baru & perlu dilakukan — `PROMPT-HOME.md`) · Komunitas (`scrApp`:
+  Komunitasku + jelajahi/minta gabung) · Dashboard (`scrDasbor`: daftar komunitas yang
+  dikelola, terbuka untuk semua) — di HP jadi bilah bawah. Profil lewat avatar header.
+- Tautan/QR komunitas (`kolavo.app/k/<slug>`) → login → profil komunitasnya. QR dibuat
+  inline oleh `50-js-qr` (tanpa pustaka).
+- `window.KolavoApp` tetap nama objek keadaan, bukan produk.
+- Buka dashboard lewat `KolavoBukaDashboard()`, jangan `KolavoKe('scrKelola')` — keadaannya
+  harus dibangun dulu.
+
 ## Arsitektur pesan
 
 - Brand line: **Basecamp digital komunitasmu** (eyebrow + footer)
-- Hero: **Kenal anggota komunitas, sebelum ketemu orangnya** (kata terakhir berotasi
-  ke organisasi/asosiasi/ikatan alumni/himpunan — wajib di akhir frasa, tanpa imbuhan)
-- Argumen: **Karena tak kenal, maka tak kolab** (kicker bagian WAG)
+- Hero (V4): **Kenali anggotamu. Kenalkan komunitasmu.** Kata terakhir berotasi
+  (komunitasmu/organisasimu/asosiasimu/alumnimu/himpunanmu) dan wajib di baris sendiri supaya
+  tinggi judul tidak berubah. Nadanya persuasif ke pengurus, bukan membanggakan — hindari
+  "hebat", "banggakan". Visual bertumpuk (`.hba`): profil komunitas di belakang, persebaran
+  anggota di depan, kartu profil anggota + keping kenalan melayang; tingginya dijaga setara
+  kolom teks (kolom 1fr 1fr). Jangan kembali ke perbandingan dengan grup chat/WAG.
+- Tiga pilar (bagian `#untuk`): profil komunitas yang menunjukkan orang-orangnya (tim
+  komunikasi) · data anggota terkumpul sekali (pengelola data & ketua bidang) · satu
+  profil untuk semua komunitas (anggota).
 
 ## Konteks bisnis
 
@@ -146,7 +169,18 @@ Dark mode wajib lewat token. Jangan pernah menulis warna harfiah di dalam blok
 kompetitor sesungguhnya Google + WhatsApp + Zoom (gratis, tanpa kurva belajar);
 pendampingan komunitas adalah satu-satunya kolom yang hampir kosong di tabel kompetisi;
 entry strategy 2 tahun pertama lewat 5–10 komunitas kurasi, bukan pencarian publik.
-Harga masih `XXXX`. Kata **"Gratis" sudah dihapus dari semua halaman aktif** (v2, v3,
-Masuk, dan kit) atas permintaan — platformnya belum tentu gratis, jadi menjanjikannya
-sekarang berisiko. `archive/ReDesign_Kolavo_1.html` sengaja dibiarkan sebagai arsip.
-Jangan tulis ulang kata itu tanpa keputusan harga.
+**Keputusan harga (6 Okt 2026)** — rinciannya di `Redesign/PROMPT-HARGA.md`, rumusnya di
+`src/50-js-harga.html` (`window.KolavoHarga`): Esensial **FREE** (20 anggota, 1 peninjau) ·
+Advance Rp 199/anggota/bulan per kelipatan 10 (30–1.000), tarif turun Rp 0,13 tiap 10
+anggota, peninjau Rp 15.000 + Rp 3.000 tiap tambahan · diskon 5% (6–12 bulan) dan 10%
+(langsung 2 tahun) · **Big Organization** di atas 1.000 anggota lewat "Hubungi kami".
+Label paket Esensial ditulis FREE, bukan "Gratis", dan hanya untuk batas Esensial — jangan
+menjanjikan Kolavo gratis secara umum. Pengecualian: judul bagian harga beranda tetap
+"Mulai gratis, naik paket saat komunitasmu tumbuh." (keputusan 17 Okt 2026). Kredit kenalan anggota tidak ditampilkan di bagian harga beranda.
+**Kredit kenalan (15 Okt 2026):** saldo per pengguna, berlaku di semua komunitas; tiap ajakan
+kenalan memotong **10 kredit** (dikembalikan bila ajakan **ditolak** atau dibatalkan sebelum dijawab); top up berbayar
+**100 kredit = Rp50.000** per paket (boleh beberapa paket), dibayar lewat **QRIS**; kredit baru bertambah setelah pembayaran diterima. Rumus & gerbang di `src/50-js-kredit.html` (`window.KolavoKredit`).
+Saldo awal pengguna baru **100 kredit** (= 10 ajakan).
+Pop up langganan Advance (Kapasitas → Pembayaran Kartu/GoPay/QRIS → Selesai) dan panel **Langganan**
+(dulu Tagihan: pantau & tambah kapasitas) memakai `KolavoHarga` (17 Okt 2026).
+`archive/ReDesign_Kolavo_1.html` sengaja dibiarkan sebagai arsip.

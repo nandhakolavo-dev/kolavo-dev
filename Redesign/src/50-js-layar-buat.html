@@ -45,7 +45,7 @@
   let logo   = '';
   let slugKetik = false;
   let dibuat = null;
-  let nomorMode = 'auto';   /* auto | manual | off */
+  let nomorMode = 'manual';   /* manual | auto | off — V4: mulai dari nomor custom, standar ditentukan sambil jalan */
   let kodeKetik = false;    /* pengurus sudah mengetik kode sendiri? */
 
   /* ---------- warna tema ---------- */
@@ -114,7 +114,7 @@
       why.innerHTML = 'Anggota tidak diberi nomor. Bisa diaktifkan lagi nanti dari pengaturan komunitas.';
     } else if(nomorMode === 'manual'){
       wrap.hidden = false;
-      why.innerHTML = 'Pengurus mengisi nomor sendiri saat menerima pendaftaran, dan bisa diperbaiki lagi kalau salah. Awalan yang disarankan: <b>' + contoh + '</b>.';
+      why.innerHTML = 'Pakai format nomor komunitasmu sendiri. Pengurus mengisinya saat menerima pendaftaran, dan bisa diperbaiki lagi kalau salah. Kalau belum punya format, awalan yang disarankan: <b>' + contoh + '</b>.';
     } else {
       wrap.hidden = false;
       why.innerHTML = 'Kolavo memberi nomor otomatis tiap anggota diterima: <b>kode–tahun masuk–urutan</b>. Anggota ke berapa mengikuti urutan penerimaan tahun itu. Contoh: <b>' + contoh + '</b>.';
@@ -184,6 +184,7 @@
             '<div class="pills">' +
               '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="tahun"' + (t.tipe === 'tahun' ? ' checked' : '') + '><span>Pilih tahun</span></label>' +
               '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="teks"' + (t.tipe === 'teks' ? ' checked' : '') + '><span>Jawaban teks</span></label>' +
+              '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="angka"' + (t.tipe === 'angka' ? ' checked' : '') + '><span>Jawaban angka</span></label>' +
             '</div>' +
             '<label class="sw"><input type="checkbox" data-k="wajib"' + (t.wajib ? ' checked' : '') + '><i></i>Wajib diisi</label>' +
           '</div>' +
@@ -336,6 +337,7 @@
       }));
     const kom = {
       nama: nama,
+      alias: el('bkAlias').value.trim(),
       slug: el('bkSlug').value.trim() || keSlug(nama) || 'komunitasmu',
       bentuk: bentuk,
       kota: el('bkKota').value || 'Indonesia',
@@ -369,9 +371,12 @@
     const slug = el('bkSlug').value.trim() || keSlug(nama);
     const data = {
       nama: nama,
+      alias: el('bkAlias').value.trim(),
       slug: slug,
       bentuk: pilihBentuk(),
       kota: el('bkKota').value,
+      /* negara & provinsi ikut disimpan untuk filter lokasi di direktori */
+      negara: el('bkNegara').value, provinsi: el('bkProvinsi').value,
       warna: warna,
       logo: logo,
       inisial: inisial(nama),
@@ -396,7 +401,9 @@
       const hh = scr.querySelector('.ph-h1'); if(hh) hh.textContent = 'Bikin basecamp komunitasmu.';
       if(window.KolavoIsiProfil) window.KolavoIsiProfil();
       if(window.KolavoToast) window.KolavoToast('Pengaturan komunitas tersimpan.');
-      if(window.KolavoKe) window.KolavoKe('scrProfil');
+      /* kembali ke halaman komunitas yang barusan disunting, bukan ke Profil & Setting */
+      if(window.KolavoBukaKomunitasDibuat) window.KolavoBukaKomunitasDibuat();
+      else if(window.KolavoKe) window.KolavoKe('scrKomunitas');
       return;
     }
     dibuat = data;
@@ -405,7 +412,7 @@
     el('bkDoneH').textContent = 'Halaman ' + nama + ' sudah jadi.';
     el('bkDoneNm').textContent = nama;
     el('bkDoneMeta').textContent = [dibuat.bentuk, dibuat.kota, 'belum ada anggota'].filter(Boolean).join(' · ');
-    el('bkDoneLink').textContent = 'kolavo.app/' + slug;
+    el('bkDoneLink').textContent = 'kolavo.app/k/' + slug;
     const petak = el('bkDoneLogo');
     petak.textContent = logo ? '' : dibuat.inisial;
     petak.style.backgroundImage = logo ? 'url("' + logo + '")' : '';
@@ -435,12 +442,16 @@
   }
 
   el('bkSalin').addEventListener('click', function(){
-    salin('https://kolavo.app/' + (dibuat ? dibuat.slug : ''), this, 'Tersalin ✓');
+    salin('https://kolavo.app/k/' + (dibuat ? dibuat.slug : ''), this, 'Tersalin ✓');
+  });
+  /* A5a: QR tautan komunitas, siap dicetak atau dipindai di pertemuan */
+  el('bkQr').addEventListener('click', function(){
+    if(window.KolavoBagikan) window.KolavoBagikan(dibuat ? dibuat.nama : 'Komunitas', 'https://kolavo.app/k/' + (dibuat ? dibuat.slug : ''));
   });
 
   el('bkWa').addEventListener('click', function(){
     const teks = 'Halaman ' + (dibuat ? dibuat.nama : 'komunitas kita') + ' sudah ada di Kolavo. ' +
-                 'Daftar di sini biar kita bisa saling kenal: https://kolavo.app/' + (dibuat ? dibuat.slug : '');
+                 'Daftar di sini biar kita bisa saling kenal: https://kolavo.app/k/' + (dibuat ? dibuat.slug : '');
     salin(teks, this, 'Ajakan tersalin ✓');
     if(window.KolavoToast) window.KolavoToast('Di produk, tombol ini langsung membuka WhatsApp.');
   });
@@ -455,7 +466,13 @@
   const IC_PULIH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M12 17v-5"/><path d="m9.5 14 2.5-2.5 2.5 2.5"/></svg>';
   const IC_HAPUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M6 6v14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6"/><path d="M10 11v6M14 11v6"/></svg>';
   const IC_TUTUP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
-  const rerenderP = function(){ if(window.KolavoIsiProfil) window.KolavoIsiProfil(); };
+  /* menu kartu komunitas buatan tampil di Profil dan di tab Komunitas (Komunitasku) —
+     keduanya digambar ulang, bukan cuma profil (dulu menu di Komunitasku diam saja) */
+  const rerenderP = function(){
+    if(window.KolavoIsiProfil) window.KolavoIsiProfil();
+    const app = document.getElementById('scrApp');
+    if(app && !app.hidden && window.KolavoGambarApp) window.KolavoGambarApp('scrApp');
+  };
   const toastP = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
 
   window.KolavoArsipkanDibuat = function(flag){
@@ -473,6 +490,7 @@
     if(!dibuat) return;
     modeSunting = true;
     el('bkNama').value = dibuat.nama || '';
+    el('bkAlias').value = dibuat.alias || '';
     el('bkSlug').value = dibuat.slug || ''; slugKetik = true;
     el('bkAjak').value = dibuat.ajakan || '';
     const rb = scr.querySelector('input[name="bkBentuk"][value="' + (dibuat.bentuk || '') + '"]');
@@ -489,7 +507,7 @@
     if(wr) wr.checked = true;
     pakaiWarna();
     logo = dibuat.logo || '';
-    nomorMode = dibuat.nomorMode || 'auto';
+    nomorMode = dibuat.nomorMode || 'manual';
     el('bkKode').value = dibuat.kode || ''; kodeKetik = true;
     tanya = (dibuat.tanya || []).filter(function(t){ return t.id !== 'nickname'; }).map(function(t){
       return { id: t.id, judul: t.judul || '', tanya: t.tanya || '', tipe: t.tipe || 'teks', wajib: !!t.wajib, bawaan: false };
@@ -503,6 +521,45 @@
     window.scrollTo(0, 0);
   }
   window.KolavoSuntingDibuat = suntingDibuat;
+
+  /* ---------- lebih dari satu komunitas buatan ----------
+     Komunitas aktif tetap di App.dibuat (dipakai halaman komunitas, dashboard, Home);
+     yang lain disimpan di App.dibuatLain dan ditukar saat dibuka dari tab Dashboard.
+     Keadaan dashboard tiap komunitas dijaga per slug oleh 50-js-dashboard-pengurus. */
+  function simpanKeLain(kom){
+    const A = window.KolavoApp; if(!A || !kom) return;
+    A.dibuatLain = (A.dibuatLain || []).filter(function(k){ return k !== kom; }).concat([kom]);
+  }
+  window.KolavoPakaiDibuat = function(kom){
+    const A = window.KolavoApp; if(!A || !kom) return;
+    dibuat = dibuat || A.dibuat;   /* sumber kebenaran: komunitas aktif di keadaan aplikasi */
+    if(dibuat && dibuat !== kom) simpanKeLain(dibuat);
+    A.dibuatLain = (A.dibuatLain || []).filter(function(k){ return k !== kom; });
+    dibuat = kom; A.dibuat = kom;
+    konfHapus = false; menuBuka = false;
+  };
+  /* formulir kosong untuk komunitas berikutnya; yang sekarang pindah ke daftar lain */
+  window.KolavoBuatLagi = function(){
+    const A = window.KolavoApp;
+    dibuat = dibuat || (A && A.dibuat);
+    if(dibuat) simpanKeLain(dibuat);
+    dibuat = null; if(A) A.dibuat = null;
+    modeSunting = false; slugKetik = false; kodeKetik = false;
+    ['bkNama', 'bkAlias', 'bkSlug', 'bkAjak', 'bkKode'].forEach(function(id){ const x = el(id); if(x) x.value = ''; });
+    scr.querySelectorAll('input[name="bkBentuk"]').forEach(function(r){ r.checked = false; });
+    const neg = el('bkNegara'); if(neg) neg.value = '';
+    ['bkProvinsi', 'bkKota'].forEach(function(id){ const x = el(id); if(x){ x.value = ''; x.disabled = true; } });
+    warna = WARNA[0];
+    const wr = scr.querySelector('input[name="bkWarna"][value="' + warna + '"]'); if(wr) wr.checked = true;
+    pakaiWarna();
+    logo = ''; nomorMode = 'manual';
+    tanya = [{ id: 'q' + (++urut), judul: '', tanya: '', tipe: 'tahun', wajib: false, bawaan: true },
+             { id: 'q' + (++urut), judul: 'Alasan Bergabung', tanya: 'Kenapa kamu ingin bergabung di komunitas ini?', tipe: 'teks', wajib: false, bawaan: false }];
+    const h1 = scr.querySelector('.ph-h1'); if(h1) h1.textContent = 'Bikin basecamp komunitasmu.';
+    el('bkKirim').textContent = 'Buat halaman komunitas';
+    el('buatForm').hidden = false; el('buatDone').hidden = true;
+    gambarLogo(); gambarNomor(); gambarTanya(); progres();
+  };
   window.KolavoDibuatItem = function(){
     if(!dibuat) return '';
     const gaya = dibuat.logo ? ' style="background-image:url(' + dibuat.logo + ')"' : '';
@@ -510,7 +567,7 @@
     const status = '<span class="status ' + (arsip ? 'arsip' : 'pengurus') + '">' + (arsip ? 'Diarsipkan' : 'Pengurus') + '</span>';
     const open = '<div class="pf-open" data-komunitas-dibuat role="button" tabindex="0" title="Buka halaman komunitas">' +
         '<span class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' + (dibuat.logo ? '' : dibuat.inisial) + '</span>' +
-        '<div class="t"><div class="n">' + lolos(dibuat.nama) + '</div>' +
+        '<div class="t">' + (dibuat.alias ? '<div class="al">' + lolos(dibuat.alias) + '</div>' : '') + '<div class="n">' + lolos(dibuat.nama) + '</div>' +
         '<div class="s">' + lolos([dibuat.bentuk, dibuat.kota].filter(Boolean).join(' · ')) + '</div></div>' +
       '</div>';
     let aksi;

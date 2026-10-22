@@ -1,0 +1,54 @@
+name: Frontend CI
+
+# The web app lives in Frontend/; this workflow runs only when it changes.
+on:
+  pull_request:
+    paths: ['Frontend/**', '.github/workflows/frontend-ci.yml']
+  push:
+    branches: [main]
+    paths: ['Frontend/**', '.github/workflows/frontend-ci.yml']
+
+concurrency:
+  group: frontend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: Frontend
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      HUSKY: '0'
+      # The built-in mock backend stands in for the API until it exists.
+      APP_URL: http://localhost:3100
+      API_BASE_URL: http://localhost:3100/api/mock
+      API_MOCKING: 'true'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: Frontend/package.json
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: Frontend/.nvmrc
+          cache: pnpm
+          cache-dependency-path: Frontend/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm test:run
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@v5
+      # Builds the image to prove the Dockerfile works. Pushing to a registry is added once one is chosen.
+      # Runs in Frontend/ (workflow default working-directory), so the build context is `.`.
+      - run: docker build -t kolavo-web:${{ github.sha }} .

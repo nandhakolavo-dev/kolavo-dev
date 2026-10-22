@@ -1,6 +1,6 @@
 <script>
-/* Modal masuk lewat Google. Copy-nya mengikuti niat pemicunya:
-   "anggota" (dari tombol Gabung), "pengurus", atau "nav". */
+/* Masuk lewat Google di halaman scrMasuk. Copy-nya mengikuti niat pemicunya:
+   "anggota"/"undangan" (Gabung, tautan/QR), "pengurus", atau "nav". */
 (function(){
   const G = '<svg class="gmark" viewBox="0 0 48 48" aria-hidden="true">'+
     '<path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>'+
@@ -13,18 +13,8 @@
   const PENDEK = {'l-forpastara':'Forpastara','l-iapnj':'IA PNJ TIK',
                   'l-iasman52':'IA SMAN 52','l-ppiju':'PPI Jakarta Utara'};
 
-  const lgn   = document.getElementById('lgn'),
-        box   = lgn.querySelector('.lgn-box'),
-        proof = document.getElementById('lgnProof'),
-        head  = document.getElementById('lgnHead'),
-        sub   = document.getElementById('lgnSub'),
-        gbtn  = document.getElementById('lgnG'),
-        note  = document.getElementById('lgnNote'),
-        noteT = document.getElementById('lgnNoteTxt');
-  /* niat & kartunya disimpan sebagai nilai, bukan dibaca ulang dari atribut DOM:
-     tombol Gabung di halaman komunitas tidak punya data-login dan tidak berada
-     di dalam .ccard, jadi pembacaan lewat DOM jatuh ke varian umum */
-  let pemicu = null, pemicuNiat = null, pemicuKartu = null, timer = null, tutupTimer = null;
+  /* A6: modal masuk #lgn dibuang — semua pintu masuk lewat halaman scrMasuk.
+     isi() & tiles() tetap dipakai halaman itu. */
 
   function tiles(){
     const kelas = [...document.querySelectorAll('.ccard .logo-sq')]
@@ -34,6 +24,18 @@
   }
 
   function isi(trigger, kartu){
+    /* undangan (A2/A5b): datang dari tautan/QR komunitas — kartunya yang ditonjolkan */
+    if(trigger === 'undangan' && kartu){
+      const kelas  = [...kartu.querySelector('.logo-sq').classList].find(c => c.startsWith('l-')),
+            nama   = kartu.querySelector('h3').textContent.trim(),
+            jumlah = kartu.querySelector('.mem').textContent.trim();
+      return {
+        proof: `<div class="msk-kom"><span class="logo-sq ${kelas}"></span><div><b>${nama}</b><span>${jumlah}</span></div></div>`,
+        cap: 'Kamu diundang bergabung',
+        head: `Gabung ke ${PENDEK[kelas] || nama}`,
+        sub: 'Masuk dengan Google untuk melihat profil komunitasnya dan mengirim permintaan bergabung.'
+      };
+    }
     if(trigger === 'anggota' && kartu){
       const kelas  = [...kartu.querySelector('.logo-sq').classList].find(c => c.startsWith('l-')),
             nama   = kartu.querySelector('h3').textContent.trim(),
@@ -62,96 +64,71 @@
     };
   }
 
-  function buka(trigger, kartu, el){
-    clearTimeout(tutupTimer);          /* batalkan sisa animasi tutup sebelumnya */
-    const v = isi(trigger, kartu);
-    proof.innerHTML = v.proof + `<div class="lgn-cap">${v.cap}</div>`;
-    head.textContent = v.head;
-    sub.textContent  = v.sub;
-    reset();
-    pemicu = el || null;
-    pemicuNiat = trigger || 'nav';
-    pemicuKartu = kartu || null;
-    lgn.hidden = false;
-    document.body.classList.add("lgn-open");
-    requestAnimationFrame(() => lgn.classList.add('on'));
-    /* cadangan: rAF tidak jalan kalau tab sedang tidak terlihat */
-    setTimeout(() => lgn.classList.add('on'), 60);
-    document.documentElement.style.overflow = 'hidden';
-    document.getElementById('lgnX').focus({preventScroll:true});
-  }
-
-  function reset(){
-    clearTimeout(timer);
-    gbtn.disabled = false;
-    gbtn.innerHTML = G + ' Lanjutkan dengan Google';
-    note.hidden = true;
-  }
-
-  function tutup(){
-    lgn.classList.remove('on');
-    document.documentElement.style.overflow = '';
-    document.body.classList.remove("lgn-open");
-    tutupTimer = setTimeout(() => { lgn.hidden = true; reset(); }, 170);
-    if(pemicu) pemicu.focus({preventScroll:true});
-  }
-
   /* pemicu: nav "Masuk", "Lihat" di kartu, "Buat Halaman Komunitas" */
   document.addEventListener('click', e => {
     const t = e.target.closest('[data-login]');
     if(!t) return;
     e.preventDefault();
-    /* "Lihat" di kartu komunitas tidak lagi minta masuk — halamannya publik.
-       Modal masuk baru muncul di tombol Gabung, di dalam halaman itu. */
     const kartu = t.closest('.ccard');
     if(kartu && window.KolavoLihatKomunitas){
       window.KolavoLihatKomunitas(kartu);
       return;
     }
     /* sudah masuk: tidak perlu ditanya lagi. Alurnya langsung diteruskan ke
-       layar yang dituju pemicunya — modal masuk kedua kali cuma jalan buntu. */
+       layar yang dituju pemicunya — halaman masuk kedua kali cuma jalan buntu. */
     if((window.KolavoApp || {}).masuk && window.KolavoMasuk){
       window.KolavoMasuk(t.dataset.login, kartu);
       return;
     }
-    buka(t.dataset.login, kartu, t);
+    /* A6: belum masuk → halaman masuk penuh, bukan modal */
+    window.KolavoKeMasuk(t.dataset.login);
   });
 
-  /* dipakai tombol Gabung di halaman komunitas, yang tidak punya .ccard di dekatnya */
-  window.KolavoBukaModal = function(trigger, kartu, el){ buka(trigger, kartu, el); };
+  /* tombol Gabung di halaman komunitas (pengunjung belum masuk): nama lama
+     dipertahankan; kini ke halaman masuk varian undangan dengan kartunya */
+  window.KolavoBukaModal = function(trigger, kartu){
+    if(trigger === 'anggota' && kartu && window.KolavoBukaTautan){ window.KolavoBukaTautan(kartu); return; }
+    window.KolavoKeMasuk(trigger);
+  };
+  window.KolavoKeMasuk = function(niat){
+    const A = window.KolavoApp || {};
+    A.undangan = null;
+    A.niatMasuk = niat || 'nav';
+    window.KolavoKe('scrMasuk');
+  };
 
-  document.getElementById('lgnX').addEventListener('click', tutup);
-  document.getElementById('lgnScrim').addEventListener('click', tutup);
-
-  document.addEventListener('keydown', e => {
-    if(lgn.hidden) return;
-    if(e.key === 'Escape'){ tutup(); return; }
-    if(e.key !== 'Tab') return;
-    /* fokus keyboard dikunci di dalam modal selama terbuka */
-    const f = [...box.querySelectorAll('button:not([disabled]), a[href]')];
-    if(!f.length) return;
-    const first = f[0], last = f[f.length - 1];
-    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-    else if(!box.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
+  /* ---------- halaman masuk penuh scrMasuk (A2) ----------
+     Copy & logika Google sama dengan modal (isi() yang sama), hanya wadahnya
+     satu layar. Dipanggil router setiap kali scrMasuk digambar. */
+  const mProof = document.getElementById('mskProof'),
+        mHead  = document.getElementById('mskHead'),
+        mSub   = document.getElementById('mskSub'),
+        mG     = document.getElementById('mskG');
+  let mNiat = 'nav', mKartu = null, mTimer = null;
+  function mReset(){ clearTimeout(mTimer); mG.disabled = false; mG.innerHTML = G + ' Lanjutkan dengan Google'; }
+  window.KolavoIsiMasuk = function(trigger, kartu){
+    const v = trigger === 'nav' ? {
+      proof: tiles(), cap: 'Komunitas yang sudah punya halaman di Kolavo',
+      head: 'Masuk ke Kolavo',
+      sub: 'Satu akun untuk semua komunitasmu: lihat profil komunitas, kenali sesama anggota, dan kelola komunitas yang kamu urus.'
+    } : isi(trigger, kartu);
+    /* panel kepala kartu: deretan logo komunitas, atau kartu komunitas pengundang */
+    mProof.innerHTML = v.proof + `<div class="lgn-cap">${v.cap}</div>`;
+    mProof.classList.toggle('undang', trigger === 'undangan');
+    mHead.textContent = v.head;
+    mSub.textContent = v.sub;
+    /* setelah masuk, undangan diperlakukan seperti tombol Gabung di kartunya */
+    mNiat = trigger === 'undangan' ? 'anggota' : (trigger || 'nav');
+    if(window.KolavoApp) window.KolavoApp.niatMasuk = null;
+    mKartu = kartu || null;
+    mReset();
+  };
+  mG.addEventListener('click', () => {
+    mG.disabled = true;
+    mG.innerHTML = '<span class="gspin"></span> Menghubungkan ke Google…';
+    mTimer = setTimeout(() => { mReset(); window.KolavoMasuk(mNiat, mKartu); }, 1100);
   });
 
-  /* demo state memuat — prototipe, tidak benar-benar ke Google */
-  gbtn.addEventListener('click', () => {
-    gbtn.disabled = true;
-    gbtn.innerHTML = '<span class="gspin"></span> Menghubungkan ke Google…';
-    note.hidden = true;
-    /* prototipe: tidak benar-benar ke Google, tapi alurnya diteruskan
-       supaya layar berikutnya bisa dicoba. Lihat penanda "Demo" di pojok. */
-    timer = setTimeout(() => {
-      const niat = pemicuNiat || 'nav';
-      const kartu = pemicuKartu;
-      tutup();
-      gbtn.disabled = false;
-      gbtn.innerHTML = G + ' Lanjutkan dengan Google';
-      window.KolavoMasuk(niat, kartu);
-    }, 1100);
-  });
 })();
 </script>
 
@@ -159,6 +136,9 @@
   <span><b>Mode demo</b> · tanpa jaringan</span>
   <button type="button" class="setuju" id="demoSetuju" hidden>Setujui pendaftaran</button>
   <button type="button" class="setuju" id="demoKenal" hidden>Terima ajakan kenalan</button>
+  <button type="button" id="demoTolakKenal" hidden>Tolak ajakan kenalan</button>
+  <button type="button" id="demoTautan">Buka tautan undangan</button>
+  <button type="button" id="demoAngkat">Angkat saya jadi pengurus</button>
   <button type="button" id="demoReset">Ulangi dari awal</button>
 </div>
 

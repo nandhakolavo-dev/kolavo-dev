@@ -47,6 +47,9 @@
     if(chip) chip.textContent = n.split(' ')[0];
   }
 
+  /* dipakai editor inline Profil & Setting */
+  window.KolavoGantiNama = function(n){ n = String(n || '').trim(); if(!n) return false; namaSimpan = n; pasangNama(n); return true; };
+
   function bukaEdit(){
     fotoDraf = fotoSimpan;
     input.value = namaSimpan;
@@ -112,6 +115,42 @@
     pasangFoto(null);
     balik.hidden = true;
   });
+
+  /* Profil & Setting: ganti foto langsung dari kepala profil — langsung tersimpan,
+     dipasang ke semua tempat wajah itu muncul, sama seperti dari Lengkapi profil */
+  const pfGanti = document.getElementById('pfFotoGanti'),
+        pfFile  = document.getElementById('pfFotoFile'),
+        pfBalik = document.getElementById('pfFotoBalik');
+  function segarPf(){ if(pfBalik) pfBalik.hidden = !fotoSimpan; }
+  if(pfGanti && pfFile){
+    pfGanti.addEventListener('click', function(){ pfFile.click(); });
+    pfFile.addEventListener('change', function(){
+      const f = pfFile.files && pfFile.files[0];
+      if(!f) return;
+      if(!/^image\//.test(f.type)){
+        if(window.KolavoToast) window.KolavoToast('Berkasnya harus gambar.');
+        pfFile.value = '';
+        return;
+      }
+      const baca = new FileReader();
+      baca.onload = function(){
+        fotoSimpan = fotoDraf = baca.result;
+        pasangFoto(fotoSimpan);
+        segarPf();
+        if(window.KolavoToast) window.KolavoToast('Foto profil diperbarui.');
+      };
+      baca.readAsDataURL(f);
+      pfFile.value = '';
+    });
+  }
+  if(pfBalik) pfBalik.addEventListener('click', function(){
+    fotoSimpan = fotoDraf = null;
+    pasangFoto(null);
+    segarPf();
+    if(window.KolavoToast) window.KolavoToast('Kembali memakai foto Google.');
+  });
+  /* foto yang diganti lewat Lengkapi profil juga menyalakan tombol "Pakai foto Google" */
+  simpan.addEventListener('click', segarPf);
 })();
 </script>
 

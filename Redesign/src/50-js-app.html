@@ -1,0 +1,273 @@
+<script>
+/* ============================================================
+   Kolavo App (A4): isi tab Komunitas (scrApp) dan Dashboard (scrDasbor).
+   Router memanggil KolavoGambarApp(id) setiap layar ini digambar.
+   ============================================================ */
+(function(){
+  const App = function(){ return window.KolavoApp || {}; };
+  const toast = function(t){ if(window.KolavoToast) window.KolavoToast(t); };
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function kelasKartu(k){ return [...k.querySelector('.logo-sq').classList].find(function(c){ return c.indexOf('l-') === 0; }); }
+
+  /* contoh komunitas orang lain yang mengangkatmu jadi pengurus — dimunculkan
+     tombol demo "Angkat saya jadi pengurus", supaya daftar dua jenis bisa dicoba */
+  const DIANGKAT = { kelas: 'l-iasman52', nama: 'Ikatan Alumni SMAN 52', jabatan: 'Sekretaris', jumlah: '6 anggota' };
+  /* objek komunitas untuk mesin dashboard — dibuat sekali supaya keadaannya
+     dipulihkan (bukan dibangun ulang) setiap kali dibuka lagi. Orangnya sama
+     dengan data contoh halaman komunitas IA SMAN 52. */
+  let komAngkat = null;
+  function komDiangkat(){
+    if(komAngkat) return komAngkat;
+    const logo = document.querySelector('#direktori .ccard .logo-sq.' + DIANGKAT.kelas);
+    const bg = logo ? getComputedStyle(logo).backgroundImage : '';
+    const m = /^url\("?(.*?)"?\)$/.exec(bg || '');
+    komAngkat = {
+      slug: 'iasman52', kelas: DIANGKAT.kelas, nama: DIANGKAT.nama, bentuk: 'Ikatan Alumni', kota: 'Jakarta Utara',
+      inisial: 'IA', logo: m ? m[1] : '', diangkat: true, jabatan: DIANGKAT.jabatan, nomorMode: 'manual', kode: 'IAS52',
+      pengurusLain: [ { nama: 'Fajar Nugroho', jabatan: 'Ketua', kerja: 'Kontraktor', kota: 'Jakarta Utara' },
+                      { nama: 'Rani Setiawati', jabatan: 'Bendahara', kerja: 'Desainer produk', kota: 'Jakarta Selatan' } ],
+      anggota: [ { nama: 'Ayu Lestari', kerja: 'Apoteker', kota: 'Depok' },
+                 { nama: 'Intan Permatasari', kerja: 'Guru', kota: 'Bekasi' },
+                 { nama: 'Tari Andriani', kerja: 'Karyawan swasta', kota: 'Jakarta Utara' } ]
+      /* 3 pengurus (termasuk kamu) + 3 anggota = 6, sama dengan kartu komunitasnya */
+    };
+    return komAngkat;
+  }
+
+  /* ---------- tab Komunitas ---------- */
+  function gambarKu(){
+    const w = document.getElementById('appKu');
+    if(!w) return;
+    const html = window.KolavoKomunitasKu ? window.KolavoKomunitasKu() : '';
+    w.className = html ? 'pf-list' : '';
+    w.innerHTML = html || '<p class="app-kosong">Belum ada. Pilih komunitas di bawah, lalu ajukan gabung.</p>';
+  }
+  /* tombol kartu mengikuti status pengajuan: belum → Minta gabung, sudah → Buka */
+  function gambarKartu(){
+    const dj = App().diajukan || {};
+    document.querySelectorAll('#direktori [data-gabung-kartu]').forEach(function(b){
+      const st = dj[kelasKartu(b.closest('.ccard'))];
+      b.textContent = st === 'anggota' ? 'Buka' : st === 'menunggu' ? 'Menunggu' : 'Minta gabung';
+      b.classList.toggle('outline', !!st);
+    });
+  }
+
+  /* ---------- tab Dashboard ---------- */
+  /* kartu komunitas yang dikelola: peran, alias, kuota anggota & peninjau, tombol ikon + Dashboard */
+  const IK_PANEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="9" rx="1.8"/><rect x="13.5" y="3" width="7.5" height="5" rx="1.8"/><rect x="13.5" y="11" width="7.5" height="10" rx="1.8"/><rect x="3" y="15" width="7.5" height="6" rx="1.8"/></svg>';
+  const IK_ORANG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.6a3.5 3.5 0 0 1 0 6.8M21.5 20c0-2.7-1.6-4.8-4-5.6"/></svg>';
+  const IK_MATA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>';
+  function kuotaHtml(q){
+    if(!q) return '';
+    const isi = function(ik, n, kap, satuan){
+      const penuh = kap != null && n >= kap;
+      return '<span class="dsb-q' + (penuh ? ' penuh' : '') + '">' + ik + '<b>' + n.toLocaleString('id-ID') + (kap != null ? ' / ' + kap.toLocaleString('id-ID') : '') + '</b> ' + satuan + '</span>';
+    };
+    return '<div class="dsb-kuota">' + isi(IK_ORANG, q.a, q.ka, 'anggota') + isi(IK_MATA, q.p, q.kp, 'peninjau') +
+      '<span class="dsb-paket' + (q.adv ? ' adv' : '') + '">' + (q.adv ? 'Advance' : 'Esensial') + '</span></div>';
+  }
+  function baris(logo, nama, alias, sub, lencana, jenis, kom){
+    return '<div class="pf-item dsb-i"><div class="pf-open" data-dasbor-buka="' + jenis + '" role="button" tabindex="0" title="Buka dashboard">' + logo +
+      '<div class="t">' + (alias ? '<div class="al">' + esc(alias) + '</div>' : '') + '<div class="n">' + esc(nama) + '</div>' +
+        '<div class="s">' + esc(sub) + '</div>' + kuotaHtml(window.KolavoKuota ? window.KolavoKuota(kom) : null) + '</div></div>' +
+      '<span class="status pengurus">' + esc(lencana) + '</span>' +
+      '<button type="button" class="btn sm dsb-btn" data-dasbor-buka="' + jenis + '">' + IK_PANEL + 'Dashboard</button></div>';
+  }
+  function gambarDasbor(){
+    const w = document.getElementById('dasborList');
+    if(!w) return;
+    const a = App(), d = a.dibuat, item = [];
+    const barisDibuat = function(k, jenis){
+      const gaya = k.logo ? ' style="background-image:url(' + k.logo + ')"' : '';
+      item.push(baris('<span class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' + (k.logo ? '' : esc(k.inisial || '')) + '</span>',
+        k.nama, k.alias || '', [k.bentuk, k.kota].filter(Boolean).join(' · '), k.arsip ? 'Diarsipkan' : 'Community Creator', jenis, k));
+    };
+    if(d) barisDibuat(d, 'dibuat');
+    (a.dibuatLain || []).forEach(function(k, i){ barisDibuat(k, 'lain:' + i); });
+    if(a.diangkat){
+      const ka = document.querySelector('#direktori .ccard .logo-sq.' + DIANGKAT.kelas);
+      item.push(baris('<span class="logo-sq ' + DIANGKAT.kelas + '" role="img" aria-label="Logo komunitas"></span>',
+        DIANGKAT.nama, (ka && ka.closest('.ccard').dataset.alias) || '', 'Ikatan Alumni · Jakarta Utara', DIANGKAT.jabatan, 'diangkat', komDiangkat()));
+    }
+    const adaBuatan = !!d || !!(a.dibuatLain || []).length;
+    if(!item.length){
+      w.innerHTML = '<div class="empty">' +
+        '<div class="empty-ic">' + (window.KolavoIkon ? window.KolavoIkon('kelompok') : '') + '</div>' +
+        '<h3>Kamu belum mengelola komunitas</h3>' +
+        '<p>Dashboard muncul untuk komunitas yang kamu buat sendiri, atau yang mengangkatmu jadi pengurus.</p>' +
+        '<div class="empty-cta"><button type="button" class="btn" data-ke="scrBuat">Buat komunitas</button></div></div>';
+      return;
+    }
+    /* selalu ada jalan membuat komunitas berikutnya, juga kalau sudah punya */
+    w.innerHTML = '<div class="pf-list">' + item.join('') + '</div>' +
+      '<button type="button" class="dsb-baru" data-buat-lagi>' +
+        '<span class="dsb-baru-ic" aria-hidden="true">+</span>' +
+        '<span class="t"><b>' + (adaBuatan ? 'Buat komunitas lagi' : 'Buat komunitas') + '</b>' +
+        '<small>' + (adaBuatan ? 'Kelola komunitas lain dengan halaman dan dashboard sendiri.' : 'Bikin halaman dan dashboard untuk komunitasmu.') + '</small></span></button>';
+  }
+
+  window.KolavoKomDiangkat = function(){ return App().diangkat ? komDiangkat() : null; };
+
+  /* nama panggilan komunitas (data-alias) tampil di atas nama di tiap kartu direktori — ikut ke etalase */
+  function pasangAlias(){
+    document.querySelectorAll('#direktori .ccard').forEach(function(k){
+      const a = k.dataset.alias, h = k.querySelector('h3');
+      if(!a || !h || k.querySelector('.ccard-al')) return;
+      const p = document.createElement('p');
+      p.className = 'ccard-al'; p.textContent = a;
+      h.parentNode.insertBefore(p, h);
+    });
+  }
+  window.KolavoGambarApp = function(id){
+    if(id === 'scrBeranda'){ sinkronDibuat(); pasangAlias(); gambarEtalase(); return; }
+    if(id === 'scrApp'){ sinkronDibuat(); pasangAlias(); gambarKu(); gambarKartu(); }
+    else if(id === 'scrDasbor') gambarDasbor();
+    else if(id === 'scrHome' && window.KolavoGambarHome) window.KolavoGambarHome();
+  };
+
+  /* ---------- tautan / QR undangan (A5b) ----------
+     kolavo.app/k/<slug> dibuka: belum masuk → halaman masuk varian undangan,
+     sesudah masuk (dan lengkapi profil bila perlu) → profil komunitasnya.
+     Sudah masuk → langsung ke profil komunitas. Di prototipe dipicu tombol demo. */
+  window.KolavoBukaTautan = function(kartu){
+    const a = App();
+    if(a.masuk){
+      a.undangan = null;
+      if(!a.lengkap){ window.KolavoMasuk('anggota', kartu); return; }
+      window.KolavoLihatKomunitas(kartu);
+      return;
+    }
+    a.undangan = kartu;
+    window.KolavoKe('scrMasuk');
+  };
+  let demoKe = 0;
+
+  /* ---------- etalase landing (A6, diperluas) ----------
+     SEMUA komunitas di Kolavo — salinan kartu #direktori (satu sumber data) + komunitas
+     yang dibuat di Kolavo App (bila tidak diarsipkan). Etalase ini penghubung landing ke
+     app: tombol "Lihat profil" membuka alur masuk → profil komunitasnya. Digambar ulang
+     setiap landing dibuka, supaya komunitas yang baru dibuat langsung ikut tampil. */
+  /* komunitas buatan pengguna ikut di direktori (tab Komunitas) selama tidak diarsipkan —
+     satu kartu ber-data-dibuat, disinkronkan tiap direktori/etalase digambar */
+  function sinkronDibuat(){
+    const grid = document.querySelector('#direktori .grid');
+    if(!grid) return;
+    const lama = grid.querySelector('.ccard[data-dibuat]');
+    if(lama) lama.remove();
+    const d = App().dibuat;
+    if(d && !d.arsip){
+      const D = window.KolavoDashboard;
+      const n = D && D.built && D.kom === d && D.jumlahAnggota ? D.jumlahAnggota() : 1;
+      const gaya = d.logo ? ' style="background-image:url(' + d.logo + ')"' : '';
+      grid.insertAdjacentHTML('beforeend',
+        '<article class="ccard" data-dibuat data-bentuk="' + esc(d.bentuk || '') + '" data-alias="' + esc(d.alias || '') + '"' +
+          ' data-negara="' + esc(d.negara || '') + '" data-provinsi="' + esc(d.provinsi || '') + '" data-kota="' + esc(d.kota || '') + '">' +
+        '<div class="loc">' + esc([d.kota, d.provinsi].filter(Boolean).join(', ') || 'Indonesia') + '</div>' +
+        '<div class="logo-sq baru"' + gaya + ' role="img" aria-label="Logo komunitas">' + (d.logo ? '' : esc(d.inisial || '')) + '</div>' +
+        '<h3>' + esc(d.nama) + '</h3>' + (d.ajakan ? '<p class="desc">' + esc(d.ajakan) + '</p>' : '') +
+        '<div class="row"><div><div class="mem">' + n + ' anggota</div></div>' +
+        '<button type="button" class="btn sm outline" data-buka-milik>Komunitasmu</button></div></article>');
+    }
+    if(window.KolavoSaringDirektori) window.KolavoSaringDirektori();
+  }
+
+  /* etalase = salinan semua kartu direktori (termasuk komunitas buatan) */
+  function gambarEtalase(){
+    const w = document.getElementById('etalaseGrid');
+    if(!w) return;
+    w.innerHTML = '';
+    document.querySelectorAll('#direktori .grid .ccard').forEach(function(k){
+      const c = k.cloneNode(true);
+      c.removeAttribute('id');
+      c.hidden = false;   /* saringan direktori tidak berlaku di etalase */
+      const b = c.querySelector('[data-gabung-kartu],[data-buka-milik]');
+      if(b){
+        b.removeAttribute('data-gabung-kartu'); b.removeAttribute('data-buka-milik'); b.classList.remove('outline');
+        b.setAttribute('data-etalase', k.hasAttribute('data-dibuat') ? 'l-dibuat' : kelasKartu(k));
+        /* sudah masuk: profilnya dibuka di dalam Kolavo App; belum: profil publik dulu */
+        b.textContent = App().masuk ? 'Buka di Kolavo App' : 'Lihat profil';
+      }
+      w.appendChild(c);
+    });
+  }
+  sinkronDibuat();
+  pasangAlias();
+  gambarEtalase();
+
+  function bukaDasbor(jenis){
+    /* komunitas buatan yang lain: jadikan aktif dulu, baru dashboard-nya dibangun */
+    if(jenis.indexOf('lain:') === 0){
+      const k = (App().dibuatLain || [])[+jenis.slice(5)];
+      if(k && window.KolavoPakaiDibuat) window.KolavoPakaiDibuat(k);
+      sinkronDibuat();
+      window.KolavoBukaDashboard(null);
+      return;
+    }
+    /* lewat KolavoBukaDashboard, bukan KolavoKe: keadaan dashboard harus dibangun dulu */
+    window.KolavoBukaDashboard(null, jenis === 'diangkat' ? komDiangkat() : null);
+  }
+
+  document.addEventListener('click', function(e){
+    const g = e.target.closest('[data-gabung-kartu]');
+    if(g){
+      const kartu = g.closest('.ccard'), st = (App().diajukan || {})[kelasKartu(kartu)];
+      window.KolavoLihatKomunitas(kartu);
+      /* belum diajukan: langsung buka formulir gabung di halaman komunitasnya */
+      const b = !st && document.getElementById('komGabungBtn');
+      if(b) b.click();
+      return;
+    }
+    const et = e.target.closest('[data-etalase]');
+    if(e.target.closest('[data-buka-milik]')){
+      if(window.KolavoBukaKomunitasDibuat) window.KolavoBukaKomunitasDibuat();
+      return;
+    }
+    if(et && et.dataset.etalase === 'l-dibuat'){
+      /* komunitas buatanmu sendiri: sudah masuk → langsung halamannya; belum → masuk dulu */
+      if(App().masuk && window.KolavoBukaKomunitasDibuat) window.KolavoBukaKomunitasDibuat();
+      else window.KolavoKeMasuk('nav');
+      return;
+    }
+    if(et){
+      /* pengunjung boleh melihat isi profil komunitas dulu tanpa masuk — masuk baru diminta
+         saat menekan Gabung. Yang sudah masuk membuka halaman yang sama dengan nav app. */
+      const asli = document.querySelector('#direktori .ccard .logo-sq.' + et.dataset.etalase);
+      if(asli) window.KolavoLihatKomunitas(asli.closest('.ccard'));
+      return;
+    }
+    const bd = e.target.closest('[data-buka-diangkat]');
+    if(bd){
+      const l = document.querySelector('#direktori .ccard .logo-sq.' + bd.dataset.bukaDiangkat);
+      if(l) window.KolavoLihatKomunitas(l.closest('.ccard'));
+      return;
+    }
+    const d = e.target.closest('[data-dasbor-buka]');
+    if(d){ bukaDasbor(d.dataset.dasborBuka); return; }
+    if(e.target.closest('[data-buat-lagi]')){
+      if(window.KolavoBuatLagi) window.KolavoBuatLagi();
+      sinkronDibuat();
+      window.KolavoKe('scrBuat');
+      return;
+    }
+    if(e.target.closest('#demoTautan')){
+      /* bergiliran antar komunitas contoh, supaya Esensial & Advance sama-sama bisa dicoba */
+      const kartu = document.querySelectorAll('#direktori .ccard')[demoKe++ % 4];
+      if(!kartu) return;
+      toast('Membuka kolavo.app/k/' + kelasKartu(kartu).replace(/^l-/, ''));
+      window.KolavoBukaTautan(kartu);
+      return;
+    }
+    if(e.target.closest('#demoAngkat')){
+      const a = App();
+      a.diangkat = !a.diangkat;
+      toast(a.diangkat ? 'Kamu diangkat jadi Sekretaris di ' + DIANGKAT.nama + '.' : 'Jabatan pengurus dicabut.');
+      gambarDasbor();
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter' && e.key !== ' ') return;
+    const d = e.target.closest && e.target.closest('div[data-dasbor-buka]');
+    if(d){ e.preventDefault(); bukaDasbor(d.dataset.dasborBuka); }
+  });
+})();
+</script>

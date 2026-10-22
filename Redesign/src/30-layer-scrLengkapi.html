@@ -70,7 +70,7 @@
         <span class="blk-ic lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
         <div>
           <h2>Cuma buat pengurus</h2>
-          <p class="blk-sub">Dipakai buat memastikan kamu orang asli, bukan akun kosong. <b>Tidak pernah muncul di daftar anggota</b> dan tidak dibagikan ke anggota lain.</p>
+          <p class="blk-sub">Dipakai buat memastikan kamu orang asli, bukan akun kosong. <b>Tidak pernah muncul di daftar anggota.</b> Nomormu baru terbuka ke anggota lain kalau kamu menerima ajakan kenalannya.</p>
         </div>
       </div>
 
@@ -80,7 +80,7 @@
           <span class="tel-pfx">🇮🇩 +62</span>
           <input id="wa" type="tel" inputmode="numeric" placeholder="812 3456 7890" autocomplete="tel-national" data-wajib>
         </div>
-        <p class="f-why">Dipakai pengurus kalau perlu mengonfirmasi kamu. Bukan buat dimasukkan ke grup WhatsApp baru.</p>
+        <p class="f-why">Dipakai pengurus kalau perlu mengonfirmasi kamu, dan terbuka untuk anggota yang kenalannya kamu terima. Bukan buat dimasukkan ke grup WhatsApp baru.</p>
         <p class="f-galat">Nomor WhatsApp perlu diisi.</p>
       </div>
 
@@ -197,10 +197,34 @@
         <p class="f-why">Dipilih dari daftar biar anggota lain gampang menyaring dan menemukanmu. Tidak ketemu? Pilih “Lainnya — tulis sendiri”.</p>
       </div>
 
+      <!-- V4: pendidikan — dipakai profil dan persebaran anggota per pendidikan di halaman komunitas -->
+      <div class="f">
+        <label class="f-lbl" for="didik">Pendidikan terakhir<span class="opt">Opsional</span></label>
+        <div class="didik-grid">
+          <select class="sel" id="didik">
+            <option value="">Pilih jenjang</option>
+            <option>SMA / SMK sederajat</option>
+            <option>Diploma (D1–D4)</option>
+            <option>Sarjana (S1)</option>
+            <option>Magister (S2)</option>
+            <option>Doktor (S3)</option>
+          </select>
+          <input class="inp" id="didikDi" type="text" maxlength="60" placeholder="Jurusan dan kampus atau sekolah — misal Hukum, Unpad" aria-label="Jurusan dan kampus atau sekolah">
+        </div>
+        <p class="f-why">Diisi sekali, dipakai di semua komunitas yang kamu ikuti. Di halaman komunitas hanya tampil sebagai angka persebaran, bukan nama.</p>
+      </div>
+
+      <!-- V4: komunitas itu tempat memberi dan mengambil manfaat — dua pertanyaan, bukan satu -->
+      <div class="f">
+        <label class="f-lbl" for="beri">Apa yang bisa kamu bagikan ke sesama anggota?<span class="opt">Opsional</span></label>
+        <textarea class="ta" id="beri" maxlength="90" placeholder="Bisa bantu baca CV dan nemenin latihan wawancara."></textarea>
+        <p class="hitung"><span id="beriN">0</span>/90</p>
+      </div>
       <div class="f">
         <label class="f-lbl" for="bio">Apa yang ingin kamu dapat dari komunitas?<span class="opt">Opsional</span></label>
         <textarea class="ta" id="bio" maxlength="90" placeholder="Lagi cari partner buat proyek renovasi sekolah."></textarea>
         <p class="hitung"><span id="bioN">0</span>/90</p>
+        <p class="f-why">Dua jawaban ini tampil di profilmu, supaya anggota lain tahu kapan harus menyapamu.</p>
       </div>
 
       <!-- akun media sosial: opsional, baris bisa ditambah/dihapus (50-js-lengkapi-profil) -->
@@ -208,13 +232,30 @@
         <p class="f-lbl" id="lblSosmed">Akun media sosial<span class="opt">Opsional</span></p>
         <div class="sosmed" id="sosmedList" role="group" aria-labelledby="lblSosmed"></div>
         <button type="button" class="btn outline sm" id="sosmedTambah">+ Tambah akun</button>
-        <p class="f-why">Supaya sesama anggota bisa mengikuti atau melihat karyamu. Hanya tampil ke sesama anggota.</p>
+        <p class="f-why">Supaya sesama anggota bisa mengikuti atau melihat karyamu. Terbuka untuk anggota yang sudah kenalan denganmu.</p>
       </div>
     </section>
 
+    <!-- Persetujuan (UU PDP 27/2022) — centangnya saja, tanpa blok penjelas:
+         naskah lengkapnya sudah satu klik jauhnya lewat tautan di bawah centang.
+         Dua persetujuan sengaja DIPISAH karena tujuannya beda; yang opsional
+         tidak boleh tercentang dari sananya. -->
+      <div class="f" id="fSetuju">
+        <label class="ob-setuju">
+          <input type="checkbox" id="setujuLegal">
+          <span>Saya sudah membaca dan menyetujui <button type="button" class="lnk-teks" data-legal="tnc">Ketentuan Layanan</button> dan <button type="button" class="lnk-teks" data-legal="privasi">Kebijakan Privasi</button> Kolavo, termasuk pemrosesan data pribadi saya seperti dijelaskan di sana.</span>
+        </label>
+        <p class="f-galat">Persetujuan ini perlu dicentang dulu sebelum profil dikirim.</p>
+
+        <label class="ob-setuju lgl-opsi">
+          <input type="checkbox" id="setujuKabar">
+          <span>Boleh kirimi saya kabar produk dan tips mengelola komunitas lewat e-mail.<span class="opt">Opsional</span></span>
+        </label>
+      </div>
+
     <div class="blk-galat" id="galat" hidden>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
-      <span>Masih ada kolom wajib yang kosong. Yang bertanda merah di atas perlu diisi dulu.</span>
+      <span>Masih ada yang perlu dilengkapi. Yang bertanda merah di atas — termasuk persetujuan di bawah — perlu diisi dulu.</span>
     </div>
 
     <div class="act">

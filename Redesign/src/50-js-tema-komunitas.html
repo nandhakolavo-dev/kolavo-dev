@@ -70,7 +70,9 @@
     terapkan();
   }
 
-  window.KolavoTema = function(kelas){ pasang(layar, TEMA[kelas] || BAWAAN); };
+  /* pop up profil pengurus berada di luar layar komunitas — ikut diwarnai supaya labelnya senada */
+  const popPeng = document.getElementById('pengModal');
+  window.KolavoTema = function(kelas){ pasang(layar, TEMA[kelas] || BAWAAN); pasang(popPeng, TEMA[kelas] || BAWAAN); };
   /* dipakai layar buat halaman: warnanya belum punya kelas komunitas */
   window.KolavoWarnai = function(sasaran, hex){ pasang(sasaran, hex || BAWAAN); };
 

@@ -1,0 +1,188 @@
+<script>
+/* ============================================================
+   Naskah legal Kolavo — Ketentuan Layanan & Kebijakan Privasi.
+   Data saja: satu sumber teks yang dipakai pop up baca-saja
+   (KolavoBukaLegal) dan centang persetujuan di Lengkapi Profil.
+   Format teks sama dengan peraturan komunitas: baris '# ' = judul
+   bagian, baris lain = paragraf, dipisah '\n'.
+   Kebijakan Privasi disusun mengikuti UU 27/2022 (PDP): Pasal 21
+   mewajibkan tujuan, jenis data, retensi, penerima, dan hak subjek
+   data diberitahukan SEBELUM persetujuan diminta — urutan bagian
+   di bawah mengikuti itu, jangan dipotong sebagian.
+   ============================================================ */
+(function(){
+  const TNC =
+    '# 1. Tentang Kolavo\n' +
+    'Kolavo adalah basecamp digital komunitas: tempat pengurus mengelola keanggotaan dan anggota saling mengenal sebelum ketemu orangnya.\n' +
+    'Kolavo menyediakan alatnya. Komunitas, isinya, dan keputusan keanggotaan tetap milik dan tanggung jawab pengurus masing-masing.\n' +
+    'Dengan memakai Kolavo, kamu setuju pada ketentuan ini.\n' +
+    '# 2. Siapa yang boleh memakai\n' +
+    'Kolavo ditujukan untuk pengguna berusia 18 tahun ke atas.\n' +
+    'Kalau kamu di bawah 18 tahun, kamu hanya boleh memakai Kolavo dengan persetujuan orang tua atau wali.\n' +
+    'Pengurus yang membuat halaman komunitas menyatakan dirinya berwenang mewakili komunitas tersebut.\n' +
+    '# 3. Akun\n' +
+    'Akun Kolavo dibuat lewat akun Google-mu. Satu orang satu akun, dan akun tidak boleh dipinjamkan.\n' +
+    'Isi identitasmu dengan benar. Pengurus memakai data itu untuk memastikan kamu orang asli sebelum menyetujui keanggotaan.\n' +
+    'Jaga keamanan akunmu. Aktivitas yang terjadi lewat akunmu menjadi tanggung jawabmu.\n' +
+    '# 4. Peran pengurus dan anggota\n' +
+    'Pengurus menyetujui atau menolak pendaftar, melihat jawaban pendaftaran, dan mengelola halaman komunitasnya.\n' +
+    'Anggota mengendalikan isi profilnya sendiri, dan bisa mengubah atau menghapusnya kapan saja.\n' +
+    'Nomor WhatsApp tidak dipajang. Nomor baru terbuka setelah kedua pihak sepakat berkenalan.\n' +
+    '# 5. Aturan pemakaian\n' +
+    'Dilarang memakai identitas palsu atau mengaku sebagai orang lain.\n' +
+    'Dilarang memanen, menyalin massal, atau menjual data anggota yang kamu lihat di Kolavo.\n' +
+    'Dilarang mengirim spam, menawarkan investasi atau skema untung pasti, dan menghubungi anggota semata-mata untuk berjualan tanpa persetujuan mereka.\n' +
+    'Dilarang mengunggah konten yang melanggar hukum, serta mengotomasi atau melakukan scraping terhadap platform.\n' +
+    '# 6. Konten yang kamu unggah\n' +
+    'Foto, tulisan, dan data yang kamu unggah tetap milikmu.\n' +
+    'Kamu memberi Kolavo izin terbatas untuk menyimpan, menampilkan, dan mengirimkan konten itu sejauh diperlukan untuk menjalankan layanan.\n' +
+    'Izin itu berakhir saat kamu menghapus kontennya atau menutup akunmu, kecuali ada kewajiban hukum untuk menyimpannya lebih lama.\n' +
+    '# 7. Langganan dan pembayaran\n' +
+    'Sebagian fitur Kolavo tersedia lewat paket berlangganan.\n' +
+    'Rincian paket dan biayanya diumumkan terpisah, dan berlaku sejak disepakati saat kamu berlangganan.\n' +
+    'Perubahan biaya diberitahukan sebelum periode berikutnya dimulai.\n' +
+    '# 8. Penangguhan dan penghentian\n' +
+    'Kami dapat menangguhkan atau menutup akun yang melanggar ketentuan ini, membahayakan anggota lain, atau dipakai untuk menipu.\n' +
+    'Sebisa mungkin kami memberi tahu alasannya lebih dulu dan memberi kesempatan memperbaiki.\n' +
+    'Kamu bisa menutup akunmu sendiri kapan saja lewat menu Akun.\n' +
+    '# 9. Ketersediaan layanan\n' +
+    'Kolavo masih berkembang. Fitur dapat berubah, bertambah, atau dihentikan.\n' +
+    'Ada kalanya layanan berhenti sementara karena pemeliharaan atau gangguan di luar kendali kami.\n' +
+    'Kami tidak menjanjikan layanan yang bebas gangguan.\n' +
+    '# 10. Batas tanggung jawab\n' +
+    'Kolavo bukan pihak dalam hubungan, kesepakatan, atau transaksi antaranggota, baik di dalam maupun di luar platform.\n' +
+    'Kami tidak bertanggung jawab atas kerugian tidak langsung yang timbul dari pemakaian layanan.\n' +
+    'Sejauh diizinkan hukum, tanggung jawab kami dibatasi sebesar biaya langganan yang kamu bayarkan dalam 12 bulan terakhir.\n' +
+    '# 11. Hukum yang berlaku dan perubahan ketentuan\n' +
+    'Ketentuan ini tunduk pada hukum Republik Indonesia.\n' +
+    'Sengketa diselesaikan lebih dulu secara musyawarah sebelum ditempuh jalur hukum.\n' +
+    'Kalau ada perubahan penting, kami memberi tahu lewat email dan notifikasi di aplikasi paling lambat 14 hari sebelum berlaku.\n';
+
+  const PRIVASI =
+    '# 1. Siapa yang mengelola datamu\n' +
+    'Kolavo bertindak sebagai Pengendali Data Pribadi atas data yang kamu berikan di platform ini.\n' +
+    'Kebijakan ini disusun mengikuti Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi.\n' +
+    'Pertanyaan soal data pribadi bisa dikirim ke privasi@kolavo.app, dan kami jawab paling lambat 3x24 jam.\n' +
+    '# 2. Data apa yang kami kumpulkan\n' +
+    'Dari akun Google-mu: nama, alamat email, dan foto profil. Kolavo tidak bisa membaca isi emailmu dan tidak bisa memposting apa pun di akunmu.\n' +
+    'Yang kamu isi sendiri: nomor WhatsApp, tanggal lahir, domisili, pekerjaan atau keahlian, perkenalan singkat, akun media sosial, dan jawaban atas pertanyaan pendaftaran dari pengurus.\n' +
+    'Terkumpul otomatis: waktu akses, jenis perangkat, dan alamat IP, dipakai untuk keamanan.\n' +
+    'Kolavo tidak meminta data pribadi spesifik seperti data kesehatan, biometrik, keuangan pribadi, keyakinan, orientasi seksual, atau catatan kejahatan. Jangan mengisikannya ke kolom mana pun.\n' +
+    '# 3. Untuk apa datanya dipakai\n' +
+    'Memastikan pendaftar adalah orang asli sebelum pengurus menyetujuinya.\n' +
+    'Menampilkan profilmu ke sesama anggota komunitas supaya kalian saling kenal sebelum ketemu orangnya.\n' +
+    'Membantu pengurus meninjau pendaftar dan mengelola keanggotaan.\n' +
+    'Menyusun statistik persebaran anggota dalam bentuk agregat, bukan per orang.\n' +
+    'Menjaga keamanan platform dan mencegah penyalahgunaan.\n' +
+    'Mengirim kabar produk lewat email, hanya kalau kamu mencentangnya secara terpisah.\n' +
+    '# 4. Dasar hukum tiap tujuan\n' +
+    'Persetujuanmu: pembuatan profil, berbagi profil ke komunitas yang kamu daftari, dan kabar produk lewat email.\n' +
+    'Pelaksanaan perjanjian: pengelolaan akun dan langganan.\n' +
+    'Kepentingan sah: keamanan platform dan pencegahan penyalahgunaan.\n' +
+    'Kewajiban hukum: penyimpanan catatan tertentu bila diwajibkan peraturan.\n' +
+    '# 5. Siapa yang bisa melihat datamu\n' +
+    'Pengurus komunitas yang kamu daftari: seluruh isi profil dan jawaban pendaftaranmu.\n' +
+    'Sesama anggota komunitas itu: nama, foto, domisili, pekerjaan, perkenalan singkat, dan akun media sosial yang kamu isi.\n' +
+    'Nomor WhatsApp dan tanggal lahir tidak dipajang ke anggota lain. Nomor baru terbuka setelah kalian berdua setuju berkenalan.\n' +
+    'Publik di luar komunitas: hanya informasi halaman komunitas yang memang dipublikasikan pengurus, bukan data pribadimu.\n' +
+    'Penyedia infrastruktur kami, sebatas yang diperlukan untuk menjalankan layanan.\n' +
+    'Kami tidak menjual data pribadimu kepada siapa pun.\n' +
+    '# 6. Pengurus komunitas sebagai pengendali bersama\n' +
+    'Saat pengurus melihat dan mengelola data anggotanya, pengurus ikut menjadi pengendali atas data itu.\n' +
+    'Kolavo bertanggung jawab atas keamanan sistem, penyimpanan, dan pemenuhan hakmu di platform.\n' +
+    'Pengurus bertanggung jawab atas cara data anggota dipakai di dalam komunitasnya, dan terikat larangan menyebarkannya ke luar.\n' +
+    'Kalau kamu mau memakai hakmu, cukup hubungi kami. Kami yang meneruskan ke pengurus bila perlu.\n' +
+    '# 7. Penyedia pihak ketiga\n' +
+    'Autentikasi masuk memakai layanan Google.\n' +
+    'Penyimpanan dan hosting dijalankan penyedia komputasi awan yang terikat perjanjian kerahasiaan.\n' +
+    'Sebagian penyedia mengoperasikan servernya di luar Indonesia. Untuk itu kami memastikan negara atau penyedia tujuan menerapkan pelindungan yang setingkat dengan UU PDP, sesuai Pasal 56.\n' +
+    '# 8. Berapa lama data disimpan\n' +
+    'Data profil disimpan selama akunmu aktif.\n' +
+    'Setelah kamu meminta penghapusan atau menutup akun, datanya dihapus dalam 30 hari.\n' +
+    'Catatan yang wajib disimpan untuk kepentingan hukum, penagihan, atau bukti keamanan disimpan lebih lama sesuai batas yang diwajibkan peraturan, lalu dihapus.\n' +
+    '# 9. Hak kamu atas datamu\n' +
+    'Mendapat informasi tentang data apa yang kami proses dan untuk apa.\n' +
+    'Mengakses dan memperoleh salinan datamu dalam format yang bisa dibaca mesin.\n' +
+    'Memperbaiki data yang keliru atau tidak lengkap.\n' +
+    'Menghapus datamu dan menutup akun.\n' +
+    'Menarik persetujuan kapan saja. Penarikan berlaku ke depan dan tidak membatalkan pemrosesan yang sudah sah dilakukan sebelumnya.\n' +
+    'Membatasi atau menolak pemrosesan tertentu, termasuk menolak keputusan yang dibuat sepenuhnya secara otomatis.\n' +
+    'Menuntut ganti rugi atas pelanggaran pemrosesan data pribadimu.\n' +
+    'Hak-hak itu bisa kamu pakai lewat menu Akun lalu Data dan privasi, atau dengan mengirim email ke privasi@kolavo.app. Kami menjawab paling lambat 3x24 jam.\n' +
+    '# 10. Data anak\n' +
+    'Kalau usiamu di bawah 18 tahun, pemrosesan data pribadimu memerlukan persetujuan orang tua atau wali.\n' +
+    'Bila kami mengetahui ada data anak yang terkumpul tanpa persetujuan itu, datanya kami hapus.\n' +
+    '# 11. Keamanan dan penanganan kebocoran\n' +
+    'Data dikirim dan disimpan dalam keadaan terenkripsi, dan akses internal dibatasi hanya pada yang memerlukannya.\n' +
+    'Tidak ada sistem yang sepenuhnya kebal, karena itu kami menyiapkan prosedur penanganan insiden.\n' +
+    'Kalau terjadi kebocoran data pribadi, kami memberi tahu kamu dan lembaga yang berwenang paling lambat 3x24 jam sejak diketahui, beserta data apa yang terdampak dan langkah yang perlu kamu ambil.\n' +
+    '# 12. Perubahan kebijakan dan cara menghubungi kami\n' +
+    'Kebijakan ini bisa diperbarui mengikuti perubahan layanan atau peraturan.\n' +
+    'Perubahan penting diberitahukan lewat email dan notifikasi di aplikasi paling lambat 14 hari sebelum berlaku, dan kamu diminta menyetujui ulang bila perubahannya memperluas tujuan pemrosesan.\n' +
+    'Pertanyaan, keluhan, atau permintaan terkait data pribadi: privasi@kolavo.app.\n';
+
+  window.KolavoLegal = {
+    versi: '1.0',
+    berlaku: '22 September 2026',
+    judul: { tnc: 'Ketentuan Layanan', privasi: 'Kebijakan Privasi' },
+    tnc: TNC,
+    privasi: PRIVASI
+  };
+
+  /* ---------- pop up baca-saja ---------- */
+  const modal = document.getElementById('lglModal');
+  if(!modal) return;
+  const kotak = document.getElementById('lglIsi');
+  let fokusAsal = null, buka = false;
+
+  function lolos(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  /* format sama dengan peraturan komunitas, tapi digambar sebagai paragraf
+     bukan daftar bercentang — ini dokumen, bukan daftar aturan */
+  function gambarNaskah(teks){
+    const baris = String(teks || '').split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+    const bagian = [];
+    baris.forEach(function(b){
+      if(/^#\s*/.test(b)) bagian.push({ h: b.replace(/^#\s*/, ''), p: [] });
+      else { if(!bagian.length) bagian.push({ h: '', p: [] }); bagian[bagian.length - 1].p.push(b); }
+    });
+    return bagian.map(function(b){
+      return '<div class="lgl-bagian">' + (b.h ? '<p class="lgl-h">' + lolos(b.h) + '</p>' : '') +
+        (b.p.length ? '<p class="lgl-p">' + lolos(b.p.join('\n')) + '</p>' : '') + '</div>';
+    }).join('');
+  }
+
+  function tutup(){
+    if(!buka) return;
+    buka = false;
+    modal.classList.remove('on'); document.body.classList.remove('lgn-open');
+    setTimeout(function(){ if(!modal.classList.contains('on')) modal.hidden = true; }, 170);
+    if(fokusAsal && fokusAsal.focus) fokusAsal.focus();
+    fokusAsal = null;
+  }
+
+  window.KolavoBukaLegal = function(jenis){
+    const k = jenis === 'tnc' ? 'tnc' : 'privasi';
+    const L = window.KolavoLegal;
+    kotak.innerHTML =
+      '<h2 class="ob-judul" id="lglJudul">' + lolos(L.judul[k]) + '</h2>' +
+      '<p class="ob-kecil lgl-sub">Versi ' + lolos(L.versi) + ' · berlaku ' + lolos(L.berlaku) + '</p>' +
+      '<div class="ob-gulir ob-gulir-baca" tabindex="0" aria-label="Isi ' + lolos(L.judul[k]) + '">' + gambarNaskah(L[k]) + '</div>' +
+      '<div class="ob-kaki"><span class="ob-sp"></span><button type="button" class="btn sm" data-legal-tutup>Tutup</button></div>';
+    fokusAsal = document.activeElement;
+    buka = true;
+    modal.hidden = false; void modal.offsetWidth;
+    modal.classList.add('on'); document.body.classList.add('lgn-open');
+    const b = modal.querySelector('.ob-kaki [data-legal-tutup]'); if(b) b.focus();
+  };
+
+  /* satu pendengar untuk seluruh pemicu: footer, modal masuk, centang
+     persetujuan di Lengkapi Profil */
+  document.addEventListener('click', function(e){
+    const p = e.target.closest('[data-legal]');
+    if(p){ e.preventDefault(); window.KolavoBukaLegal(p.dataset.legal); return; }
+    if(buka && e.target.closest('[data-legal-tutup]')) tutup();
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && buka) tutup(); });
+})();
+</script>

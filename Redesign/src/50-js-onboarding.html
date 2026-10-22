@@ -18,7 +18,6 @@
   function samakan(s){ return String(s || '').toLowerCase().replace(/^kab\.?\s+|^kabupaten\s+/, 'kab ').replace(/^kota\s+/, 'kota ').trim(); }
   function svg(isi){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + isi + '</svg>'; }
   const IK = {
-    unduh: svg('<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>'),
     wa:    svg('<path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z"/>'),
     dok:   svg('<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>'),
     cek:   svg('<path d="m5 13 4 4L19 7"/>')
@@ -83,7 +82,7 @@
     return {
       aktif: true,
       langkah: {
-        sambutan: { aktif: true, judul: t.judul, pesan: t.pesan, pengirim: p ? p.n + ', ' + p.j : 'Pengurus ' + kom.nama },
+        sambutan: { aktif: true, judul: t.judul, pesan: t.pesan, pengirim: p ? p.n + ', ' + p.j : 'Pengurus ' + kom.nama, foto: p ? p.f : '' },
         kenal: { aktif: true, sejarah: t.sejarah, visi: t.visi, misi: t.misi },
         aturan: { aktif: true, ringkas: t.ringkas },
         alat: { aktif: true, ket: t.ket },
@@ -108,14 +107,25 @@
     return url ? '<button type="button" class="ob-tautan" data-ob-tautan="' + k + '">' + ik + '<span><b>' + label + '</b><small>' + lolos(url.replace(/^https?:\/\//, '')) + '</small></span></button>' : '';
   }
 
+  /* pencocokan kenalan — satu sumber untuk langkah Kenalan di onboarding dan
+     "Orang yang mungkin kamu kenal" di Home (PROMPT-HOME H3).
+     aku {kerja, kota, kelompok}, orang [{n, k, d, ...}], cocok {kerja, kota, kelompok}.
+     Hasil: saringan [{id, label, alasan, hasil}] dengan urutan orang sesuai daftar asal. */
+  function cocokkan(aku, orang, c){
+    c = c || { kerja: true, kota: true };
+    const saringan = [];
+    if(c.kerja && aku.kerja) saringan.push({ id: 'kerja', label: 'Sama pekerjaan · ' + aku.kerja, alasan: aku.kerja, uji: function(o){ return samakan(o.k) === samakan(aku.kerja); } });
+    if(c.kota && aku.kota) saringan.push({ id: 'kota', label: 'Sama domisili · ' + aku.kota, alasan: aku.kota, uji: function(o){ return samakan(o.d) === samakan(aku.kota); } });
+    if(c.kelompok && aku.kelompok) saringan.push({ id: 'kelompok', label: 'Sama kelompok · ' + aku.kelompok, alasan: aku.kelompok, uji: function(o){ return o['g:kerja'] === aku.kelompok; } });
+    saringan.forEach(function(s){ s.hasil = orang.filter(s.uji); });
+    return saringan;
+  }
+  window.KolavoCocokkan = cocokkan;
+
   function isiKenalan(){
     const c = ctx.cfg.langkah.kenalan.cocok || {}, aku = ctx.aku;
     const orang = ctx.anggota.filter(function(o){ return !o.aku && o.n !== ctx.akuNama; });
-    const saringan = [];
-    if(c.kerja && aku.kerja) saringan.push({ id: 'kerja', label: 'Sama pekerjaan · ' + aku.kerja, uji: function(o){ return samakan(o.k) === samakan(aku.kerja); } });
-    if(c.kota && aku.kota) saringan.push({ id: 'kota', label: 'Sama domisili · ' + aku.kota, uji: function(o){ return samakan(o.d) === samakan(aku.kota); } });
-    if(c.kelompok && aku.kelompok) saringan.push({ id: 'kelompok', label: 'Sama kelompok · ' + aku.kelompok, uji: function(o){ return o['g:kerja'] === aku.kelompok; } });
-    saringan.forEach(function(s){ s.hasil = orang.filter(s.uji); });
+    const saringan = cocokkan(aku, orang, c);
     const ada = saringan.filter(function(s){ return s.hasil.length; });
     if(!ada.some(function(s){ return s.id === saring; })) saring = ada.length ? ada[0].id : null;
     const kini = ada.filter(function(s){ return s.id === saring; })[0];
@@ -138,33 +148,54 @@
       (kini.hasil.length > 6 ? '<p class="ob-kecil">dan ' + (kini.hasil.length - 6) + ' lainnya di daftar anggota.</p>' : '');
   }
 
+  /* isi peraturan: baris "# …" = judul bagian, baris lain = poin milik bagian di atasnya.
+     Dipakai langkah Peraturan dan pop up baca-saja di halaman komunitas. */
+  function isiAturan(ringkas){
+    const poin = String(ringkas || '').split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+    const bagian = [];
+    poin.forEach(function(p){
+      if(/^#\s*/.test(p)) bagian.push({ h: p.replace(/^#\s*/, ''), p: [] });
+      else { if(!bagian.length) bagian.push({ h: '', p: [] }); bagian[bagian.length - 1].p.push(p); }
+    });
+    return bagian.map(function(b){
+        return (b.h ? '<p class="ob-lbl">' + lolos(b.h) + '</p>' : '') +
+          (b.p.length ? '<ul class="ob-poin">' + b.p.map(function(p){ return '<li>' + IK.cek + '<span>' + lolos(p) + '</span></li>'; }).join('') + '</ul>' : '');
+      }).join('') +
+      (poin.length ? '' : '<p class="ob-teks">Pengurus belum menulis peraturan.</p>');
+  }
+
   function gambar(){
+    /* mode baca-saja dari halaman komunitas: judul + isi + Tutup, tanpa stepper */
+    if(ctx.mode === 'peraturan'){
+      el('obIsi').innerHTML =
+        '<h2 class="ob-judul" id="obJudul">Peraturan komunitas</h2><p class="ob-kecil ob-aturan-sub">' + lolos(ctx.kom.nama) + '</p>' +
+        '<div class="ob-gulir ob-gulir-baca" tabindex="0" aria-label="Isi peraturan">' + isiAturan(ctx.teks) + '</div>' +
+        '<div class="ob-kaki"><span class="ob-sp"></span><button type="button" class="btn sm" data-ob-tutup>Tutup</button></div>';
+      return;
+    }
     const aktif = langkahAktif(), l = aktif[i], L = ctx.cfg.langkah[l[0]], info = ctx.info || {};
     let isi = '';
     if(l[0] === 'sambutan'){
       isi = '<h2 class="ob-judul" id="obJudul">' + lolos(L.judul) + '</h2><p class="ob-teks">' + lolos(L.pesan) + '</p>' +
-        (L.pengirim ? '<p class="ob-ttd">— ' + lolos(L.pengirim) + '</p>' : '');
+        (L.pengirim ? (function(){
+          /* V4: anggota baru perlu kenal ketuanya — foto (atau inisial) di samping tanda tangan */
+          const bagian = String(L.pengirim).split(','), nm = bagian[0].trim(), jab = bagian.slice(1).join(',').trim();
+          const ini = nm.split(' ').slice(0, 2).map(function(k){ return k[0] || ''; }).join('').toUpperCase();
+          return '<div class="ob-ttd">' +
+            (L.foto ? '<span class="av photo ' + lolos(L.foto) + '" role="img" aria-label="Foto ' + lolos(nm) + ' — gambar AI"></span>'
+                    : '<span class="av a" aria-hidden="true">' + lolos(ini) + '</span>') +
+            '<span class="ob-ttd-t"><b>' + lolos(nm) + '</b>' + (jab ? '<i>' + lolos(jab) + '</i>' : '') + '</span></div>';
+        })() : '');
     } else if(l[0] === 'kenal'){
       isi = '<h2 class="ob-judul" id="obJudul">Tentang ' + lolos(ctx.kom.nama) + '</h2>' +
         [['Sejarah singkat', L.sejarah], ['Visi', L.visi], ['Misi & tujuan', L.misi]].filter(function(x){ return x[1]; }).map(function(x){
           return '<div class="ob-bagian"><p class="ob-lbl">' + x[0] + '</p><p class="ob-teks">' + lolos(x[1]) + '</p></div>';
         }).join('');
     } else if(l[0] === 'aturan'){
-      /* baris "# …" = judul bagian, baris lain = poin milik bagian di atasnya */
-      const poin = String(L.ringkas || '').split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
-      const bagian = [];
-      poin.forEach(function(p){
-        if(/^#\s*/.test(p)) bagian.push({ h: p.replace(/^#\s*/, ''), p: [] });
-        else { if(!bagian.length) bagian.push({ h: '', p: [] }); bagian[bagian.length - 1].p.push(p); }
-      });
       /* gerbang persetujuan: centang aktif setelah area digulir sampai bawah (cekGulir) */
       const bisaCentang = ctx.setuju || ctx.bacaSampai;
       isi = '<h2 class="ob-judul" id="obJudul">Peraturan komunitas</h2><div class="ob-gulir" data-ob-gulir tabindex="0" aria-label="Isi peraturan">' +
-        bagian.map(function(b){
-          return (b.h ? '<p class="ob-lbl">' + lolos(b.h) + '</p>' : '') +
-            (b.p.length ? '<ul class="ob-poin">' + b.p.map(function(p){ return '<li>' + IK.cek + '<span>' + lolos(p) + '</span></li>'; }).join('') + '</ul>' : '');
-        }).join('') +
-        (tombolTautan('peraturan', 'Unduh peraturan lengkap', info.peraturan, IK.unduh) || (poin.length ? '' : '<p class="ob-teks">Pengurus belum melampirkan peraturan.</p>')) + '</div>' +
+        isiAturan(L.ringkas) + '</div>' +
         '<label class="ob-setuju"><input type="checkbox" data-ob-setuju' + (ctx.setuju ? ' checked' : '') + (bisaCentang ? '' : ' disabled') + '>' +
           '<span>Saya sudah membaca dan menyetujui peraturan ' + lolos(ctx.kom.nama) + '</span></label>' +
         '<p class="ob-kecil ob-petunjuk" data-ob-petunjuk' + (bisaCentang ? ' hidden' : '') + '>Gulir sampai bawah untuk menyetujui.</p>';
@@ -238,7 +269,8 @@
   }
   function tutup(selesai){
     if(!ctx) return;
-    if(!ctx.pratinjau){
+    /* pop up peraturan baca-saja tidak mengubah status onboarding/persetujuan */
+    if(!ctx.pratinjau && ctx.mode !== 'peraturan'){
       /* belum setuju peraturan = belum dianggap dilihat → muncul lagi di kunjungan berikutnya */
       if(wajibSetuju(ctx.cfg) && !sudahSetuju(ctx.kom.kelas)){
         toast('Perkenalan akan muncul lagi sampai kamu menyetujui peraturan.');
@@ -301,6 +333,31 @@
     if(!c || (!o.pratinjau && !c.cfg.aktif) || !buka(c)) toast('Belum ada perkenalan yang bisa ditampilkan.');
   };
   window.KolavoOnboardingTerbuka = function(){ return !!ctx; };
+
+  /* teks peraturan komunitas yang sedang dibuka — sumbernya konfigurasi onboarding
+     (direktori: teks contoh; komunitas sendiri: editor dashboard). Tetap dibaca
+     walau langkah Peraturan di onboarding dimatikan. */
+  window.KolavoTeksPeraturan = function(){
+    const kom = window.KolavoKomunitasKini && window.KolavoKomunitasKini();
+    if(!kom) return '';
+    let cfg = null;
+    if(kom.kelas === 'l-dibuat') cfg = window.KolavoOnboarding ? window.KolavoOnboarding() : null;
+    else if(kom.premium) cfg = kom.onboarding || cfgContoh(kom);
+    return String((cfg && cfg.langkah.aturan && cfg.langkah.aturan.ringkas) || '').trim();
+  };
+  /* pop up peraturan saja (tanpa stepper) — dari panel info halaman komunitas */
+  window.KolavoBukaPeraturan = function(){
+    const kom = window.KolavoKomunitasKini && window.KolavoKomunitasKini();
+    const teks = window.KolavoTeksPeraturan();
+    if(!kom || !teks){ toast('Pengurus belum menulis peraturan.'); return; }
+    if(ctx) return;
+    ctx = { mode: 'peraturan', kom: kom, teks: teks, pratinjau: false };
+    fokusAsal = document.activeElement;
+    gambar();
+    modal.hidden = false; void modal.offsetWidth;
+    modal.classList.add('on'); document.body.classList.add('lgn-open');
+    const b = modal.querySelector('.ob-kaki [data-ob-tutup]'); if(b) b.focus();
+  };
   window.KolavoAdaOnboarding = function(){
     const c = ctxKini(false);
     return !!(c && c.cfg.aktif && LANGKAH.some(function(l){ return c.cfg.langkah[l[0]] && c.cfg.langkah[l[0]].aktif; }));
@@ -320,7 +377,7 @@
     const t = e.target.closest('[data-ob-tautan]');
     if(t){
       const url = (ctx.info || {})[t.dataset.obTautan] || '';
-      toast((t.dataset.obTautan === 'peraturan' ? 'Di produk, berkas peraturan diunduh dari ' : 'Di produk, ini membuka ') + url.replace(/^https?:\/\//, ''));
+      toast('Di produk, ini membuka ' + url.replace(/^https?:\/\//, ''));
       return;
     }
     /* ajak kenalan langsung dari modal — tidak perlu membuka profil dulu */
