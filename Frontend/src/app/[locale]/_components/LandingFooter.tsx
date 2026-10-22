@@ -9,7 +9,7 @@ export function LandingFooter() {
   return (
     <footer className='border-t bg-surface-alt pt-10 pb-[52px]'>
       <div className='mx-auto flex max-w-[1160px] flex-wrap items-center gap-x-8 gap-y-4 px-[22px]'>
-        <KolavoLogo className='h-7 w-auto' />
+        <KolavoLogo className='h-[22px]' />
         <p className='text-sm text-muted-foreground'>{t('tagline')}</p>
         <nav className='flex flex-wrap gap-5 text-sm text-muted-foreground sm:ml-auto'>
           <a href='#etalase' className='hover:text-foreground'>

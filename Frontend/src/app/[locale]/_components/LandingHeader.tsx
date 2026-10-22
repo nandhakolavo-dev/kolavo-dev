@@ -14,7 +14,7 @@ export function LandingHeader() {
     <header className='sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80'>
       <div className='mx-auto flex h-[77px] max-w-[1160px] items-center gap-[18px] px-[22px]'>
         <Link href='/' aria-label={t('home')} className='shrink-0'>
-          <KolavoLogo className='h-[37px] w-auto' />
+          <KolavoLogo className='h-[29px]' />
         </Link>
         <nav
           aria-label={t('label')}

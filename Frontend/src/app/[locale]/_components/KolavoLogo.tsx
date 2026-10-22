@@ -1,15 +1,6 @@
-import Image from 'next/image'
+import { cn } from '@/lib/utils'
 
-/** The wordmark image from Redesign/assets (540×132). Decorative when wrapped in a labelled link. */
+/** The Kolavo wordmark. Shape from a mask, colours from theme tokens, so it follows dark mode. Set the height; the width follows. */
 export function KolavoLogo({ className }: { className?: string }) {
-  return (
-    <Image
-      src='/images/kolavo-logo.png'
-      alt='Kolavo'
-      width={540}
-      height={132}
-      priority
-      className={className}
-    />
-  )
+  return <span role='img' aria-label='Kolavo' className={cn('kolavo-logo', className)} />
 }

@@ -14,7 +14,7 @@ export function ProfileHeader() {
     <header className='border-b bg-background'>
       <div className='mx-auto flex h-[77px] max-w-[1160px] items-center justify-between gap-4 px-[22px]'>
         <Link href='/' aria-label={t('home')} className='shrink-0'>
-          <KolavoLogo className='h-[37px] w-auto' />
+          <KolavoLogo className='h-[29px]' />
         </Link>
         <Button
           asChild

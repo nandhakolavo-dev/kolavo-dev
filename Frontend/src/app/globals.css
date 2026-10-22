@@ -8,6 +8,8 @@
   --radius: 0.8125rem;
   --brand-hover: oklch(0.457 0.218 262.4);
   --brand-accent: oklch(0.701 0.193 36.5);
+  /* Wordmark ink: primary in light, #6F97F5 in dark so the logo stays readable (Redesign dark --blue). */
+  --logo-ink: oklch(0.559 0.195 261.9);
   /* #EBF1FD blue wash · #F5F8FE blue tint · #FFF1EC / #C64216 orange wash/ink · #E8F5EF / #12855F green · #FAFAFA alt section */
   --brand-wash: oklch(0.955 0.02 262);
   --brand-tint: oklch(0.977 0.01 262);
@@ -39,6 +41,7 @@
 .dark {
   --brand-hover: oklch(0.62 0.18 262);
   --brand-accent: oklch(0.74 0.17 38);
+  --logo-ink: oklch(0.689 0.146 265.4);
   --brand-wash: oklch(0.3 0.07 262);
   --brand-tint: oklch(0.2 0.03 262);
   --accent-wash: oklch(0.3 0.06 38);
@@ -113,4 +116,13 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Kolavo wordmark: the mask holds the letter shapes (760×166), the colours come from tokens —
+   letters --logo-ink, dot --brand-accent (the dot starts at 93.3% of the width). */
+.kolavo-logo {
+  display: inline-block;
+  aspect-ratio: 760 / 166;
+  background: linear-gradient(90deg, var(--logo-ink) 0 93.3%, var(--brand-accent) 93.3%);
+  mask: url('/images/kolavo-logo-mask.png') center / contain no-repeat;
 }
