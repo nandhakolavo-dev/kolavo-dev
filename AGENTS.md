@@ -146,7 +146,13 @@ Dark mode wajib lewat token. Jangan pernah menulis warna harfiah di dalam blok
 kompetitor sesungguhnya Google + WhatsApp + Zoom (gratis, tanpa kurva belajar);
 pendampingan komunitas adalah satu-satunya kolom yang hampir kosong di tabel kompetisi;
 entry strategy 2 tahun pertama lewat 5–10 komunitas kurasi, bukan pencarian publik.
-Harga masih `XXXX`. Kata **"Gratis" sudah dihapus dari semua halaman aktif** (v2, v3,
-Masuk, dan kit) atas permintaan — platformnya belum tentu gratis, jadi menjanjikannya
-sekarang berisiko. `archive/ReDesign_Kolavo_1.html` sengaja dibiarkan sebagai arsip.
-Jangan tulis ulang kata itu tanpa keputusan harga.
+**Keputusan harga (6 Okt 2026)** — rinciannya di `Redesign/PROMPT-HARGA.md`, rumusnya di
+`src/50-js-harga.html` (`window.KolavoHarga`): Esensial **FREE** (20 anggota, 1 peninjau) ·
+Advance Rp 199/anggota/bulan per kelipatan 10 (30–1.000), tarif turun Rp 0,13 tiap 10
+anggota, peninjau Rp 15.000 + Rp 3.000 tiap tambahan · diskon 5% (6–12 bulan) dan 10%
+(langsung 2 tahun) · **Big Organization** di atas 1.000 anggota lewat "Hubungi kami".
+Label paket Esensial ditulis FREE, bukan "Gratis", dan hanya untuk batas Esensial — jangan
+menjanjikan Kolavo gratis secara umum. Pengecualian: judul bagian harga beranda tetap
+"Mulai gratis, naik paket saat komunitasmu tumbuh." (keputusan 17 Okt 2026).
+Masih terbuka: perlakuan diskon saat perpanjangan. `archive/ReDesign_Kolavo_1.html`
+sengaja dibiarkan sebagai arsip.

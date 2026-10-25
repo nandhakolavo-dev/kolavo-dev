@@ -4,7 +4,13 @@ import { expect, test } from '@playwright/test'
 
 test('app pages redirect to sign-in without a session', async ({ page }) => {
   await page.goto('/members')
-  await expect(page).toHaveURL(/\/masuk$/)
+  await expect(page).toHaveURL(/\/masuk\?next=%2Fmembers$/)
+})
+
+test('sign-in returns to the app page that asked for it', async ({ page }) => {
+  await page.goto('/members?status=pending')
+  await page.getByRole('link', { name: 'Masuk sebagai Pengurus' }).click()
+  await expect(page).toHaveURL(/\/members\?status=pending$/)
 })
 
 test('an admin signs in and creates a member', async ({ page }) => {

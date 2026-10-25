@@ -41,7 +41,10 @@ test('breadcrumb returns to the landing showcase and Gabung leads to sign-in', a
     page.getByRole('navigation', { name: 'Remah navigasi' }).getByRole('link', { name: 'Beranda' })
   ).toHaveAttribute('href', '/#etalase')
   await page.getByRole('link', { name: 'Gabung' }).click()
-  await expect(page).toHaveURL(/\/masuk$/)
+  await expect(page).toHaveURL(/\/masuk\?next=%2Fk%2Fsman52$/)
+  // After signing in, the user lands back on the community they wanted to join.
+  await page.getByRole('link', { name: 'Masuk sebagai Anggota' }).click()
+  await expect(page).toHaveURL(/\/k\/sman52$/)
 })
 
 test('an Esensial community shows only its creator', async ({ page }) => {

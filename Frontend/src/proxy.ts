@@ -5,6 +5,7 @@ import { routing } from './i18n/routing'
 import { AUTH_COOKIE } from './lib/auth-cookie'
 import { HttpError } from './lib/http'
 import { publicServerHttp } from './lib/http.server'
+import { signInHref } from './lib/return-to'
 import { fetchCommunityProfile } from './services/communities'
 
 const intl = createIntlMiddleware(routing)
@@ -42,8 +43,8 @@ async function isMissingCommunity(slug: string) {
 }
 
 /**
- * 1. Optimistic redirect to /masuk when the session cookie is missing. Not the security
- *    boundary: the backend rejects the token, and pages call `requireUser()`.
+ * 1. Optimistic redirect to /masuk?next=<this page> when the session cookie is missing. Not
+ *    the security boundary: the backend rejects the token, and pages call `requireUser()`.
  * 2. Locale routing (next-intl).
  * 3. Unknown community profiles: rewrite to a static not-found page so the status is a real 404.
  */
@@ -52,7 +53,8 @@ export default async function proxy(request: NextRequest) {
   const isAppPath = APP_PATHS.some(prefix => path === prefix || path.startsWith(`${prefix}/`))
 
   if (isAppPath && !request.cookies.has(AUTH_COOKIE)) {
-    return NextResponse.redirect(new URL('/masuk', request.url))
+    const { pathname, search } = request.nextUrl
+    return NextResponse.redirect(new URL(signInHref(`${pathname}${search}`), request.url))
   }
 
   const response = intl(request)
