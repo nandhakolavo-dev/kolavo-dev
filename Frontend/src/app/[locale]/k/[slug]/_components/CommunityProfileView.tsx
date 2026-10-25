@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
 import { Link } from '@/i18n/navigation'
+import { signInHref } from '@/lib/return-to'
 import type { CommunityProfile } from '@/services/communities'
 
 import { BoardList } from './BoardList'
@@ -70,9 +71,9 @@ export function CommunityProfileView({ community }: { community: CommunityProfil
           </p>
         </div>
         <div className='flex w-full flex-col gap-2.5 sm:w-auto sm:min-w-[212px]'>
-          {/* Signed-out visitors sign in first; the invite variant of /masuk comes later. */}
+          {/* Signed-out visitors sign in first, then return here; the invite variant of /masuk comes later. */}
           <Button asChild size='xl'>
-            <Link href='/masuk'>{t('join')}</Link>
+            <Link href={signInHref(`/k/${community.slug}`)}>{t('join')}</Link>
           </Button>
           <p className='text-center text-xs text-muted-foreground'>{t('joinNote')}</p>
         </div>

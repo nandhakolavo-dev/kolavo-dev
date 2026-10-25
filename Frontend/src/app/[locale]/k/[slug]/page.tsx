@@ -71,7 +71,7 @@ export default function CommunityProfilePage({ params }: PageProps<'/[locale]/k/
 
   return (
     <>
-      <ProfileHeader />
+      <ProfileHeader params={params} />
       <main className='mx-auto max-w-[1160px] px-[22px] pt-6 pb-20'>
         <Suspense fallback={<CommunityProfileSkeleton label={t('loading')} />}>
           <CommunityProfileContent params={params} />

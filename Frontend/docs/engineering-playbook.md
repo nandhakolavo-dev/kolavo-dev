@@ -231,6 +231,10 @@ const form = useForm<MemberFormValues>({ resolver: zodResolver(schema), defaultV
 the user to the backend's Google flow. The backend redirects to `/api/auth/callback?code=…`;
 the callback exchanges the code server-to-server (`POST /auth/token`) and stores the access
 token in the httpOnly `kolavo_session` cookie. Sign-out is a POST to `/api/auth/sign-out`.
+**Return after sign-in.** Link to sign-in with `signInHref(path)` from `lib/return-to.ts`
+(`/masuk?next=<path>`); the proxy does this for app pages. `/api/auth/google` keeps `next` in
+the short-lived httpOnly `kolavo_return_to` cookie and the callback redirects there (default
+`/members`). `safeReturnTo()` accepts same-site paths only, so `next` cannot send users off-site.
 To switch to a backend-set cookie or OIDC later, only these Route Handlers,
 `lib/http.server.ts` and the BFF proxy change (ADR-0003).
 
