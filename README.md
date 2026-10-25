@@ -65,15 +65,49 @@ tanpa server).
 
 ## Keputusan yang harus diambil sebelum sprint pertama
 
-Ringkasan dari PRD bagian 13 — bawa ke rapat kickoff:
+Ringkasan dari PRD bagian 13, diperbarui 25 Okt 2026 — bawa ke rapat kickoff.
+PRD-nya sendiri (`brain/produk/PRD-Kolavo-v1.html`, 10 Sep 2026) belum ikut diperbarui.
 
-- **Harga / model langganan** — masih `XXXX`; kata "Gratis" sudah dihapus dari semua halaman.
-- **Backend, database, hosting** — prototipe tanpa backend; perlu pilihan stack & cloud.
-- **Detail autentikasi Google & redirect** — user harus kembali ke aksi yang dituju setelah login.
-- **Keadaan pendaftaran "ditolak"** — ada di live, belum di prototipe.
+**Sudah terjawab**
+
+- ~~**Harga / model langganan**~~ — diputuskan 6–17 Okt 2026: Esensial **FREE** (20 anggota,
+  1 peninjau) · Advance Rp 199/anggota/bulan (30–1.000) · Big Organization lewat "Hubungi kami".
+  Rincian `Redesign/PROMPT-HARGA.md`; sudah ada di prototipe dan `Frontend/`.
+- ~~**Detail autentikasi Google & redirect**~~ — `Frontend/` mengembalikan user ke halaman
+  asal setelah login (`/masuk?next=…`, 25 Okt 2026). Sisa: perpanjangan token (lihat bawah).
+- ~~**Radius kartu 13 vs 20**~~ — **13** (Design System), dipakai prototipe dan `Frontend/`.
+
+**Masih terbuka (§13)**
+
+- **Backend, database, hosting** — `Frontend/` masih memakai mock; deploy lewat Docker sudah
+  dipilih, tapi stack backend, database, penyedia cloud dan region belum.
+- **Keadaan pendaftaran "ditolak"** — sisi pengurus sudah ada di prototipe V4 (catatan di
+  riwayat, template email *Ditolak*); tampilan untuk pendaftar dan aturan boleh mengajukan
+  ulang belum. `Frontend/` baru mengenal status `active` dan `pending`.
 - **Halaman komunitas umur nol** — halaman yang jualannya angka, di hari pertama angkanya nol.
-- **Chat: WhatsApp atau internal?**
-- **Radius kartu 13 vs 20**, **logo Kolavo SVG**, **geolocation asli**.
+  Belum ada keadaan awal; `Frontend/` hanya menampilkan teks kosong.
+- **Chat: WhatsApp atau internal?** — prototipe masih memunculkan toast "di produk ini membuka WhatsApp".
+- **Logo Kolavo SVG** — `Frontend/` masih memakai PNG sebagai mask.
+- **Geolocation asli** — "Di sekitar saya" masih statis (Jakarta Utara); belum ada
+  penanganan kalau izin lokasi ditolak.
+
+**Pertanyaan terbuka lain** (di luar PRD §13)
+
+- **Diskon saat perpanjangan** — diskon 5% / 10% berlaku untuk pembelian pertama; perlakuan
+  saat perpanjangan belum diputuskan (`Redesign/PROMPT-HARGA.md`).
+- **"Hubungi kami" Big Organization** — baru berupa toast; kanalnya (formulir, email,
+  WhatsApp) belum ditentukan.
+- **Legal / UU PDP** — naskah Syarat & Ketentuan dan Kebijakan Privasi belum ditinjau
+  penasihat hukum; identitas pengendali data (badan hukum, alamat, narahubung) masih
+  placeholder; menu "Data & privasi" untuk hak subjek data (Gelombang B di
+  `Redesign/PROMPT-PDP.md`) belum dikerjakan.
+- **Validasi Advance** — apakah pengurus mau membayar panel Advance belum ditanyakan ke
+  5–10 komunitas kurasi; business plan memisahkan pergantian kepengurusan sebagai biaya
+  per penggunaan, bukan langganan.
+- **Perpanjangan sesi login** — token refresh belum dirancang; user ter-logout saat token
+  habis (`Frontend/docs/adr/0003-bearer-token-behind-bff-cookie.md`).
+- **Kontrak API** — `Frontend/docs/api/openapi.yaml` masih draf dari sisi frontend; perlu
+  ditinjau tim backend sebelum mereka mulai.
 
 ---
 
