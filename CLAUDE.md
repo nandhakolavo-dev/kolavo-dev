@@ -177,6 +177,7 @@ anggota, peninjau Rp 15.000 + Rp 3.000 tiap tambahan · diskon 5% (6–12 bulan)
 Label paket Esensial ditulis FREE, bukan "Gratis", dan hanya untuk batas Esensial — jangan
 menjanjikan Kolavo gratis secara umum. Pengecualian: judul bagian harga beranda tetap
 "Mulai gratis, naik paket saat komunitasmu tumbuh." (keputusan 17 Okt 2026). Kredit kenalan anggota tidak ditampilkan di bagian harga beranda.
+Diskon hanya untuk pembelian pertama; perpanjangan memakai harga normal (25 Okt 2026).
 **Kredit kenalan (15 Okt 2026):** saldo per pengguna, berlaku di semua komunitas; tiap ajakan
 kenalan memotong **10 kredit** (dikembalikan bila ajakan **ditolak** atau dibatalkan sebelum dijawab); top up berbayar
 **100 kredit = Rp50.000** per paket (boleh beberapa paket), dibayar lewat **QRIS**; kredit baru bertambah setelah pembayaran diterima. Rumus & gerbang di `src/50-js-kredit.html` (`window.KolavoKredit`).
