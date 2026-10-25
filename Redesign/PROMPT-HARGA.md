@@ -75,10 +75,12 @@ Juga untuk komunitas yang butuh konsultasi pengembangan komunitas, berapa pun an
 
 ## Masih terbuka
 
-- Diskon hanya untuk pembelian pertama — perlakuan saat perpanjangan belum diputuskan.
+- ~~Perlakuan diskon saat perpanjangan~~ — diputuskan 25 Okt 2026: diskon hanya pembelian
+  pertama, perpanjangan harga normal.
 - Panel Tagihan dashboard masih "Rp XXXX, minimal 50 anggota".
 - Dashboard Esensial belum membatasi 1 peninjau dan 20 anggota.
-- Tombol "Hubungi kami" baru memunculkan toast; belum ada formulir kontak.
+- Tombol "Hubungi kami" baru memunculkan toast. Diputuskan 25 Okt 2026: membuka WhatsApp tim
+  Kolavo dengan pesan awal (nama komunitas, jumlah anggota); nomornya konfigurasi, belum dibangun.
 
 ## Jangan
 

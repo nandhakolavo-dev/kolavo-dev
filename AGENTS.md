@@ -154,5 +154,5 @@ anggota, peninjau Rp 15.000 + Rp 3.000 tiap tambahan · diskon 5% (6–12 bulan)
 Label paket Esensial ditulis FREE, bukan "Gratis", dan hanya untuk batas Esensial — jangan
 menjanjikan Kolavo gratis secara umum. Pengecualian: judul bagian harga beranda tetap
 "Mulai gratis, naik paket saat komunitasmu tumbuh." (keputusan 17 Okt 2026).
-Masih terbuka: perlakuan diskon saat perpanjangan. `archive/ReDesign_Kolavo_1.html`
+Diskon hanya untuk pembelian pertama; perpanjangan memakai harga normal (25 Okt 2026). `archive/ReDesign_Kolavo_1.html`
 sengaja dibiarkan sebagai arsip.

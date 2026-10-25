@@ -1781,3 +1781,29 @@ kamu menerima ajakan kenalannya"; media sosial "terbuka untuk anggota yang sudah
 - **Simpan pengaturan komunitas → kembali ke halaman komunitas (18 Okt 2026).** Mode sunting layar
   Buat (dari ikon pensil halaman komunitas atau menu ⋯ Komunitasku) kini membuka
   `KolavoBukaKomunitasDibuat()` setelah Simpan, bukan Profil & Setting.
+
+## Keputusan 25 Okt 2026 (wawancara open question)
+
+Menjawab sisa PRD §13 dan pertanyaan lain; ringkasannya di `README.md`. Belum ada yang
+diterapkan ke prototipe kecuali disebut.
+
+- **Chat → WhatsApp.** Setelah kenalan, percakapan dilempar ke `wa.me` seperti toast sekarang.
+  WA sudah dipakai semua komunitas (kompetitor sesungguhnya), jadi membangun chat sendiri
+  tidak menambah alasan pindah. Chat internal ditimbang di fase berikutnya.
+- **Ditolak → boleh mengajukan ulang kapan saja.** Berbeda dengan live (sekali ditolak,
+  selesai). Pengurus boleh menolak lagi; riwayat keputusan tetap tercatat di baris anggota.
+- **Komunitas umur nol.** Halaman `/k/<slug>` tetap publik: profil, pengurus dan ajakan
+  "Jadi anggota pertama". Persebaran anggota (kota, pekerjaan, angkatan) baru tampil mulai
+  **5 anggota** — di bawah itu angkanya tidak bermakna dan anggota mudah ditebak.
+- **"Di sekitar saya" → domisili profil.** Tanpa izin lokasi browser, jadi tidak ada kasus
+  izin ditolak. Peraga statis "Jakarta Utara" diganti domisili pengguna.
+- **Diskon hanya pembelian pertama.** Perpanjangan memakai harga normal (`KolavoHarga`
+  tanpa diskon durasi).
+- **"Hubungi kami" Big Organization → WhatsApp tim Kolavo**, pesan awal berisi nama komunitas
+  dan jumlah anggota. Nomor tidak ditulis di kode; konfigurasi diisi saat deploy.
+- **Logo SVG** dijiplak dari PNG yang ada, lalu dicek desainer.
+- **Sesi login 30 hari, diperpanjang otomatis** selama dipakai — butuh token refresh dari backend.
+- **Validasi Advance** lewat data pemakaian setelah rilis, bukan wawancara tambahan.
+- **Kontrak API frontend = draf**; Dev Lead/tim backend boleh mengubah.
+- **Masih terbuka:** stack backend, database dan cloud (diserahkan ke Dev Lead); badan hukum
+  pengendali data dan jadwal tinjauan hukum (Management) — memblokir rilis.
