@@ -874,6 +874,11 @@ body.lgn-open{overflow:hidden}
 .acct-i .num{margin-left:auto;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
 .acct-i.keluar{color:var(--red)}
 .acct-i.keluar svg{color:var(--red)}
+/* tautan legal di dasar menu akun: kecil dan tenang, bukan aksi utama */
+.acct-legal{display:flex;flex-wrap:wrap;gap:4px 14px;padding:6px 10px 4px}
+.acct-legal button{font:inherit;font-size:12px;color:var(--ink-3);background:none;border:0;padding:0;cursor:pointer}
+.acct-legal button:hover{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.acct-legal button:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:4px}
 
 /* ---------- kerangka halaman ---------- */
 .page{padding:34px 0 96px;background:linear-gradient(180deg,var(--blue-tint) 0%,rgba(0,0,0,0) 340px)}

@@ -917,6 +917,11 @@ body.lgn-open{overflow:hidden}
 .acct-i .num{margin-left:auto;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
 .acct-i.keluar{color:var(--red)}
 .acct-i.keluar svg{color:var(--red)}
+/* tautan legal di dasar menu akun: kecil dan tenang, bukan aksi utama */
+.acct-legal{display:flex;flex-wrap:wrap;gap:4px 14px;padding:6px 10px 4px}
+.acct-legal button{font:inherit;font-size:12px;color:var(--ink-3);background:none;border:0;padding:0;cursor:pointer}
+.acct-legal button:hover{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.acct-legal button:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:4px}
 
 /* ---------- kerangka halaman ---------- */
 .page{padding:34px 0 96px;background:linear-gradient(180deg,var(--blue-tint) 0%,rgba(0,0,0,0) 340px)}
@@ -2965,6 +2970,13 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
           Keluar
         </a>
+        <!-- footer landing disembunyikan di app (body.m-app footer), jadi dua naskah legal
+             tetap terjangkau dari sini setelah masuk -->
+        <div class="acct-sep"></div>
+        <div class="acct-legal">
+          <button type="button" data-legal="privasi">Kebijakan Privasi</button>
+          <button type="button" data-legal="tnc">Ketentuan Layanan</button>
+        </div>
       </div>
     </div>
   </div>
@@ -8600,7 +8612,14 @@ function hitung(){}
      persetujuan di Lengkapi Profil */
   document.addEventListener('click', function(e){
     const p = e.target.closest('[data-legal]');
-    if(p){ e.preventDefault(); window.KolavoBukaLegal(p.dataset.legal); return; }
+    if(p){
+      e.preventDefault();
+      /* dari menu akun: tutup menunya dulu supaya tidak tertinggal di belakang naskah */
+      const m = p.closest('#acctMenu');
+      if(m){ m.hidden = true; const b = document.getElementById('acctBtn'); if(b) b.setAttribute('aria-expanded', 'false'); }
+      window.KolavoBukaLegal(p.dataset.legal);
+      return;
+    }
     if(buka && e.target.closest('[data-legal-tutup]')) tutup();
   });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && buka) tutup(); });
