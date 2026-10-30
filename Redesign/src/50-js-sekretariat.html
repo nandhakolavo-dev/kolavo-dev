@@ -137,6 +137,8 @@
   reset();
 
   function catat(teks){ S.jejak.unshift({ teks: teks, waktu: 'baru saja' }); }
+  /* modul dashboard ikut mencatat ke log aktivitas Advance (mis. anggota dikeluarkan / dipulihkan) */
+  D.catat = catat;
   function pemegangAkses(){
     /* di komunitas yang mengangkatmu, Ketua (pemegang langganan) tentu memegang dashboard */
     return D.pengurus.filter(function(p){ return p.aku || S.akses[p.nama] || (D.kom && D.kom.diangkat && p.jabatan === 'Ketua'); });

@@ -1817,3 +1817,36 @@ diterapkan ke prototipe kecuali disebut.
   (`50-js-legal`) membukanya, dan kini menutup menu akun lebih dulu bila pemicunya ada di
   `#acctMenu`. Diselaraskan dengan production (PR satriawinarah/kolavo#1), yang membuang
   footer dari layar app dengan alasan yang sama.
+
+## Mengeluarkan anggota & keluar sendiri (30 Okt 2026, wawancara 21 keputusan)
+
+**Mengeluarkan (pengurus)**
+- Ada di Esensial dan Advance. Esensial: hanya pembuat komunitas. Advance: pembuat komunitas +
+  pengurus berhak "kelola anggota". Peninjau tidak bisa (peninjau hanya menilai pendaftar).
+- Pemegang jabatan/peninjau harus dicabut perannya dulu; pembuat komunitas tidak bisa dikeluarkan.
+- Pintu: menu ⋯ baris tab Anggota + halaman detail anggota (versi pengurus). Satu per satu,
+  tanpa pilih banyak. Dialog dengan **alasan wajib** (kalimat pendek).
+- Efek: notifikasi singkat ke orangnya **tanpa alasan**; kursi kuota langsung bebas (tagihan
+  Advance tetap — yang dibayar kapasitas); langsung hilang dari daftar, jumlah, dan grafik
+  persebaran publik; kenalan yang sudah terhubung **tetap**; ajakan kenalan yang belum dijawab
+  lewat komunitas itu batal otomatis dan kreditnya kembali; nomor anggota disimpan untuk orang
+  itu (tidak dipakai ulang orang lain, dipakai lagi bila ia kembali).
+- **Pulihkan** 30 hari (keanggotaan, nomor, jawaban kembali tanpa daftar ulang). Lewat 30 hari,
+  jawaban formulir & data pendaftaran dihapus; riwayat menyisakan nama, nomor, tanggal, alasan.
+- Boleh daftar ulang; kartu pendaftar diberi tanda **"Pernah dikeluarkan"** + alasan lama.
+
+**Keluar sendiri (anggota)**
+- Pintu: panel status di profil komunitas + menu ⋯ kartu Komunitasku. Dialog konfirmasi,
+  alasan **opsional** (pilihan singkat + isian bebas).
+- Pengurus/peninjau lepas peran dulu; pembuat komunitas tidak bisa keluar (serahkan atau arsipkan).
+- Efek data sama dengan dikeluarkan, kecuali **tidak bisa dipulihkan** pengurus. Daftar ulang
+  diberi tanda netral **"Pernah keluar"**.
+
+**Riwayat**
+- Tab Anggota mendapat tampilan **"Keluar & dikeluarkan"** di samping "Ditolak" (kedua paket);
+  Advance juga mencatatnya di log aktivitas. Tanpa notifikasi ke pengurus lain.
+- **Revisi ikon & menu (30 Okt 2026).** Ikon keluar = pintu + panah keluar (bentuk "Keluar" di
+  menu akun), dipakai di semua pintu keluar/keluarkan. Di tab Anggota, nomor anggota dan
+  keluarkan disatukan dalam satu menu kebab **tegak** (tiga titik atas-bawah, sama dengan
+  `IC_KEBAB` kartu Komunitasku); ikon nomor terpisah di baris dihapus. "Angkat jadi pengurus"
+  (Advance) tetap ikon tersendiri.
