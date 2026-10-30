@@ -1,0 +1,175 @@
+<script>
+/* ============================================================
+   ATUR POSISI GAMBAR — dipanggil setiap kali foto/logo dipilih,
+   sebelum dipasang. Gambar bisa digeser (seret / tombol panah) dan
+   diperbesar (slider, roda mouse, cubit dua jari), lalu dipotong
+   persis seperti yang terlihat di bingkai.
+     window.KolavoAturGambar(dataUrl, { bentuk: 'kotak'|'bulat', judul })
+       -> Promise<dataUrl | null>   (null = dibatalkan)
+   Hasilnya gambar persegi: logo 512 px PNG (tetap transparan),
+   foto 480 px JPEG. Tidak ada jaringan — semua di kanvas.
+   ============================================================ */
+(function(){
+  const UKURAN = 280;                 /* sisi bingkai di layar, px */
+  const ZOOM_MAKS = 4;
+  let modal = null, img = null, selesai = null, opsi = {};
+  let skalaDasar = 1, zoom = 1, x = 0, y = 0, seret = null, jari = {};
+
+  const el = function(id){ return document.getElementById(id); };
+
+  function bangun(){
+    modal = document.createElement('div');
+    modal.className = 'lgn';
+    modal.id = 'agbModal';
+    modal.hidden = true;
+    modal.innerHTML =
+      '<div class="lgn-scrim" data-agb-batal></div>' +
+      '<div class="lgn-box agb-box" role="dialog" aria-modal="true" aria-labelledby="agbHead" aria-describedby="agbSub">' +
+        '<button class="lgn-x" type="button" aria-label="Tutup" data-agb-batal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
+        '<h2 class="lgn-head" id="agbHead">Atur posisi</h2>' +
+        '<p class="agb-sub" id="agbSub">Geser gambar supaya bagian pentingnya ada di dalam bingkai. Perbesar dengan slider.</p>' +
+        '<div class="agb-panggung" id="agbPanggung" tabindex="0" role="application" aria-label="Bingkai gambar. Pakai tombol panah untuk menggeser, plus dan minus untuk memperbesar.">' +
+          '<img id="agbImg" alt="" draggable="false">' +
+          '<span class="agb-kisi" aria-hidden="true"></span>' +
+        '</div>' +
+        '<div class="agb-zoom">' +
+          '<button type="button" class="agb-zb" data-agb-zoom="-1" aria-label="Perkecil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/></svg></button>' +
+          '<input type="range" id="agbSlider" min="1" max="' + ZOOM_MAKS + '" step="0.01" value="1" aria-label="Perbesar gambar">' +
+          '<button type="button" class="agb-zb" data-agb-zoom="1" aria-label="Perbesar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>' +
+        '</div>' +
+        '<div class="agb-reset-w"><button type="button" class="agb-reset" data-agb-reset>Kembalikan posisi awal</button></div>' +
+        '<div class="agb-aksi">' +
+          '<button type="button" class="btn outline sm" data-agb-batal>Batal</button>' +
+          '<button type="button" class="btn sm" data-agb-simpan>Pakai gambar ini</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(modal);
+
+    const panggung = el('agbPanggung');
+    panggung.addEventListener('pointerdown', function(e){
+      panggung.setPointerCapture(e.pointerId);
+      jari[e.pointerId] = { x: e.clientX, y: e.clientY };
+      const ids = Object.keys(jari);
+      if(ids.length === 1) seret = { x: e.clientX - x, y: e.clientY - y };
+      else if(ids.length === 2){ const a = jari[ids[0]], b = jari[ids[1]]; seret = { cubit: Math.hypot(a.x - b.x, a.y - b.y), zoom: zoom }; }
+      panggung.classList.add('seret');
+    });
+    panggung.addEventListener('pointermove', function(e){
+      if(!seret || !jari[e.pointerId]) return;
+      jari[e.pointerId] = { x: e.clientX, y: e.clientY };
+      const ids = Object.keys(jari);
+      if(ids.length >= 2 && seret.cubit){
+        const a = jari[ids[0]], b = jari[ids[1]];
+        aturZoom(seret.zoom * Math.hypot(a.x - b.x, a.y - b.y) / seret.cubit);
+      } else if(ids.length === 1 && !seret.cubit){
+        x = e.clientX - seret.x; y = e.clientY - seret.y; jepit(); gambar();
+      }
+    });
+    function lepas(e){
+      delete jari[e.pointerId];
+      const ids = Object.keys(jari);
+      /* dari cubit kembali ke satu jari: lanjut menggeser dari posisi sekarang */
+      seret = ids.length === 1 ? { x: jari[ids[0]].x - x, y: jari[ids[0]].y - y } : null;
+      if(!ids.length) panggung.classList.remove('seret');
+    }
+    panggung.addEventListener('pointerup', lepas);
+    panggung.addEventListener('pointercancel', lepas);
+    panggung.addEventListener('wheel', function(e){ e.preventDefault(); aturZoom(zoom * (e.deltaY < 0 ? 1.08 : 1 / 1.08)); }, { passive: false });
+    panggung.addEventListener('keydown', function(e){
+      const langkah = e.shiftKey ? 30 : 8;
+      const geser = { ArrowLeft: [langkah, 0], ArrowRight: [-langkah, 0], ArrowUp: [0, langkah], ArrowDown: [0, -langkah] }[e.key];
+      if(geser){ e.preventDefault(); x += geser[0]; y += geser[1]; jepit(); gambar(); return; }
+      if(e.key === '+' || e.key === '='){ e.preventDefault(); aturZoom(zoom * 1.1); }
+      if(e.key === '-'){ e.preventDefault(); aturZoom(zoom / 1.1); }
+    });
+    el('agbSlider').addEventListener('input', function(){ aturZoom(+this.value); });
+    modal.addEventListener('click', function(e){
+      const z = e.target.closest('[data-agb-zoom]');
+      if(z){ aturZoom(zoom * (z.dataset.agbZoom === '1' ? 1.2 : 1 / 1.2)); return; }
+      if(e.target.closest('[data-agb-reset]')){ awal(); return; }
+      if(e.target.closest('[data-agb-batal]')){ tutup(null); return; }
+      if(e.target.closest('[data-agb-simpan]')) tutup(potong());
+    });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal && !modal.hidden) tutup(null); });
+  }
+
+  /* gambar selalu menutupi bingkai penuh: tidak boleh ada sisi kosong */
+  function lebar(){ return img.naturalWidth * skalaDasar * zoom; }
+  function tinggi(){ return img.naturalHeight * skalaDasar * zoom; }
+  function jepit(){
+    x = Math.min(0, Math.max(UKURAN - lebar(), x));
+    y = Math.min(0, Math.max(UKURAN - tinggi(), y));
+  }
+  function gambar(){
+    const g = el('agbImg');
+    g.style.width = lebar() + 'px';
+    g.style.height = tinggi() + 'px';
+    g.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    el('agbSlider').value = zoom;
+  }
+  /* zoom berporos di tengah bingkai, supaya yang sedang dilihat tetap di tengah */
+  function aturZoom(z){
+    z = Math.min(ZOOM_MAKS, Math.max(1, z));
+    const tx = (UKURAN / 2 - x) / lebar(), ty = (UKURAN / 2 - y) / tinggi();
+    zoom = z;
+    x = UKURAN / 2 - tx * lebar();
+    y = UKURAN / 2 - ty * tinggi();
+    jepit(); gambar();
+  }
+  function awal(){
+    skalaDasar = Math.max(UKURAN / img.naturalWidth, UKURAN / img.naturalHeight);
+    zoom = 1;
+    x = (UKURAN - lebar()) / 2;
+    y = (UKURAN - tinggi()) / 2;
+    gambar();
+  }
+  function potong(){
+    const bulat = opsi.bentuk === 'bulat', sisi = bulat ? 480 : 512, r = sisi / UKURAN;
+    const kanvas = document.createElement('canvas');
+    kanvas.width = kanvas.height = sisi;
+    const ctx = kanvas.getContext('2d');
+    if(bulat){ ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, sisi, sisi); }
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, x * r, y * r, lebar() * r, tinggi() * r);
+    return bulat ? kanvas.toDataURL('image/jpeg', 0.9) : kanvas.toDataURL('image/png');
+  }
+  let pemicu = null;
+  function tutup(hasil){
+    modal.classList.remove('on');
+    document.body.classList.remove('lgn-open');
+    document.documentElement.style.overflow = '';
+    setTimeout(function(){ modal.hidden = true; }, 170);
+    if(pemicu && document.contains(pemicu) && pemicu.focus) pemicu.focus();
+    const f = selesai; selesai = null;
+    if(f) f(hasil);
+  }
+
+  window.KolavoAturGambar = function(dataUrl, o){
+    opsi = o || {};
+    if(!modal) bangun();
+    pemicu = document.activeElement;
+    return new Promise(function(res){
+      selesai = res;
+      img = new Image();
+      img.onload = function(){
+        const g = el('agbImg');
+        g.src = dataUrl;
+        modal.querySelector('.agb-box').classList.toggle('bulat', opsi.bentuk === 'bulat');
+        el('agbHead').textContent = opsi.judul || (opsi.bentuk === 'bulat' ? 'Atur posisi foto' : 'Atur posisi logo');
+        awal();
+        modal.hidden = false;
+        document.body.classList.add('lgn-open');
+        document.documentElement.style.overflow = 'hidden';
+        requestAnimationFrame(function(){ modal.classList.add('on'); });
+        setTimeout(function(){ modal.classList.add('on'); }, 60);   /* cadangan bila rAF mati di tab tersembunyi */
+        el('agbPanggung').focus();
+      };
+      img.onerror = function(){
+        if(window.KolavoToast) window.KolavoToast('Gambarnya tidak bisa dibuka. Coba berkas lain.');
+        selesai = null; res(null);
+      };
+      img.src = dataUrl;
+    });
+  };
+})();
+</script>
