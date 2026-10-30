@@ -334,11 +334,33 @@
         '<span class="logo-sq ' + kelas + '" role="img" aria-label="Logo komunitas"></span>' +
         '<div class="t">' + (alias ? '<div class="al">' + alias + '</div>' : '') + '<div class="n">' + nama + '</div>' +
         '<div class="s">' + [jumlah].concat(jawab).filter(Boolean).join(' · ') + '</div></div></div>' +
-        (dj[kelas] === 'anggota'
-          ? '<span class="status anggota">Anggota</span></div>'
-          : '<span class="status tunggu">Menunggu persetujuan</span></div>');
+        (dj[kelas] === 'anggota' ? aksiIkut(kelas) : '<span class="status tunggu">Menunggu persetujuan</span>') + '</div>';
     }).join('');
   }
+  /* kartu Komunitasku untuk yang sudah diterima: menu ⋯ berisi "Keluar dari komunitas"
+     (dialognya milik 50-js-layar-komunitas, KolavoKeluarKomunitas) */
+  let ikutMenu = null;
+  const IC_LAIN = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>';
+  function aksiIkut(kelas){
+    return '<div class="pf-item-aksi"><span class="status anggota">Anggota</span>' +
+      (ikutMenu === kelas
+        ? '<div class="pf-aksi-btn"><button type="button" class="pf-mini danger" data-keluar-kom="' + kelas + '">Keluar dari komunitas</button>' +
+            '<button type="button" class="pf-mini" data-ikut-menu-tutup>Batal</button></div>'
+        : '<button type="button" class="pf-ic" data-ikut-menu="' + kelas + '" aria-label="Lainnya" title="Lainnya">' + IC_LAIN + '</button>') +
+      '</div>';
+  }
+  function gambarUlangKu(){
+    if(window.KolavoIsiProfil) window.KolavoIsiProfil();
+    const app = document.getElementById('scrApp');
+    if(app && !app.hidden && window.KolavoGambarApp) window.KolavoGambarApp('scrApp');
+  }
+  document.addEventListener('click', function(e){
+    const m = e.target.closest('[data-ikut-menu]');
+    if(m){ e.preventDefault(); ikutMenu = m.dataset.ikutMenu; gambarUlangKu(); return; }
+    if(e.target.closest('[data-ikut-menu-tutup]')){ e.preventDefault(); ikutMenu = null; gambarUlangKu(); return; }
+    /* setelah dialog keluar dibuka, menu kartu dilipat lagi */
+    if(e.target.closest('[data-keluar-kom]')) ikutMenu = null;
+  });
   window.KolavoKomunitasKu = function(){
     return (window.KolavoDibuatItem ? window.KolavoDibuatItem() : '') + itemIkut();
   };

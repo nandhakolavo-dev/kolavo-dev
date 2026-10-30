@@ -2147,6 +2147,64 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .kl-hasil svg{width:13px;height:13px}
 .kl-hasil.diterima{background:var(--green-wash);color:var(--green)}
 .kl-hasil.ditolak{background:var(--red-wash);color:var(--red)}
+.kl-hasil.keluar{background:var(--bg-alt);color:var(--ink-2);border:1px solid var(--line)}
+.kl-riwayat-catatan.keluar{border-left-color:var(--ink-3)}
+/* ---------- keluarkan anggota (30 Okt 2026) ---------- */
+/* menu ⋯ di baris anggota: satu aksi berbahaya, terpisah dari ikon aksi biasa */
+.kl-amenu{display:flex;justify-content:flex-end;margin:-4px 0 10px}
+.kl-amenu-i{display:flex;align-items:flex-start;gap:10px;max-width:340px;padding:10px 14px;border-radius:12px;
+  border:1px solid var(--line);background:var(--card);box-shadow:var(--sh);font:inherit;font-size:13.5px;font-weight:600;text-align:left;cursor:pointer}
+.kl-amenu-i svg{width:17px;height:17px;flex:none;margin-top:1px}
+.kl-amenu-i.hapus{color:var(--red)}
+.kl-amenu-i.hapus:hover{background:var(--red-wash);border-color:var(--red-line)}
+.kl-amenu-i.hapus:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.kl-amenu-i.mati{color:var(--ink-3);cursor:not-allowed}
+.kl-amenu-i small{display:block;margin-top:2px;font-size:12px;font-weight:400;color:var(--ink-2)}
+/* konfirmasi keluarkan: pola .kl-angkat, tapi bernada merah dan beralasan wajib */
+.kl-keluar{display:grid;gap:10px;padding:16px 18px;margin-bottom:10px;border-radius:14px;border:1px dashed var(--red-line);background:var(--red-wash)}
+.kl-keluar-h{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--ink)}
+.kl-keluar-h svg{width:18px;height:18px;color:var(--red);flex:none}
+.kl-keluar-l{margin:0;padding-left:18px;display:grid;gap:4px;font-size:13px;line-height:1.5;color:var(--ink-2)}
+.kl-keluar-l b{color:var(--ink);font-weight:600}
+.kl-keluar-ket{font-weight:400;color:var(--ink-3)}
+.kl-keluar .inp{background:var(--card)}
+.kl-keluar-aksi{display:flex;gap:8px;flex-wrap:wrap}
+.kl-keluar-kanan{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.kl-keluar-sisa{font-size:11.5px;color:var(--ink-3)}
+/* tanda di kartu pendaftar: pernah dikeluarkan (merah) / pernah keluar sendiri (netral) */
+.kl-pernah{display:inline-block;vertical-align:2px;margin-left:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px;white-space:nowrap}
+.kl-pernah.dikeluarkan{background:var(--red-wash);color:var(--red)}
+.kl-pernah.keluar{background:var(--bg-alt);color:var(--ink-2);border:1px solid var(--line)}
+.kl-pernah-info{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:11px 14px;border-radius:12px;background:var(--bg-alt);border:1px solid var(--line);border-left:3px solid var(--ink-3)}
+.kl-pernah-info.dikeluarkan{background:var(--red-wash);border-color:var(--red-line);border-left-color:var(--red)}
+.kl-pernah-info svg{width:17px;height:17px;flex:none;margin-top:2px;color:var(--ink-2)}
+.kl-pernah-info.dikeluarkan svg{color:var(--red)}
+.kl-pernah-info b{font-size:13px;font-weight:600;color:var(--ink)}
+.kl-pernah-info p{margin-top:2px;font-size:13px;line-height:1.5;color:var(--ink-2)}
+/* detail anggota, versi pengurus: pintu kedua mengeluarkan anggota */
+.ag-kelola{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;margin-top:22px;
+  padding:16px 18px;border-radius:14px;border:1px solid var(--line);background:var(--bg-alt)}
+.ag-kelola[hidden]{display:none}
+.ag-kelola-t{flex:1;min-width:220px;display:grid;gap:3px}
+.ag-kelola-t b{font-size:14px;font-weight:600;color:var(--ink)}
+.ag-kelola-t span{font-size:13px;line-height:1.5;color:var(--ink-2)}
+/* keluar dari komunitas (anggota sendiri): tautan tenang di bawah status, dialog beralasan opsional */
+.kom-keluar{align-self:center;margin-top:8px;font:inherit;font-size:12.5px;font-weight:500;color:var(--ink-3);background:none;border:0;padding:4px 6px;cursor:pointer;border-radius:6px}
+.kom-keluar:hover{color:var(--red);text-decoration:underline;text-underline-offset:2px}
+.kom-keluar:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.lgn-box.klr-box{max-width:480px;text-align:left;padding:30px 28px 24px}
+.klr-l{margin:14px 0 0;padding-left:18px;display:grid;gap:6px;font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.klr-alasan{margin:18px 0 0;padding:0;border:0;display:grid;gap:10px}
+.klr-alasan legend{padding:0;margin-bottom:10px;font-size:13.5px;font-weight:600;color:var(--ink)}
+.klr-alasan legend span{font-weight:400;color:var(--ink-3)}
+.klr-chips{display:flex;flex-wrap:wrap;gap:8px}
+.klr-chip{position:relative;cursor:pointer}
+.klr-chip input{position:absolute;opacity:0;pointer-events:none}
+.klr-chip span{display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:100px;border:1px solid var(--line);background:var(--card);font-size:13px;color:var(--ink-2)}
+.klr-chip:hover span{border-color:var(--ink-3);color:var(--ink)}
+.klr-chip input:checked + span{border-color:var(--blue);background:var(--blue-wash);color:var(--blue-ink);font-weight:500}
+.klr-chip input:focus-visible + span{outline:3px solid var(--ring);outline-offset:2px}
+.klr-aksi{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
 
 /* kartu permintaan yang diperkaya: kontak, kelengkapan, nomor, catatan */
 .kl-req-panggil{font-weight:500;color:var(--ink-3);font-size:13px}

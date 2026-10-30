@@ -990,8 +990,31 @@
     sec.hidden = false;
   }
 
+  /* pengurus melihat anggota komunitasnya sendiri: tombol Keluarkan, yang membawa ke konfirmasi
+     beralasan di tab Anggota dashboard (satu tempat konfirmasi, bukan dua) */
+  function gambarKelola(nama){
+    const w = el('agKelola');
+    if(!w) return;
+    const D = window.KolavoDashboard;
+    const biasa = !!(kini && kini.kelas === 'l-dibuat' && D && D.built && D.anggotaBiasa.indexOf(nama) >= 0);
+    w.hidden = !biasa;
+    if(!biasa){ w.innerHTML = ''; return; }
+    const peninjau = D.peninjau.indexOf(nama) >= 0;
+    w.innerHTML = '<div class="ag-kelola-t"><b>Kamu pengurus komunitas ini</b>' +
+        '<span>' + (peninjau ? 'Dia sedang jadi peninjau. Cabut perannya dulu di tab Peninjau sebelum mengeluarkannya.'
+          : 'Anggota yang tidak sesuai aturan komunitas bisa dikeluarkan. Kursinya langsung kosong, dan bisa dipulihkan dalam 30 hari.') + '</span></div>' +
+      '<button type="button" class="btn sm tolak" data-ag-keluarkan="' + esc(nama) + '"' + (peninjau ? ' disabled' : '') + '>Keluarkan dari komunitas</button>';
+  }
+  document.addEventListener('click', function(e){
+    const b = e.target.closest('[data-ag-keluarkan]');
+    if(!b) return;
+    const D = window.KolavoDashboard;
+    window.KolavoBukaDashboard();
+    if(D && D.mintaKeluarkan) D.mintaKeluarkan(b.dataset.agKeluarkan);
+  });
+
   window.KolavoBukaAnggota = function(nama){
-    if(gambarAnggota(nama)) window.KolavoKe('scrAnggota');
+    if(gambarAnggota(nama)){ gambarKelola(nama); window.KolavoKe('scrAnggota'); }
   };
 
   function gambarDaftar(terbuka){
@@ -1227,7 +1250,8 @@
 
     if(status === 'anggota'){
       wadah.innerHTML =
-        '<p class="kom-status anggota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.4 2.4 2.4 4.6-5"/></svg>Kamu anggota di sini</p>';
+        '<p class="kom-status anggota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.4 2.4 2.4 4.6-5"/></svg>Kamu anggota di sini</p>' +
+        '<button type="button" class="kom-keluar" data-keluar-kom="' + kini.kelas + '">Keluar dari komunitas</button>';
       return;
     }
 
@@ -1430,6 +1454,91 @@
     window.KolavoKe('scrKomunitas');
   };
   window.KolavoGambarKomunitas = gambar;
+
+  /* ---------- keluar dari komunitas, oleh anggota sendiri (30 Okt 2026) ----------
+     Alasan opsional, hanya dilihat pengurus. Efek data sama dengan dikeluarkan, kecuali
+     tidak bisa dipulihkan pengurus — kembali lewat daftar ulang (tanda "Pernah keluar"). */
+  const ALASAN_KELUAR = ['Sudah tidak aktif di sini', 'Pindah kota atau tempat kerja', 'Bukan komunitas yang aku cari', 'Lainnya'];
+  let keluarKelas = null, pemicuKeluar = null;
+  function namaKomunitas(kelas){
+    const l = document.querySelector('#direktori .ccard .logo-sq.' + kelas), k = l && l.closest('.ccard');
+    return k ? k.querySelector('h3').firstChild.textContent.trim() : 'komunitas ini';
+  }
+  /* komunitas yang mengangkatmu jadi pengurus: lepas jabatan dulu */
+  function pengurusDi(kelas){
+    const dg = window.KolavoKomDiangkat && window.KolavoKomDiangkat();
+    return !!dg && (dg === kelas || dg.kelas === kelas);
+  }
+  function modalKeluar(){
+    let m = el('klrModal');
+    if(m) return m;
+    m = document.createElement('div');
+    m.className = 'lgn'; m.id = 'klrModal'; m.hidden = true;
+    m.innerHTML = '<div class="lgn-scrim" data-klr-tutup></div>' +
+      '<div class="lgn-box klr-box" role="dialog" aria-modal="true" aria-labelledby="klrHead">' +
+        '<button class="lgn-x" type="button" aria-label="Tutup" data-klr-tutup><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
+        '<div id="klrIsi"></div></div>';
+    document.body.appendChild(m);
+    return m;
+  }
+  window.KolavoKeluarKomunitas = function(kelas){
+    keluarKelas = kelas; pemicuKeluar = document.activeElement;
+    const nama = esc(namaKomunitas(kelas)), m = modalKeluar();
+    el('klrIsi').innerHTML = pengurusDi(kelas)
+      ? '<h2 class="lgn-head" id="klrHead">Lepas jabatanmu dulu</h2>' +
+        '<p class="lgn-sub">Kamu pengurus di ' + nama + '. Minta Ketua mencabut jabatanmu di Struktur Kepengurusan, lalu kamu bisa keluar sebagai anggota biasa.</p>' +
+        '<div class="klr-aksi"><button type="button" class="btn sm" data-klr-tutup>Mengerti</button></div>'
+      : '<h2 class="lgn-head" id="klrHead">Keluar dari ' + nama + '?</h2>' +
+        '<ul class="klr-l">' +
+          '<li>Daftar anggota dan persebarannya tertutup lagi untukmu, dan namamu hilang dari daftar anggota.</li>' +
+          '<li>Kenalan yang sudah terhubung tetap. Ajakan kenalan yang belum dijawab lewat komunitas ini dibatalkan, kreditnya kembali.</li>' +
+          '<li>Mau kembali? Daftar lagi kapan saja, dan pengurus akan meninjaunya ulang.</li>' +
+        '</ul>' +
+        '<fieldset class="klr-alasan"><legend>Kenapa keluar? <span>Opsional · hanya dilihat pengurus</span></legend>' +
+          '<div class="klr-chips">' + ALASAN_KELUAR.map(function(a){
+            return '<label class="klr-chip"><input type="radio" name="klrAlasan" value="' + esc(a) + '"><span>' + esc(a) + '</span></label>';
+          }).join('') + '</div>' +
+          '<input class="inp" id="klrCerita" type="text" maxlength="140" placeholder="Ceritakan sedikit (opsional)" aria-label="Cerita singkat, opsional">' +
+        '</fieldset>' +
+        '<div class="klr-aksi"><button type="button" class="btn sm tolak" data-klr-ok>Keluar dari komunitas</button>' +
+          '<button type="button" class="btn outline sm" data-klr-tutup>Batal</button></div>';
+    m.hidden = false;
+    document.body.classList.add('lgn-open');
+    document.documentElement.style.overflow = 'hidden';
+    requestAnimationFrame(function(){ m.classList.add('on'); });
+    setTimeout(function(){ m.classList.add('on'); }, 60);   /* cadangan bila rAF mati di tab tersembunyi */
+    const fokus = m.querySelector('.klr-aksi .btn.outline, .klr-aksi .btn');
+    if(fokus) fokus.focus();
+  };
+  function tutupKeluar(){
+    const m = el('klrModal');
+    if(!m || m.hidden) return;
+    m.classList.remove('on');
+    document.body.classList.remove('lgn-open');
+    document.documentElement.style.overflow = '';
+    setTimeout(function(){ m.hidden = true; }, 170);
+    if(pemicuKeluar && document.contains(pemicuKeluar) && pemicuKeluar.focus) pemicuKeluar.focus();
+  }
+  document.addEventListener('click', function(e){
+    const pemicu = e.target.closest('[data-keluar-kom]');
+    if(pemicu){ e.preventDefault(); window.KolavoKeluarKomunitas(pemicu.dataset.keluarKom); return; }
+    if(e.target.closest('#klrModal [data-klr-tutup]')){ tutupKeluar(); return; }
+    if(!e.target.closest('#klrModal [data-klr-ok]')) return;
+    const A = window.KolavoApp, kelas = keluarKelas, nama = namaKomunitas(kelas);
+    const pil = document.querySelector('#klrModal input[name="klrAlasan"]:checked');
+    const cerita = (el('klrCerita') || {}).value || '';
+    if(A.diajukan) delete A.diajukan[kelas];
+    /* catatan untuk pengurus (riwayat "Keluar & dikeluarkan" + tanda "Pernah keluar" saat daftar ulang) */
+    A.keluarSendiri = A.keluarSendiri || {};
+    A.keluarSendiri[kelas] = { alasan: [pil ? pil.value : '', cerita.trim()].filter(Boolean).join(' — '), waktu: 'baru saja' };
+    tutupKeluar();
+    if(kini && kini.kelas === kelas) gambar();
+    const app = el('scrApp');
+    if(app && !app.hidden && window.KolavoGambarApp) window.KolavoGambarApp('scrApp');
+    if(window.KolavoIsiProfil) window.KolavoIsiProfil();
+    if(window.KolavoToast) window.KolavoToast('Kamu sudah keluar dari ' + nama + '. Daftar lagi kapan saja kalau ingin kembali.');
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') tutupKeluar(); });
 
   /* ---------- gabung ---------- */
   document.addEventListener('click', function(e){

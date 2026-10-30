@@ -2190,6 +2190,64 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .kl-hasil svg{width:13px;height:13px}
 .kl-hasil.diterima{background:var(--green-wash);color:var(--green)}
 .kl-hasil.ditolak{background:var(--red-wash);color:var(--red)}
+.kl-hasil.keluar{background:var(--bg-alt);color:var(--ink-2);border:1px solid var(--line)}
+.kl-riwayat-catatan.keluar{border-left-color:var(--ink-3)}
+/* ---------- keluarkan anggota (30 Okt 2026) ---------- */
+/* menu ⋯ di baris anggota: satu aksi berbahaya, terpisah dari ikon aksi biasa */
+.kl-amenu{display:flex;justify-content:flex-end;margin:-4px 0 10px}
+.kl-amenu-i{display:flex;align-items:flex-start;gap:10px;max-width:340px;padding:10px 14px;border-radius:12px;
+  border:1px solid var(--line);background:var(--card);box-shadow:var(--sh);font:inherit;font-size:13.5px;font-weight:600;text-align:left;cursor:pointer}
+.kl-amenu-i svg{width:17px;height:17px;flex:none;margin-top:1px}
+.kl-amenu-i.hapus{color:var(--red)}
+.kl-amenu-i.hapus:hover{background:var(--red-wash);border-color:var(--red-line)}
+.kl-amenu-i.hapus:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.kl-amenu-i.mati{color:var(--ink-3);cursor:not-allowed}
+.kl-amenu-i small{display:block;margin-top:2px;font-size:12px;font-weight:400;color:var(--ink-2)}
+/* konfirmasi keluarkan: pola .kl-angkat, tapi bernada merah dan beralasan wajib */
+.kl-keluar{display:grid;gap:10px;padding:16px 18px;margin-bottom:10px;border-radius:14px;border:1px dashed var(--red-line);background:var(--red-wash)}
+.kl-keluar-h{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--ink)}
+.kl-keluar-h svg{width:18px;height:18px;color:var(--red);flex:none}
+.kl-keluar-l{margin:0;padding-left:18px;display:grid;gap:4px;font-size:13px;line-height:1.5;color:var(--ink-2)}
+.kl-keluar-l b{color:var(--ink);font-weight:600}
+.kl-keluar-ket{font-weight:400;color:var(--ink-3)}
+.kl-keluar .inp{background:var(--card)}
+.kl-keluar-aksi{display:flex;gap:8px;flex-wrap:wrap}
+.kl-keluar-kanan{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.kl-keluar-sisa{font-size:11.5px;color:var(--ink-3)}
+/* tanda di kartu pendaftar: pernah dikeluarkan (merah) / pernah keluar sendiri (netral) */
+.kl-pernah{display:inline-block;vertical-align:2px;margin-left:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px;white-space:nowrap}
+.kl-pernah.dikeluarkan{background:var(--red-wash);color:var(--red)}
+.kl-pernah.keluar{background:var(--bg-alt);color:var(--ink-2);border:1px solid var(--line)}
+.kl-pernah-info{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:11px 14px;border-radius:12px;background:var(--bg-alt);border:1px solid var(--line);border-left:3px solid var(--ink-3)}
+.kl-pernah-info.dikeluarkan{background:var(--red-wash);border-color:var(--red-line);border-left-color:var(--red)}
+.kl-pernah-info svg{width:17px;height:17px;flex:none;margin-top:2px;color:var(--ink-2)}
+.kl-pernah-info.dikeluarkan svg{color:var(--red)}
+.kl-pernah-info b{font-size:13px;font-weight:600;color:var(--ink)}
+.kl-pernah-info p{margin-top:2px;font-size:13px;line-height:1.5;color:var(--ink-2)}
+/* detail anggota, versi pengurus: pintu kedua mengeluarkan anggota */
+.ag-kelola{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;margin-top:22px;
+  padding:16px 18px;border-radius:14px;border:1px solid var(--line);background:var(--bg-alt)}
+.ag-kelola[hidden]{display:none}
+.ag-kelola-t{flex:1;min-width:220px;display:grid;gap:3px}
+.ag-kelola-t b{font-size:14px;font-weight:600;color:var(--ink)}
+.ag-kelola-t span{font-size:13px;line-height:1.5;color:var(--ink-2)}
+/* keluar dari komunitas (anggota sendiri): tautan tenang di bawah status, dialog beralasan opsional */
+.kom-keluar{align-self:center;margin-top:8px;font:inherit;font-size:12.5px;font-weight:500;color:var(--ink-3);background:none;border:0;padding:4px 6px;cursor:pointer;border-radius:6px}
+.kom-keluar:hover{color:var(--red);text-decoration:underline;text-underline-offset:2px}
+.kom-keluar:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.lgn-box.klr-box{max-width:480px;text-align:left;padding:30px 28px 24px}
+.klr-l{margin:14px 0 0;padding-left:18px;display:grid;gap:6px;font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.klr-alasan{margin:18px 0 0;padding:0;border:0;display:grid;gap:10px}
+.klr-alasan legend{padding:0;margin-bottom:10px;font-size:13.5px;font-weight:600;color:var(--ink)}
+.klr-alasan legend span{font-weight:400;color:var(--ink-3)}
+.klr-chips{display:flex;flex-wrap:wrap;gap:8px}
+.klr-chip{position:relative;cursor:pointer}
+.klr-chip input{position:absolute;opacity:0;pointer-events:none}
+.klr-chip span{display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:100px;border:1px solid var(--line);background:var(--card);font-size:13px;color:var(--ink-2)}
+.klr-chip:hover span{border-color:var(--ink-3);color:var(--ink)}
+.klr-chip input:checked + span{border-color:var(--blue);background:var(--blue-wash);color:var(--blue-ink);font-weight:500}
+.klr-chip input:focus-visible + span{outline:3px solid var(--ring);outline-offset:2px}
+.klr-aksi{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
 
 /* kartu permintaan yang diperkaya: kontak, kelengkapan, nomor, catatan */
 .kl-req-panggil{font-weight:500;color:var(--ink-3);font-size:13px}
@@ -4057,6 +4115,8 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 
       <!-- kontak dibuka lewat persetujuan dua arah, bukan dipajang begitu saja -->
       <div class="ag-kenal" id="agKenal"></div>
+      <!-- hanya untuk pengurus komunitas ini: pintu kedua "Keluarkan dari komunitas" (pintu pertama di tab Anggota) -->
+      <div class="ag-kelola" id="agKelola" hidden></div>
     </div>
   </div>
 </div><!-- /scrAnggota -->
@@ -6019,11 +6079,33 @@ function hitung(){}
         '<span class="logo-sq ' + kelas + '" role="img" aria-label="Logo komunitas"></span>' +
         '<div class="t">' + (alias ? '<div class="al">' + alias + '</div>' : '') + '<div class="n">' + nama + '</div>' +
         '<div class="s">' + [jumlah].concat(jawab).filter(Boolean).join(' · ') + '</div></div></div>' +
-        (dj[kelas] === 'anggota'
-          ? '<span class="status anggota">Anggota</span></div>'
-          : '<span class="status tunggu">Menunggu persetujuan</span></div>');
+        (dj[kelas] === 'anggota' ? aksiIkut(kelas) : '<span class="status tunggu">Menunggu persetujuan</span>') + '</div>';
     }).join('');
   }
+  /* kartu Komunitasku untuk yang sudah diterima: menu ⋯ berisi "Keluar dari komunitas"
+     (dialognya milik 50-js-layar-komunitas, KolavoKeluarKomunitas) */
+  let ikutMenu = null;
+  const IC_LAIN = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>';
+  function aksiIkut(kelas){
+    return '<div class="pf-item-aksi"><span class="status anggota">Anggota</span>' +
+      (ikutMenu === kelas
+        ? '<div class="pf-aksi-btn"><button type="button" class="pf-mini danger" data-keluar-kom="' + kelas + '">Keluar dari komunitas</button>' +
+            '<button type="button" class="pf-mini" data-ikut-menu-tutup>Batal</button></div>'
+        : '<button type="button" class="pf-ic" data-ikut-menu="' + kelas + '" aria-label="Lainnya" title="Lainnya">' + IC_LAIN + '</button>') +
+      '</div>';
+  }
+  function gambarUlangKu(){
+    if(window.KolavoIsiProfil) window.KolavoIsiProfil();
+    const app = document.getElementById('scrApp');
+    if(app && !app.hidden && window.KolavoGambarApp) window.KolavoGambarApp('scrApp');
+  }
+  document.addEventListener('click', function(e){
+    const m = e.target.closest('[data-ikut-menu]');
+    if(m){ e.preventDefault(); ikutMenu = m.dataset.ikutMenu; gambarUlangKu(); return; }
+    if(e.target.closest('[data-ikut-menu-tutup]')){ e.preventDefault(); ikutMenu = null; gambarUlangKu(); return; }
+    /* setelah dialog keluar dibuka, menu kartu dilipat lagi */
+    if(e.target.closest('[data-keluar-kom]')) ikutMenu = null;
+  });
   window.KolavoKomunitasKu = function(){
     return (window.KolavoDibuatItem ? window.KolavoDibuatItem() : '') + itemIkut();
   };
@@ -7701,8 +7783,31 @@ function hitung(){}
     sec.hidden = false;
   }
 
+  /* pengurus melihat anggota komunitasnya sendiri: tombol Keluarkan, yang membawa ke konfirmasi
+     beralasan di tab Anggota dashboard (satu tempat konfirmasi, bukan dua) */
+  function gambarKelola(nama){
+    const w = el('agKelola');
+    if(!w) return;
+    const D = window.KolavoDashboard;
+    const biasa = !!(kini && kini.kelas === 'l-dibuat' && D && D.built && D.anggotaBiasa.indexOf(nama) >= 0);
+    w.hidden = !biasa;
+    if(!biasa){ w.innerHTML = ''; return; }
+    const peninjau = D.peninjau.indexOf(nama) >= 0;
+    w.innerHTML = '<div class="ag-kelola-t"><b>Kamu pengurus komunitas ini</b>' +
+        '<span>' + (peninjau ? 'Dia sedang jadi peninjau. Cabut perannya dulu di tab Peninjau sebelum mengeluarkannya.'
+          : 'Anggota yang tidak sesuai aturan komunitas bisa dikeluarkan. Kursinya langsung kosong, dan bisa dipulihkan dalam 30 hari.') + '</span></div>' +
+      '<button type="button" class="btn sm tolak" data-ag-keluarkan="' + esc(nama) + '"' + (peninjau ? ' disabled' : '') + '>Keluarkan dari komunitas</button>';
+  }
+  document.addEventListener('click', function(e){
+    const b = e.target.closest('[data-ag-keluarkan]');
+    if(!b) return;
+    const D = window.KolavoDashboard;
+    window.KolavoBukaDashboard();
+    if(D && D.mintaKeluarkan) D.mintaKeluarkan(b.dataset.agKeluarkan);
+  });
+
   window.KolavoBukaAnggota = function(nama){
-    if(gambarAnggota(nama)) window.KolavoKe('scrAnggota');
+    if(gambarAnggota(nama)){ gambarKelola(nama); window.KolavoKe('scrAnggota'); }
   };
 
   function gambarDaftar(terbuka){
@@ -7938,7 +8043,8 @@ function hitung(){}
 
     if(status === 'anggota'){
       wadah.innerHTML =
-        '<p class="kom-status anggota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.4 2.4 2.4 4.6-5"/></svg>Kamu anggota di sini</p>';
+        '<p class="kom-status anggota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.4 2.4 2.4 4.6-5"/></svg>Kamu anggota di sini</p>' +
+        '<button type="button" class="kom-keluar" data-keluar-kom="' + kini.kelas + '">Keluar dari komunitas</button>';
       return;
     }
 
@@ -8141,6 +8247,91 @@ function hitung(){}
     window.KolavoKe('scrKomunitas');
   };
   window.KolavoGambarKomunitas = gambar;
+
+  /* ---------- keluar dari komunitas, oleh anggota sendiri (30 Okt 2026) ----------
+     Alasan opsional, hanya dilihat pengurus. Efek data sama dengan dikeluarkan, kecuali
+     tidak bisa dipulihkan pengurus — kembali lewat daftar ulang (tanda "Pernah keluar"). */
+  const ALASAN_KELUAR = ['Sudah tidak aktif di sini', 'Pindah kota atau tempat kerja', 'Bukan komunitas yang aku cari', 'Lainnya'];
+  let keluarKelas = null, pemicuKeluar = null;
+  function namaKomunitas(kelas){
+    const l = document.querySelector('#direktori .ccard .logo-sq.' + kelas), k = l && l.closest('.ccard');
+    return k ? k.querySelector('h3').firstChild.textContent.trim() : 'komunitas ini';
+  }
+  /* komunitas yang mengangkatmu jadi pengurus: lepas jabatan dulu */
+  function pengurusDi(kelas){
+    const dg = window.KolavoKomDiangkat && window.KolavoKomDiangkat();
+    return !!dg && (dg === kelas || dg.kelas === kelas);
+  }
+  function modalKeluar(){
+    let m = el('klrModal');
+    if(m) return m;
+    m = document.createElement('div');
+    m.className = 'lgn'; m.id = 'klrModal'; m.hidden = true;
+    m.innerHTML = '<div class="lgn-scrim" data-klr-tutup></div>' +
+      '<div class="lgn-box klr-box" role="dialog" aria-modal="true" aria-labelledby="klrHead">' +
+        '<button class="lgn-x" type="button" aria-label="Tutup" data-klr-tutup><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
+        '<div id="klrIsi"></div></div>';
+    document.body.appendChild(m);
+    return m;
+  }
+  window.KolavoKeluarKomunitas = function(kelas){
+    keluarKelas = kelas; pemicuKeluar = document.activeElement;
+    const nama = esc(namaKomunitas(kelas)), m = modalKeluar();
+    el('klrIsi').innerHTML = pengurusDi(kelas)
+      ? '<h2 class="lgn-head" id="klrHead">Lepas jabatanmu dulu</h2>' +
+        '<p class="lgn-sub">Kamu pengurus di ' + nama + '. Minta Ketua mencabut jabatanmu di Struktur Kepengurusan, lalu kamu bisa keluar sebagai anggota biasa.</p>' +
+        '<div class="klr-aksi"><button type="button" class="btn sm" data-klr-tutup>Mengerti</button></div>'
+      : '<h2 class="lgn-head" id="klrHead">Keluar dari ' + nama + '?</h2>' +
+        '<ul class="klr-l">' +
+          '<li>Daftar anggota dan persebarannya tertutup lagi untukmu, dan namamu hilang dari daftar anggota.</li>' +
+          '<li>Kenalan yang sudah terhubung tetap. Ajakan kenalan yang belum dijawab lewat komunitas ini dibatalkan, kreditnya kembali.</li>' +
+          '<li>Mau kembali? Daftar lagi kapan saja, dan pengurus akan meninjaunya ulang.</li>' +
+        '</ul>' +
+        '<fieldset class="klr-alasan"><legend>Kenapa keluar? <span>Opsional · hanya dilihat pengurus</span></legend>' +
+          '<div class="klr-chips">' + ALASAN_KELUAR.map(function(a){
+            return '<label class="klr-chip"><input type="radio" name="klrAlasan" value="' + esc(a) + '"><span>' + esc(a) + '</span></label>';
+          }).join('') + '</div>' +
+          '<input class="inp" id="klrCerita" type="text" maxlength="140" placeholder="Ceritakan sedikit (opsional)" aria-label="Cerita singkat, opsional">' +
+        '</fieldset>' +
+        '<div class="klr-aksi"><button type="button" class="btn sm tolak" data-klr-ok>Keluar dari komunitas</button>' +
+          '<button type="button" class="btn outline sm" data-klr-tutup>Batal</button></div>';
+    m.hidden = false;
+    document.body.classList.add('lgn-open');
+    document.documentElement.style.overflow = 'hidden';
+    requestAnimationFrame(function(){ m.classList.add('on'); });
+    setTimeout(function(){ m.classList.add('on'); }, 60);   /* cadangan bila rAF mati di tab tersembunyi */
+    const fokus = m.querySelector('.klr-aksi .btn.outline, .klr-aksi .btn');
+    if(fokus) fokus.focus();
+  };
+  function tutupKeluar(){
+    const m = el('klrModal');
+    if(!m || m.hidden) return;
+    m.classList.remove('on');
+    document.body.classList.remove('lgn-open');
+    document.documentElement.style.overflow = '';
+    setTimeout(function(){ m.hidden = true; }, 170);
+    if(pemicuKeluar && document.contains(pemicuKeluar) && pemicuKeluar.focus) pemicuKeluar.focus();
+  }
+  document.addEventListener('click', function(e){
+    const pemicu = e.target.closest('[data-keluar-kom]');
+    if(pemicu){ e.preventDefault(); window.KolavoKeluarKomunitas(pemicu.dataset.keluarKom); return; }
+    if(e.target.closest('#klrModal [data-klr-tutup]')){ tutupKeluar(); return; }
+    if(!e.target.closest('#klrModal [data-klr-ok]')) return;
+    const A = window.KolavoApp, kelas = keluarKelas, nama = namaKomunitas(kelas);
+    const pil = document.querySelector('#klrModal input[name="klrAlasan"]:checked');
+    const cerita = (el('klrCerita') || {}).value || '';
+    if(A.diajukan) delete A.diajukan[kelas];
+    /* catatan untuk pengurus (riwayat "Keluar & dikeluarkan" + tanda "Pernah keluar" saat daftar ulang) */
+    A.keluarSendiri = A.keluarSendiri || {};
+    A.keluarSendiri[kelas] = { alasan: [pil ? pil.value : '', cerita.trim()].filter(Boolean).join(' — '), waktu: 'baru saja' };
+    tutupKeluar();
+    if(kini && kini.kelas === kelas) gambar();
+    const app = el('scrApp');
+    if(app && !app.hidden && window.KolavoGambarApp) window.KolavoGambarApp('scrApp');
+    if(window.KolavoIsiProfil) window.KolavoIsiProfil();
+    if(window.KolavoToast) window.KolavoToast('Kamu sudah keluar dari ' + nama + '. Daftar lagi kapan saja kalau ingin kembali.');
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') tutupKeluar(); });
 
   /* ---------- gabung ---------- */
   document.addEventListener('click', function(e){
@@ -10063,6 +10254,8 @@ function hitung(){}
     built: false, kom: null, aku: 'Kamu', akuKerja: '', akuKota: '',
     mem: {}, minta: [], anggotaBiasa: [], pengurus: [], peninjau: 'Kamu',
     tab: 'minta', angkatFor: null, ubahFor: null, riwayat: [],
+    /* keluar & dikeluarkan: { nama, jenis: 'dikeluarkan'|'keluar', alasan, oleh, waktu, sisa (hari pulihkan) } */
+    keluar: [], menuFor: null, keluarkanFor: null,
     /* daftar jabatan — satu sumber untuk pemilih jabatan dan tabel Siapa boleh apa */
     jabatan: JABATAN,
     /* penomoran anggota */
@@ -10184,6 +10377,7 @@ function hitung(){}
   const IKON_X   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>';
   const IKON_MATA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>';
   const IKON_KUNCI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
+  const IKON_KELUAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6 1.6 0 3 .5 4.1 1.3M16 16l5 5M21 16l-5 5"/></svg>';
   const IKON_CEK_KECIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
 
   /* ---------- membangun dari komunitas yang baru dibuat ---------- */
@@ -10296,6 +10490,15 @@ function hitung(){}
       D.riwayat.push({ nama: a[0], panggil: a[0].split(' ')[0], kerja: a[1], kota: a[2], status: 'diterima', oleh: D.aku,
         waktu: (2 + Math.floor(i / 3)) + ' minggu lalu', catatan: ALASAN_CONTOH[i % ALASAN_CONTOH.length] });
     });
+    /* contoh: satu anggota yang keluar sendiri, dan satu pendaftar yang pernah dikeluarkan —
+       supaya tampilan "Keluar & dikeluarkan" dan tanda di kartu pendaftar langsung terlihat */
+    D.menuFor = null; D.keluarkanFor = null;
+    D.mem['Sinta Maharani'] = { nama: 'Sinta Maharani', full: 'Sinta Maharani', panggil: 'Sinta', kerja: 'Perawat', kota: 'Bogor',
+      id: D.nomorMode === 'auto' ? fmtId(++D.urut) : '' };
+    D.keluar = [{ nama: 'Sinta Maharani', jenis: 'keluar', alasan: 'Pindah tugas ke luar kota, jarang bisa ikut kegiatan.', waktu: '5 hari lalu' }];
+    const yoga = D.minta.filter(function(r){ return r.nama === 'Yoga Saputra'; })[0];
+    if(yoga) yoga.pernah = { jenis: 'dikeluarkan', waktu: 'Agustus 2026',
+      alasan: 'Berulang kali menawarkan produk investasi ke anggota lewat japri.' };
     D.built = true;
     /* modul lain (Sekretariat) mengosongkan keadaannya sendiri di sini */
     D.onBangun.forEach(function(f){ f(); });
@@ -10528,13 +10731,24 @@ function hitung(){}
       return '<div class="kl-req" data-req="' + r.id + '">' +
           '<div class="kl-req-top">' + av +
             '<div class="t"><div class="kl-req-nm">' + lolos(r.full || r.nama) +
-              ' <span class="kl-req-panggil">“' + lolos(r.panggil) + '”</span></div>' +
+              ' <span class="kl-req-panggil">“' + lolos(r.panggil) + '”</span>' +
+              (r.pernah ? ' <span class="kl-pernah ' + r.pernah.jenis + '">' + (r.pernah.jenis === 'dikeluarkan' ? 'Pernah dikeluarkan' : 'Pernah keluar') + '</span>' : '') + '</div>' +
             '<div class="kl-req-sub">' + lolos(r.kerja) + ' · ' + lolos(r.kota) + '</div></div>' +
             '<span class="kl-req-when">Minta gabung ' + lolos(r.waktu) + '</span>' +
           '</div>' +
-          info + jawab + nomor + catatan + aksi +
+          pernahInfo(r) + info + jawab + nomor + catatan + aksi +
         '</div>';
     }).join('');
+  }
+
+  /* pendaftar yang pernah dikeluarkan / keluar: alasan lama ditunjukkan ke peninjau */
+  function pernahInfo(r){
+    const p = r.pernah;
+    if(!p) return '';
+    const dik = p.jenis === 'dikeluarkan';
+    return '<div class="kl-pernah-info ' + p.jenis + '">' + IKON_KELUAR +
+      '<div><b>' + (dik ? 'Pernah dikeluarkan dari komunitas ini' : 'Pernah keluar sendiri dari komunitas ini') + ' · ' + lolos(p.waktu) + '</b>' +
+      '<p>' + (p.alasan ? (dik ? 'Alasan waktu itu: ' : 'Alasannya: ') + lolos(p.alasan) : 'Tidak menulis alasan.') + '</p></div></div>';
   }
 
   /* kelengkapan profil pendaftar: isian Lengkapi Profil yang belum diisi disebut satu per satu,
@@ -10580,7 +10794,8 @@ function hitung(){}
     mata:    '<path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/>',
     mataOff: '<path d="M3 3l18 18M10.6 6c.5-.1.9-.1 1.4-.1 6.4 0 10 6.5 10 6.5a17.6 17.6 0 0 1-3.2 3.9M6.6 6.7C3.7 8.5 2 12 2 12s3.6 6.5 10 6.5c1.8 0 3.3-.5 4.6-1.2M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
     copot:   '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 11h6"/>',
-    kenal:   '<path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9.5h8M8 12.5h5"/>'
+    kenal:   '<path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9.5h8M8 12.5h5"/>',
+    lain:    '<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>'
   };
   function ib(attr, label, ik, kelas){
     return '<button type="button" class="kl-ib' + (kelas ? ' ' + kelas : '') + '" ' + attr + ' aria-label="' + label + '" data-tip="' + label + '">' +
@@ -10591,7 +10806,56 @@ function hitung(){}
     return ib('data-idubah="' + lolos(nama) + '"', m && m.id ? 'Ubah nomor anggota' : 'Beri nomor anggota', 'nomor');
   }
 
-  /* tab Anggota: tampilan Diterima | Ditolak, daftar dipotong per 10 */
+  /* ---------- keluarkan anggota (30 Okt 2026 — keputusannya di REFERENCE) ----------
+     Esensial: hanya pembuat. Advance: pembuat + pengurus berhak kelola anggota; di prototipe
+     pengurus di komunitas yang mengangkatmu dianggap memegang hak itu. Peninjau tidak bisa. */
+  function bolehKeluarkan(){ return !(D.kom && D.kom.diangkat) || modeAdvance(); }
+  function panggilan(nama){ const m = D.mem[nama]; return (m && m.panggil && m.panggil !== 'Kamu') ? m.panggil : nama.split(' ')[0]; }
+  function tombolLain(nama){
+    if(!bolehKeluarkan() || D.keluarkanFor === nama) return '';
+    return ib('data-amenu="' + lolos(nama) + '" aria-haspopup="menu" aria-expanded="' + (D.menuFor === nama) + '"', 'Lainnya', 'lain');
+  }
+  /* menu ⋯: pemegang jabatan atau peninjau harus dilepas perannya dulu */
+  function menuLain(nama){
+    if(D.menuFor !== nama) return '';
+    const syarat = pengurusBernama(nama) ? 'Cabut jabatannya dulu di Struktur Kepengurusan.'
+      : adaPeninjau(nama) ? 'Cabut peran peninjaunya dulu di tab Peninjau.' : '';
+    return '<div class="kl-amenu" role="menu">' +
+      (syarat
+        ? '<span class="kl-amenu-i mati" role="menuitem" aria-disabled="true">' + IKON_KELUAR + '<span>Keluarkan dari komunitas<small>' + syarat + '</small></span></span>'
+        : '<button type="button" class="kl-amenu-i hapus" role="menuitem" data-keluarkan="' + lolos(nama) + '">' + IKON_KELUAR + 'Keluarkan dari komunitas</button>') +
+      '</div>';
+  }
+  function formKeluarkan(nama){
+    if(D.keluarkanFor !== nama) return '';
+    const p = lolos(panggilan(nama));
+    return '<div class="kl-keluar" role="group" aria-labelledby="klKeluarH">' +
+        '<p class="kl-keluar-h" id="klKeluarH">' + IKON_KELUAR + 'Keluarkan ' + p + ' dari komunitas?</p>' +
+        '<ul class="kl-keluar-l">' +
+          '<li>Kursinya langsung kosong, dan ' + p + ' hilang dari daftar serta persebaran anggota.</li>' +
+          '<li>' + p + ' dapat pemberitahuan singkat, <b>tanpa alasan</b>.</li>' +
+          '<li>Kenalan yang sudah terhubung tetap. Ajakan kenalan yang belum dijawab dibatalkan dan kreditnya kembali.</li>' +
+          '<li>Salah keluarkan? Pulihkan dalam 30 hari dari tampilan <b>Keluar &amp; dikeluarkan</b>.</li>' +
+        '</ul>' +
+        '<label class="kl-angkat-lbl" for="klKeluarAlasan">Alasan <span class="kl-keluar-ket">· wajib, hanya terlihat pengurus</span></label>' +
+        '<input class="inp" id="klKeluarAlasan" type="text" maxlength="140" required aria-required="true" placeholder="Mis. berulang kali promosi produk ke anggota lewat japri">' +
+        '<div class="kl-keluar-aksi"><button type="button" class="btn sm tolak" data-keluarkan-ok="' + lolos(nama) + '" disabled>Keluarkan</button>' +
+          '<button type="button" class="btn outline sm" data-keluarkan-batal>Batal</button></div>' +
+      '</div>';
+  }
+
+  /* dari halaman detail anggota: buka tab Anggota di halaman yang memuat orangnya, konfirmasi terbuka */
+  D.mintaKeluarkan = function(nama){
+    if(D.anggotaBiasa.indexOf(nama) < 0) return;
+    D.anggotaLihat = 'diterima'; D.menuFor = null; D.angkatFor = null; D.idUbahFor = null; D.keluarkanFor = nama;
+    D.halAnggota = Math.floor((D.pengurus.length + D.anggotaBiasa.indexOf(nama)) / PER_HAL);
+    pilihTab('anggota');
+    gambar();
+    const f = el('klKeluarAlasan');
+    if(f){ f.closest('.kl-keluar').scrollIntoView({ block: 'center' }); f.focus({ preventScroll: true }); }
+  };
+
+  /* tab Anggota: tampilan Diterima | Ditolak | Keluar & dikeluarkan, daftar dipotong per 10 */
   const PER_HAL = 10;
   function pagerHtml(hal, kini, awal, tampil, total){
     if(hal <= 1) return '';
@@ -10603,17 +10867,20 @@ function hitung(){}
   function gambarAnggota(){
     el('klAnggotaN').textContent = jumlahAnggota();
     const ditolak = D.riwayat.filter(function(r){ return r.status !== 'diterima'; }).length;
-    if(!ditolak) D.anggotaLihat = 'diterima';
+    const keluarN = D.keluar.length;
+    if((D.anggotaLihat === 'ditolak' && !ditolak) || (D.anggotaLihat === 'keluar' && !keluarN)) D.anggotaLihat = 'diterima';
     const lihat = D.anggotaLihat || 'diterima';
-    const seg = ditolak
+    const seg = (ditolak || keluarN)
       ? '<div class="kl-seg" role="tablist" aria-label="Tampilkan">' +
           '<button type="button" role="tab" data-alihat="diterima" aria-selected="' + (lihat === 'diterima') + '">Diterima <span>' + jumlahAnggota() + '</span></button>' +
-          '<button type="button" role="tab" data-alihat="ditolak" aria-selected="' + (lihat === 'ditolak') + '">Ditolak <span>' + ditolak + '</span></button>' +
+          (ditolak ? '<button type="button" role="tab" data-alihat="ditolak" aria-selected="' + (lihat === 'ditolak') + '">Ditolak <span>' + ditolak + '</span></button>' : '') +
+          (keluarN ? '<button type="button" role="tab" data-alihat="keluar" aria-selected="' + (lihat === 'keluar') + '">Keluar &amp; dikeluarkan <span>' + keluarN + '</span></button>' : '') +
         '</div>'
       : '';
     const wadah = el('klAnggotaList');
     wadah.hidden = lihat !== 'diterima';
-    el('klRiwayatList').hidden = lihat !== 'ditolak';
+    el('klRiwayatList').hidden = lihat === 'diterima';
+    gambarRiwayat();
     const potong = [];
     let html = '';
 
@@ -10621,18 +10888,18 @@ function hitung(){}
     D.pengurus.forEach(function(p){
       const m = D.mem[p.nama] || { nama: p.nama, kerja: '', kota: '' };
       const kanan = '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' + (p.aku ? '<span class="tag hi">Kamu</span>' : '');
-      const t = tombolNomor(p.nama, m);
-      potong.push(baris(m, kanan, t ? '<div class="kl-row-aksi">' + t + '</div>' : '', putusan(p.nama)) + editNomor(p.nama, m));
+      const t = tombolNomor(p.nama, m) + (p.aku ? '' : tombolLain(p.nama));
+      potong.push(baris(m, kanan, t ? '<div class="kl-row-aksi">' + t + '</div>' : '', putusan(p.nama)) + editNomor(p.nama, m) + menuLain(p.nama));
     });
 
     D.anggotaBiasa.forEach(function(nama){
       const m = D.mem[nama];
       let aksi = '';
-      if(D.angkatFor !== nama && D.idUbahFor !== nama){
+      if(D.angkatFor !== nama && D.idUbahFor !== nama && D.keluarkanFor !== nama){
         aksi = '<div class="kl-row-aksi">' + tombolNomor(nama, m) +
-          (modeAdvance() ? ib('data-angkat="' + lolos(nama) + '"', 'Angkat jadi pengurus', 'angkat') : '') + '</div>';
+          (modeAdvance() ? ib('data-angkat="' + lolos(nama) + '"', 'Angkat jadi pengurus', 'angkat') : '') + tombolLain(nama) + '</div>';
       }
-      html = baris(m, '', aksi, putusan(nama)) + editNomor(nama, m);
+      html = baris(m, '', aksi, putusan(nama)) + editNomor(nama, m) + menuLain(nama) + formKeluarkan(nama);
       if(D.angkatFor === nama){
         html += '<div class="kl-angkat">' +
             '<span class="kl-angkat-lbl">Jadikan ' + lolos((m.panggil && m.panggil !== 'Kamu') ? m.panggil : nama.split(' ')[0]) + ':</span>' +
@@ -10859,6 +11126,7 @@ function hitung(){}
   function gambarRiwayat(){
     /* hanya yang ditolak — keputusan diterima sudah ikut di baris anggotanya */
     const wadah = el('klRiwayatList');
+    if(D.anggotaLihat === 'keluar'){ gambarKeluar(wadah); return; }
     const lain = D.riwayat.filter(function(r){ return r.status !== 'diterima'; });
     if(!lain.length){ wadah.innerHTML = ''; return; }
     wadah.innerHTML = '<p class="kl-cb-hint">Pendaftar yang tidak jadi anggota. Catatan keputusannya bisa dilihat semua peninjau.</p>' +
@@ -10878,6 +11146,30 @@ function hitung(){}
           '<span class="kl-hasil ' + (diterima ? 'diterima' : 'ditolak') + '">' + (diterima ? IKON_CEK : IKON_X) + (diterima ? 'Diterima' : 'Ditolak') + '</span>' +
         '</div>';
     }).join('');
+  }
+
+  /* tampilan Keluar & dikeluarkan: yang dikeluarkan bisa dipulihkan 30 hari; yang keluar
+     sendiri tidak (memasukkan orang tanpa persetujuannya itu salah) — mereka daftar ulang */
+  function gambarKeluar(wadah){
+    wadah.innerHTML = '<p class="kl-cb-hint">Yang dikeluarkan bisa dipulihkan dalam 30 hari, lengkap dengan nomor anggota dan jawabannya. Lewat dari itu, jawaban formulirnya dihapus dan yang tersisa hanya ringkasan ini. Yang keluar sendiri tidak bisa dipulihkan pengurus, tapi boleh mendaftar lagi.</p>' +
+      D.keluar.map(function(k, i){
+        const m = D.mem[k.nama] || { nama: k.nama };
+        const dik = k.jenis === 'dikeluarkan';
+        const av = '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(k.nama) + '</div>';
+        const idAtas = (pakaiNomor() && m.id) ? '<div class="mem-id">' + lolos(m.id) + '</div>' : '';
+        const sub = [m.kerja, m.kota, dik ? 'dikeluarkan ' + olehSiapa(k) : 'keluar sendiri', k.waktu].filter(Boolean).map(lolos).join(' · ');
+        const kanan = dik
+          ? '<div class="kl-keluar-kanan"><button type="button" class="btn outline sm" data-pulihkan="' + lolos(k.nama) + '">Pulihkan</button>' +
+              '<span class="kl-keluar-sisa">sisa ' + (k.sisa || 30) + ' hari</span></div>'
+          : '<span class="kl-hasil keluar">Keluar sendiri</span>';
+        return '<div class="kl-riwayat">' + av +
+            '<div class="t">' + idAtas + '<div class="kl-riwayat-nm">' + lolos(k.nama) + '</div>' +
+            '<div class="kl-riwayat-sub">' + sub + '</div>' +
+            '<div class="kl-riwayat-catatan ' + (dik ? 'ditolak' : 'keluar') + '"><div class="kl-riwayat-catatan-h">' + window.KolavoIkon('dokumen') + (dik ? 'Alasan dikeluarkan' : 'Alasan keluar') + '</div>' +
+              '<p>' + (k.alasan ? lolos(k.alasan) : 'Tidak menulis alasan.') + '</p></div></div>' +
+            kanan +
+          '</div>';
+      }).join('');
   }
 
   /* ---------- ganti tab ---------- */
@@ -11007,6 +11299,7 @@ function hitung(){}
     if(e.target.id === 'klJabBaru') D.jabatanTeks = e.target.value;
     if(e.target.id === 'klJabUbah') D.jabEditTeks = e.target.value;
     /* catatan keputusan wajib: tombol Setujui/Tolak hidup setelah ada isinya */
+    if(e.target.id === 'klKeluarAlasan'){ const b = scr.querySelector('[data-keluarkan-ok]'); if(b) b.disabled = !e.target.value.trim(); }
     if(e.target.matches('[data-catatan]')){
       const kosong = !e.target.value.trim();
       e.target.closest('.kl-req').querySelectorAll('[data-setuju],[data-tolak]').forEach(function(b){ b.disabled = kosong; });
@@ -11164,6 +11457,42 @@ function hitung(){}
       if(!adaPeninjau(nama)) D.peninjau.push(nama);
       gambar();
       toast((nama === D.aku ? 'Kamu' : nama.split(' ')[0]) + ' sekarang ikut meninjau pendaftaran.');
+      return;
+    }
+
+    /* keluarkan anggota: menu ⋯ → konfirmasi beralasan → pulihkan dalam 30 hari */
+    const amenu = e.target.closest('[data-amenu]');
+    if(amenu){ const n = amenu.dataset.amenu; D.menuFor = D.menuFor === n ? null : n; gambarAnggota(); return; }
+    const kel = e.target.closest('[data-keluarkan]');
+    if(kel){
+      D.keluarkanFor = kel.dataset.keluarkan; D.menuFor = null; D.angkatFor = null; D.idUbahFor = null;
+      gambarAnggota();
+      const f = el('klKeluarAlasan'); if(f) f.focus();
+      return;
+    }
+    if(e.target.closest('[data-keluarkan-batal]')){ D.keluarkanFor = null; gambarAnggota(); return; }
+    const kelOk = e.target.closest('[data-keluarkan-ok]');
+    if(kelOk){
+      const nama = kelOk.dataset.keluarkanOk, f = el('klKeluarAlasan'), alasan = f ? f.value.trim() : '';
+      if(!alasan){ toast('Tulis alasannya dulu.'); if(f) f.focus(); return; }
+      D.anggotaBiasa = D.anggotaBiasa.filter(function(n){ return n !== nama; });
+      D.keluar.unshift({ nama: nama, jenis: 'dikeluarkan', alasan: alasan, oleh: D.aku, waktu: 'baru saja', sisa: 30 });
+      D.keluarkanFor = null;
+      if(D.catat) D.catat('Kamu mengeluarkan ' + panggilan(nama) + ' dari komunitas');
+      gambar();
+      toast(panggilan(nama) + ' dikeluarkan. Kursinya kosong lagi, dan bisa dipulihkan dalam 30 hari.');
+      return;
+    }
+    const pul = e.target.closest('[data-pulihkan]');
+    if(pul){
+      const nama = pul.dataset.pulihkan;
+      if(penuhEsensial()){ toast('Kuota anggota penuh. Kosongkan satu kursi atau tambah kapasitas dulu.'); return; }
+      D.keluar = D.keluar.filter(function(k){ return k.nama !== nama; });
+      if(D.anggotaBiasa.indexOf(nama) < 0) D.anggotaBiasa.push(nama);
+      if(D.catat) D.catat('Kamu memulihkan keanggotaan ' + panggilan(nama));
+      gambar();
+      const id = pakaiNomor() && D.mem[nama] && D.mem[nama].id;
+      toast(panggilan(nama) + ' kembali jadi anggota' + (id ? ' dengan nomor lamanya, ' + id : '') + '.');
       return;
     }
 
@@ -11391,6 +11720,8 @@ function hitung(){}
   reset();
 
   function catat(teks){ S.jejak.unshift({ teks: teks, waktu: 'baru saja' }); }
+  /* modul dashboard ikut mencatat ke log aktivitas Advance (mis. anggota dikeluarkan / dipulihkan) */
+  D.catat = catat;
   function pemegangAkses(){
     /* di komunitas yang mengangkatmu, Ketua (pemegang langganan) tentu memegang dashboard */
     return D.pengurus.filter(function(p){ return p.aku || S.akses[p.nama] || (D.kom && D.kom.diangkat && p.jabatan === 'Ketua'); });
