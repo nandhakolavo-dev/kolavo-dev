@@ -1807,3 +1807,13 @@ diterapkan ke prototipe kecuali disebut.
 - **Kontrak API frontend = draf**; Dev Lead/tim backend boleh mengubah.
 - **Masih terbuka:** stack backend, database dan cloud (diserahkan ke Dev Lead); badan hukum
   pengendali data dan jadwal tinjauan hukum (Management) — memblokir rilis.
+
+## Tautan legal di menu akun (30 Okt 2026)
+
+- Footer jualan tetap disembunyikan di mode app (`body.m-app footer`). Akibatnya setelah masuk
+  tidak ada jalan ke Kebijakan Privasi / Ketentuan Layanan, jadi keduanya ditaruh di dasar
+  menu akun (`20-nav`, `.acct-legal` di `10-styles`): dua tombol `data-legal` kecil berwarna
+  `--ink-3` di bawah "Keluar", dipisah `.acct-sep`. Pendengar `[data-legal]` yang sama
+  (`50-js-legal`) membukanya, dan kini menutup menu akun lebih dulu bila pemicunya ada di
+  `#acctMenu`. Diselaraskan dengan production (PR satriawinarah/kolavo#1), yang membuang
+  footer dari layar app dengan alasan yang sama.

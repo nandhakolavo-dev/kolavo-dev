@@ -180,7 +180,14 @@
      persetujuan di Lengkapi Profil */
   document.addEventListener('click', function(e){
     const p = e.target.closest('[data-legal]');
-    if(p){ e.preventDefault(); window.KolavoBukaLegal(p.dataset.legal); return; }
+    if(p){
+      e.preventDefault();
+      /* dari menu akun: tutup menunya dulu supaya tidak tertinggal di belakang naskah */
+      const m = p.closest('#acctMenu');
+      if(m){ m.hidden = true; const b = document.getElementById('acctBtn'); if(b) b.setAttribute('aria-expanded', 'false'); }
+      window.KolavoBukaLegal(p.dataset.legal);
+      return;
+    }
     if(buka && e.target.closest('[data-legal-tutup]')) tutup();
   });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && buka) tutup(); });
