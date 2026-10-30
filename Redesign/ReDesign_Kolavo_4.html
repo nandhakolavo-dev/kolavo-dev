@@ -2236,6 +2236,44 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .ag-kelola-t{flex:1;min-width:220px;display:grid;gap:3px}
 .ag-kelola-t b{font-size:14px;font-weight:600;color:var(--ink)}
 .ag-kelola-t span{font-size:13px;line-height:1.5;color:var(--ink-2)}
+/* cari komunitas di etalase beranda: pakai .search direktori, lebarnya dibatasi di tengah */
+.search.et-cari{max-width:600px;margin:-12px auto 0}
+.et-cari-x{flex:none;width:34px;height:34px;border-radius:100px;border:0;background:transparent;color:var(--ink-3);display:grid;place-items:center;cursor:pointer}
+.et-cari-x[hidden]{display:none}
+.et-cari-x:hover{background:var(--bg-alt);color:var(--ink)}
+.et-cari-x:focus-visible{outline:3px solid var(--ring);outline-offset:1px}
+.et-cari-x svg{width:16px;height:16px}
+.et-hasil{margin-top:12px;min-height:18px;text-align:center;font-size:13px;color:var(--ink-3)}
+.et-hasil:empty{margin-top:0;min-height:0}
+#etalaseGrid[hidden]{display:none}
+.et-kosong{margin-top:26px}
+.et-kosong[hidden]{display:none}
+/* ---------- atur posisi gambar (logo kotak / foto bulat) sebelum dipasang ---------- */
+.lgn-box.agb-box{max-width:400px;text-align:left;padding:28px 28px 22px}
+.agb-sub{margin-top:6px;font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.agb-panggung{position:relative;width:280px;height:280px;margin:18px auto 0;overflow:hidden;border-radius:20px;
+  background:repeating-conic-gradient(var(--bg-alt) 0 25%, var(--card) 0 50%) 0 0/20px 20px;
+  cursor:grab;touch-action:none;user-select:none;box-shadow:0 0 0 1px var(--line)}
+.agb-box.bulat .agb-panggung{border-radius:50%}
+.agb-panggung.seret{cursor:grabbing}
+.agb-panggung:focus-visible{outline:3px solid var(--ring);outline-offset:3px}
+.agb-panggung img{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0;pointer-events:none}
+/* garis sepertiga tipis, hanya saat digeser, untuk membantu menengahkan */
+.agb-kisi{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .15s ease;
+  background:linear-gradient(90deg,transparent calc(33.33% - .5px),rgb(255 255 255 / .7) calc(33.33% - .5px) calc(33.33% + .5px),transparent calc(33.33% + .5px) calc(66.66% - .5px),rgb(255 255 255 / .7) calc(66.66% - .5px) calc(66.66% + .5px),transparent calc(66.66% + .5px)),
+             linear-gradient(transparent calc(33.33% - .5px),rgb(255 255 255 / .7) calc(33.33% - .5px) calc(33.33% + .5px),transparent calc(33.33% + .5px) calc(66.66% - .5px),rgb(255 255 255 / .7) calc(66.66% - .5px) calc(66.66% + .5px),transparent calc(66.66% + .5px))}
+.agb-panggung.seret .agb-kisi{opacity:1}
+.agb-zoom{display:flex;align-items:center;gap:10px;width:280px;margin:16px auto 0}
+.agb-zoom input{flex:1;accent-color:var(--blue)}
+.agb-zb{flex:none;width:32px;height:32px;border-radius:100px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);display:grid;place-items:center;cursor:pointer}
+.agb-zb:hover{background:var(--bg-alt);color:var(--ink)}
+.agb-zb:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.agb-zb svg{width:15px;height:15px}
+.agb-reset-w{display:flex;justify-content:center;margin-top:8px}
+.agb-aksi{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.agb-reset{font:inherit;font-size:12.5px;font-weight:500;color:var(--ink-3);background:none;border:0;padding:4px 2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.agb-reset:hover{color:var(--ink)}
+.agb-reset:focus-visible{outline:3px solid var(--ring);border-radius:4px}
 /* keluar dari komunitas (anggota sendiri): tautan tenang di bawah status, dialog beralasan opsional */
 .kom-keluar{align-self:center;display:inline-flex;align-items:center;gap:6px;margin-top:8px;font:inherit;font-size:12.5px;font-weight:500;color:var(--ink-3);background:none;border:0;padding:4px 6px;cursor:pointer;border-radius:6px}
 .kom-keluar svg,.pf-mini svg,.ag-kelola .btn svg{width:15px;height:15px;flex:none}
@@ -3180,7 +3218,21 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
       <h2>Lihat profil komunitas lain.</h2>
       <p class="sec-lede">Komunitas yang sudah memperkenalkan orang-orangnya lewat Kolavo. Buka profilnya untuk mulai bergabung.</p>
     </div>
+    <!-- cari komunitas langsung di beranda: menyaring kartu etalase menurut nama, alias, kota, bentuk, dan ajakan -->
+    <div class="search et-cari" role="search">
+      <div class="q">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="etCari" placeholder="Cari komunitas: nama, kota, atau bentuknya" aria-label="Cari komunitas di Kolavo" aria-describedby="etHasil" autocomplete="off">
+        <button type="button" class="et-cari-x" id="etCariX" aria-label="Hapus pencarian" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
+    </div>
+    <p class="et-hasil" id="etHasil" aria-live="polite"></p>
     <div class="grid" id="etalaseGrid"></div>
+    <div class="empty et-kosong" id="etKosong" hidden>
+      <h3 id="etKosongH">Belum ada komunitas yang cocok</h3>
+      <p>Coba kata lain, atau buat halaman untuk komunitasmu sendiri.</p>
+      <div class="empty-cta"><button type="button" class="btn outline" id="etKosongX">Hapus pencarian</button><a class="btn" href="#pengurus" data-login="pengurus">Buat halaman komunitas</a></div>
+    </div>
   </div>
 </section>
 
@@ -4176,7 +4228,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
         <div class="logopick-t">
           <span class="f-lbl">Logo komunitas<span class="opt">Opsional</span></span>
           <p class="f-why">Bentuknya kotak, minimal 256×256. Belum punya? Sementara dipakai inisial nama di atas warna temamu.</p>
-          <div class="logopick-aksi"><button type="button" class="lnk" id="bkLogoHapus" hidden>Balikin ke inisial</button></div>
+          <div class="logopick-aksi"><button type="button" class="lnk" id="bkLogoAtur" hidden>Atur posisi</button><button type="button" class="lnk" id="bkLogoHapus" hidden>Balikin ke inisial</button></div>
         </div>
       </div>
 
@@ -4798,6 +4850,181 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
     }
   });
   document.addEventListener('keydown', function(e){ if(!bgk.hidden && e.key === 'Escape') tutup(); });
+})();
+</script>
+<script>
+/* ============================================================
+   ATUR POSISI GAMBAR — dipanggil setiap kali foto/logo dipilih,
+   sebelum dipasang. Gambar bisa digeser (seret / tombol panah) dan
+   diperbesar (slider, roda mouse, cubit dua jari), lalu dipotong
+   persis seperti yang terlihat di bingkai.
+     window.KolavoAturGambar(dataUrl, { bentuk: 'kotak'|'bulat', judul })
+       -> Promise<dataUrl | null>   (null = dibatalkan)
+   Hasilnya gambar persegi: logo 512 px PNG (tetap transparan),
+   foto 480 px JPEG. Tidak ada jaringan — semua di kanvas.
+   ============================================================ */
+(function(){
+  const UKURAN = 280;                 /* sisi bingkai di layar, px */
+  const ZOOM_MAKS = 4;
+  let modal = null, img = null, selesai = null, opsi = {};
+  let skalaDasar = 1, zoom = 1, x = 0, y = 0, seret = null, jari = {};
+
+  const el = function(id){ return document.getElementById(id); };
+
+  function bangun(){
+    modal = document.createElement('div');
+    modal.className = 'lgn';
+    modal.id = 'agbModal';
+    modal.hidden = true;
+    modal.innerHTML =
+      '<div class="lgn-scrim" data-agb-batal></div>' +
+      '<div class="lgn-box agb-box" role="dialog" aria-modal="true" aria-labelledby="agbHead" aria-describedby="agbSub">' +
+        '<button class="lgn-x" type="button" aria-label="Tutup" data-agb-batal><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
+        '<h2 class="lgn-head" id="agbHead">Atur posisi</h2>' +
+        '<p class="agb-sub" id="agbSub">Geser gambar supaya bagian pentingnya ada di dalam bingkai. Perbesar dengan slider.</p>' +
+        '<div class="agb-panggung" id="agbPanggung" tabindex="0" role="application" aria-label="Bingkai gambar. Pakai tombol panah untuk menggeser, plus dan minus untuk memperbesar.">' +
+          '<img id="agbImg" alt="" draggable="false">' +
+          '<span class="agb-kisi" aria-hidden="true"></span>' +
+        '</div>' +
+        '<div class="agb-zoom">' +
+          '<button type="button" class="agb-zb" data-agb-zoom="-1" aria-label="Perkecil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/></svg></button>' +
+          '<input type="range" id="agbSlider" min="1" max="' + ZOOM_MAKS + '" step="0.01" value="1" aria-label="Perbesar gambar">' +
+          '<button type="button" class="agb-zb" data-agb-zoom="1" aria-label="Perbesar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>' +
+        '</div>' +
+        '<div class="agb-reset-w"><button type="button" class="agb-reset" data-agb-reset>Kembalikan posisi awal</button></div>' +
+        '<div class="agb-aksi">' +
+          '<button type="button" class="btn outline sm" data-agb-batal>Batal</button>' +
+          '<button type="button" class="btn sm" data-agb-simpan>Pakai gambar ini</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(modal);
+
+    const panggung = el('agbPanggung');
+    panggung.addEventListener('pointerdown', function(e){
+      panggung.setPointerCapture(e.pointerId);
+      jari[e.pointerId] = { x: e.clientX, y: e.clientY };
+      const ids = Object.keys(jari);
+      if(ids.length === 1) seret = { x: e.clientX - x, y: e.clientY - y };
+      else if(ids.length === 2){ const a = jari[ids[0]], b = jari[ids[1]]; seret = { cubit: Math.hypot(a.x - b.x, a.y - b.y), zoom: zoom }; }
+      panggung.classList.add('seret');
+    });
+    panggung.addEventListener('pointermove', function(e){
+      if(!seret || !jari[e.pointerId]) return;
+      jari[e.pointerId] = { x: e.clientX, y: e.clientY };
+      const ids = Object.keys(jari);
+      if(ids.length >= 2 && seret.cubit){
+        const a = jari[ids[0]], b = jari[ids[1]];
+        aturZoom(seret.zoom * Math.hypot(a.x - b.x, a.y - b.y) / seret.cubit);
+      } else if(ids.length === 1 && !seret.cubit){
+        x = e.clientX - seret.x; y = e.clientY - seret.y; jepit(); gambar();
+      }
+    });
+    function lepas(e){
+      delete jari[e.pointerId];
+      const ids = Object.keys(jari);
+      /* dari cubit kembali ke satu jari: lanjut menggeser dari posisi sekarang */
+      seret = ids.length === 1 ? { x: jari[ids[0]].x - x, y: jari[ids[0]].y - y } : null;
+      if(!ids.length) panggung.classList.remove('seret');
+    }
+    panggung.addEventListener('pointerup', lepas);
+    panggung.addEventListener('pointercancel', lepas);
+    panggung.addEventListener('wheel', function(e){ e.preventDefault(); aturZoom(zoom * (e.deltaY < 0 ? 1.08 : 1 / 1.08)); }, { passive: false });
+    panggung.addEventListener('keydown', function(e){
+      const langkah = e.shiftKey ? 30 : 8;
+      const geser = { ArrowLeft: [langkah, 0], ArrowRight: [-langkah, 0], ArrowUp: [0, langkah], ArrowDown: [0, -langkah] }[e.key];
+      if(geser){ e.preventDefault(); x += geser[0]; y += geser[1]; jepit(); gambar(); return; }
+      if(e.key === '+' || e.key === '='){ e.preventDefault(); aturZoom(zoom * 1.1); }
+      if(e.key === '-'){ e.preventDefault(); aturZoom(zoom / 1.1); }
+    });
+    el('agbSlider').addEventListener('input', function(){ aturZoom(+this.value); });
+    modal.addEventListener('click', function(e){
+      const z = e.target.closest('[data-agb-zoom]');
+      if(z){ aturZoom(zoom * (z.dataset.agbZoom === '1' ? 1.2 : 1 / 1.2)); return; }
+      if(e.target.closest('[data-agb-reset]')){ awal(); return; }
+      if(e.target.closest('[data-agb-batal]')){ tutup(null); return; }
+      if(e.target.closest('[data-agb-simpan]')) tutup(potong());
+    });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal && !modal.hidden) tutup(null); });
+  }
+
+  /* gambar selalu menutupi bingkai penuh: tidak boleh ada sisi kosong */
+  function lebar(){ return img.naturalWidth * skalaDasar * zoom; }
+  function tinggi(){ return img.naturalHeight * skalaDasar * zoom; }
+  function jepit(){
+    x = Math.min(0, Math.max(UKURAN - lebar(), x));
+    y = Math.min(0, Math.max(UKURAN - tinggi(), y));
+  }
+  function gambar(){
+    const g = el('agbImg');
+    g.style.width = lebar() + 'px';
+    g.style.height = tinggi() + 'px';
+    g.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    el('agbSlider').value = zoom;
+  }
+  /* zoom berporos di tengah bingkai, supaya yang sedang dilihat tetap di tengah */
+  function aturZoom(z){
+    z = Math.min(ZOOM_MAKS, Math.max(1, z));
+    const tx = (UKURAN / 2 - x) / lebar(), ty = (UKURAN / 2 - y) / tinggi();
+    zoom = z;
+    x = UKURAN / 2 - tx * lebar();
+    y = UKURAN / 2 - ty * tinggi();
+    jepit(); gambar();
+  }
+  function awal(){
+    skalaDasar = Math.max(UKURAN / img.naturalWidth, UKURAN / img.naturalHeight);
+    zoom = 1;
+    x = (UKURAN - lebar()) / 2;
+    y = (UKURAN - tinggi()) / 2;
+    gambar();
+  }
+  function potong(){
+    const bulat = opsi.bentuk === 'bulat', sisi = bulat ? 480 : 512, r = sisi / UKURAN;
+    const kanvas = document.createElement('canvas');
+    kanvas.width = kanvas.height = sisi;
+    const ctx = kanvas.getContext('2d');
+    if(bulat){ ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, sisi, sisi); }
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, x * r, y * r, lebar() * r, tinggi() * r);
+    return bulat ? kanvas.toDataURL('image/jpeg', 0.9) : kanvas.toDataURL('image/png');
+  }
+  let pemicu = null;
+  function tutup(hasil){
+    modal.classList.remove('on');
+    document.body.classList.remove('lgn-open');
+    document.documentElement.style.overflow = '';
+    setTimeout(function(){ modal.hidden = true; }, 170);
+    if(pemicu && document.contains(pemicu) && pemicu.focus) pemicu.focus();
+    const f = selesai; selesai = null;
+    if(f) f(hasil);
+  }
+
+  window.KolavoAturGambar = function(dataUrl, o){
+    opsi = o || {};
+    if(!modal) bangun();
+    pemicu = document.activeElement;
+    return new Promise(function(res){
+      selesai = res;
+      img = new Image();
+      img.onload = function(){
+        const g = el('agbImg');
+        g.src = dataUrl;
+        modal.querySelector('.agb-box').classList.toggle('bulat', opsi.bentuk === 'bulat');
+        el('agbHead').textContent = opsi.judul || (opsi.bentuk === 'bulat' ? 'Atur posisi foto' : 'Atur posisi logo');
+        awal();
+        modal.hidden = false;
+        document.body.classList.add('lgn-open');
+        document.documentElement.style.overflow = 'hidden';
+        requestAnimationFrame(function(){ modal.classList.add('on'); });
+        setTimeout(function(){ modal.classList.add('on'); }, 60);   /* cadangan bila rAF mati di tab tersembunyi */
+        el('agbPanggung').focus();
+      };
+      img.onerror = function(){
+        if(window.KolavoToast) window.KolavoToast('Gambarnya tidak bisa dibuka. Coba berkas lain.');
+        selesai = null; res(null);
+      };
+      img.src = dataUrl;
+    });
+  };
 })();
 </script>
 <!-- ============================================================
@@ -6737,6 +6964,13 @@ function hitung(){}
 
   pilih.addEventListener('click', function(){ file.click(); });
 
+  /* foto baru lewat Atur posisi dulu (bingkai bulat), baru dipasang */
+  function aturFoto(sumber){
+    return window.KolavoAturGambar
+      ? window.KolavoAturGambar(sumber, { bentuk: 'bulat', judul: 'Atur posisi foto' })
+      : Promise.resolve(sumber);
+  }
+
   file.addEventListener('change', function(){
     const f = file.files && file.files[0];
     if(!f) return;
@@ -6747,9 +6981,12 @@ function hitung(){}
     }
     const baca = new FileReader();
     baca.onload = function(){
-      fotoDraf = baca.result;
-      pasangFoto(fotoDraf);      /* pratinjau; baru permanen setelah Simpan */
-      balik.hidden = false;
+      aturFoto(baca.result).then(function(hasil){
+        if(!hasil) return;
+        fotoDraf = hasil;
+        pasangFoto(fotoDraf);      /* pratinjau; baru permanen setelah Simpan */
+        balik.hidden = false;
+      });
     };
     baca.readAsDataURL(f);
     file.value = '';
@@ -6779,10 +7016,13 @@ function hitung(){}
       }
       const baca = new FileReader();
       baca.onload = function(){
-        fotoSimpan = fotoDraf = baca.result;
-        pasangFoto(fotoSimpan);
-        segarPf();
-        if(window.KolavoToast) window.KolavoToast('Foto profil diperbarui.');
+        aturFoto(baca.result).then(function(hasil){
+          if(!hasil) return;
+          fotoSimpan = fotoDraf = hasil;
+          pasangFoto(fotoSimpan);
+          segarPf();
+          if(window.KolavoToast) window.KolavoToast('Foto profil diperbarui.');
+        });
       };
       baca.readAsDataURL(f);
       pfFile.value = '';
@@ -9631,6 +9871,8 @@ function hitung(){}
   let urut   = 2;
   let warna  = WARNA[0];
   let logo   = '';
+  /* gambar asli sebelum dipotong, supaya "Atur posisi" bisa diulang tanpa makin buram */
+  let logoAsli = '';
   let slugKetik = false;
   let dibuat = null;
   let nomorMode = 'manual';   /* manual | auto | off — V4: mulai dari nomor custom, standar ditentukan sambil jalan */
@@ -9660,6 +9902,17 @@ function hitung(){}
     kotak.textContent = logo ? '' : inisial(el('bkNama').value);
     kotak.style.backgroundImage = logo ? 'url("' + logo + '")' : '';
     el('bkLogoHapus').hidden = !logo;
+    el('bkLogoAtur').hidden = !logoAsli;
+  }
+  /* setiap logo baru lewat Atur posisi dulu, baru dipasang */
+  function aturLogo(sumber){
+    const atur = window.KolavoAturGambar
+      ? window.KolavoAturGambar(sumber, { bentuk: 'kotak', judul: 'Atur posisi logo' })
+      : Promise.resolve(sumber);
+    atur.then(function(hasil){
+      if(!hasil) return;
+      logo = hasil; logoAsli = sumber; gambarLogo();
+    });
   }
 
   el('bkLogoPilih').addEventListener('click', function(){ el('bkLogoFile').click(); });
@@ -9667,11 +9920,12 @@ function hitung(){}
     const f = this.files && this.files[0];
     if(!f) return;
     const baca = new FileReader();
-    baca.onload = function(ev){ logo = ev.target.result; gambarLogo(); };
+    baca.onload = function(ev){ aturLogo(ev.target.result); };
     baca.readAsDataURL(f);
     this.value = '';
   });
-  el('bkLogoHapus').addEventListener('click', function(){ logo = ''; gambarLogo(); });
+  el('bkLogoHapus').addEventListener('click', function(){ logo = ''; logoAsli = ''; gambarLogo(); });
+  el('bkLogoAtur').addEventListener('click', function(){ if(logoAsli) aturLogo(logoAsli); });
 
   /* ---------- alamat halaman ----------
      Nama panjang jadi singkatan seperti yang sudah dipakai komunitas asli:
@@ -10094,7 +10348,7 @@ function hitung(){}
     const wr = scr.querySelector('input[name="bkWarna"][value="' + warna + '"]');
     if(wr) wr.checked = true;
     pakaiWarna();
-    logo = dibuat.logo || '';
+    logo = dibuat.logo || ''; logoAsli = logo;
     nomorMode = dibuat.nomorMode || 'manual';
     el('bkKode').value = dibuat.kode || ''; kodeKetik = true;
     tanya = (dibuat.tanya || []).filter(function(t){ return t.id !== 'nickname'; }).map(function(t){
@@ -10140,7 +10394,7 @@ function hitung(){}
     warna = WARNA[0];
     const wr = scr.querySelector('input[name="bkWarna"][value="' + warna + '"]'); if(wr) wr.checked = true;
     pakaiWarna();
-    logo = ''; nomorMode = 'manual';
+    logo = ''; logoAsli = ''; nomorMode = 'manual';
     tanya = [{ id: 'q' + (++urut), judul: '', tanya: '', tipe: 'tahun', wajib: false, bawaan: true },
              { id: 'q' + (++urut), judul: 'Alasan Bergabung', tanya: 'Kenapa kamu ingin bergabung di komunitas ini?', tipe: 'teks', wajib: false, bawaan: false }];
     const h1 = scr.querySelector('.ph-h1'); if(h1) h1.textContent = 'Bikin basecamp komunitasmu.';
@@ -13850,7 +14104,38 @@ function hitung(){}
       }
       w.appendChild(c);
     });
+    saringEtalase();
   }
+
+  /* cari di etalase beranda: cocokkan tiap kata dengan nama, alias, lokasi, bentuk, dan ajakan kartu */
+  function normal(s){ return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+  function saringEtalase(){
+    const w = document.getElementById('etalaseGrid'), inp = document.getElementById('etCari');
+    if(!w || !inp) return;
+    const q = normal(inp.value).trim(), kata = q.split(/\s+/).filter(Boolean);
+    const kartu = [].slice.call(w.querySelectorAll('.ccard'));
+    let tampil = 0;
+    kartu.forEach(function(k){
+      const teks = normal([k.textContent, k.dataset.alias, k.dataset.bentuk].join(' '));
+      const cocok = kata.every(function(x){ return teks.indexOf(x) >= 0; });
+      k.hidden = !cocok;
+      if(cocok) tampil++;
+    });
+    document.getElementById('etCariX').hidden = !q;
+    const kosong = document.getElementById('etKosong');
+    kosong.hidden = !q || tampil > 0;
+    w.hidden = !!q && !tampil;
+    if(!kosong.hidden) document.getElementById('etKosongH').textContent = 'Belum ada komunitas yang cocok dengan “' + inp.value.trim() + '”';
+    document.getElementById('etHasil').textContent = q ? (tampil ? 'Menampilkan ' + tampil + ' dari ' + kartu.length + ' komunitas' : '') : '';
+  }
+  document.addEventListener('input', function(e){ if(e.target.id === 'etCari') saringEtalase(); });
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('#etCariX, #etKosongX')) return;
+    const inp = document.getElementById('etCari');
+    inp.value = '';
+    saringEtalase();
+    inp.focus();
+  });
   sinkronDibuat();
   pasangAlias();
   gambarEtalase();

@@ -43,6 +43,8 @@
   let urut   = 2;
   let warna  = WARNA[0];
   let logo   = '';
+  /* gambar asli sebelum dipotong, supaya "Atur posisi" bisa diulang tanpa makin buram */
+  let logoAsli = '';
   let slugKetik = false;
   let dibuat = null;
   let nomorMode = 'manual';   /* manual | auto | off — V4: mulai dari nomor custom, standar ditentukan sambil jalan */
@@ -72,6 +74,17 @@
     kotak.textContent = logo ? '' : inisial(el('bkNama').value);
     kotak.style.backgroundImage = logo ? 'url("' + logo + '")' : '';
     el('bkLogoHapus').hidden = !logo;
+    el('bkLogoAtur').hidden = !logoAsli;
+  }
+  /* setiap logo baru lewat Atur posisi dulu, baru dipasang */
+  function aturLogo(sumber){
+    const atur = window.KolavoAturGambar
+      ? window.KolavoAturGambar(sumber, { bentuk: 'kotak', judul: 'Atur posisi logo' })
+      : Promise.resolve(sumber);
+    atur.then(function(hasil){
+      if(!hasil) return;
+      logo = hasil; logoAsli = sumber; gambarLogo();
+    });
   }
 
   el('bkLogoPilih').addEventListener('click', function(){ el('bkLogoFile').click(); });
@@ -79,11 +92,12 @@
     const f = this.files && this.files[0];
     if(!f) return;
     const baca = new FileReader();
-    baca.onload = function(ev){ logo = ev.target.result; gambarLogo(); };
+    baca.onload = function(ev){ aturLogo(ev.target.result); };
     baca.readAsDataURL(f);
     this.value = '';
   });
-  el('bkLogoHapus').addEventListener('click', function(){ logo = ''; gambarLogo(); });
+  el('bkLogoHapus').addEventListener('click', function(){ logo = ''; logoAsli = ''; gambarLogo(); });
+  el('bkLogoAtur').addEventListener('click', function(){ if(logoAsli) aturLogo(logoAsli); });
 
   /* ---------- alamat halaman ----------
      Nama panjang jadi singkatan seperti yang sudah dipakai komunitas asli:
@@ -506,7 +520,7 @@
     const wr = scr.querySelector('input[name="bkWarna"][value="' + warna + '"]');
     if(wr) wr.checked = true;
     pakaiWarna();
-    logo = dibuat.logo || '';
+    logo = dibuat.logo || ''; logoAsli = logo;
     nomorMode = dibuat.nomorMode || 'manual';
     el('bkKode').value = dibuat.kode || ''; kodeKetik = true;
     tanya = (dibuat.tanya || []).filter(function(t){ return t.id !== 'nickname'; }).map(function(t){
@@ -552,7 +566,7 @@
     warna = WARNA[0];
     const wr = scr.querySelector('input[name="bkWarna"][value="' + warna + '"]'); if(wr) wr.checked = true;
     pakaiWarna();
-    logo = ''; nomorMode = 'manual';
+    logo = ''; logoAsli = ''; nomorMode = 'manual';
     tanya = [{ id: 'q' + (++urut), judul: '', tanya: '', tipe: 'tahun', wajib: false, bawaan: true },
              { id: 'q' + (++urut), judul: 'Alasan Bergabung', tanya: 'Kenapa kamu ingin bergabung di komunitas ini?', tipe: 'teks', wajib: false, bawaan: false }];
     const h1 = scr.querySelector('.ph-h1'); if(h1) h1.textContent = 'Bikin basecamp komunitasmu.';

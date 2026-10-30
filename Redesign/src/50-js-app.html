@@ -189,7 +189,38 @@
       }
       w.appendChild(c);
     });
+    saringEtalase();
   }
+
+  /* cari di etalase beranda: cocokkan tiap kata dengan nama, alias, lokasi, bentuk, dan ajakan kartu */
+  function normal(s){ return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+  function saringEtalase(){
+    const w = document.getElementById('etalaseGrid'), inp = document.getElementById('etCari');
+    if(!w || !inp) return;
+    const q = normal(inp.value).trim(), kata = q.split(/\s+/).filter(Boolean);
+    const kartu = [].slice.call(w.querySelectorAll('.ccard'));
+    let tampil = 0;
+    kartu.forEach(function(k){
+      const teks = normal([k.textContent, k.dataset.alias, k.dataset.bentuk].join(' '));
+      const cocok = kata.every(function(x){ return teks.indexOf(x) >= 0; });
+      k.hidden = !cocok;
+      if(cocok) tampil++;
+    });
+    document.getElementById('etCariX').hidden = !q;
+    const kosong = document.getElementById('etKosong');
+    kosong.hidden = !q || tampil > 0;
+    w.hidden = !!q && !tampil;
+    if(!kosong.hidden) document.getElementById('etKosongH').textContent = 'Belum ada komunitas yang cocok dengan “' + inp.value.trim() + '”';
+    document.getElementById('etHasil').textContent = q ? (tampil ? 'Menampilkan ' + tampil + ' dari ' + kartu.length + ' komunitas' : '') : '';
+  }
+  document.addEventListener('input', function(e){ if(e.target.id === 'etCari') saringEtalase(); });
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('#etCariX, #etKosongX')) return;
+    const inp = document.getElementById('etCari');
+    inp.value = '';
+    saringEtalase();
+    inp.focus();
+  });
   sinkronDibuat();
   pasangAlias();
   gambarEtalase();

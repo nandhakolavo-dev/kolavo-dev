@@ -131,7 +131,21 @@
       <h2>Lihat profil komunitas lain.</h2>
       <p class="sec-lede">Komunitas yang sudah memperkenalkan orang-orangnya lewat Kolavo. Buka profilnya untuk mulai bergabung.</p>
     </div>
+    <!-- cari komunitas langsung di beranda: menyaring kartu etalase menurut nama, alias, kota, bentuk, dan ajakan -->
+    <div class="search et-cari" role="search">
+      <div class="q">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="etCari" placeholder="Cari komunitas: nama, kota, atau bentuknya" aria-label="Cari komunitas di Kolavo" aria-describedby="etHasil" autocomplete="off">
+        <button type="button" class="et-cari-x" id="etCariX" aria-label="Hapus pencarian" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
+    </div>
+    <p class="et-hasil" id="etHasil" aria-live="polite"></p>
     <div class="grid" id="etalaseGrid"></div>
+    <div class="empty et-kosong" id="etKosong" hidden>
+      <h3 id="etKosongH">Belum ada komunitas yang cocok</h3>
+      <p>Coba kata lain, atau buat halaman untuk komunitasmu sendiri.</p>
+      <div class="empty-cta"><button type="button" class="btn outline" id="etKosongX">Hapus pencarian</button><a class="btn" href="#pengurus" data-login="pengurus">Buat halaman komunitas</a></div>
+    </div>
   </div>
 </section>
 

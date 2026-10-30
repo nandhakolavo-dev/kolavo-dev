@@ -2193,6 +2193,44 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .ag-kelola-t{flex:1;min-width:220px;display:grid;gap:3px}
 .ag-kelola-t b{font-size:14px;font-weight:600;color:var(--ink)}
 .ag-kelola-t span{font-size:13px;line-height:1.5;color:var(--ink-2)}
+/* cari komunitas di etalase beranda: pakai .search direktori, lebarnya dibatasi di tengah */
+.search.et-cari{max-width:600px;margin:-12px auto 0}
+.et-cari-x{flex:none;width:34px;height:34px;border-radius:100px;border:0;background:transparent;color:var(--ink-3);display:grid;place-items:center;cursor:pointer}
+.et-cari-x[hidden]{display:none}
+.et-cari-x:hover{background:var(--bg-alt);color:var(--ink)}
+.et-cari-x:focus-visible{outline:3px solid var(--ring);outline-offset:1px}
+.et-cari-x svg{width:16px;height:16px}
+.et-hasil{margin-top:12px;min-height:18px;text-align:center;font-size:13px;color:var(--ink-3)}
+.et-hasil:empty{margin-top:0;min-height:0}
+#etalaseGrid[hidden]{display:none}
+.et-kosong{margin-top:26px}
+.et-kosong[hidden]{display:none}
+/* ---------- atur posisi gambar (logo kotak / foto bulat) sebelum dipasang ---------- */
+.lgn-box.agb-box{max-width:400px;text-align:left;padding:28px 28px 22px}
+.agb-sub{margin-top:6px;font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.agb-panggung{position:relative;width:280px;height:280px;margin:18px auto 0;overflow:hidden;border-radius:20px;
+  background:repeating-conic-gradient(var(--bg-alt) 0 25%, var(--card) 0 50%) 0 0/20px 20px;
+  cursor:grab;touch-action:none;user-select:none;box-shadow:0 0 0 1px var(--line)}
+.agb-box.bulat .agb-panggung{border-radius:50%}
+.agb-panggung.seret{cursor:grabbing}
+.agb-panggung:focus-visible{outline:3px solid var(--ring);outline-offset:3px}
+.agb-panggung img{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0;pointer-events:none}
+/* garis sepertiga tipis, hanya saat digeser, untuk membantu menengahkan */
+.agb-kisi{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .15s ease;
+  background:linear-gradient(90deg,transparent calc(33.33% - .5px),rgb(255 255 255 / .7) calc(33.33% - .5px) calc(33.33% + .5px),transparent calc(33.33% + .5px) calc(66.66% - .5px),rgb(255 255 255 / .7) calc(66.66% - .5px) calc(66.66% + .5px),transparent calc(66.66% + .5px)),
+             linear-gradient(transparent calc(33.33% - .5px),rgb(255 255 255 / .7) calc(33.33% - .5px) calc(33.33% + .5px),transparent calc(33.33% + .5px) calc(66.66% - .5px),rgb(255 255 255 / .7) calc(66.66% - .5px) calc(66.66% + .5px),transparent calc(66.66% + .5px))}
+.agb-panggung.seret .agb-kisi{opacity:1}
+.agb-zoom{display:flex;align-items:center;gap:10px;width:280px;margin:16px auto 0}
+.agb-zoom input{flex:1;accent-color:var(--blue)}
+.agb-zb{flex:none;width:32px;height:32px;border-radius:100px;border:1px solid var(--line);background:var(--card);color:var(--ink-2);display:grid;place-items:center;cursor:pointer}
+.agb-zb:hover{background:var(--bg-alt);color:var(--ink)}
+.agb-zb:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.agb-zb svg{width:15px;height:15px}
+.agb-reset-w{display:flex;justify-content:center;margin-top:8px}
+.agb-aksi{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.agb-reset{font:inherit;font-size:12.5px;font-weight:500;color:var(--ink-3);background:none;border:0;padding:4px 2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.agb-reset:hover{color:var(--ink)}
+.agb-reset:focus-visible{outline:3px solid var(--ring);border-radius:4px}
 /* keluar dari komunitas (anggota sendiri): tautan tenang di bawah status, dialog beralasan opsional */
 .kom-keluar{align-self:center;display:inline-flex;align-items:center;gap:6px;margin-top:8px;font:inherit;font-size:12.5px;font-weight:500;color:var(--ink-3);background:none;border:0;padding:4px 6px;cursor:pointer;border-radius:6px}
 .kom-keluar svg,.pf-mini svg,.ag-kelola .btn svg{width:15px;height:15px;flex:none}

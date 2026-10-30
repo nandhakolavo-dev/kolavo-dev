@@ -1850,3 +1850,17 @@ diterapkan ke prototipe kecuali disebut.
   keluarkan disatukan dalam satu menu kebab **tegak** (tiga titik atas-bawah, sama dengan
   `IC_KEBAB` kartu Komunitasku); ikon nomor terpisah di baris dihapus. "Angkat jadi pengurus"
   (Advance) tetap ikon tersendiri.
+
+## Cari komunitas di beranda & atur posisi gambar (30 Okt 2026)
+
+- **Cari di etalase beranda** (`#etalase`, `30-layer-scrBeranda`): kolom `.search` yang sama dengan
+  direktori, lebarnya 600px di tengah. Menyaring kartu etalase per kata (nama, alias, lokasi, bentuk,
+  ajakan; tanpa beda huruf besar & aksen). Baris "Menampilkan n dari m komunitas"; bila tidak ada yang
+  cocok, kotak kosong dengan "Hapus pencarian" dan ajakan "Buat halaman komunitas" (`data-login`).
+  Logika di `50-js-app` (`saringEtalase`, dipanggil ulang setiap etalase digambar).
+- **Atur posisi gambar** (`50-js-atur-gambar`, `window.KolavoAturGambar(dataUrl, {bentuk, judul})` →
+  Promise hasil/null). Setiap logo dan foto yang dipilih lewat editor ini dulu: seret untuk menggeser,
+  slider/roda/cubit untuk zoom (1–4×, berporos di tengah), tombol panah ±. Gambar selalu menutupi
+  bingkai. Logo = bingkai kotak, hasil PNG 512px (transparan tetap); foto = bingkai bulat, JPEG 480px.
+  Dipasang di logo Buat (`bkLogoFile`), foto Lengkapi (`idFile`), foto Profil (`pfFotoFile`). Logo
+  menyimpan gambar asli sehingga **"Atur posisi"** bisa diulang tanpa makin buram.
