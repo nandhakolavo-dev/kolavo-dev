@@ -990,6 +990,10 @@
     sec.hidden = false;
   }
 
+  /* keluar = pintu + panah keluar, bentuk yang sama dengan "Keluar" di menu akun */
+  const IKON_KELUAR_KOM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>';
+  window.KolavoIkonKeluar = IKON_KELUAR_KOM;
+
   /* pengurus melihat anggota komunitasnya sendiri: tombol Keluarkan, yang membawa ke konfirmasi
      beralasan di tab Anggota dashboard (satu tempat konfirmasi, bukan dua) */
   function gambarKelola(nama){
@@ -1003,7 +1007,7 @@
     w.innerHTML = '<div class="ag-kelola-t"><b>Kamu pengurus komunitas ini</b>' +
         '<span>' + (peninjau ? 'Dia sedang jadi peninjau. Cabut perannya dulu di tab Peninjau sebelum mengeluarkannya.'
           : 'Anggota yang tidak sesuai aturan komunitas bisa dikeluarkan. Kursinya langsung kosong, dan bisa dipulihkan dalam 30 hari.') + '</span></div>' +
-      '<button type="button" class="btn sm tolak" data-ag-keluarkan="' + esc(nama) + '"' + (peninjau ? ' disabled' : '') + '>Keluarkan dari komunitas</button>';
+      '<button type="button" class="btn sm tolak" data-ag-keluarkan="' + esc(nama) + '"' + (peninjau ? ' disabled' : '') + '>' + IKON_KELUAR_KOM + 'Keluarkan dari komunitas</button>';
   }
   document.addEventListener('click', function(e){
     const b = e.target.closest('[data-ag-keluarkan]');
@@ -1251,7 +1255,7 @@
     if(status === 'anggota'){
       wadah.innerHTML =
         '<p class="kom-status anggota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.4 2.4 2.4 4.6-5"/></svg>Kamu anggota di sini</p>' +
-        '<button type="button" class="kom-keluar" data-keluar-kom="' + kini.kelas + '">Keluar dari komunitas</button>';
+        '<button type="button" class="kom-keluar" data-keluar-kom="' + kini.kelas + '">' + IKON_KELUAR_KOM + 'Keluar dari komunitas</button>';
       return;
     }
 

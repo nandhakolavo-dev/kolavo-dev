@@ -340,11 +340,12 @@
   /* kartu Komunitasku untuk yang sudah diterima: menu ⋯ berisi "Keluar dari komunitas"
      (dialognya milik 50-js-layar-komunitas, KolavoKeluarKomunitas) */
   let ikutMenu = null;
-  const IC_LAIN = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>';
+  /* kebab tegak, sama dengan IC_KEBAB kartu komunitas buatan sendiri */
+  const IC_LAIN = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg>';
   function aksiIkut(kelas){
     return '<div class="pf-item-aksi"><span class="status anggota">Anggota</span>' +
       (ikutMenu === kelas
-        ? '<div class="pf-aksi-btn"><button type="button" class="pf-mini danger" data-keluar-kom="' + kelas + '">Keluar dari komunitas</button>' +
+        ? '<div class="pf-aksi-btn"><button type="button" class="pf-mini danger" data-keluar-kom="' + kelas + '">' + (window.KolavoIkonKeluar || '') + 'Keluar dari komunitas</button>' +
             '<button type="button" class="pf-mini" data-ikut-menu-tutup>Batal</button></div>'
         : '<button type="button" class="pf-ic" data-ikut-menu="' + kelas + '" aria-label="Lainnya" title="Lainnya">' + IC_LAIN + '</button>') +
       '</div>';

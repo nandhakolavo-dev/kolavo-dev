@@ -1845,3 +1845,8 @@ diterapkan ke prototipe kecuali disebut.
 **Riwayat**
 - Tab Anggota mendapat tampilan **"Keluar & dikeluarkan"** di samping "Ditolak" (kedua paket);
   Advance juga mencatatnya di log aktivitas. Tanpa notifikasi ke pengurus lain.
+- **Revisi ikon & menu (30 Okt 2026).** Ikon keluar = pintu + panah keluar (bentuk "Keluar" di
+  menu akun), dipakai di semua pintu keluar/keluarkan. Di tab Anggota, nomor anggota dan
+  keluarkan disatukan dalam satu menu kebab **tegak** (tiga titik atas-bawah, sama dengan
+  `IC_KEBAB` kartu Komunitasku); ikon nomor terpisah di baris dihapus. "Angkat jadi pengurus"
+  (Advance) tetap ikon tersendiri.

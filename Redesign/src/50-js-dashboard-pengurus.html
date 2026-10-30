@@ -169,7 +169,9 @@
   const IKON_X   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>';
   const IKON_MATA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>';
   const IKON_KUNCI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
-  const IKON_KELUAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6 1.6 0 3 .5 4.1 1.3M16 16l5 5M21 16l-5 5"/></svg>';
+  /* keluar = pintu + panah keluar, bentuk yang sama dengan "Keluar" di menu akun */
+  const IKON_KELUAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>';
+  const IKON_NOMOR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h14M5 15h14M10 3 8 21M16 3l-2 18"/></svg>';
   const IKON_CEK_KECIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
 
   /* ---------- membangun dari komunitas yang baru dibuat ---------- */
@@ -587,15 +589,12 @@
     mataOff: '<path d="M3 3l18 18M10.6 6c.5-.1.9-.1 1.4-.1 6.4 0 10 6.5 10 6.5a17.6 17.6 0 0 1-3.2 3.9M6.6 6.7C3.7 8.5 2 12 2 12s3.6 6.5 10 6.5c1.8 0 3.3-.5 4.6-1.2M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
     copot:   '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 11h6"/>',
     kenal:   '<path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9.5h8M8 12.5h5"/>',
-    lain:    '<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>'
+    /* kebab tegak terisi — sama dengan IC_KEBAB di kartu Komunitasku */
+    lain:    '<circle cx="12" cy="5" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.7" fill="currentColor" stroke="none"/>'
   };
   function ib(attr, label, ik, kelas){
     return '<button type="button" class="kl-ib' + (kelas ? ' ' + kelas : '') + '" ' + attr + ' aria-label="' + label + '" data-tip="' + label + '">' +
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + IKI[ik] + '</svg></button>';
-  }
-  function tombolNomor(nama, m){
-    if(!pakaiNomor() || D.idUbahFor === nama) return '';
-    return ib('data-idubah="' + lolos(nama) + '"', m && m.id ? 'Ubah nomor anggota' : 'Beri nomor anggota', 'nomor');
   }
 
   /* ---------- keluarkan anggota (30 Okt 2026 — keputusannya di REFERENCE) ----------
@@ -603,20 +602,32 @@
      pengurus di komunitas yang mengangkatmu dianggap memegang hak itu. Peninjau tidak bisa. */
   function bolehKeluarkan(){ return !(D.kom && D.kom.diangkat) || modeAdvance(); }
   function panggilan(nama){ const m = D.mem[nama]; return (m && m.panggil && m.panggil !== 'Kamu') ? m.panggil : nama.split(' ')[0]; }
-  function tombolLain(nama){
-    if(!bolehKeluarkan() || D.keluarkanFor === nama) return '';
-    return ib('data-amenu="' + lolos(nama) + '" aria-haspopup="menu" aria-expanded="' + (D.menuFor === nama) + '"', 'Lainnya', 'lain');
+  /* menu kebab tiap baris: nomor anggota + keluarkan disatukan, supaya baris tetap ringkas */
+  function itemNomor(nama){
+    if(!pakaiNomor()) return '';
+    const m = D.mem[nama];
+    return '<button type="button" class="kl-amenu-i" role="menuitem" data-idubah="' + lolos(nama) + '">' + IKON_NOMOR +
+      (m && m.id ? 'Ubah nomor anggota' : 'Beri nomor anggota') + '</button>';
   }
-  /* menu ⋯: pemegang jabatan atau peninjau harus dilepas perannya dulu */
-  function menuLain(nama){
-    if(D.menuFor !== nama) return '';
+  /* pemegang jabatan atau peninjau harus dilepas perannya dulu; diri sendiri tidak bisa */
+  function itemKeluar(nama){
+    if(!bolehKeluarkan() || nama === D.aku) return '';
     const syarat = pengurusBernama(nama) ? 'Cabut jabatannya dulu di Struktur Kepengurusan.'
       : adaPeninjau(nama) ? 'Cabut peran peninjaunya dulu di tab Peninjau.' : '';
-    return '<div class="kl-amenu" role="menu">' +
-      (syarat
-        ? '<span class="kl-amenu-i mati" role="menuitem" aria-disabled="true">' + IKON_KELUAR + '<span>Keluarkan dari komunitas<small>' + syarat + '</small></span></span>'
-        : '<button type="button" class="kl-amenu-i hapus" role="menuitem" data-keluarkan="' + lolos(nama) + '">' + IKON_KELUAR + 'Keluarkan dari komunitas</button>') +
-      '</div>';
+    return syarat
+      ? '<span class="kl-amenu-i hapus mati" role="menuitem" aria-disabled="true">' + IKON_KELUAR + '<span>Keluarkan dari komunitas<small>' + syarat + '</small></span></span>'
+      : '<button type="button" class="kl-amenu-i hapus" role="menuitem" data-keluarkan="' + lolos(nama) + '">' + IKON_KELUAR + 'Keluarkan dari komunitas</button>';
+  }
+  function tombolLain(nama){
+    if(D.keluarkanFor === nama || D.idUbahFor === nama) return '';
+    if(!itemNomor(nama) && !itemKeluar(nama)) return '';
+    return ib('data-amenu="' + lolos(nama) + '" aria-haspopup="menu" aria-expanded="' + (D.menuFor === nama) + '"', 'Lainnya', 'lain', D.menuFor === nama ? 'on' : '');
+  }
+  function menuLain(nama){
+    if(D.menuFor !== nama) return '';
+    const a = itemNomor(nama), b = itemKeluar(nama);
+    return '<div class="kl-amenu"><div class="kl-amenu-box" role="menu" aria-label="Aksi untuk ' + lolos(panggilan(nama)) + '">' +
+      a + (a && b ? '<div class="kl-amenu-sep" role="separator"></div>' : '') + b + '</div></div>';
   }
   function formKeluarkan(nama){
     if(D.keluarkanFor !== nama) return '';
@@ -680,7 +691,7 @@
     D.pengurus.forEach(function(p){
       const m = D.mem[p.nama] || { nama: p.nama, kerja: '', kota: '' };
       const kanan = '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' + (p.aku ? '<span class="tag hi">Kamu</span>' : '');
-      const t = tombolNomor(p.nama, m) + (p.aku ? '' : tombolLain(p.nama));
+      const t = tombolLain(p.nama);
       potong.push(baris(m, kanan, t ? '<div class="kl-row-aksi">' + t + '</div>' : '', putusan(p.nama)) + editNomor(p.nama, m) + menuLain(p.nama));
     });
 
@@ -688,7 +699,7 @@
       const m = D.mem[nama];
       let aksi = '';
       if(D.angkatFor !== nama && D.idUbahFor !== nama && D.keluarkanFor !== nama){
-        aksi = '<div class="kl-row-aksi">' + tombolNomor(nama, m) +
+        aksi = '<div class="kl-row-aksi">' +
           (modeAdvance() ? ib('data-angkat="' + lolos(nama) + '"', 'Angkat jadi pengurus', 'angkat') : '') + tombolLain(nama) + '</div>';
       }
       html = baris(m, '', aksi, putusan(nama)) + editNomor(nama, m) + menuLain(nama) + formKeluarkan(nama);
@@ -1208,7 +1219,7 @@
 
     /* nomor anggota: buka / simpan / batal edit (auto maupun manual bisa diperbaiki) */
     const idubah = e.target.closest('[data-idubah]');
-    if(idubah){ D.idUbahFor = idubah.dataset.idubah; D.angkatFor = null; gambarAnggota(); return; }
+    if(idubah){ D.idUbahFor = idubah.dataset.idubah; D.angkatFor = null; D.menuFor = null; gambarAnggota(); return; }
     if(e.target.closest('[data-idubah-batal]')){ D.idUbahFor = null; gambarAnggota(); return; }
     const idok = e.target.closest('[data-idubah-ok]');
     if(idok){

@@ -2152,14 +2152,19 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 /* ---------- keluarkan anggota (30 Okt 2026) ---------- */
 /* menu ⋯ di baris anggota: satu aksi berbahaya, terpisah dari ikon aksi biasa */
 .kl-amenu{display:flex;justify-content:flex-end;margin:-4px 0 10px}
-.kl-amenu-i{display:flex;align-items:flex-start;gap:10px;max-width:340px;padding:10px 14px;border-radius:12px;
-  border:1px solid var(--line);background:var(--card);box-shadow:var(--sh);font:inherit;font-size:13.5px;font-weight:600;text-align:left;cursor:pointer}
-.kl-amenu-i svg{width:17px;height:17px;flex:none;margin-top:1px}
-.kl-amenu-i.hapus{color:var(--red)}
-.kl-amenu-i.hapus:hover{background:var(--red-wash);border-color:var(--red-line)}
-.kl-amenu-i.hapus:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
-.kl-amenu-i.mati{color:var(--ink-3);cursor:not-allowed}
-.kl-amenu-i small{display:block;margin-top:2px;font-size:12px;font-weight:400;color:var(--ink-2)}
+.kl-amenu-box{width:270px;max-width:100%;padding:6px;border-radius:16px;border:1px solid var(--line);background:var(--card);box-shadow:var(--sh)}
+.kl-amenu-i{display:flex;width:100%;align-items:flex-start;gap:11px;padding:10px;border-radius:11px;border:0;background:none;
+  font:inherit;font-size:14px;color:var(--ink);text-align:left;text-decoration:none;cursor:pointer}
+.kl-amenu-i:hover{background:var(--bg-alt)}
+.kl-amenu-i:focus-visible{outline:3px solid var(--ring);outline-offset:-1px}
+.kl-amenu-i svg{width:17px;height:17px;flex:none;margin-top:1px;color:var(--ink-3)}
+.kl-amenu-i.hapus,.kl-amenu-i.hapus svg{color:var(--red)}
+.kl-amenu-i.hapus:hover{background:var(--red-wash)}
+.kl-amenu-i.mati,.kl-amenu-i.mati svg{color:var(--ink-3);cursor:not-allowed}
+.kl-amenu-i.mati:hover{background:none}
+.kl-amenu-i small{display:block;margin-top:2px;font-size:12px;color:var(--ink-2)}
+.kl-amenu-sep{height:1px;background:var(--line);margin:4px 6px}
+.kl-ib.on{border-color:var(--blue);color:var(--blue-ink);background:var(--blue-tint)}
 /* konfirmasi keluarkan: pola .kl-angkat, tapi bernada merah dan beralasan wajib */
 .kl-keluar{display:grid;gap:10px;padding:16px 18px;margin-bottom:10px;border-radius:14px;border:1px dashed var(--red-line);background:var(--red-wash)}
 .kl-keluar-h{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--ink)}
@@ -2189,7 +2194,9 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .ag-kelola-t b{font-size:14px;font-weight:600;color:var(--ink)}
 .ag-kelola-t span{font-size:13px;line-height:1.5;color:var(--ink-2)}
 /* keluar dari komunitas (anggota sendiri): tautan tenang di bawah status, dialog beralasan opsional */
-.kom-keluar{align-self:center;margin-top:8px;font:inherit;font-size:12.5px;font-weight:500;color:var(--ink-3);background:none;border:0;padding:4px 6px;cursor:pointer;border-radius:6px}
+.kom-keluar{align-self:center;display:inline-flex;align-items:center;gap:6px;margin-top:8px;font:inherit;font-size:12.5px;font-weight:500;color:var(--ink-3);background:none;border:0;padding:4px 6px;cursor:pointer;border-radius:6px}
+.kom-keluar svg,.pf-mini svg,.ag-kelola .btn svg{width:15px;height:15px;flex:none}
+.pf-mini:has(svg){display:inline-flex;align-items:center;gap:6px}
 .kom-keluar:hover{color:var(--red);text-decoration:underline;text-underline-offset:2px}
 .kom-keluar:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .lgn-box.klr-box{max-width:480px;text-align:left;padding:30px 28px 24px}
