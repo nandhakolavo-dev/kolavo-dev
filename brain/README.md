@@ -16,6 +16,7 @@ ikatan alumni, himpunan).
 | `Redesign/` | prototipe desain UI yang berjalan. Lihat bagian tersendiri di bawah. |
 | `Q2/` | dokumen EPIC per fitur — requirement, sketsa, review — dari siklus kerja kuartal berjalan. Struktur & isi dibiarkan apa adanya. |
 | `RIIM/` | proposal & materi riset untuk kompetisi RIIM 2026. |
+| *(repo lain)* `satriawinarah/kolavo` | aplikasi production kolavo.app — lihat `brain/teknis/Repo Production.md`. |
 
 ## brain/
 
@@ -24,6 +25,7 @@ ikatan alumni, himpunan).
 | `bisnis/Business Plan.md` | model bisnis, pelanggan, kompetitor (Google + WhatsApp + Zoom), strategi entry 2 tahun pertama lewat 5–10 komunitas kurasi. Diringkas juga di `CLAUDE.md` bagian "Konteks bisnis" untuk hal yang mempengaruhi desain. |
 | `produk/PRD Kolavo.docx` | requirement produk. |
 | `riset/Riset Memahami Kebutuhan Community Builder.docx` | riset kebutuhan pendiri/pengurus komunitas. |
+| `teknis/Repo Production.md` | jalur ke repo production `satriawinarah/kolavo` (kolavo.app): akses, alur prototipe → PR → deploy, urutan migrasi, pelajaran PR bertumpuk, cara menjalankan lokal. |
 
 ## Redesign/
 
