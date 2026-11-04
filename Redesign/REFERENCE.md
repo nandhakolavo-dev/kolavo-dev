@@ -1908,3 +1908,7 @@ diterapkan ke prototipe kecuali disebut.
     Kata dari jawaban yang belum masuk topik diberi titik oranye dan didahulukan; kata yang sudah jadi kata
     kunci diredupkan dengan nama topiknya. Klik kata → pilih topik atau "+ Topik baru". Jawaban yang masih
     "Lainnya" ditampilkan di atasnya sebagai konteks.
+12. **Model tagging** (5 Nov 2026): saran kata bisa dipilih banyak (`D.kontri.saran` = array) lalu
+    dimasukkan bersamaan ke satu topik atau "+ Jadikan topik baru" (nama dari kata pertama); tombol
+    "Pilih semua kata bertitik oranye". Kata kunci tiap topik tampil sebagai tag (`.kt-tag`, × hapus);
+    kolom `.kt-tag-inp` menambah dengan Enter atau koma, Backspace di kolom kosong menghapus tag terakhir.
