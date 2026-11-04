@@ -3083,7 +3083,15 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .kt-atur-aksi{flex:none;display:flex;gap:4px;margin-top:4px}
 .kt-atur-kaki{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 /* saran kata kunci dari jawaban anggota */
-.kt-saran-w{display:grid;gap:10px;padding:12px;border:1px dashed var(--blue);border-radius:11px;background:var(--card)}
+/* tambah topik: 1) nama 2) kata kunci */
+.kt-baru-buka{display:flex}
+.kt-baru{display:grid;gap:10px;padding:14px;border:1px dashed var(--blue);border-radius:11px;background:var(--card)}
+.kt-baru-h{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.kt-baru-h .kl-saring-x{margin-left:auto}
+.kt-baru-no{flex:none;padding:2px 8px;border-radius:100px;background:var(--blue);color:var(--btn-ink);font-size:11px;font-weight:700}
+.kt-baru-r{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.kt-baru-r .inp{flex:1 1 220px;min-width:0;height:42px}
+.kt-baru-r.akhir{padding-top:10px;border-top:1px solid var(--line)}
 .kt-saran-lain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;color:var(--ink-2)}
 .kt-saran-lain q{padding:4px 10px;border-radius:8px;background:var(--bg-alt);color:var(--ink);quotes:'“' '”'}
 .kt-saran-chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -3095,8 +3103,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .kt-saran.on{border-color:var(--blue);background:var(--blue);color:var(--btn-ink)}
 .kt-saran.on span{color:var(--btn-ink)}
 .kt-saran-dot{width:7px;height:7px;border-radius:100px;background:var(--orange)}
-.kt-saran-ke{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-top:10px;border-top:1px solid var(--line);font-size:13px}
-.kt-saran-ke > span{margin-right:4px}
+
 .kt-atur-kaki .btn.sm:last-child{margin-left:auto}
 @media (max-width:560px){
   .kt-atur-i{flex-wrap:wrap}
@@ -11280,7 +11287,7 @@ function hitung(){}
     D.tab = 'minta';
     /* saringan jawaban per tab + tampilan Kontribusi & dicari — baru tiap komunitas */
     D.saring = { minta: { q: '', v: '' }, anggota: { q: '', v: '' } };
-    D.kontri = { lihat: 'beri', urut: 'mirip', siapa: 'semua', cari: '', atur: false, saran: [] };
+    D.kontri = { lihat: 'beri', urut: 'mirip', siapa: 'semua', cari: '', atur: false, baru: null };
     D.topik = topikAwal();
     D.angkatFor = null;
     D.ubahFor = null; D.kenalFor = null;
@@ -12155,30 +12162,47 @@ function hitung(){}
       return (!!a.topik - !!b.topik) || (b.lain - a.lain) || (b.n - a.n) || a.kata.localeCompare(b.kata);
     }).slice(0, 40);
   }
-  function gambarSaran(semua){
+  /* Tambah topik, dua langkah (5 Nov 2026): 1) nama topik, 2) kata kuncinya — dipilih
+     banyak dari saran kata jawaban anggota, atau diketik sendiri sebagai tag mandiri. */
+  function gambarBaru(semua){
+    const B = D.kontri.baru;
+    if(!B) return '<div class="kt-baru-buka"><button type="button" class="btn sm" data-topik-tambah>+ Tambah topik</button></div>';
+    if(B.langkah === 1){
+      return '<div class="kt-baru">' +
+        '<div class="kt-baru-h"><span class="kt-baru-no">1/2</span><b>Nama topik baru</b></div>' +
+        '<div class="kt-baru-r"><input class="inp" data-baru-nama maxlength="40" value="' + lolos(B.nama) + '" placeholder="Misal Pendidikan & mengajar" aria-label="Nama topik baru">' +
+          '<button type="button" class="btn sm" data-baru-lanjut' + (B.nama.trim() ? '' : ' disabled') + '>Lanjut pilih kata kunci</button>' +
+          '<button type="button" class="kl-saring-x" data-baru-batal>Batal</button></div>' +
+      '</div>';
+    }
     const K = D.kontri;
     const saran = saranKata(semua);
     const belumMasuk = semua.filter(function(o){ return o[K.lihat] && topikDari(o[K.lihat]) === 'Lainnya'; });
-    /* pilih banyak seperti tag: kata-kata terpilih dimasukkan bersamaan ke satu topik */
-    const pilih = Array.isArray(K.saran) ? K.saran : [];
-    const adaTitik = saran.some(function(s){ return s.lain && !s.topik; });
-    return '<div class="kt-saran-w">' +
-      '<div class="kt-atur-h"><b>Saran kata kunci dari jawaban anggota</b><span>Klik beberapa kata sekaligus seperti memberi tag, lalu masukkan ke satu topik atau jadikan topik baru. Angka = berapa jawaban memuat kata itu. Kata bertanda titik oranye ada di jawaban yang belum masuk topik mana pun.</span></div>' +
+    const adaTitik = saran.some(function(s){ return s.lain && !s.topik && B.kata.indexOf(s.kata) < 0; });
+    return '<div class="kt-baru">' +
+      '<div class="kt-baru-h"><span class="kt-baru-no">2/2</span><b>Kata kunci untuk “' + lolos(B.nama) + '”</b>' +
+        '<button type="button" class="kl-saring-x" data-baru-kembali>Ganti nama</button></div>' +
+      /* tag terpilih + tag mandiri */
+      '<div class="kt-tags">' + B.kata.map(function(k, j){
+        return '<span class="kt-tag">' + lolos(k) + '<button type="button" data-baru-x="' + j + '" aria-label="Hapus kata ' + lolos(k) + '">×</button></span>';
+      }).join('') +
+        '<input class="kt-tag-inp" data-baru-tag maxlength="30" placeholder="' + (B.kata.length ? '+ tulis kata sendiri' : 'Tulis kata sendiri, tekan Enter — atau pilih dari saran di bawah') + '" aria-label="Tulis kata kunci sendiri">' +
+      '</div>' +
+      '<p class="kt-saran-ket">Saran dari jawaban anggota — klik sebanyak yang perlu. Angka = berapa jawaban memuat kata itu; titik oranye = ada di jawaban yang belum masuk topik.</p>' +
       (belumMasuk.length ? '<div class="kt-saran-lain"><span>Belum masuk topik (' + belumMasuk.length + '):</span>' +
         belumMasuk.slice(0, 6).map(function(o){ return '<q>' + lolos(o[K.lihat]) + '</q>'; }).join('') +
         (belumMasuk.length > 6 ? '<span>+' + (belumMasuk.length - 6) + ' lagi</span>' : '') + '</div>' : '') +
       '<div class="kt-saran-chips">' + saran.map(function(s){
-        return '<button type="button" class="kt-saran' + (s.topik ? ' pakai' : '') + (pilih.indexOf(s.kata) >= 0 ? ' on' : '') + '" data-kt-saran="' + lolos(s.kata) + '" aria-pressed="' + (pilih.indexOf(s.kata) >= 0) + '"' +
+        const on = B.kata.indexOf(s.kata) >= 0;
+        return '<button type="button" class="kt-saran' + (s.topik ? ' pakai' : '') + (on ? ' on' : '') + '" data-kt-saran="' + lolos(s.kata) + '" aria-pressed="' + on + '"' +
           (s.topik ? ' title="Sudah jadi kata kunci ' + lolos(s.topik) + '"' : '') + '>' +
           (s.lain && !s.topik ? '<i class="kt-saran-dot" aria-label="belum masuk topik"></i>' : '') +
           lolos(s.kata) + '<span>' + s.n + '</span>' + (s.topik ? '<small>' + lolos(s.topik) + '</small>' : '') + '</button>';
       }).join('') + '</div>' +
       (adaTitik ? '<div class="kt-saran-alat"><button type="button" class="kl-saring-x" data-kt-saran-titik>Pilih semua kata bertitik oranye</button></div>' : '') +
-      (pilih.length ? '<div class="kt-saran-ke"><span><b>' + pilih.length + ' kata dipilih</b> (' + pilih.map(lolos).join(', ') + ') — masukkan ke:</span>' +
-        D.topik.map(function(t, i){ return '<button type="button" class="btn outline sm" data-kt-saran-ke="' + i + '">' + lolos(t.nama || 'Tanpa nama') + '</button>'; }).join('') +
-        '<button type="button" class="btn sm" data-kt-saran-baru>+ Jadikan topik baru</button>' +
-        '<button type="button" class="kl-saring-x" data-kt-saran-batal>Hapus pilihan</button></div>'
-        : '<p class="kt-saran-ket">Belum ada kata dipilih. Klik beberapa kata yang maknanya mirip, misalnya “guru”, “kelas”, “mengajar”.</p>') +
+      '<div class="kt-baru-r akhir">' +
+        '<button type="button" class="btn sm" data-baru-simpan' + (B.kata.length ? '' : ' disabled') + '>Simpan topik' + (B.kata.length ? ' (' + B.kata.length + ' kata)' : '') + '</button>' +
+        '<button type="button" class="kl-saring-x" data-baru-batal>Batal</button></div>' +
     '</div>';
   }
   function gambarAturTopik(semua){
@@ -12188,7 +12212,7 @@ function hitung(){}
     const n = D.topik.length;
     return '<div class="kt-atur">' +
       '<div class="kt-atur-h"><b>Atur topik</b><span>Jawaban masuk ke topik yang kata kuncinya paling banyak cocok. Kalau seri, topik yang lebih atas menang. Tidak ada yang cocok → Lainnya.</span></div>' +
-      gambarSaran(semua) +
+      gambarBaru(semua) +
       D.topik.map(function(p, i){
         return '<div class="kt-atur-i">' +
           '<span class="kt-atur-no">' + (i + 1) + '</span>' +
@@ -12210,7 +12234,6 @@ function hitung(){}
         '</div>';
       }).join('') +
       '<div class="kt-atur-kaki">' +
-        '<button type="button" class="btn outline sm" data-topik-tambah>+ Tambah topik</button>' +
         '<button type="button" class="kl-saring-x" data-topik-reset>Kembalikan ke bawaan</button>' +
         '<button type="button" class="btn sm" data-kt-atur>Selesai</button>' +
       '</div>' +
@@ -12462,6 +12485,12 @@ function hitung(){}
     /* atur topik: model diperbarui per ketikan, digambar ulang saat kolom ditinggalkan (change) */
     const tn = e.target.dataset && e.target.dataset.topikNama;
     if(tn != null && D.topik[+tn]) D.topik[+tn].nama = e.target.value.trim();
+    if(e.target.matches('[data-baru-nama]') && D.kontri.baru){
+      D.kontri.baru.nama = e.target.value;
+      const b = scr.querySelector('[data-baru-lanjut]'); if(b) b.disabled = !e.target.value.trim();
+      return;
+    }
+    if(e.target.matches('[data-baru-tag]') && /,/.test(e.target.value)){ tagBaru(e.target.value); return; }
     /* koma di kolom tag = selesai satu kata */
     const tb = e.target.dataset && e.target.dataset.topikKataBaru;
     if(tb != null && /,/.test(e.target.value)){ tambahTag(+tb, e.target.value); }
@@ -12487,6 +12516,22 @@ function hitung(){}
     }
   });
   /* tambah satu/lebih kata ke topik i dari teks ketikan, lalu fokus kembali ke kolom tagnya */
+  function lanjutBaru(){
+    const B = D.kontri.baru;
+    if(!B || !B.nama.trim()) return;
+    B.langkah = 2; gambarKontri();
+    const f = scr.querySelector('[data-baru-tag]'); if(f) f.focus();
+  }
+  /* tag mandiri: kata yang diketik sendiri, Enter atau koma */
+  function tagBaru(teks){
+    const B = D.kontri.baru;
+    if(!B) return;
+    teks.split(',').map(function(k){ return k.trim().toLowerCase(); }).filter(Boolean).forEach(function(k){
+      if(B.kata.indexOf(k) < 0) B.kata.push(k);
+    });
+    gambarKontri();
+    const f = scr.querySelector('[data-baru-tag]'); if(f) f.focus();
+  }
   function tambahTag(i, teks, tanpaFokus){
     const t = D.topik[i];
     if(!t) return;
@@ -12497,6 +12542,15 @@ function hitung(){}
     if(!tanpaFokus){ const f = scr.querySelector('[data-topik-kata-baru="' + i + '"]'); if(f) f.focus(); }
   }
   scr.addEventListener('keydown', function(e){
+    if(e.target.matches('[data-baru-nama]') && e.key === 'Enter'){ e.preventDefault(); lanjutBaru(); return; }
+    if(e.target.matches('[data-baru-tag]')){
+      if(e.key === 'Enter'){ e.preventDefault(); if(e.target.value.trim()) tagBaru(e.target.value); return; }
+      if(e.key === 'Backspace' && !e.target.value && D.kontri.baru && D.kontri.baru.kata.length){
+        e.preventDefault(); D.kontri.baru.kata.pop(); gambarKontri();
+        const f = scr.querySelector('[data-baru-tag]'); if(f) f.focus();
+        return;
+      }
+    }
     const tb = e.target.dataset && e.target.dataset.topikKataBaru;
     if(tb != null){
       if(e.key === 'Enter'){ e.preventDefault(); if(e.target.value.trim()) tambahTag(+tb, e.target.value); return; }
@@ -12701,37 +12755,37 @@ function hitung(){}
     if(al){ D.anggotaLihat = al.dataset.alihat; gambarAnggota(); return; }
     const sh = e.target.closest('[data-saring-hapus]');
     if(sh){ D.saring[sh.dataset.saringHapus] = { q: '', v: '' }; D.halAnggota = 0; (sh.dataset.saringHapus === 'minta' ? gambarMinta : gambarAnggota)(); return; }
-    if(e.target.closest('[data-kt-atur]')){ D.kontri.atur = !D.kontri.atur; D.kontri.saran = []; gambarKontri(); return; }
+    if(e.target.closest('[data-kt-atur]')){ D.kontri.atur = !D.kontri.atur; D.kontri.baru = null; gambarKontri(); return; }
+    /* tambah topik: langkah nama → kata kunci */
+    const fokus = function(sel){ const f = scr.querySelector(sel); if(f) f.focus(); };
+    if(e.target.closest('[data-topik-tambah]')){ D.kontri.baru = { langkah: 1, nama: '', kata: [] }; gambarKontri(); fokus('[data-baru-nama]'); return; }
+    if(e.target.closest('[data-baru-batal]')){ D.kontri.baru = null; gambarKontri(); return; }
+    if(e.target.closest('[data-baru-lanjut]')){ lanjutBaru(); return; }
+    if(e.target.closest('[data-baru-kembali]')){ D.kontri.baru.langkah = 1; gambarKontri(); fokus('[data-baru-nama]'); return; }
+    const bx = e.target.closest('[data-baru-x]');
+    if(bx){ D.kontri.baru.kata.splice(+bx.dataset.baruX, 1); gambarKontri(); fokus('[data-baru-tag]'); return; }
     const ks = e.target.closest('[data-kt-saran]');
-    if(ks){
-      const p = Array.isArray(D.kontri.saran) ? D.kontri.saran : (D.kontri.saran = []);
-      const k = ks.dataset.ktSaran, i = p.indexOf(k);
+    if(ks && D.kontri.baru){
+      const p = D.kontri.baru.kata, k = ks.dataset.ktSaran, i = p.indexOf(k);
       if(i >= 0) p.splice(i, 1); else p.push(k);
       gambarKontri();
-      const b = scr.querySelector('[data-kt-saran="' + k + '"]'); if(b) b.focus();
+      fokus('[data-kt-saran="' + k + '"]');
       return;
     }
-    if(e.target.closest('[data-kt-saran-batal]')){ D.kontri.saran = []; gambarKontri(); return; }
-    if(e.target.closest('[data-kt-saran-titik]')){
+    if(e.target.closest('[data-kt-saran-titik]') && D.kontri.baru){
       const semuaO = orangKontri().filter(function(o){ return D.kontri.siapa === 'semua' || o.status === D.kontri.siapa; });
-      D.kontri.saran = saranKata(semuaO).filter(function(s){ return s.lain && !s.topik; }).map(function(s){ return s.kata; });
+      saranKata(semuaO).filter(function(s){ return s.lain && !s.topik; }).forEach(function(s){
+        if(D.kontri.baru.kata.indexOf(s.kata) < 0) D.kontri.baru.kata.push(s.kata);
+      });
       gambarKontri(); return;
     }
-    const kk = e.target.closest('[data-kt-saran-ke]');
-    if(kk){
-      const t = D.topik[+kk.dataset.ktSaranKe], p = D.kontri.saran || [];
-      p.forEach(function(k){ if(t && t.kata.indexOf(k) < 0) t.kata.push(k); });
-      D.kontri.saran = []; gambarKontri();
-      toast(p.length + ' kata masuk ke ' + (t.nama || 'topik') + '.');
-      return;
-    }
-    if(e.target.closest('[data-kt-saran-baru]')){
-      const p = (D.kontri.saran || []).slice();
-      if(!p.length) return;
-      D.topik.push({ nama: p[0].charAt(0).toUpperCase() + p[0].slice(1), kata: p });
-      D.kontri.saran = []; gambarKontri();
-      const f = scr.querySelector('[data-topik-nama="' + (D.topik.length - 1) + '"]'); if(f){ f.focus(); f.select(); }
-      toast('Topik baru dibuat. Ganti namanya kalau perlu.');
+    if(e.target.closest('[data-baru-simpan]')){
+      const B = D.kontri.baru;
+      if(!B || !B.kata.length) return;
+      /* topik baru biasanya lebih spesifik, jadi ditaruh paling atas (prioritas tertinggi) */
+      D.topik.unshift({ nama: B.nama.trim(), kata: B.kata.slice() });
+      D.kontri.baru = null; gambarKontri();
+      toast('Topik “' + B.nama.trim() + '” dibuat dengan ' + B.kata.length + ' kata kunci.');
       return;
     }
     const tx = e.target.closest('[data-topik-kata-x]');
@@ -12748,11 +12802,6 @@ function hitung(){}
     }
     const th = e.target.closest('[data-topik-hapus]');
     if(th){ const p = D.topik.splice(+th.dataset.topikHapus, 1)[0]; gambarKontri(); toast('Topik “' + (p.nama || 'Tanpa nama') + '” dihapus. Jawabannya pindah ke topik lain atau Lainnya.'); return; }
-    if(e.target.closest('[data-topik-tambah]')){
-      D.topik.push({ nama: '', kata: [] }); gambarKontri();
-      const f = scr.querySelector('[data-topik-nama="' + (D.topik.length - 1) + '"]'); if(f) f.focus();
-      return;
-    }
     if(e.target.closest('[data-topik-reset]')){ D.topik = topikAwal(); gambarKontri(); toast('Topik dikembalikan ke bawaan.'); return; }
     const kl = e.target.closest('[data-kt-lihat]');
     if(kl){ D.kontri.lihat = kl.dataset.ktLihat; gambarKontri(); return; }

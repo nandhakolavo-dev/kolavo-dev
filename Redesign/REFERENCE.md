@@ -1912,3 +1912,8 @@ diterapkan ke prototipe kecuali disebut.
     dimasukkan bersamaan ke satu topik atau "+ Jadikan topik baru" (nama dari kata pertama); tombol
     "Pilih semua kata bertitik oranye". Kata kunci tiap topik tampil sebagai tag (`.kt-tag`, × hapus);
     kolom `.kt-tag-inp` menambah dengan Enter atau koma, Backspace di kolom kosong menghapus tag terakhir.
+13. **Alur tambah topik dua langkah** (5 Nov 2026, menggantikan saran-kata yang selalu tampil): tombol
+    "+ Tambah topik" di atas daftar → 1/2 nama topik (Enter/Lanjut) → 2/2 kata kunci: tag terpilih +
+    kolom **tag mandiri** (ketik sendiri, Enter/koma, Backspace hapus terakhir) + saran kata dari jawaban
+    (pilih banyak, "Pilih semua kata bertitik oranye"). "Simpan topik (n kata)" menaruh topik baru paling
+    atas (prioritas tertinggi). Keadaan di `D.kontri.baru = { langkah, nama, kata }`.

@@ -3040,7 +3040,15 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .kt-atur-aksi{flex:none;display:flex;gap:4px;margin-top:4px}
 .kt-atur-kaki{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 /* saran kata kunci dari jawaban anggota */
-.kt-saran-w{display:grid;gap:10px;padding:12px;border:1px dashed var(--blue);border-radius:11px;background:var(--card)}
+/* tambah topik: 1) nama 2) kata kunci */
+.kt-baru-buka{display:flex}
+.kt-baru{display:grid;gap:10px;padding:14px;border:1px dashed var(--blue);border-radius:11px;background:var(--card)}
+.kt-baru-h{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.kt-baru-h .kl-saring-x{margin-left:auto}
+.kt-baru-no{flex:none;padding:2px 8px;border-radius:100px;background:var(--blue);color:var(--btn-ink);font-size:11px;font-weight:700}
+.kt-baru-r{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.kt-baru-r .inp{flex:1 1 220px;min-width:0;height:42px}
+.kt-baru-r.akhir{padding-top:10px;border-top:1px solid var(--line)}
 .kt-saran-lain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;color:var(--ink-2)}
 .kt-saran-lain q{padding:4px 10px;border-radius:8px;background:var(--bg-alt);color:var(--ink);quotes:'“' '”'}
 .kt-saran-chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -3052,8 +3060,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .kt-saran.on{border-color:var(--blue);background:var(--blue);color:var(--btn-ink)}
 .kt-saran.on span{color:var(--btn-ink)}
 .kt-saran-dot{width:7px;height:7px;border-radius:100px;background:var(--orange)}
-.kt-saran-ke{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-top:10px;border-top:1px solid var(--line);font-size:13px}
-.kt-saran-ke > span{margin-right:4px}
+
 .kt-atur-kaki .btn.sm:last-child{margin-left:auto}
 @media (max-width:560px){
   .kt-atur-i{flex-wrap:wrap}
