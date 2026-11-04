@@ -1898,3 +1898,8 @@ diterapkan ke prototipe kecuali disebut.
    (`#komEdit`) membuka formulir yang sama untuk mengubahnya. Simpan → `KolavoDashboard.isiJawabanAku(peta)`
    menulis `D.mem[aku].jwb` (+ `nick`), jadi ikut tampil di profil, saringan, dan persebaran.
    Langkah ke-3 di layar "Halamannya sudah jadi" menyebut hal ini.
+10. **Atur topik** (tab Kontribusi & dicari, urutan "Kelompokkan yang mirip"): pengurus mengubah nama
+    topik, kata kunci (dipisah koma), urutan prioritas, menambah/menghapus topik, atau kembali ke bawaan.
+    Disimpan per komunitas di `D.topik` ([{nama, kata: []}]). Aturan: kata cocok terbanyak menang, seri →
+    topik lebih atas; kata ≤ 3 huruf dicocokkan utuh, selebihnya potongan kata. Kata kunci yang cocok
+    ditandai (`mark.kt-kata`) di tiap jawaban; jumlah jawaban "Lainnya" ditampilkan sebagai pengingat.
