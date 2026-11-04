@@ -868,7 +868,7 @@
   function kandidatSebaran(){
     const q = window.KolavoPertanyaanPengurus ? window.KolavoPertanyaanPengurus() : [];
     return [{ id: 'kerja', judul: 'Pekerjaan & keahlian' }, { id: 'kota', judul: 'Domisili' }].concat(q.map(function(t){
-      return { id: 'q:' + t.id, judul: t.judul || 'Pertanyaan', qid: t.id, tahun: t.tipe === 'tahun' };
+      return { id: 'q:' + t.id, judul: t.judul || 'Pertanyaan', qid: t.id, tahun: t.tipe === 'tahun', centang: t.tipe === 'centang' };
     }));
   }
   /* nilai seseorang di satu sumbu — label kelompok (Kelompokkan) didahulukan */
@@ -893,7 +893,11 @@
   /* lima teratas + sisanya (dan yang belum menjawab) jadi "Lainnya" */
   function hitungSebaran(k){
     const peta = {};
-    semuaOrang().forEach(function(n){ const v = nilaiSebaran(n, k) || 'Lainnya'; peta[v] = (peta[v] || 0) + 1; });
+    /* kotak centang dihitung per opsi yang dicentang */
+    semuaOrang().forEach(function(n){
+      const v = nilaiSebaran(n, k) || 'Lainnya';
+      (k.centang ? v.split(', ') : [v]).forEach(function(x){ peta[x] = (peta[x] || 0) + 1; });
+    });
     const urut = Object.keys(peta).filter(function(v){ return v !== 'Lainnya'; })
       .sort(function(a, b){ return peta[b] - peta[a] || a.localeCompare(b); });
     const atas = urut.slice(0, 5).map(function(v){ return [v, peta[v]]; });
@@ -1513,7 +1517,7 @@
             '<p class="sek-kecil sek-penuh">' + IK.kunci + 'Diproses penyedia pembayaran berlisensi Bank Indonesia. Kolavo tidak menyimpan nomor kartu.</p></div>';
     } else if(B.metode === 'gopay'){
       detail = '<div class="sb-detail"><label class="sek-lbl" for="sbHp">Nomor HP yang terhubung GoPay</label>' +
-        '<div class="tel"><span class="tel-pfx">🇮🇩 +62</span><input id="sbHp" type="tel" inputmode="numeric" placeholder="812 3456 7890"></div>' +
+        '<div class="tel">' + window.KolavoNegara.kodeHtml('sbHpKode', 'Indonesia') + '<input id="sbHp" type="tel" inputmode="numeric" placeholder="812 3456 7890"></div>' +
         '<p class="sek-kecil">Permintaan bayar dikirim ke aplikasi Gojek. Konfirmasi dengan PIN GoPay-mu.</p></div>';
     } else {
       detail = '<div class="sb-detail sb-qris"><div class="krd-qris"><div class="krd-qris-h"><b>QRIS</b><span>Kolavo · Advance</span></div>' +

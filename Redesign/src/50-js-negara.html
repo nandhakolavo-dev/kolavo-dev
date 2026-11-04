@@ -1,0 +1,308 @@
+<script>
+/* ============================================================
+   Negara, kode telepon, dan wilayah — satu sumber (revisi 4 Nov 2026).
+
+   Keluhan pengguna: kode WhatsApp terkunci di +62, Belanda tidak ada di
+   daftar negara. Sekarang:
+   - DAFTAR berisi negara anggota PBB + beberapa wilayah (Hong Kong, Taiwan…),
+     nama dalam bahasa Indonesia, kode ISO, dan kode telepon.
+   - Tidak ketemu? Pilih "Lainnya — tulis sendiri…" di menu negara, provinsi,
+     kota, atau kode WhatsApp. Isian baru langsung masuk daftar dan dipakai
+     semua menu (di produk: tabel `countries`/`regions`, ditandai buatan
+     pengguna supaya bisa ditinjau tim). Prototipe menyimpannya di
+     localStorage kalau tersedia.
+   - Provinsi/kota hanya punya daftar untuk sebagian negara; selebihnya diisi
+     lewat "Lainnya" dan ikut tersimpan.
+
+   API: window.KolavoNegara — dipakai Lengkapi profil, Buat komunitas, editor
+   Profil & Setting, dan isian telepon di Langganan.
+   ============================================================ */
+(function(){
+  /* ISO|kode telepon|nama Indonesia|nama lain (dicocokkan saat menambah) */
+  const MENTAH = 'AF|93|Afganistan|Afghanistan;ZA|27|Afrika Selatan|South Africa;AL|355|Albania|;DZ|213|Aljazair|Algeria;' +
+    'US|1|Amerika Serikat|United States,USA,Amerika;AD|376|Andorra|;AO|244|Angola|;AG|1268|Antigua dan Barbuda|;' +
+    'SA|966|Arab Saudi|Saudi Arabia,Saudi;AR|54|Argentina|;AM|374|Armenia|;AU|61|Australia|;AT|43|Austria|;AZ|994|Azerbaijan|;' +
+    'BS|1242|Bahama|Bahamas;BH|973|Bahrain|;BD|880|Bangladesh|;BB|1246|Barbados|;NL|31|Belanda|Netherlands,Holland,Nederland;' +
+    'BY|375|Belarus|;BE|32|Belgia|Belgium;BZ|501|Belize|;BJ|229|Benin|;BT|975|Bhutan|;BO|591|Bolivia|;' +
+    'BA|387|Bosnia dan Herzegovina|Bosnia;BW|267|Botswana|;BR|55|Brasil|Brazil;BN|673|Brunei Darussalam|Brunei;' +
+    'BG|359|Bulgaria|;BF|226|Burkina Faso|;BI|257|Burundi|;CZ|420|Ceko|Czechia,Czech Republic;TD|235|Chad|;CL|56|Chili|Chile;' +
+    'DK|45|Denmark|;DJ|253|Djibouti|;DM|1767|Dominika|Dominica;EC|593|Ekuador|Ecuador;SV|503|El Salvador|;ER|291|Eritrea|;' +
+    'EE|372|Estonia|;SZ|268|Eswatini|Swaziland;ET|251|Etiopia|Ethiopia;FJ|679|Fiji|;PH|63|Filipina|Philippines;' +
+    'FI|358|Finlandia|Finland;GA|241|Gabon|;GM|220|Gambia|;GE|995|Georgia|;GH|233|Ghana|;GD|1473|Grenada|;GT|502|Guatemala|;' +
+    'GN|224|Guinea|;GW|245|Guinea-Bissau|;GQ|240|Guinea Khatulistiwa|Equatorial Guinea;GY|592|Guyana|;HT|509|Haiti|;' +
+    'HN|504|Honduras|;HK|852|Hong Kong|;HU|36|Hungaria|Hungary;IN|91|India|;ID|62|Indonesia|;GB|44|Inggris|United Kingdom,UK,Britania Raya,England;' +
+    'IQ|964|Irak|Iraq;IR|98|Iran|;IE|353|Irlandia|Ireland;IS|354|Islandia|Iceland;IL|972|Israel|;IT|39|Italia|Italy;' +
+    'JM|1876|Jamaika|Jamaica;JP|81|Jepang|Japan;DE|49|Jerman|Germany,Deutschland;KH|855|Kamboja|Cambodia;CM|237|Kamerun|Cameroon;' +
+    'CA|1|Kanada|Canada;KZ|7|Kazakhstan|;KE|254|Kenya|;MH|692|Kepulauan Marshall|Marshall Islands;SB|677|Kepulauan Solomon|Solomon Islands;' +
+    'KG|996|Kirgizstan|Kyrgyzstan;KI|686|Kiribati|;CO|57|Kolombia|Colombia;KM|269|Komoro|Comoros;CG|242|Kongo|Congo;' +
+    'KR|82|Korea Selatan|South Korea,Korea;KP|850|Korea Utara|North Korea;XK|383|Kosovo|;CR|506|Kosta Rika|Costa Rica;' +
+    'HR|385|Kroasia|Croatia;CU|53|Kuba|Cuba;KW|965|Kuwait|;LA|856|Laos|;LV|371|Latvia|;LB|961|Lebanon|;LS|266|Lesotho|;' +
+    'LR|231|Liberia|;LY|218|Libya|;LI|423|Liechtenstein|;LT|370|Lituania|Lithuania;LU|352|Luksemburg|Luxembourg;' +
+    'MG|261|Madagaskar|Madagascar;MO|853|Makau|Macau,Macao;MK|389|Makedonia Utara|North Macedonia;MV|960|Maladewa|Maldives;' +
+    'MW|265|Malawi|;MY|60|Malaysia|;ML|223|Mali|;MT|356|Malta|;MA|212|Maroko|Morocco;MR|222|Mauritania|;MU|230|Mauritius|;' +
+    'MX|52|Meksiko|Mexico;EG|20|Mesir|Egypt;FM|691|Mikronesia|Micronesia;MD|373|Moldova|;MC|377|Monako|Monaco;MN|976|Mongolia|;' +
+    'ME|382|Montenegro|;MZ|258|Mozambik|Mozambique;MM|95|Myanmar|Burma;NA|264|Namibia|;NR|674|Nauru|;NP|977|Nepal|;' +
+    'NE|227|Niger|;NG|234|Nigeria|;NI|505|Nikaragua|Nicaragua;NO|47|Norwegia|Norway;OM|968|Oman|;PK|92|Pakistan|;PW|680|Palau|;' +
+    'PS|970|Palestina|Palestine;PA|507|Panama|;CI|225|Pantai Gading|Ivory Coast,Cote d\'Ivoire;PG|675|Papua Nugini|Papua New Guinea,PNG;' +
+    'PY|595|Paraguay|;PE|51|Peru|;PL|48|Polandia|Poland;PT|351|Portugal|;FR|33|Prancis|France,Perancis;QA|974|Qatar|;' +
+    'CF|236|Republik Afrika Tengah|Central African Republic;CD|243|Republik Demokratik Kongo|DR Congo;DO|1809|Republik Dominika|Dominican Republic;' +
+    'RO|40|Rumania|Romania;RU|7|Rusia|Russia;RW|250|Rwanda|;KN|1869|Saint Kitts dan Nevis|;LC|1758|Saint Lucia|;' +
+    'VC|1784|Saint Vincent dan Grenadine|;WS|685|Samoa|;SM|378|San Marino|;ST|239|Sao Tome dan Principe|;' +
+    'NZ|64|Selandia Baru|New Zealand;SN|221|Senegal|;RS|381|Serbia|;SC|248|Seychelles|;SL|232|Sierra Leone|;' +
+    'SG|65|Singapura|Singapore;CY|357|Siprus|Cyprus;SK|421|Slowakia|Slovakia;SI|386|Slovenia|;SO|252|Somalia|;ES|34|Spanyol|Spain;' +
+    'LK|94|Sri Lanka|;SD|249|Sudan|;SS|211|Sudan Selatan|South Sudan;SY|963|Suriah|Syria;SR|597|Suriname|;SE|46|Swedia|Sweden;' +
+    'CH|41|Swiss|Switzerland;TW|886|Taiwan|;TJ|992|Tajikistan|;CV|238|Tanjung Verde|Cape Verde,Cabo Verde;TZ|255|Tanzania|;' +
+    'TH|66|Thailand|;TL|670|Timor Leste|Timor-Leste,East Timor;CN|86|Tiongkok|China,Cina;TG|228|Togo|;TO|676|Tonga|;' +
+    'TT|1868|Trinidad dan Tobago|;TN|216|Tunisia|;TR|90|Turki|Turkey,Turkiye;TM|993|Turkmenistan|;TV|688|Tuvalu|;UG|256|Uganda|;' +
+    'UA|380|Ukraina|Ukraine;AE|971|Uni Emirat Arab|United Arab Emirates,UAE;UY|598|Uruguay|;UZ|998|Uzbekistan|;VU|678|Vanuatu|;' +
+    'VA|379|Vatikan|Vatican;VE|58|Venezuela|;VN|84|Vietnam|;YE|967|Yaman|Yemen;JO|962|Yordania|Jordan;GR|30|Yunani|Greece;' +
+    'ZM|260|Zambia|;ZW|263|Zimbabwe|';
+
+  function bendera(iso){
+    if(!iso || iso.length !== 2) return '🌐';
+    return String.fromCodePoint(0x1F1E6 + iso.charCodeAt(0) - 65, 0x1F1E6 + iso.charCodeAt(1) - 65);
+  }
+  const BAKU = MENTAH.split(';').map(function(r){
+    const p = r.split('|');
+    return { iso: p[0], dial: '+' + p[1], nama: p[2], alias: (p[3] || '').split(',').filter(Boolean), bendera: bendera(p[0]) };
+  });
+
+  /* ---------- isian tambahan pengguna ---------- */
+  const KUNCI = 'kolavo.negaraTambahan.v1';
+  let tambahan = { negara: [], wilayah: {} };
+  try { const s = localStorage.getItem(KUNCI); if(s) tambahan = Object.assign(tambahan, JSON.parse(s)); } catch(e){}
+  function simpan(){ try { localStorage.setItem(KUNCI, JSON.stringify(tambahan)); } catch(e){} }
+
+  const kunci = function(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); };
+  const rapikan = function(s){ return String(s || '').trim().replace(/\s+/g, ' ').replace(/(^|[\s-])\S/g, function(c){ return c.toUpperCase(); }); };
+  const lolos = function(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+
+  function daftar(){
+    const semua = BAKU.concat(tambahan.negara.map(function(n){
+      return { iso: '', dial: n.dial || '', nama: n.nama, alias: [], bendera: '🌐', tambahan: true };
+    }));
+    /* kode telepon yang ditambahkan untuk negara bawaan yang belum punya kode — tidak ada di BAKU, jadi aman diabaikan */
+    return semua.sort(function(a, b){
+      if(a.nama === 'Indonesia') return -1;
+      if(b.nama === 'Indonesia') return 1;
+      return a.nama.localeCompare(b.nama, 'id');
+    });
+  }
+  function cari(nama){
+    const k = kunci(nama);
+    if(!k) return null;
+    return daftar().filter(function(n){
+      return kunci(n.nama) === k || n.alias.some(function(a){ return kunci(a) === k; }) || (n.iso && n.iso.toLowerCase() === k);
+    })[0] || null;
+  }
+  function tambahNegara(nama, dial){
+    const ada = cari(nama);
+    if(ada){
+      /* negara buatan pengguna yang belum punya kode telepon boleh dilengkapi */
+      if(ada.tambahan && dial && !ada.dial){
+        tambahan.negara.forEach(function(n){ if(n.nama === ada.nama) n.dial = dial; });
+        simpan();
+      }
+      return ada.nama;
+    }
+    const n = rapikan(nama);
+    if(!n) return '';
+    tambahan.negara.push({ nama: n, dial: dial || '' });
+    simpan();
+    return n;
+  }
+
+  /* ---------- provinsi & kota ---------- */
+  function wilayah(){ return window.KolavoWilayah || {}; }
+  function provinsiDari(negara){
+    const bawaan = Object.keys(wilayah()[negara] || {});
+    const ext = Object.keys((tambahan.wilayah[negara] || {}));
+    return bawaan.concat(ext.filter(function(p){ return bawaan.indexOf(p) < 0; }));
+  }
+  function kotaDari(negara, prov){
+    const bawaan = ((wilayah()[negara] || {})[prov]) || [];
+    const ext = ((tambahan.wilayah[negara] || {})[prov]) || [];
+    return bawaan.concat(ext.filter(function(k){ return bawaan.indexOf(k) < 0; }));
+  }
+  function tambahWilayah(negara, prov, kota){
+    if(!negara || !prov) return '';
+    const w = tambahan.wilayah[negara] = tambahan.wilayah[negara] || {};
+    const pAda = provinsiDari(negara).filter(function(p){ return kunci(p) === kunci(prov); })[0];
+    const p = pAda || rapikan(prov);
+    if(!w[p]) w[p] = [];
+    if(kota){
+      const kAda = kotaDari(negara, p).filter(function(k){ return kunci(k) === kunci(kota); })[0];
+      if(kAda){ simpan(); return kAda; }
+      const k = rapikan(kota);
+      w[p].push(k); simpan();
+      return k;
+    }
+    simpan();
+    return p;
+  }
+
+  const LAIN = '<option value="__lain__">Lainnya — tulis sendiri…</option>';
+  function opsi(nilai, pilih){
+    return nilai.map(function(v){ return '<option' + (v === pilih ? ' selected' : '') + '>' + lolos(v) + '</option>'; }).join('');
+  }
+  function opsiNegara(pilih, kosong){
+    return '<option value="">' + (kosong || 'Negara') + '</option>' +
+      daftar().map(function(n){ return '<option value="' + lolos(n.nama) + '"' + (n.nama === pilih ? ' selected' : '') + '>' + lolos(n.nama) + '</option>'; }).join('') + LAIN;
+  }
+  function opsiProvinsi(negara, pilih, kosong){
+    return '<option value="">' + (kosong || 'Provinsi') + '</option>' + opsi(provinsiDari(negara), pilih) + LAIN;
+  }
+  function opsiKota(negara, prov, pilih, kosong){
+    return '<option value="">' + (kosong || 'Kota/kabupaten') + '</option>' + opsi(kotaDari(negara, prov), pilih) + LAIN;
+  }
+  const sah = function(v){ return !!v && v !== '__lain__'; };
+  function isiNegara(sel, pilih){ if(sel){ sel.innerHTML = opsiNegara(pilih, sel.dataset.kosong); } }
+  function isiProvinsi(sel, negara, pilih){
+    if(!sel) return;
+    sel.innerHTML = opsiProvinsi(sah(negara) ? negara : '', pilih, sel.dataset.kosong);
+    sel.disabled = !sah(negara);
+  }
+  function isiKota(sel, negara, prov, pilih){
+    if(!sel) return;
+    sel.innerHTML = opsiKota(sah(negara) ? negara : '', sah(prov) ? prov : '', pilih, sel.dataset.kosong);
+    sel.disabled = !sah(prov);
+  }
+
+  /* ---------- kode WhatsApp ----------
+     Nilai menu = nama negara (unik; +1 dipakai Amerika Serikat dan Kanada).
+     Tampilan tertutupnya cuma bendera + kode, menu terbukanya nama lengkap. */
+  function dial(nama){ const n = cari(nama); return n ? n.dial : '+62'; }
+  function labelKode(nama){ const n = cari(nama); return n ? n.bendera + ' ' + n.dial : '🇮🇩 +62'; }
+  function opsiKode(pilih){
+    pilih = pilih || 'Indonesia';
+    return daftar().filter(function(n){ return n.dial; }).map(function(n){
+      return '<option value="' + lolos(n.nama) + '"' + (n.nama === pilih ? ' selected' : '') + '>' + n.bendera + ' ' + lolos(n.nama) + ' (' + n.dial + ')</option>';
+    }).join('') + '<option value="__lain__">Lainnya — tulis kode sendiri…</option>';
+  }
+  function kodeHtml(id, pilih){
+    return '<span class="tel-pfx tel-kode"><span class="tel-kode-v" aria-hidden="true">' + labelKode(pilih) + '</span>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>' +
+      '<select id="' + id + '" data-kode-tel data-tambah="kode" aria-label="Kode negara">' + opsiKode(pilih) + '</select></span>';
+  }
+
+  /* ---------- "Lainnya — tulis sendiri…" ----------
+     Satu baris isian kecil di bawah menunya. data-tambah = negara | provinsi |
+     kota | kode; data-induk = id menu negara/provinsi di atasnya. */
+  const JUDUL = {
+    negara:   ['Nama negara', 'Misal Belanda'],
+    provinsi: ['Nama provinsi, negara bagian, atau wilayah', 'Misal Noord-Holland'],
+    kota:     ['Nama kota', 'Misal Amsterdam'],
+    kode:     ['Kode telepon negara', 'Misal +31']
+  };
+  function wadahSetelah(sel){ return sel.closest('.f-grid, .pf-ed-g3, .tel') || sel; }
+  function bukaTambah(sel){
+    tutupTambah(sel);
+    const jenis = sel.dataset.tambah, j = JUDUL[jenis];
+    const row = document.createElement('div');
+    row.className = 'ngr-tambah';
+    row.dataset.untuk = sel.id;
+    row.innerHTML =
+      '<div class="ngr-tambah-r">' +
+        '<input class="inp" data-ngr-isi maxlength="' + (jenis === 'kode' ? 6 : 60) + '" placeholder="' + j[1] + '" aria-label="' + j[0] + '"' + (jenis === 'kode' ? ' inputmode="tel"' : '') + '>' +
+        (jenis === 'kode' ? '<input class="inp" data-ngr-nama maxlength="60" placeholder="Nama negaranya, misal Belanda" aria-label="Nama negara untuk kode ini">' : '') +
+        '<button type="button" class="btn sm" data-ngr-ok>Tambahkan</button>' +
+        '<button type="button" class="btn outline sm" data-ngr-batal>Batal</button>' +
+      '</div>' +
+      '<p class="f-why">Tidak ada di daftar? Tulis sendiri — langsung tersimpan dan bisa dipilih pengguna lain.</p>' +
+      '<p class="ngr-galat" hidden></p>';
+    wadahSetelah(sel).insertAdjacentElement('afterend', row);
+    row.querySelector('[data-ngr-isi]').focus();
+  }
+  function tutupTambah(sel){
+    const lama = document.querySelector('.ngr-tambah[data-untuk="' + sel.id + '"]');
+    if(lama) lama.remove();
+  }
+  function picu(sel){ sel.dispatchEvent(new Event('change', { bubbles: true })); }
+  function setujui(row){
+    const sel = document.getElementById(row.dataset.untuk);
+    if(!sel) return;
+    const isi = row.querySelector('[data-ngr-isi]').value.trim();
+    const galat = row.querySelector('.ngr-galat');
+    const salah = function(t){ galat.textContent = t; galat.hidden = false; };
+    const jenis = sel.dataset.tambah;
+    const negaraDari = function(id){ const e = document.getElementById(id); return e ? e.value : ''; };
+    let nilai = '';
+    if(jenis === 'kode'){
+      const angka = isi.replace(/[^\d]/g, '');
+      if(angka.length < 1 || angka.length > 4) return salah('Kode telepon 1–4 angka, misal +31.');
+      const nama = row.querySelector('[data-ngr-nama]').value.trim();
+      if(!nama) return salah('Tulis juga nama negaranya.');
+      nilai = tambahNegara(nama, '+' + angka);
+      const n = cari(nilai);
+      if(n && n.dial && n.dial !== '+' + angka && !n.tambahan) return salah(n.nama + ' sudah ada dengan kode ' + n.dial + '.');
+      sel.innerHTML = opsiKode(nilai);
+    } else if(jenis === 'negara'){
+      if(isi.length < 3) return salah('Nama negara terlalu pendek.');
+      nilai = tambahNegara(isi);
+      sel.innerHTML = opsiNegara(nilai, sel.dataset.kosong);
+    } else if(jenis === 'provinsi'){
+      const neg = negaraDari(sel.dataset.induk);
+      if(isi.length < 2) return salah('Nama wilayah terlalu pendek.');
+      nilai = tambahWilayah(neg, isi);
+      sel.innerHTML = opsiProvinsi(neg, nilai, sel.dataset.kosong);
+    } else if(jenis === 'kota'){
+      const provSel = document.getElementById(sel.dataset.induk);
+      const prov = provSel ? provSel.value : '', neg = provSel ? negaraDari(provSel.dataset.induk) : '';
+      if(isi.length < 2) return salah('Nama kota terlalu pendek.');
+      nilai = tambahWilayah(neg, prov, isi);
+      sel.innerHTML = opsiKota(neg, prov, nilai, sel.dataset.kosong);
+    }
+    sel.value = nilai;
+    row.remove();
+    /* menu sejenis di layar lain langsung ikut punya isian baru (nilainya tetap) */
+    if(jenis === 'negara' || jenis === 'kode'){
+      document.querySelectorAll('select[data-tambah="negara"], select[data-kode-tel]').forEach(function(s){
+        if(s === sel) return;
+        const v = s.value;
+        s.innerHTML = s.hasAttribute('data-kode-tel') ? opsiKode(v) : opsiNegara(v, s.dataset.kosong);
+        s.value = v;
+      });
+    }
+    picu(sel);
+    if(window.KolavoToast) window.KolavoToast('“' + nilai + '” ditambahkan ke daftar.');
+  }
+
+  /* label tertutup menu kode telepon ikut nilai terpilih */
+  function segarkanKode(sel){
+    const v = sel.closest('.tel-kode') && sel.closest('.tel-kode').querySelector('.tel-kode-v');
+    if(v && sel.value !== '__lain__') v.textContent = labelKode(sel.value);
+  }
+
+  document.addEventListener('change', function(e){
+    const sel = e.target;
+    if(!sel.matches || !sel.matches('select[data-tambah]')) return;
+    if(sel.hasAttribute('data-kode-tel')) segarkanKode(sel);
+    if(sel.value === '__lain__') bukaTambah(sel); else tutupTambah(sel);
+  });
+  document.addEventListener('click', function(e){
+    const ok = e.target.closest('[data-ngr-ok]');
+    if(ok){ setujui(ok.closest('.ngr-tambah')); return; }
+    const batal = e.target.closest('[data-ngr-batal]');
+    if(batal){
+      const row = batal.closest('.ngr-tambah'), sel = document.getElementById(row.dataset.untuk);
+      row.remove();
+      if(sel){ sel.value = sel.hasAttribute('data-kode-tel') ? 'Indonesia' : ''; picu(sel); sel.focus(); }
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter' || !e.target.closest || !e.target.closest('.ngr-tambah')) return;
+    e.preventDefault(); e.stopPropagation();
+    setujui(e.target.closest('.ngr-tambah'));
+  }, true);
+
+  window.KolavoNegara = {
+    daftar: daftar, cari: cari, dial: dial, labelKode: labelKode,
+    tambahNegara: tambahNegara, tambahWilayah: tambahWilayah,
+    provinsiDari: provinsiDari, kotaDari: kotaDari,
+    opsiNegara: opsiNegara, opsiProvinsi: opsiProvinsi, opsiKota: opsiKota, opsiKode: opsiKode, kodeHtml: kodeHtml,
+    isiNegara: isiNegara, isiProvinsi: isiProvinsi, isiKota: isiKota, sah: sah,
+    /* kode WhatsApp pengguna (Lengkapi profil) */
+    kodeWa: function(){ const s = document.getElementById('waKode'); return dial(s ? s.value : 'Indonesia'); }
+  };
+})();
+</script>

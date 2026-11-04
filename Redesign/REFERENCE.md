@@ -1864,3 +1864,57 @@ diterapkan ke prototipe kecuali disebut.
   bingkai. Logo = bingkai kotak, hasil PNG 512px (transparan tetap); foto = bingkai bulat, JPEG 480px.
   Dipasang di logo Buat (`bkLogoFile`), foto Lengkapi (`idFile`), foto Profil (`pfFotoFile`). Logo
   menyimpan gambar asli sehingga **"Atur posisi"** bisa diulang tanpa makin buram.
+
+## Revisi 4 Nov 2026 (7 butir masukan pengguna)
+
+1–2. **Negara & kode WhatsApp** — modul baru `src/50-js-negara.html` (`window.KolavoNegara`): 199
+   negara/wilayah (nama Indonesia + ISO + kode telepon + alias Inggris, mis. "Netherlands" → Belanda).
+   Menu negara, provinsi, kota, dan kode WA punya opsi **"Lainnya — tulis sendiri…"**: isiannya
+   langsung masuk daftar dan dipakai semua menu sejenis (prototipe: `localStorage`
+   `kolavo.negaraTambahan.v1`; produk: tabel negara/wilayah dengan penanda buatan pengguna).
+   Kode WA = menu asli transparan di atas label bendera+kode (`.tel-kode`); nilai menu = nama negara
+   (+1 dipakai AS & Kanada). Provinsi/kota terbuka untuk negara tanpa daftar lewat "Lainnya".
+   Dipakai di Lengkapi, Buat, editor Profil & Setting, dan nomor HP Langganan.
+3. **Titik kumpul komunitas**: hanya negara yang wajib; provinsi & kota opsional (komunitas online/se-negara).
+   `kom.kota` = lokasi tampilan paling spesifik (kota → provinsi → negara); isian asli di
+   `negara`/`provinsi`/`kotaIsi`. Domisili anggota di Lengkapi juga: hanya negara wajib, provinsi & kota
+   opsional (tag/lokasi profil jatuh ke provinsi → negara bila kota kosong).
+4. **Threads** ditambahkan ke platform media sosial (ikon "@", URL `threads.net/@`).
+5. **Pertanyaan pilihan jawaban** (`tipe: 'pilihan'`, `opsi: [..]`, 2–10 opsi, pendaftar memilih satu).
+   Kartu Buat: pil "Pilihan jawaban" membuka daftar opsi. Pertanyaan bawaan ketiga: **Minat Kegiatan**
+   (Acara & reuni · Kegiatan sosial · Mentoring & karier · Usaha & jejaring) — boleh dihapus.
+6. **Saring jawaban** di tab Permintaan gabung & Anggota (`.kl-saring`, `D.saring`): pilih pertanyaan
+   (pekerjaan, domisili, atau pertanyaan pendaftaran) lalu jawabannya beserta jumlah; teks bebas disaring
+   dengan kata; "Belum menjawab" tersedia. Esensial (tidak dikunci Advance).
+7. **Tab "Kontribusi & dicari"** (Esensial, `klPanelKontri`): jawaban "bisa dibagikan" & "ingin didapat"
+   semua anggota + pendaftar dalam satu halaman. Urutan "Kelompokkan yang mirip" = topik kata kunci
+   (`TOPIK` di dashboard-pengurus), tiap topik menunjukkan jumlah orang di sisi sebaliknya
+   ("n orang mencari ini" / "bisa membantu"). Cari kata, urut nama, saring anggota/pendaftar.
+8. **Kotak centang** (`tipe: 'centang'`, opsi sama seperti pilihan, boleh dicentang beberapa). Di formulir gabung:
+   `.cek-grup` + input tersembunyi ber-`data-tanya-id` yang nilainya opsi terpilih dipisah ", " (koma
+   dibuang dari teks opsi). Saringan & persebaran menghitung per opsi, bukan per kombinasi.
+9. **Pembuat komunitas mengisi jawabannya sendiri**: di halaman komunitasnya, bar `#komFounder` mengajak
+   "Kamu juga anggota komunitas ini → Isi jawabanku" selama jawabannya belum ada; tombol ikon dokumen
+   (`#komEdit`) membuka formulir yang sama untuk mengubahnya. Simpan → `KolavoDashboard.isiJawabanAku(peta)`
+   menulis `D.mem[aku].jwb` (+ `nick`), jadi ikut tampil di profil, saringan, dan persebaran.
+   Langkah ke-3 di layar "Halamannya sudah jadi" menyebut hal ini.
+10. **Atur topik** (tab Kontribusi & dicari, urutan "Kelompokkan yang mirip"): pengurus mengubah nama
+    topik, kata kunci (dipisah koma), urutan prioritas, menambah/menghapus topik, atau kembali ke bawaan.
+    Disimpan per komunitas di `D.topik` ([{nama, kata: []}]). Aturan: kata cocok terbanyak menang, seri →
+    topik lebih atas; kata ≤ 3 huruf dicocokkan utuh, selebihnya potongan kata. Kata kunci yang cocok
+    ditandai (`mark.kt-kata`) di tiap jawaban; jumlah jawaban "Lainnya" ditampilkan sebagai pengingat.
+11. **Saran kata kunci** di Atur topik (5 Nov 2026 — pengurus kesulitan menebak kata kunci): kata dari
+    jawaban anggota sendiri (≥ 4 huruf, tanpa kata umum `KATA_UMUM`), dengan jumlah jawaban yang memuatnya.
+    Kata dari jawaban yang belum masuk topik diberi titik oranye dan didahulukan; kata yang sudah jadi kata
+    kunci diredupkan dengan nama topiknya. Klik kata → pilih topik atau "+ Topik baru". Jawaban yang masih
+    "Lainnya" ditampilkan di atasnya sebagai konteks.
+12. **Model tagging** (5 Nov 2026): saran kata bisa dipilih banyak (`D.kontri.saran` = array) lalu
+    dimasukkan bersamaan ke satu topik atau "+ Jadikan topik baru" (nama dari kata pertama); tombol
+    "Pilih semua kata bertitik oranye". Kata kunci tiap topik tampil sebagai tag (`.kt-tag`, × hapus);
+    kolom `.kt-tag-inp` menambah dengan Enter atau koma, Backspace di kolom kosong menghapus tag terakhir.
+13. **Tambah topik dalam satu kotak** (5 Nov 2026; sempat dua langkah, digabung karena membingungkan):
+    tombol "+ Tambah topik" di atas daftar → satu kotak berisi kolom **Nama topik** dan **Kata kunci**
+    sekaligus: tag terpilih + kolom **tag mandiri** (ketik sendiri, Enter/koma, Backspace hapus terakhir) +
+    saran kata dari jawaban (pilih banyak, "Pilih semua kata bertitik oranye"). "Simpan topik (n kata)"
+    aktif bila nama terisi dan ada ≥ 1 kata; topik baru ditaruh paling atas (prioritas tertinggi).
+    Keadaan di `D.kontri.baru = { nama, kata }`.

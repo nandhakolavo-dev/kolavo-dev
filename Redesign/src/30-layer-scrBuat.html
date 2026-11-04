@@ -72,12 +72,12 @@
       <div class="f">
         <span class="f-lbl" id="bkLblDom">Titik kumpul<span class="must" aria-hidden="true">*</span></span>
         <div class="f-grid tiga" role="group" aria-labelledby="bkLblDom">
-          <select class="sel" id="bkNegara" aria-label="Negara"><option value="">Negara</option><option>Indonesia</option><option>Malaysia</option><option>Singapura</option></select>
-          <select class="sel" id="bkProvinsi" aria-label="Provinsi" disabled><option value="">Provinsi</option></select>
-          <select class="sel" id="bkKota" aria-label="Kota atau kabupaten" disabled><option value="">Kota/kabupaten</option></select>
+          <select class="sel" id="bkNegara" aria-label="Negara" data-tambah="negara"><option value="">Negara</option><option>Indonesia</option></select>
+          <select class="sel" id="bkProvinsi" aria-label="Provinsi (opsional)" data-kosong="Provinsi (opsional)" data-tambah="provinsi" data-induk="bkNegara" disabled><option value="">Provinsi (opsional)</option></select>
+          <select class="sel" id="bkKota" aria-label="Kota atau kabupaten (opsional)" data-kosong="Kota (opsional)" data-tambah="kota" data-induk="bkProvinsi" disabled><option value="">Kota (opsional)</option></select>
         </div>
-        <p class="f-why">Anggota yang pindah kota tetap bisa gabung — ini cuma penanda asal komunitasnya.</p>
-        <p class="f-galat">Titik kumpul komunitas perlu diisi.</p>
+        <p class="f-why">Cukup negaranya kalau komunitasmu online atau tersebar di satu negara — provinsi dan kota boleh dikosongkan. Anggota yang pindah kota tetap bisa gabung; ini cuma penanda asal komunitasnya.</p>
+        <p class="f-galat">Pilih negara titik kumpul komunitasmu.</p>
       </div>
 
       <div class="f">
@@ -188,6 +188,7 @@
     <ul class="steps">
       <li class="step"><span class="no">1</span><div><strong>Sebar link ke grup</strong><p>Satu link, tidak perlu Google Form lagi. Yang mendaftar mengisi profilnya sendiri.</p></div></li>
       <li class="step"><span class="no">2</span><div><strong>Setujui yang mendaftar</strong><p>Kamu yang menentukan siapa yang boleh masuk. Setelah disetujui, daftar anggota kebuka buat mereka.</p></div></li>
+      <li class="step"><span class="no">3</span><div><strong>Isi jawabanmu sendiri</strong><p>Kamu juga anggota. Jawab pertanyaan pendaftaran lewat tombol “Isi jawabanku” di halaman komunitas.</p></div></li>
     </ul>
 
     <div class="empty-cta">

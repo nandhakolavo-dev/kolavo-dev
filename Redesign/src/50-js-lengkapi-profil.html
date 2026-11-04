@@ -70,34 +70,23 @@
   var negara   = document.getElementById('negara'),
       provinsi = document.getElementById('provinsi'),
       kota     = document.getElementById('kota');
-  if(!negara) return;
+  var N = window.KolavoNegara;
+  if(!negara || !N) return;
 
-  function kosongkan(sel, teks){
-    sel.innerHTML = '';
-    var o = document.createElement('option');
-    o.value = ''; o.textContent = teks;
-    sel.appendChild(o);
-  }
+  /* daftar negara lengkap + "Lainnya — tulis sendiri…" (50-js-negara). Provinsi dan
+     kota terbuka untuk negara mana pun: yang belum punya daftar diisi lewat "Lainnya". */
+  N.isiNegara(negara, '');
+  var waKode = document.getElementById('waKode');
+  if(waKode) waKode.innerHTML = N.opsiKode('Indonesia');
 
   negara.addEventListener('change', function(){
-    kosongkan(provinsi, 'Provinsi');
-    kosongkan(kota, 'Kota/kabupaten');
-    kota.disabled = true;
-    var p = WILAYAH[negara.value];
-    provinsi.disabled = !p;
-    if(p) Object.keys(p).forEach(function(n){
-      var o = document.createElement('option'); o.textContent = n; provinsi.appendChild(o);
-    });
+    N.isiProvinsi(provinsi, negara.value, '');
+    N.isiKota(kota, '', '', '');
     hitung();
   });
 
   provinsi.addEventListener('change', function(){
-    kosongkan(kota, 'Kota/kabupaten');
-    var k = WILAYAH[negara.value] && WILAYAH[negara.value][provinsi.value];
-    kota.disabled = !k;
-    if(k) k.forEach(function(n){
-      var o = document.createElement('option'); o.textContent = n; kota.appendChild(o);
-    });
+    N.isiKota(kota, negara.value, provinsi.value, '');
     hitung();
   });
 })();
@@ -122,7 +111,8 @@ function hitung(){}
     var lahir = document.getElementById('lahir');
     if(lahir && lahir.value) beres++;
     if(document.querySelector('#scrLengkapi input[name="jk"]:checked')) beres++;
-    if(kota && kota.value) beres++;
+    var neg = document.getElementById('negara');
+    if(neg && neg.value && neg.value !== '__lain__') beres++;
 
     if(progN) progN.textContent = beres;
     if(document.getElementById('progTotal')) document.getElementById('progTotal').textContent = total;
@@ -194,7 +184,7 @@ function hitung(){}
   if(!list || !tambah) return;
   var PLATFORM = [
     ['instagram', 'Instagram', '@namaakun'], ['linkedin', 'LinkedIn', 'linkedin.com/in/…'],
-    ['tiktok', 'TikTok', '@namaakun'], ['x', 'X (Twitter)', '@namaakun'],
+    ['tiktok', 'TikTok', '@namaakun'], ['x', 'X (Twitter)', '@namaakun'], ['threads', 'Threads', '@namaakun'],
     ['facebook', 'Facebook', 'facebook.com/…'], ['youtube', 'YouTube', '@kanal'], ['web', 'Situs web', 'namamu.com']
   ];
   var MAKS = 5, baris = [{ p: 'instagram', h: '' }];

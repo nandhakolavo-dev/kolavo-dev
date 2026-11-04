@@ -24,6 +24,7 @@
 50-js-harga.html
 50-js-hero.html
 50-js-pemilih-lokasi.html
+50-js-negara.html
 50-js-modal-masuk.html
 50-js-lengkapi-profil.html
 50-js-runtime-router.html

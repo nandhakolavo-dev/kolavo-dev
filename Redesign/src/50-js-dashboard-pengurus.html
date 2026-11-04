@@ -32,20 +32,22 @@
      ditambahkan supaya antreannya terasa menumpuk, seperti keluhan pengurus di
      laporan feedback 7 Agustus 2026 ("kewalahan approve satu-satu"). */
   const SEED = [
-    { nama: 'Putri Maharani',  panggil: 'Putri', full: 'Putri Maharani Lestari', jk: 'Perempuan', kerja: 'Guru SD',         kota: 'Bekasi',        wa: '0812-••••-4417', email: 'putri••••@gmail.com', lengkap: true,  waktu: '2 hari lalu', hari: 2, tahun: 2014, teks: ['Diajak teman seangkatan', 'Ingin ikut kegiatan alumni'], alasan: 'Saya ingin ikut kegiatan mengajar sukarela yang sering diadakan alumni. Sebagai guru, rasanya pas kalau bisa berbagi ke adik-adik tingkat.' },
-    { nama: 'Andi Firmansyah', panggil: 'Andi',  full: 'Andi Firmansyah',        jk: 'Laki-laki', kerja: 'Karyawan swasta', kota: 'Jakarta Timur', wa: '0813-••••-2210', email: 'andi.f••••@gmail.com', lengkap: true,  waktu: 'kemarin',     hari: 1, tahun: 2010, teks: ['Ketemu di grup WhatsApp', 'Cari koneksi seprofesi'], alasan: 'Cari koneksi seprofesi. Saya lagi menimbang pindah kerja ke bidang logistik, siapa tahu ada alumni yang bisa kasih gambaran dunia kerjanya.' },
-    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, kurang: ['Pendidikan', 'Yang dicari'], waktu: '3 jam lalu',  hari: 0, tahun: 2016, teks: ['Nemu halaman ini di Kolavo', 'Mau kenal alumni lain'], alasan: 'Mau kenal alumni lain, sekalian mengenalkan usaha katering saya. Kalau ada acara komunitas, saya siap bantu urusan konsumsi.' },
-    { nama: 'Rina Kartika',    panggil: 'Rina',  full: 'Rina Kartika Sari',      jk: 'Perempuan', kerja: 'Perawat',         kota: 'Jakarta Utara', wa: '0821-••••-7702', email: 'rinaks••••@gmail.com', lengkap: true,  waktu: '5 hari lalu', hari: 5, tahun: 2012, teks: ['Diajak ketua angkatan', 'Mau bantu kegiatan sosial'], alasan: 'Diajak ketua angkatan untuk bantu penggalangan dana beasiswa. Dulu saya sendiri terbantu beasiswa alumni, sekarang giliran saya membalas.' },
-    { nama: 'Bayu Setiawan',   panggil: 'Bayu',  full: 'Bayu Setiawan',          jk: 'Laki-laki', kerja: 'Teknisi jaringan', kota: 'Bekasi',       wa: '0838-••••-1185', email: 'bayu.s••••@gmail.com', lengkap: true,  waktu: '8 hari lalu', hari: 8, tahun: 2010, teks: ['Dari grup WhatsApp angkatan', 'Cari info lowongan'], alasan: 'Info lowongan.' },
-    { nama: 'Galih Pramudya',  panggil: 'Galih', full: 'Galih Pramudya',         jk: 'Laki-laki', kerja: 'Desainer grafis', kota: 'Tangerang',     wa: '0877-••••-5543', email: 'galihp••••@gmail.com', lengkap: false, kurang: ['Foto profil', 'Pendidikan', 'Kontribusi'], waktu: '6 hari lalu', hari: 6, tahun: 2015, teks: ['Lihat unggahan di Instagram', 'Ingin ikut reuni'], alasan: 'Kangen teman-teman lama. Lihat foto reuni tahun lalu di Instagram dan menyesal tidak ikut, jadi tahun ini tidak mau ketinggalan lagi.' },
-    { nama: 'Dimas Aryo',      panggil: 'Dimas', full: 'Dimas Aryo Nugroho',     jk: 'Laki-laki', kerja: 'Mahasiswa S2',    kota: 'Bandung',       wa: '0896-••••-2051', email: 'dimasa••••@gmail.com', lengkap: true,  waktu: '4 hari lalu', hari: 4, tahun: 2016, teks: ['Disarankan dosen pembimbing', 'Cari narasumber riset'], alasan: 'Saya sedang riset tentang UMKM di Jawa Barat dan butuh narasumber. Berharap bisa belajar langsung dari alumni yang sudah menjalankan usaha.' },
-    { nama: 'Yoga Saputra',    panggil: 'Yoga',  full: 'Yoga Saputra',           jk: 'Laki-laki', kerja: 'PNS',             kota: 'Bogor',         wa: '0819-••••-6634', email: 'yogas••••@gmail.com',  lengkap: false, kurang: ['Media sosial', 'Kontribusi', 'Yang dicari'], waktu: '7 hari lalu', hari: 7, tahun: 2011, teks: ['Dari teman', 'Ikut saja'], alasan: 'ikut aja' }
+    { nama: 'Putri Maharani',  panggil: 'Putri', full: 'Putri Maharani Lestari', jk: 'Perempuan', kerja: 'Guru SD',         kota: 'Bekasi',        wa: '0812-••••-4417', email: 'putri••••@gmail.com', lengkap: true,  waktu: '2 hari lalu', hari: 2, tahun: 2014, teks: ['Diajak teman seangkatan', 'Ingin ikut kegiatan alumni'], beri: 'Bisa bantu mengajar kelas singkat dan bimbingan belajar adik kelas.', cari: 'Teman diskusi sesama guru dan info beasiswa S2.', alasan: 'Saya ingin ikut kegiatan mengajar sukarela yang sering diadakan alumni. Sebagai guru, rasanya pas kalau bisa berbagi ke adik-adik tingkat.' },
+    { nama: 'Andi Firmansyah', panggil: 'Andi',  full: 'Andi Firmansyah',        jk: 'Laki-laki', kerja: 'Karyawan swasta', kota: 'Jakarta Timur', wa: '0813-••••-2210', email: 'andi.f••••@gmail.com', lengkap: true,  waktu: 'kemarin',     hari: 1, tahun: 2010, teks: ['Ketemu di grup WhatsApp', 'Cari koneksi seprofesi'], beri: 'Bisa berbagi tips melamar kerja di perusahaan swasta.', cari: 'Mentor untuk pindah karier ke bidang logistik.', alasan: 'Cari koneksi seprofesi. Saya lagi menimbang pindah kerja ke bidang logistik, siapa tahu ada alumni yang bisa kasih gambaran dunia kerjanya.' },
+    { nama: 'Sinta Dewi',      panggil: 'Sinta', full: 'Sinta Dewi Anggraini',   jk: 'Perempuan', kerja: 'Wiraswasta',      kota: 'Depok',         wa: '0857-••••-3390', email: 'sinta••••@gmail.com',  lengkap: false, kurang: ['Pendidikan', 'Yang dicari'], waktu: '3 jam lalu',  hari: 0, tahun: 2016, teks: ['Nemu halaman ini di Kolavo', 'Mau kenal alumni lain'], beri: 'Bisa urus konsumsi acara dari usaha katering saya.', cari: '', alasan: 'Mau kenal alumni lain, sekalian mengenalkan usaha katering saya. Kalau ada acara komunitas, saya siap bantu urusan konsumsi.' },
+    { nama: 'Rina Kartika',    panggil: 'Rina',  full: 'Rina Kartika Sari',      jk: 'Perempuan', kerja: 'Perawat',         kota: 'Jakarta Utara', wa: '0821-••••-7702', email: 'rinaks••••@gmail.com', lengkap: true,  waktu: '5 hari lalu', hari: 5, tahun: 2012, teks: ['Diajak ketua angkatan', 'Mau bantu kegiatan sosial'], beri: 'Bisa jaga pos kesehatan dan berbagi soal P3K.', cari: 'Kegiatan sosial yang rutin, terutama penggalangan beasiswa.', alasan: 'Diajak ketua angkatan untuk bantu penggalangan dana beasiswa. Dulu saya sendiri terbantu beasiswa alumni, sekarang giliran saya membalas.' },
+    { nama: 'Bayu Setiawan',   panggil: 'Bayu',  full: 'Bayu Setiawan',          jk: 'Laki-laki', kerja: 'Teknisi jaringan', kota: 'Bekasi',       wa: '0838-••••-1185', email: 'bayu.s••••@gmail.com', lengkap: true,  waktu: '8 hari lalu', hari: 8, tahun: 2010, teks: ['Dari grup WhatsApp angkatan', 'Cari info lowongan'], beri: 'Bisa bantu urusan jaringan internet dan listrik saat acara.', cari: 'Info lowongan kerja di bidang IT.', alasan: 'Info lowongan.' },
+    { nama: 'Galih Pramudya',  panggil: 'Galih', full: 'Galih Pramudya',         jk: 'Laki-laki', kerja: 'Desainer grafis', kota: 'Tangerang',     wa: '0877-••••-5543', email: 'galihp••••@gmail.com', lengkap: false, kurang: ['Foto profil', 'Pendidikan', 'Kontribusi'], waktu: '6 hari lalu', hari: 6, tahun: 2015, teks: ['Lihat unggahan di Instagram', 'Ingin ikut reuni'], beri: '', cari: 'Relasi untuk usaha desain dan proyek poster.', alasan: 'Kangen teman-teman lama. Lihat foto reuni tahun lalu di Instagram dan menyesal tidak ikut, jadi tahun ini tidak mau ketinggalan lagi.' },
+    { nama: 'Dimas Aryo',      panggil: 'Dimas', full: 'Dimas Aryo Nugroho',     jk: 'Laki-laki', kerja: 'Mahasiswa S2',    kota: 'Bandung',       wa: '0896-••••-2051', email: 'dimasa••••@gmail.com', lengkap: true,  waktu: '4 hari lalu', hari: 4, tahun: 2016, teks: ['Disarankan dosen pembimbing', 'Cari narasumber riset'], beri: 'Bisa jadi pembicara soal riset dan studi lanjut.', cari: 'Narasumber pelaku usaha kecil untuk riset UMKM.', alasan: 'Saya sedang riset tentang UMKM di Jawa Barat dan butuh narasumber. Berharap bisa belajar langsung dari alumni yang sudah menjalankan usaha.' },
+    { nama: 'Yoga Saputra',    panggil: 'Yoga',  full: 'Yoga Saputra',           jk: 'Laki-laki', kerja: 'PNS',             kota: 'Bogor',         wa: '0819-••••-6634', email: 'yogas••••@gmail.com',  lengkap: false, kurang: ['Media sosial', 'Kontribusi', 'Yang dicari'], waktu: '7 hari lalu', hari: 7, tahun: 2011, teks: ['Dari teman', 'Ikut saja'], beri: '', cari: '', alasan: 'ikut aja' }
   ];
 
   const D = {
     built: false, kom: null, aku: 'Kamu', akuKerja: '', akuKota: '',
     mem: {}, minta: [], anggotaBiasa: [], pengurus: [], peninjau: 'Kamu',
     tab: 'minta', angkatFor: null, ubahFor: null, riwayat: [],
+    saring: { minta: { q: '', v: '' }, anggota: { q: '', v: '' } },
+    kontri: { lihat: 'beri', urut: 'mirip', siapa: 'semua', cari: '' },
     /* keluar & dikeluarkan: { nama, jenis: 'dikeluarkan'|'keluar', alasan, oleh, waktu, sisa (hari pulihkan) } */
     keluar: [], menuFor: null, keluarkanFor: null,
     /* daftar jabatan — satu sumber untuk pemilih jabatan dan tabel Siapa boleh apa */
@@ -97,6 +99,15 @@
   /* jawaban pendaftar disusun dari pertanyaan yang dirancang pengurus saat buat
      halaman (kom.tanya) — bukan field tetap. Nama panggilan tidak diulang di sini
      karena sudah tampil di sebelah nama. */
+  function acakNama(s, n){
+    let h = 0;
+    for(let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+    return h % n;
+  }
+  function centangContoh(kunci, opsi){
+    const a = acakNama(kunci, opsi.length), dua = acakNama(kunci + 'x', 2) && opsi.length > 1;
+    return dua ? [opsi[a], opsi[(a + 1) % opsi.length]].sort(function(x, y){ return opsi.indexOf(x) - opsi.indexOf(y); }).join(', ') : opsi[a];
+  }
   function jawabanFor(s){
     const tanya = (D.kom && D.kom.tanya) || [];
     const teks = Array.isArray(s.teks) ? s.teks : (s.teks ? [s.teks] : []);
@@ -107,6 +118,10 @@
     const soalAlasan = /gabung|alasan|kenapa|mengapa|motivasi/i;
     return tanya.filter(function(t){ return t.id !== 'nickname'; }).map(function(t){
       const nilai = t.tipe === 'tahun' ? String(s.tahun)
+        /* pilihan jawaban: contoh tetap per orang, dari opsi yang disusun pengurus */
+        : (t.tipe === 'pilihan' && t.opsi && t.opsi.length) ? t.opsi[acakNama((s.nama || '') + t.id, t.opsi.length)]
+        /* kotak centang: satu atau dua opsi, dipisah koma */
+        : (t.tipe === 'centang' && t.opsi && t.opsi.length) ? centangContoh((s.nama || '') + t.id, t.opsi)
         : (s.alasan && soalAlasan.test((t.judul || '') + ' ' + (t.tanya || ''))) ? s.alasan
         : (teks[ti++] || '—');
       return { id: t.id, judul: t.judul || 'Pertanyaan', nilai: nilai };
@@ -155,7 +170,7 @@
     'Galih Pramudya':  [{ platform: 'Instagram', akun: '@galihpramudya' }],
     'Dimas Aryo':      [{ platform: 'LinkedIn', akun: 'linkedin.com/in/dimas-aryo' }, { platform: 'X (Twitter)', akun: '@dimasriset' }]
   };
-  const SOSMED_URL = { 'Instagram': 'https://instagram.com/', 'TikTok': 'https://tiktok.com/@', 'X (Twitter)': 'https://x.com/', 'YouTube': 'https://youtube.com/@' };
+  const SOSMED_URL = { 'Instagram': 'https://instagram.com/', 'TikTok': 'https://tiktok.com/@', 'X (Twitter)': 'https://x.com/', 'Threads': 'https://www.threads.net/@', 'YouTube': 'https://youtube.com/@' };
   function sosmedHtml(daftar){
     return '<span class="kl-sosmed">' + daftar.map(function(s){
       const url = SOSMED_URL[s.platform]
@@ -239,7 +254,7 @@
       /* jawaban formulir gabung, disimpan per id pertanyaan seperti pendaftar sungguhan —
          tampil lengkap di Tinjau jawaban (termasuk alasan bergabung) */
       const m = D.mem[a[0]];
-      m.jwb = jawabPerId({ tahun: a[3], alasan: m.alasan, teks: [SUMBER_CONTOH[i % SUMBER_CONTOH.length], a[4]] });
+      m.jwb = jawabPerId({ nama: a[0], tahun: a[3], alasan: m.alasan, teks: [SUMBER_CONTOH[i % SUMBER_CONTOH.length], a[4]] });
       Object.defineProperty(m, 'jawaban', { enumerable: true, get: function(){
         return pertanyaanPengurus().map(function(t){
           const ada = Object.prototype.hasOwnProperty.call(m.jwb, t.id);
@@ -256,11 +271,15 @@
       return denganJawaban({
         id: 'r' + i, nama: s.nama, panggil: s.panggil, full: s.full, jk: s.jk,
         kerja: s.kerja, kota: s.kota, wa: s.wa, email: s.email, lengkap: !kurang.length, kurang: kurang,
-        waktu: s.waktu, hari: s.hari, tahun: s.tahun,
+        waktu: s.waktu, hari: s.hari, tahun: s.tahun, beri: s.beri || '', cari: s.cari || '',
         jwb: jawabPerId(s), sosmed: SOSMED_SEED[s.nama] || []
       });
     });
     D.tab = 'minta';
+    /* saringan jawaban per tab + tampilan Kontribusi & dicari — baru tiap komunitas */
+    D.saring = { minta: { q: '', v: '' }, anggota: { q: '', v: '' } };
+    D.kontri = { lihat: 'beri', urut: 'mirip', siapa: 'semua', cari: '', atur: false, baru: null };
+    D.topik = topikAwal();
     D.angkatFor = null;
     D.ubahFor = null; D.kenalFor = null;
     /* dua keputusan contoh, supaya kotak catatan keputusan di Riwayat langsung terlihat */
@@ -430,6 +449,73 @@
     if(window.KolavoWarnai) window.KolavoWarnai(scr, kom.warna);
   }
 
+  /* ---------- saring berdasarkan jawaban (revisi 4 Nov 2026) ----------
+     Peninjau memilih satu pertanyaan (pekerjaan, domisili, atau pertanyaan
+     pendaftaran), lalu satu jawaban. Jawaban teks bebas disaring dengan kata. */
+  function sumbuSaring(){
+    return [{ id: 'kerja', judul: 'Pekerjaan', tipe: 'daftar' }, { id: 'kota', judul: 'Domisili', tipe: 'daftar' }]
+      .concat(pertanyaanPengurus().map(function(t){
+        return { id: 'q:' + t.id, qid: t.id, judul: t.judul || 'Pertanyaan', tipe: t.tipe, opsi: t.opsi };
+      }));
+  }
+  function nilaiSaring(o, s){
+    if(!o) return '';
+    if(s.id === 'kerja') return o.kerja || '';
+    if(s.id === 'kota') return o.kota || '';
+    const j = (o.jawaban || []).filter(function(x){ return x.id === s.qid; })[0];
+    return j && !j.kosong && j.nilai && j.nilai !== '—' ? String(j.nilai) : '';
+  }
+  function cocokSaring(o, f){
+    if(!f || !f.q) return true;
+    const s = sumbuSaring().filter(function(x){ return x.id === f.q; })[0];
+    if(!s || !f.v) return true;
+    const v = nilaiSaring(o, s);
+    if(f.v === '__kosong__') return !v;
+    if(s.tipe === 'teks') return v.toLowerCase().indexOf(f.v.trim().toLowerCase()) >= 0;
+    if(s.tipe === 'centang') return v.split(', ').indexOf(f.v) >= 0;
+    return v === f.v;
+  }
+  function saringAktif(f){ return !!(f && f.q && f.v); }
+  function barSaring(kunci, orang, tampil){
+    const f = D.saring[kunci];
+    const sumbu = sumbuSaring();
+    const s = sumbu.filter(function(x){ return x.id === f.q; })[0];
+    let nilai = '';
+    if(s){
+      if(s.tipe === 'teks'){
+        nilai = '<input class="inp" data-saring-v="' + kunci + '" maxlength="40" value="' + lolos(f.v) + '" placeholder="Jawaban mengandung kata…" aria-label="Kata dalam jawaban">';
+      } else {
+        const hitung = {}; let kosong = 0;
+        orang.forEach(function(o){
+          const v = nilaiSaring(o, s);
+          if(!v){ kosong++; return; }
+          /* kotak centang: dihitung per opsi yang dicentang, bukan per kombinasi */
+          (s.tipe === 'centang' ? v.split(', ') : [v]).forEach(function(x){ hitung[x] = (hitung[x] || 0) + 1; });
+        });
+        let urut = Object.keys(hitung);
+        if(s.tipe === 'pilihan' || s.tipe === 'centang') urut = (s.opsi || []).concat(urut.filter(function(v){ return (s.opsi || []).indexOf(v) < 0; }));
+        else if(s.tipe === 'tahun' || s.tipe === 'angka') urut.sort(function(a, b){ return parseFloat(b) - parseFloat(a); });
+        else urut.sort(function(a, b){ return hitung[b] - hitung[a] || a.localeCompare(b); });
+        nilai = '<select class="sel" data-saring-v="' + kunci + '" aria-label="Jawaban">' +
+          '<option value="">Semua jawaban</option>' +
+          urut.map(function(v){ return '<option value="' + lolos(v) + '"' + (v === f.v ? ' selected' : '') + '>' + lolos(v) + ' (' + (hitung[v] || 0) + ')</option>'; }).join('') +
+          (kosong ? '<option value="__kosong__"' + (f.v === '__kosong__' ? ' selected' : '') + '>Belum menjawab (' + kosong + ')</option>' : '') +
+        '</select>';
+      }
+    }
+    const jenis = kunci === 'minta' ? 'pendaftar' : 'anggota';
+    return '<div class="kl-saring">' +
+      '<span class="kl-saring-l">' + IKON_SARING + 'Saring jawaban</span>' +
+      '<select class="sel" data-saring-q="' + kunci + '" aria-label="Saring berdasarkan pertanyaan">' +
+        '<option value="">Pilih pertanyaan…</option>' +
+        sumbu.map(function(x){ return '<option value="' + lolos(x.id) + '"' + (x.id === f.q ? ' selected' : '') + '>' + lolos(x.judul) + '</option>'; }).join('') +
+      '</select>' + nilai +
+      (f.q ? '<button type="button" class="kl-saring-x" data-saring-hapus="' + kunci + '">Hapus saringan</button>' : '') +
+      (saringAktif(f) ? '<p class="kl-saring-n">Menampilkan <b>' + tampil + '</b> dari ' + orang.length + ' ' + jenis + '</p>' : '') +
+    '</div>';
+  }
+  const IKON_SARING = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v5l-4 2v-7Z"/></svg>';
+
   /* ---------- panel: permintaan gabung (approval) ---------- */
   function gambarMinta(){
     el('klMintaN').textContent = D.minta.length;
@@ -472,7 +558,10 @@
           : '') +
       '</div>';
     }
-    wadah.innerHTML = batas + D.minta.map(function(r, i){
+    const mintaTampil = D.minta.filter(function(r){ return cocokSaring(r, D.saring.minta); });
+    wadah.innerHTML = batas + barSaring('minta', D.minta, mintaTampil.length) +
+      (mintaTampil.length ? '' : '<p class="kl-saring-kosong">Tidak ada pendaftar dengan jawaban itu.</p>') +
+      mintaTampil.map(function(r, i){
       const av = '<div class="av ' + 'abc'[i % 3] + '" aria-hidden="true">' + inisial(r.nama) + '</div>';
 
       /* Jawaban pertanyaan pendaftaran — pertanyaan yang disusun pengurus saat
@@ -687,8 +776,12 @@
     const potong = [];
     let html = '';
 
+    /* saringan jawaban: berlaku untuk pengurus dan anggota biasa */
+    const fA = D.saring.anggota, lolosA = function(nama){ return cocokSaring(D.mem[nama], fA); };
+    const semuaA = D.pengurus.map(function(p){ return D.mem[p.nama]; }).concat(D.anggotaBiasa.map(function(n){ return D.mem[n]; })).filter(Boolean);
     /* pengurus dulu, dengan jabatannya — lalu anggota biasa yang bisa diangkat */
     D.pengurus.forEach(function(p){
+      if(saringAktif(fA) && !lolosA(p.nama)) return;
       const m = D.mem[p.nama] || { nama: p.nama, kerja: '', kota: '' };
       const kanan = '<span class="kl-jabatan">' + lolos(p.jabatan) + '</span>' + (p.aku ? '<span class="tag hi">Kamu</span>' : '');
       const t = tombolLain(p.nama);
@@ -696,6 +789,7 @@
     });
 
     D.anggotaBiasa.forEach(function(nama){
+      if(saringAktif(fA) && !lolosA(nama)) return;
       const m = D.mem[nama];
       let aksi = '';
       if(D.angkatFor !== nama && D.idUbahFor !== nama && D.keluarkanFor !== nama){
@@ -719,8 +813,8 @@
     const hal = Math.ceil(potong.length / PER_HAL);
     D.halAnggota = Math.min(D.halAnggota || 0, Math.max(0, hal - 1));
     const awal = D.halAnggota * PER_HAL, isi = potong.slice(awal, awal + PER_HAL);
-    wadah.innerHTML = isi.join('');
-    el('klAnggotaSeg').innerHTML = seg;
+    wadah.innerHTML = isi.join('') + (potong.length ? '' : '<p class="kl-saring-kosong">Tidak ada anggota dengan jawaban itu.</p>');
+    el('klAnggotaSeg').innerHTML = seg + (lihat === 'diterima' ? barSaring('anggota', semuaA, potong.length) : '');
     /* paginasi di bawah daftar, ujung kanan; tinggi daftar dikunci setinggi halaman penuh
        supaya tombolnya tidak naik-turun di halaman terakhir */
     const pg = el('klAnggotaPager');
@@ -975,6 +1069,241 @@
       }).join('');
   }
 
+  /* ---------- panel: Kontribusi & dicari (revisi 4 Nov 2026) ----------
+     Jawaban "Apa yang bisa kamu bagikan" dan "Apa yang ingin kamu dapat" dari
+     Lengkapi profil, semua orang dalam satu halaman — tanpa membuka profil
+     satu per satu. Urutan "mirip" mengelompokkan jawaban per topik dengan
+     kata kunci sederhana (di produk: bisa diganti embedding), dan tiap topik
+     menunjukkan berapa orang di sisi sebaliknya — siapa bisa membantu siapa. */
+  /* topik bawaan — pengurus bisa mengubah nama, kata kunci, urutan, menambah dan
+     menghapus topik per komunitas lewat "Atur topik" (D.topik). Urutan = prioritas
+     saat jumlah kata yang cocok sama. */
+  const TOPIK_AWAL = [
+    ['Kesehatan', 'kesehatan, dokter, p3k, obat, perawat, bidan, ibu dan anak, medis'],
+    ['Desain, media & teknologi', 'desain, poster, publikasi, media sosial, situs, formulir, konten, fotograf, dokumentasi, website, aplikasi, jaringan internet, it'],
+    ['Administrasi & keuangan', 'keuangan, laporan, akuntan, izin, administrasi, hukum'],
+    ['Pendidikan & riset', 'kelas, mengajar, pembicara, narasumber, studi, beasiswa, belajar, riset, bimbingan'],
+    ['Karier & lowongan', 'karier, karir, lowongan, melamar, wawancara, cv, mentor'],
+    ['Usaha & jejaring', 'usaha, bisnis, pajak, vendor, jualan, umkm, relasi, kolaborasi, modal, katering, kuliner'],
+    ['Kegiatan sosial', 'sosial, relawan, bakti, donasi, galang, amal'],
+    ['Pertemanan & hobi', 'teman, olahraga, hobi, kenal, nongkrong'],
+    ['Acara komunitas', 'acara, venue, tenda, sound, konsumsi, panitia, reuni, lampu, listrik']
+  ];
+  function topikAwal(){
+    return TOPIK_AWAL.map(function(p){ return { nama: p[0], kata: p[1].split(',').map(function(k){ return k.trim(); }).filter(Boolean) }; });
+  }
+  D.topik = topikAwal();
+  /* kata ≤ 3 huruf dicocokkan utuh (supaya "it" tidak kena "kita"), selebihnya potongan kata
+     ("fotograf" kena "fotografer") */
+  function polaKata(k){
+    const s = k.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(k.length <= 3 ? '(^|[^a-z0-9])' + s + '(?![a-z0-9])' : s, 'g');
+  }
+  /* { nama, cocok: [kata yang ketemu] } — topik dengan kata cocok terbanyak; seri → yang lebih atas */
+  function topikRinci(teks){
+    const t = String(teks || '').toLowerCase();
+    let terbaik = { nama: 'Lainnya', cocok: [] };
+    (D.topik || []).forEach(function(p){
+      const cocok = p.kata.filter(function(k){ return polaKata(k).test(t); });
+      if(cocok.length > terbaik.cocok.length) terbaik = { nama: p.nama || 'Tanpa nama', cocok: cocok };
+    });
+    return terbaik;
+  }
+  function topikDari(teks){ return topikRinci(teks).nama; }
+  /* kata kunci yang cocok ditebalkan, supaya kelihatan kenapa jawaban masuk topiknya */
+  function tandaiKata(teks, cocok){
+    let h = lolos(teks);
+    cocok.forEach(function(k){
+      const s = lolos(k).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      h = h.replace(new RegExp('(' + s + ')', 'gi'), '<mark class="kt-kata">$1</mark>');
+    });
+    return h;
+  }
+
+  const PANAH_ATAS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>';
+  const PANAH_BAWAH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>';
+  /* saran kata kunci: kata yang muncul di jawaban anggota sendiri, supaya pengurus tidak
+     perlu menebak. Kata dari jawaban yang belum masuk topik didahulukan. */
+  const KATA_UMUM = ('bisa bantu yang dan untuk dari saya kalau buat soal dengan akan juga ingin mau cari lagi ada siap jadi ' +
+    'para kita kami komunitas anggota alumni berbagi sesama punya bikin urus urusan saat tips info ini itu atau sekalian sama ' +
+    'banyak lebih tentang seperti kegiatan teman-teman yang terutama rutin akhir pekan untuk tahun orang dulu sudah belum ' +
+    'pernah sambil biar supaya agar karena kecil besar baru lama jika apa siapa dalam luar atas bawah ' +
+    'jaga lanjut singkat adik adik-adik alur letak paham rapikan sediakan tata isi kasih pakai bareng ' +
+    'butuh perlu dapat kenalan sekitar semua setiap tiap mulai bagi').split(' ');
+  function saranKata(semua){
+    const K = D.kontri, hitung = {}, lain = {};
+    semua.forEach(function(o){
+      const teks = o[K.lihat];
+      if(!teks) return;
+      const belum = topikDari(teks) === 'Lainnya';
+      const sudah = {};
+      teks.toLowerCase().replace(/[^a-z0-9à-ÿ\s-]/g, ' ').split(/\s+/).forEach(function(k){
+        k = k.replace(/^-+|-+$/g, '');
+        if(k.length < 4 || KATA_UMUM.indexOf(k) >= 0 || sudah[k]) return;
+        sudah[k] = 1;
+        hitung[k] = (hitung[k] || 0) + 1;
+        if(belum) lain[k] = 1;
+      });
+    });
+    return Object.keys(hitung).map(function(k){
+      /* sudah jadi kata kunci topik mana? (kata kunci yang lebih pendek ikut menangkapnya) */
+      const p = D.topik.filter(function(t){ return t.kata.some(function(x){ return x === k || (x.length > 3 && k.indexOf(x) >= 0); }); })[0];
+      return { kata: k, n: hitung[k], lain: !!lain[k], topik: p ? (p.nama || 'Tanpa nama') : '' };
+    }).sort(function(a, b){
+      return (!!a.topik - !!b.topik) || (b.lain - a.lain) || (b.n - a.n) || a.kata.localeCompare(b.kata);
+    }).slice(0, 40);
+  }
+  /* Tambah topik dalam satu kotak (5 Nov 2026): nama topik dan kata kuncinya diisi bersamaan —
+     kata kunci dipilih banyak dari saran kata jawaban anggota, atau diketik sendiri (tag mandiri). */
+  function gambarBaru(semua){
+    const B = D.kontri.baru;
+    if(!B) return '<div class="kt-baru-buka"><button type="button" class="btn sm" data-topik-tambah>+ Tambah topik</button></div>';
+    const K = D.kontri;
+    const saran = saranKata(semua);
+    const belumMasuk = semua.filter(function(o){ return o[K.lihat] && topikDari(o[K.lihat]) === 'Lainnya'; });
+    const adaTitik = saran.some(function(s){ return s.lain && !s.topik && B.kata.indexOf(s.kata) < 0; });
+    return '<div class="kt-baru">' +
+      '<div class="kt-baru-h"><b>Topik baru</b></div>' +
+      '<label class="kt-baru-l" for="ktBaruNama">Nama topik</label>' +
+      '<input class="inp kt-baru-nama" id="ktBaruNama" data-baru-nama maxlength="40" value="' + lolos(B.nama) + '" placeholder="Misal Pendidikan & mengajar">' +
+      '<label class="kt-baru-l" for="ktBaruTag">Kata kunci</label>' +
+      /* tag terpilih + tag mandiri */
+      '<div class="kt-tags">' + B.kata.map(function(k, j){
+        return '<span class="kt-tag">' + lolos(k) + '<button type="button" data-baru-x="' + j + '" aria-label="Hapus kata ' + lolos(k) + '">×</button></span>';
+      }).join('') +
+        '<input class="kt-tag-inp" id="ktBaruTag" data-baru-tag maxlength="30" placeholder="' + (B.kata.length ? '+ tulis kata sendiri' : 'Tulis kata sendiri, tekan Enter — atau pilih dari saran di bawah') + '" aria-label="Tulis kata kunci sendiri">' +
+      '</div>' +
+      '<p class="kt-saran-ket">Saran dari jawaban anggota — klik sebanyak yang perlu. Angka = berapa jawaban memuat kata itu; titik oranye = ada di jawaban yang belum masuk topik.</p>' +
+      (belumMasuk.length ? '<div class="kt-saran-lain"><span>Belum masuk topik (' + belumMasuk.length + '):</span>' +
+        belumMasuk.slice(0, 6).map(function(o){ return '<q>' + lolos(o[K.lihat]) + '</q>'; }).join('') +
+        (belumMasuk.length > 6 ? '<span>+' + (belumMasuk.length - 6) + ' lagi</span>' : '') + '</div>' : '') +
+      '<div class="kt-saran-chips">' + saran.map(function(s){
+        const on = B.kata.indexOf(s.kata) >= 0;
+        return '<button type="button" class="kt-saran' + (s.topik ? ' pakai' : '') + (on ? ' on' : '') + '" data-kt-saran="' + lolos(s.kata) + '" aria-pressed="' + on + '"' +
+          (s.topik ? ' title="Sudah jadi kata kunci ' + lolos(s.topik) + '"' : '') + '>' +
+          (s.lain && !s.topik ? '<i class="kt-saran-dot" aria-label="belum masuk topik"></i>' : '') +
+          lolos(s.kata) + '<span>' + s.n + '</span>' + (s.topik ? '<small>' + lolos(s.topik) + '</small>' : '') + '</button>';
+      }).join('') + '</div>' +
+      (adaTitik ? '<div class="kt-saran-alat"><button type="button" class="kl-saring-x" data-kt-saran-titik>Pilih semua kata bertitik oranye</button></div>' : '') +
+      '<div class="kt-baru-r akhir">' +
+        '<button type="button" class="btn sm" data-baru-simpan' + (B.kata.length && B.nama.trim() ? '' : ' disabled') + '>Simpan topik' + (B.kata.length ? ' (' + B.kata.length + ' kata)' : '') + '</button>' +
+        '<span class="kt-saran-ket">' + (!B.nama.trim() ? 'Isi nama topiknya dulu.' : !B.kata.length ? 'Tambahkan minimal satu kata kunci.' : '') + '</span>' +
+        '<button type="button" class="kl-saring-x" data-baru-batal>Batal</button></div>' +
+    '</div>';
+  }
+  function gambarAturTopik(semua){
+    const K = D.kontri;
+    const jml = {};
+    semua.forEach(function(o){ if(o[K.lihat]){ const t = topikDari(o[K.lihat]); jml[t] = (jml[t] || 0) + 1; } });
+    const n = D.topik.length;
+    return '<div class="kt-atur">' +
+      '<div class="kt-atur-h"><b>Atur topik</b><span>Jawaban masuk ke topik yang kata kuncinya paling banyak cocok. Kalau seri, topik yang lebih atas menang. Tidak ada yang cocok → Lainnya.</span></div>' +
+      gambarBaru(semua) +
+      D.topik.map(function(p, i){
+        return '<div class="kt-atur-i">' +
+          '<span class="kt-atur-no">' + (i + 1) + '</span>' +
+          '<div class="kt-atur-isi">' +
+            '<div class="kt-atur-r"><input class="inp" data-topik-nama="' + i + '" maxlength="40" value="' + lolos(p.nama) + '" placeholder="Nama topik" aria-label="Nama topik ' + (i + 1) + '">' +
+              '<span class="kt-atur-n">' + (jml[p.nama] || 0) + ' jawaban</span></div>' +
+            /* kata kunci sebagai tag: × menghapus satu, kolom kecil menambah (Enter atau koma) */
+            '<div class="kt-tags">' + p.kata.map(function(k, j){
+              return '<span class="kt-tag">' + lolos(k) + '<button type="button" data-topik-kata-x="' + i + ':' + j + '" aria-label="Hapus kata ' + lolos(k) + '">×</button></span>';
+            }).join('') +
+              '<input class="kt-tag-inp" data-topik-kata-baru="' + i + '" maxlength="30" placeholder="' + (p.kata.length ? '+ kata' : 'Ketik kata kunci, tekan Enter') + '" aria-label="Tambah kata kunci topik ' + (i + 1) + '">' +
+            '</div>' +
+          '</div>' +
+          '<div class="kt-atur-aksi">' +
+            '<button type="button" class="btn-ikon" data-topik-geser="' + i + '" data-arah="-1" aria-label="Naikkan prioritas"' + (i ? '' : ' disabled') + '>' + PANAH_ATAS + '</button>' +
+            '<button type="button" class="btn-ikon" data-topik-geser="' + i + '" data-arah="1" aria-label="Turunkan prioritas"' + (i < n - 1 ? '' : ' disabled') + '>' + PANAH_BAWAH + '</button>' +
+            '<button type="button" class="btn-ikon" data-topik-hapus="' + i + '" aria-label="Hapus topik">' + window.KolavoIkon('sampah') + '</button>' +
+          '</div>' +
+        '</div>';
+      }).join('') +
+      '<div class="kt-atur-kaki">' +
+        '<button type="button" class="kl-saring-x" data-topik-reset>Kembalikan ke bawaan</button>' +
+        '<button type="button" class="btn sm" data-kt-atur>Selesai</button>' +
+      '</div>' +
+      (jml['Lainnya'] ? '<p class="kt-belum">' + jml['Lainnya'] + ' jawaban belum masuk topik mana pun — tambahkan kata kuncinya supaya ikut terkelompok.</p>' : '') +
+    '</div>';
+  }
+  function orangKontri(){
+    const anggota = D.pengurus.map(function(p){ return p.nama; }).concat(D.anggotaBiasa)
+      .filter(function(n){ return n !== D.aku && D.mem[n]; })
+      .map(function(n){ const m = D.mem[n]; return { nama: n, panggil: m.panggil, kerja: m.kerja, kota: m.kota, beri: m.beri || '', cari: m.cari || '', status: 'anggota' }; });
+    const daftar = D.minta.map(function(r){ return { nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, beri: r.beri || '', cari: r.cari || '', status: 'pendaftar' }; });
+    return anggota.concat(daftar);
+  }
+  function gambarKontri(){
+    const wadah = el('klPanelKontri');
+    if(!wadah) return;
+    const K = D.kontri, lawan = K.lihat === 'beri' ? 'cari' : 'beri';
+    const semua = orangKontri().filter(function(o){ return K.siapa === 'semua' || o.status === K.siapa; });
+    const kata = K.cari.trim().toLowerCase();
+    const isi = semua.filter(function(o){ return o[K.lihat]; })
+      .filter(function(o){ return !kata || (o[K.lihat] + ' ' + o.nama + ' ' + (o.kerja || '')).toLowerCase().indexOf(kata) >= 0; });
+    const belum = semua.filter(function(o){ return !o[K.lihat]; }).length;
+    const nB = semua.filter(function(o){ return o.beri; }).length, nC = semua.filter(function(o){ return o.cari; }).length;
+    const nPend = orangKontri().filter(function(o){ return o.status === 'pendaftar'; }).length;
+
+    const baris = function(o){
+      const nm = o.panggil && o.panggil !== 'Kamu' ? o.panggil : o.nama.split(' ')[0];
+      return '<div class="kt-i">' +
+        '<div class="av ' + 'abc'[o.nama.length % 3] + '" aria-hidden="true">' + inisial(o.nama) + '</div>' +
+        '<div class="t"><div class="kt-nm">' + lolos(nm) + (o.status === 'pendaftar' ? '<span class="kt-pend">Pendaftar</span>' : '') + '</div>' +
+          '<div class="kl-row-sub">' + lolos([o.nama !== nm ? o.nama : '', o.kerja, o.kota].filter(Boolean).join(' · ')) + '</div>' +
+          '<p class="kt-q">“' + (K.urut === 'mirip' ? tandaiKata(o[K.lihat], topikRinci(o[K.lihat]).cocok) : lolos(o[K.lihat])) + '”</p>' +
+          (o[lawan] ? '<p class="kt-lawan"><b>' + (lawan === 'beri' ? 'Bisa berbagi' : 'Sedang mencari') + ':</b> ' + lolos(o[lawan]) + '</p>' : '') +
+        '</div>' +
+        (o.status === 'anggota'
+          ? '<button type="button" class="btn outline sm" data-kt-profil="' + lolos(o.nama) + '">Lihat profil</button>'
+          : '<button type="button" class="btn outline sm" data-kt-tinjau>Tinjau</button>') +
+      '</div>';
+    };
+
+    let daftar;
+    if(K.urut === 'mirip'){
+      const grup = {};
+      isi.forEach(function(o){ const t = topikDari(o[K.lihat]); (grup[t] = grup[t] || []).push(o); });
+      /* sisi sebaliknya per topik: berapa orang yang mencari / bisa membantu hal serupa */
+      const sisi = {};
+      semua.forEach(function(o){ if(o[lawan]){ const t = topikDari(o[lawan]); sisi[t] = (sisi[t] || 0) + 1; } });
+      const urut = Object.keys(grup).sort(function(a, b){
+        if(a === 'Lainnya') return 1; if(b === 'Lainnya') return -1;
+        return grup[b].length - grup[a].length || a.localeCompare(b);
+      });
+      daftar = urut.map(function(t){
+        const s = t !== 'Lainnya' && sisi[t] ? '<span class="kt-cocok">' + sisi[t] + ' orang ' + (lawan === 'cari' ? 'mencari ini' : 'bisa membantu') + '</span>' : '';
+        return '<section class="kt-g"><div class="kt-gh"><b>' + lolos(t) + '</b><span>' + grup[t].length + ' orang</span>' + s + '</div>' +
+          grup[t].sort(function(a, b){ return a[K.lihat].localeCompare(b[K.lihat]); }).map(baris).join('') + '</section>';
+      }).join('');
+    } else {
+      daftar = '<section class="kt-g">' + isi.slice().sort(function(a, b){ return a.nama.localeCompare(b.nama); }).map(baris).join('') + '</section>';
+    }
+
+    wadah.innerHTML =
+      '<p class="kl-sub">Semua yang bisa dibagikan dan yang sedang dicari anggota, dalam satu halaman — tanpa membuka profil satu per satu. Diambil dari isian profil Kolavo masing-masing.</p>' +
+      '<div class="kl-seg" role="tablist" aria-label="Tampilkan">' +
+        '<button type="button" role="tab" data-kt-lihat="beri" aria-selected="' + (K.lihat === 'beri') + '">Kontribusi <span>' + nB + '</span></button>' +
+        '<button type="button" role="tab" data-kt-lihat="cari" aria-selected="' + (K.lihat === 'cari') + '">Yang dicari <span>' + nC + '</span></button>' +
+      '</div>' +
+      '<div class="kt-alat">' +
+        '<input class="inp" data-kt-cari maxlength="40" value="' + lolos(K.cari) + '" placeholder="Cari kata, misal desain atau beasiswa" aria-label="Cari dalam jawaban">' +
+        '<select class="sel" data-kt-urut aria-label="Urutkan">' +
+          '<option value="mirip"' + (K.urut === 'mirip' ? ' selected' : '') + '>Kelompokkan yang mirip</option>' +
+          '<option value="nama"' + (K.urut === 'nama' ? ' selected' : '') + '>Nama A–Z</option>' +
+        '</select>' +
+        (nPend ? '<select class="sel" data-kt-siapa aria-label="Siapa">' +
+          '<option value="semua"' + (K.siapa === 'semua' ? ' selected' : '') + '>Anggota &amp; pendaftar</option>' +
+          '<option value="anggota"' + (K.siapa === 'anggota' ? ' selected' : '') + '>Anggota saja</option>' +
+          '<option value="pendaftar"' + (K.siapa === 'pendaftar' ? ' selected' : '') + '>Pendaftar saja</option>' +
+        '</select>' : '') +
+        (K.urut === 'mirip' && !K.atur ? '<button type="button" class="btn outline sm kt-atur-btn" data-kt-atur>Atur topik</button>' : '') +
+      '</div>' +
+      (K.urut === 'mirip' && K.atur ? gambarAturTopik(semua) : '') +
+      (isi.length ? daftar : '<p class="kl-saring-kosong">' + (kata ? 'Tidak ada jawaban yang memuat “' + lolos(K.cari) + '”.' : 'Belum ada yang mengisi.') + '</p>') +
+      (belum ? '<p class="kt-belum">' + belum + ' orang belum mengisi “' + (K.lihat === 'beri' ? 'Apa yang bisa kamu bagikan' : 'Apa yang ingin kamu dapat') + '”.</p>' : '');
+  }
+
   /* ---------- ganti tab ---------- */
   /* tab Advance (data-sek) hanya ada di tampilan Advance — di Esensial, yang
      tersisa dari tab itu jatuh kembali ke Permintaan gabung */
@@ -1017,6 +1346,7 @@
     gambarAnggota();
     gambarPengurus();
     gambarRiwayat();
+    gambarKontri();
     D.onGambar.forEach(function(f){ f(); });
     const lp = el('klTabPengurusL'); if(lp) lp.textContent = modeAdvance() ? 'Struktur Kepengurusan' : 'Peninjau';
     if(D.tab === 'riwayat') D.tab = 'anggota';
@@ -1045,6 +1375,31 @@
     D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
     D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'ditolak', oleh: D.aku, waktu: 'baru saja', catatan: catatan || '' });
   }
+  /* pembuat komunitas mengisi pertanyaan pendaftarannya sendiri dari halaman komunitas
+     (revisi 4 Nov 2026) — disimpan per id pertanyaan seperti anggota lain, jadi ikut
+     tampil di profil, saringan jawaban, dan persebaran */
+  D.isiJawabanAku = function(peta){
+    if(!D.built && !bangun()) return;
+    const m = D.mem[D.aku];
+    if(!m || !peta) return;
+    m.jwb = {};
+    Object.keys(peta).forEach(function(id){
+      const v = String(peta[id] || '').trim();
+      if(id === 'nickname'){ if(v) m.nick = v; return; }
+      if(v) m.jwb[id] = v;
+    });
+    const t = pertanyaanPengurus().filter(function(q){ return q.tipe === 'tahun'; })[0];
+    if(t && m.jwb[t.id]) m.tahun = m.jwb[t.id];
+    if(!Object.getOwnPropertyDescriptor(m, 'jawaban')){
+      Object.defineProperty(m, 'jawaban', { enumerable: true, get: function(){
+        return pertanyaanPengurus().map(function(q){
+          const ada = Object.prototype.hasOwnProperty.call(m.jwb, q.id);
+          return { id: q.id, judul: q.judul || 'Pertanyaan', nilai: ada ? m.jwb[q.id] : '—', kosong: !ada };
+        });
+      }});
+    }
+    gambar();
+  };
   D.terima = terima;
   D.gambar = function(){ gambar(); };
   D.pilihTab = pilihTab;
@@ -1098,6 +1453,46 @@
   });
 
   /* kolom jabatan kustom: disimpan per ketikan supaya tidak hilang saat panel digambar ulang; Enter = tambah */
+  /* saringan & Kontribusi: ketikan digambar ulang langsung, fokus dan kursor dijaga */
+  function gambarJaga(sel, f){
+    const pos = document.activeElement && document.activeElement.selectionStart;
+    f();
+    const n = scr.querySelector(sel);
+    if(n){ n.focus(); if(pos != null && n.setSelectionRange) n.setSelectionRange(pos, pos); }
+  }
+  scr.addEventListener('input', function(e){
+    const sv = e.target.matches('input[data-saring-v]') && e.target.dataset.saringV;
+    if(sv){
+      D.saring[sv].v = e.target.value; D.halAnggota = 0;
+      gambarJaga('input[data-saring-v="' + sv + '"]', sv === 'minta' ? gambarMinta : gambarAnggota);
+      return;
+    }
+    if(e.target.matches('[data-kt-cari]')){ D.kontri.cari = e.target.value; gambarJaga('[data-kt-cari]', gambarKontri); return; }
+    /* atur topik: model diperbarui per ketikan, digambar ulang saat kolom ditinggalkan (change) */
+    const tn = e.target.dataset && e.target.dataset.topikNama;
+    if(tn != null && D.topik[+tn]) D.topik[+tn].nama = e.target.value.trim();
+    if(e.target.matches('[data-baru-nama]') && D.kontri.baru){
+      D.kontri.baru.nama = e.target.value;
+      const b = scr.querySelector('[data-baru-simpan]'); if(b) b.disabled = !(e.target.value.trim() && D.kontri.baru.kata.length);
+      const h = scr.querySelector('.kt-baru-r.akhir .kt-saran-ket');
+      if(h) h.textContent = !e.target.value.trim() ? 'Isi nama topiknya dulu.' : !D.kontri.baru.kata.length ? 'Tambahkan minimal satu kata kunci.' : '';
+      return;
+    }
+    if(e.target.matches('[data-baru-tag]') && /,/.test(e.target.value)){ tagBaru(e.target.value); return; }
+    /* koma di kolom tag = selesai satu kata */
+    const tb = e.target.dataset && e.target.dataset.topikKataBaru;
+    if(tb != null && /,/.test(e.target.value)){ tambahTag(+tb, e.target.value); }
+  });
+  scr.addEventListener('change', function(e){
+    const t = e.target;
+    const sq = t.dataset && t.dataset.saringQ, sv = t.matches('select[data-saring-v]') && t.dataset.saringV;
+    if(sq){ D.saring[sq] = { q: t.value, v: '' }; D.halAnggota = 0; (sq === 'minta' ? gambarMinta : gambarAnggota)(); const n = scr.querySelector('[data-saring-v="' + sq + '"]'); if(n) n.focus(); return; }
+    if(sv){ D.saring[sv].v = t.value; D.halAnggota = 0; (sv === 'minta' ? gambarMinta : gambarAnggota)(); return; }
+    if(t.matches('[data-kt-urut]')){ D.kontri.urut = t.value; gambarKontri(); return; }
+    if(t.matches('[data-kt-siapa]')){ D.kontri.siapa = t.value; gambarKontri(); return; }
+    if(t.matches('[data-topik-nama]')){ gambarKontri(); return; }
+    if(t.matches('[data-topik-kata-baru]') && t.value.trim()){ tambahTag(+t.dataset.topikKataBaru, t.value, true); return; }
+  });
   scr.addEventListener('input', function(e){
     if(e.target.id === 'klJabBaru') D.jabatanTeks = e.target.value;
     if(e.target.id === 'klJabUbah') D.jabEditTeks = e.target.value;
@@ -1108,7 +1503,47 @@
       e.target.closest('.kl-req').querySelectorAll('[data-setuju],[data-tolak]').forEach(function(b){ b.disabled = kosong; });
     }
   });
+  /* tambah satu/lebih kata ke topik i dari teks ketikan, lalu fokus kembali ke kolom tagnya */
+  /* tag mandiri: kata yang diketik sendiri, Enter atau koma */
+  function tagBaru(teks){
+    const B = D.kontri.baru;
+    if(!B) return;
+    teks.split(',').map(function(k){ return k.trim().toLowerCase(); }).filter(Boolean).forEach(function(k){
+      if(B.kata.indexOf(k) < 0) B.kata.push(k);
+    });
+    gambarKontri();
+    const f = scr.querySelector('[data-baru-tag]'); if(f) f.focus();
+  }
+  function tambahTag(i, teks, tanpaFokus){
+    const t = D.topik[i];
+    if(!t) return;
+    teks.split(',').map(function(k){ return k.trim().toLowerCase(); }).filter(Boolean).forEach(function(k){
+      if(t.kata.indexOf(k) < 0) t.kata.push(k);
+    });
+    gambarKontri();
+    if(!tanpaFokus){ const f = scr.querySelector('[data-topik-kata-baru="' + i + '"]'); if(f) f.focus(); }
+  }
   scr.addEventListener('keydown', function(e){
+    /* Enter di nama topik pindah ke kotak kata kunci */
+    if(e.target.matches('[data-baru-nama]') && e.key === 'Enter'){ e.preventDefault(); const f = scr.querySelector('[data-baru-tag]'); if(f) f.focus(); return; }
+    if(e.target.matches('[data-baru-tag]')){
+      if(e.key === 'Enter'){ e.preventDefault(); if(e.target.value.trim()) tagBaru(e.target.value); return; }
+      if(e.key === 'Backspace' && !e.target.value && D.kontri.baru && D.kontri.baru.kata.length){
+        e.preventDefault(); D.kontri.baru.kata.pop(); gambarKontri();
+        const f = scr.querySelector('[data-baru-tag]'); if(f) f.focus();
+        return;
+      }
+    }
+    const tb = e.target.dataset && e.target.dataset.topikKataBaru;
+    if(tb != null){
+      if(e.key === 'Enter'){ e.preventDefault(); if(e.target.value.trim()) tambahTag(+tb, e.target.value); return; }
+      /* Backspace di kolom kosong menghapus tag terakhir, seperti kolom tag pada umumnya */
+      if(e.key === 'Backspace' && !e.target.value && D.topik[+tb] && D.topik[+tb].kata.length){
+        e.preventDefault(); D.topik[+tb].kata.pop(); gambarKontri();
+        const f = scr.querySelector('[data-topik-kata-baru="' + tb + '"]'); if(f) f.focus();
+        return;
+      }
+    }
     if(e.key === 'Enter' && e.target.id === 'klJabBaru'){ e.preventDefault(); const b = scr.querySelector('[data-jab-tambah]'); if(b) b.click(); }
     if(e.target.id === 'klJabUbah' && (e.key === 'Enter' || e.key === 'Escape')){
       e.preventDefault(); const b = scr.querySelector(e.key === 'Enter' ? '[data-jab-simpan]' : '[data-jab-batal]'); if(b) b.click();
@@ -1301,6 +1736,59 @@
 
     const al = e.target.closest('[data-alihat]');
     if(al){ D.anggotaLihat = al.dataset.alihat; gambarAnggota(); return; }
+    const sh = e.target.closest('[data-saring-hapus]');
+    if(sh){ D.saring[sh.dataset.saringHapus] = { q: '', v: '' }; D.halAnggota = 0; (sh.dataset.saringHapus === 'minta' ? gambarMinta : gambarAnggota)(); return; }
+    if(e.target.closest('[data-kt-atur]')){ D.kontri.atur = !D.kontri.atur; D.kontri.baru = null; gambarKontri(); return; }
+    /* tambah topik: satu kotak — nama + kata kunci */
+    const fokus = function(sel){ const f = scr.querySelector(sel); if(f) f.focus(); };
+    if(e.target.closest('[data-topik-tambah]')){ D.kontri.baru = { nama: '', kata: [] }; gambarKontri(); fokus('[data-baru-nama]'); return; }
+    if(e.target.closest('[data-baru-batal]')){ D.kontri.baru = null; gambarKontri(); return; }
+    const bx = e.target.closest('[data-baru-x]');
+    if(bx){ D.kontri.baru.kata.splice(+bx.dataset.baruX, 1); gambarKontri(); fokus('[data-baru-tag]'); return; }
+    const ks = e.target.closest('[data-kt-saran]');
+    if(ks && D.kontri.baru){
+      const p = D.kontri.baru.kata, k = ks.dataset.ktSaran, i = p.indexOf(k);
+      if(i >= 0) p.splice(i, 1); else p.push(k);
+      gambarKontri();
+      fokus('[data-kt-saran="' + k + '"]');
+      return;
+    }
+    if(e.target.closest('[data-kt-saran-titik]') && D.kontri.baru){
+      const semuaO = orangKontri().filter(function(o){ return D.kontri.siapa === 'semua' || o.status === D.kontri.siapa; });
+      saranKata(semuaO).filter(function(s){ return s.lain && !s.topik; }).forEach(function(s){
+        if(D.kontri.baru.kata.indexOf(s.kata) < 0) D.kontri.baru.kata.push(s.kata);
+      });
+      gambarKontri(); return;
+    }
+    if(e.target.closest('[data-baru-simpan]')){
+      const B = D.kontri.baru;
+      if(!B || !B.kata.length || !B.nama.trim()) return;
+      /* topik baru biasanya lebih spesifik, jadi ditaruh paling atas (prioritas tertinggi) */
+      D.topik.unshift({ nama: B.nama.trim(), kata: B.kata.slice() });
+      D.kontri.baru = null; gambarKontri();
+      toast('Topik “' + B.nama.trim() + '” dibuat dengan ' + B.kata.length + ' kata kunci.');
+      return;
+    }
+    const tx = e.target.closest('[data-topik-kata-x]');
+    if(tx){
+      const ij = tx.dataset.topikKataX.split(':'), t = D.topik[+ij[0]];
+      if(t) t.kata.splice(+ij[1], 1);
+      gambarKontri(); return;
+    }
+    const tg = e.target.closest('[data-topik-geser]');
+    if(tg){
+      const i = +tg.dataset.topikGeser, j = i + (+tg.dataset.arah);
+      if(D.topik[j]){ const x = D.topik[i]; D.topik[i] = D.topik[j]; D.topik[j] = x; }
+      gambarKontri(); return;
+    }
+    const th = e.target.closest('[data-topik-hapus]');
+    if(th){ const p = D.topik.splice(+th.dataset.topikHapus, 1)[0]; gambarKontri(); toast('Topik “' + (p.nama || 'Tanpa nama') + '” dihapus. Jawabannya pindah ke topik lain atau Lainnya.'); return; }
+    if(e.target.closest('[data-topik-reset]')){ D.topik = topikAwal(); gambarKontri(); toast('Topik dikembalikan ke bawaan.'); return; }
+    const kl = e.target.closest('[data-kt-lihat]');
+    if(kl){ D.kontri.lihat = kl.dataset.ktLihat; gambarKontri(); return; }
+    const kp = e.target.closest('[data-kt-profil]');
+    if(kp){ if(window.KolavoBukaAnggota) window.KolavoBukaAnggota(kp.dataset.ktProfil); return; }
+    if(e.target.closest('[data-kt-tinjau]')){ pilihTab('minta'); window.scrollTo(0, 0); return; }
     const ah = e.target.closest('[data-ahal]');
     if(ah){
       const w = el('klAnggotaList');
