@@ -1903,3 +1903,8 @@ diterapkan ke prototipe kecuali disebut.
     Disimpan per komunitas di `D.topik` ([{nama, kata: []}]). Aturan: kata cocok terbanyak menang, seri →
     topik lebih atas; kata ≤ 3 huruf dicocokkan utuh, selebihnya potongan kata. Kata kunci yang cocok
     ditandai (`mark.kt-kata`) di tiap jawaban; jumlah jawaban "Lainnya" ditampilkan sebagai pengingat.
+11. **Saran kata kunci** di Atur topik (5 Nov 2026 — pengurus kesulitan menebak kata kunci): kata dari
+    jawaban anggota sendiri (≥ 4 huruf, tanpa kata umum `KATA_UMUM`), dengan jumlah jawaban yang memuatnya.
+    Kata dari jawaban yang belum masuk topik diberi titik oranye dan didahulukan; kata yang sudah jadi kata
+    kunci diredupkan dengan nama topiknya. Klik kata → pilih topik atau "+ Topik baru". Jawaban yang masih
+    "Lainnya" ditampilkan di atasnya sebagai konteks.
