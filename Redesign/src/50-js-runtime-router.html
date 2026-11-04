@@ -222,9 +222,37 @@
         : '<span class="opt">Opsional</span>');
       f.appendChild(lbl);
 
-      let kolom;
+      let kolom, grup = null;
+      /* kotak centang: boleh beberapa. Nilainya dititipkan ke input tersembunyi
+         (dipisah koma) supaya pembaca jawaban lain cukup membaca .value */
+      if(t.tipe === 'centang'){
+        kolom = document.createElement('input');
+        kolom.type = 'hidden';
+        f.classList.add('f-lebar');
+        grup = document.createElement('div');
+        grup.className = 'cek-grup';
+        grup.setAttribute('role', 'group');
+        grup.setAttribute('aria-label', t.judul);
+        (t.opsi || []).forEach(function(v){
+          const l = document.createElement('label');
+          l.className = 'cek-i';
+          const c = document.createElement('input');
+          c.type = 'checkbox'; c.value = v;
+          const s = document.createElement('span'); s.textContent = v;
+          l.appendChild(c); l.appendChild(s); grup.appendChild(l);
+        });
+        grup.addEventListener('change', function(){
+          kolom.value = [].filter.call(grup.querySelectorAll('input'), function(c){ return c.checked; })
+            .map(function(c){ return c.value; }).join(', ');
+        });
+        /* dipanggil saat jawaban tersimpan dipasang ulang (Edit data pendaftaran) */
+        kolom._isi = function(){
+          const pilih = kolom.value ? kolom.value.split(', ') : [];
+          grup.querySelectorAll('input').forEach(function(c){ c.checked = pilih.indexOf(c.value) >= 0; });
+        };
+      }
       /* pilihan jawaban yang disusun pengurus di layar Buat */
-      if(t.tipe === 'pilihan'){
+      else if(t.tipe === 'pilihan'){
         kolom = document.createElement('select');
         kolom.className = 'sel';
         kolom.innerHTML = '<option value="">Pilih jawaban</option>';
@@ -257,6 +285,7 @@
       kolom.dataset.tanyaId = t.id;
       kolom.dataset.judul = t.judul;
       if(t.wajib) kolom.dataset.wajib = '';
+      if(grup) f.appendChild(grup);
       f.appendChild(kolom);
 
       const why = document.createElement('p');

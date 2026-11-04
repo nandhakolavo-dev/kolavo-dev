@@ -2977,6 +2977,15 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .qopsi-i{display:flex;align-items:center;gap:8px}
 .qopsi-i .inp{flex:1;min-width:0;height:40px}
 .qopsi-b{flex:none;width:16px;height:16px;border-radius:100px;border:1.5px solid var(--ink-3)}
+.qopsi.centang .qopsi-b{border-radius:4px}
+/* formulir gabung: kotak centang (boleh beberapa) */
+.f.f-lebar{grid-column:1/-1}
+.cek-grup{display:flex;flex-wrap:wrap;gap:8px}
+.cek-i{display:inline-flex;align-items:center;gap:9px;padding:10px 14px;border:1px solid var(--line);border-radius:11px;background:var(--card);font-size:14px;color:var(--ink-2);cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.cek-i input{width:17px;height:17px;margin:0;accent-color:var(--blue);cursor:pointer}
+.cek-i:has(input:checked){border-color:var(--blue);background:var(--blue-wash);color:var(--blue-ink)}
+.cek-i:has(input:focus-visible){outline:3px solid var(--ring);outline-offset:2px}
+.f.salah .cek-i{border-color:var(--red)}
 .qopsi-tambah{justify-self:start;border:0;background:transparent;color:var(--blue-ink);font:600 13px/1 "Poppins",system-ui,sans-serif;padding:6px 0;cursor:pointer}
 .qopsi-tambah:hover{text-decoration:underline}
 /* dashboard: saring jawaban */

@@ -104,6 +104,10 @@
     for(let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
     return h % n;
   }
+  function centangContoh(kunci, opsi){
+    const a = acakNama(kunci, opsi.length), dua = acakNama(kunci + 'x', 2) && opsi.length > 1;
+    return dua ? [opsi[a], opsi[(a + 1) % opsi.length]].sort(function(x, y){ return opsi.indexOf(x) - opsi.indexOf(y); }).join(', ') : opsi[a];
+  }
   function jawabanFor(s){
     const tanya = (D.kom && D.kom.tanya) || [];
     const teks = Array.isArray(s.teks) ? s.teks : (s.teks ? [s.teks] : []);
@@ -116,6 +120,8 @@
       const nilai = t.tipe === 'tahun' ? String(s.tahun)
         /* pilihan jawaban: contoh tetap per orang, dari opsi yang disusun pengurus */
         : (t.tipe === 'pilihan' && t.opsi && t.opsi.length) ? t.opsi[acakNama((s.nama || '') + t.id, t.opsi.length)]
+        /* kotak centang: satu atau dua opsi, dipisah koma */
+        : (t.tipe === 'centang' && t.opsi && t.opsi.length) ? centangContoh((s.nama || '') + t.id, t.opsi)
         : (s.alasan && soalAlasan.test((t.judul || '') + ' ' + (t.tanya || ''))) ? s.alasan
         : (teks[ti++] || '—');
       return { id: t.id, judul: t.judul || 'Pertanyaan', nilai: nilai };
@@ -465,6 +471,7 @@
     const v = nilaiSaring(o, s);
     if(f.v === '__kosong__') return !v;
     if(s.tipe === 'teks') return v.toLowerCase().indexOf(f.v.trim().toLowerCase()) >= 0;
+    if(s.tipe === 'centang') return v.split(', ').indexOf(f.v) >= 0;
     return v === f.v;
   }
   function saringAktif(f){ return !!(f && f.q && f.v); }
@@ -478,9 +485,14 @@
         nilai = '<input class="inp" data-saring-v="' + kunci + '" maxlength="40" value="' + lolos(f.v) + '" placeholder="Jawaban mengandung kata…" aria-label="Kata dalam jawaban">';
       } else {
         const hitung = {}; let kosong = 0;
-        orang.forEach(function(o){ const v = nilaiSaring(o, s); if(v) hitung[v] = (hitung[v] || 0) + 1; else kosong++; });
+        orang.forEach(function(o){
+          const v = nilaiSaring(o, s);
+          if(!v){ kosong++; return; }
+          /* kotak centang: dihitung per opsi yang dicentang, bukan per kombinasi */
+          (s.tipe === 'centang' ? v.split(', ') : [v]).forEach(function(x){ hitung[x] = (hitung[x] || 0) + 1; });
+        });
         let urut = Object.keys(hitung);
-        if(s.tipe === 'pilihan') urut = (s.opsi || []).concat(urut.filter(function(v){ return (s.opsi || []).indexOf(v) < 0; }));
+        if(s.tipe === 'pilihan' || s.tipe === 'centang') urut = (s.opsi || []).concat(urut.filter(function(v){ return (s.opsi || []).indexOf(v) < 0; }));
         else if(s.tipe === 'tahun' || s.tipe === 'angka') urut.sort(function(a, b){ return parseFloat(b) - parseFloat(a); });
         else urut.sort(function(a, b){ return hitung[b] - hitung[a] || a.localeCompare(b); });
         nilai = '<select class="sel" data-saring-v="' + kunci + '" aria-label="Jawaban">' +
@@ -1226,6 +1238,31 @@
     D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
     D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'ditolak', oleh: D.aku, waktu: 'baru saja', catatan: catatan || '' });
   }
+  /* pembuat komunitas mengisi pertanyaan pendaftarannya sendiri dari halaman komunitas
+     (revisi 4 Nov 2026) — disimpan per id pertanyaan seperti anggota lain, jadi ikut
+     tampil di profil, saringan jawaban, dan persebaran */
+  D.isiJawabanAku = function(peta){
+    if(!D.built && !bangun()) return;
+    const m = D.mem[D.aku];
+    if(!m || !peta) return;
+    m.jwb = {};
+    Object.keys(peta).forEach(function(id){
+      const v = String(peta[id] || '').trim();
+      if(id === 'nickname'){ if(v) m.nick = v; return; }
+      if(v) m.jwb[id] = v;
+    });
+    const t = pertanyaanPengurus().filter(function(q){ return q.tipe === 'tahun'; })[0];
+    if(t && m.jwb[t.id]) m.tahun = m.jwb[t.id];
+    if(!Object.getOwnPropertyDescriptor(m, 'jawaban')){
+      Object.defineProperty(m, 'jawaban', { enumerable: true, get: function(){
+        return pertanyaanPengurus().map(function(q){
+          const ada = Object.prototype.hasOwnProperty.call(m.jwb, q.id);
+          return { id: q.id, judul: q.judul || 'Pertanyaan', nilai: ada ? m.jwb[q.id] : '—', kosong: !ada };
+        });
+      }});
+    }
+    gambar();
+  };
   D.terima = terima;
   D.gambar = function(){ gambar(); };
   D.pilihTab = pilihTab;

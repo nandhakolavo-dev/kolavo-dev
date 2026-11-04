@@ -1890,3 +1890,11 @@ diterapkan ke prototipe kecuali disebut.
    semua anggota + pendaftar dalam satu halaman. Urutan "Kelompokkan yang mirip" = topik kata kunci
    (`TOPIK` di dashboard-pengurus), tiap topik menunjukkan jumlah orang di sisi sebaliknya
    ("n orang mencari ini" / "bisa membantu"). Cari kata, urut nama, saring anggota/pendaftar.
+8. **Kotak centang** (`tipe: 'centang'`, opsi sama seperti pilihan, boleh dicentang beberapa). Di formulir gabung:
+   `.cek-grup` + input tersembunyi ber-`data-tanya-id` yang nilainya opsi terpilih dipisah ", " (koma
+   dibuang dari teks opsi). Saringan & persebaran menghitung per opsi, bukan per kombinasi.
+9. **Pembuat komunitas mengisi jawabannya sendiri**: di halaman komunitasnya, bar `#komFounder` mengajak
+   "Kamu juga anggota komunitas ini → Isi jawabanku" selama jawabannya belum ada; tombol ikon dokumen
+   (`#komEdit`) membuka formulir yang sama untuk mengubahnya. Simpan → `KolavoDashboard.isiJawabanAku(peta)`
+   menulis `D.mem[aku].jwb` (+ `nick`), jadi ikut tampil di profil, saringan, dan persebaran.
+   Langkah ke-3 di layar "Halamannya sudah jadi" menyebut hal ini.

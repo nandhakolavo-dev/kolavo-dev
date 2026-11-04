@@ -3020,6 +3020,15 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .qopsi-i{display:flex;align-items:center;gap:8px}
 .qopsi-i .inp{flex:1;min-width:0;height:40px}
 .qopsi-b{flex:none;width:16px;height:16px;border-radius:100px;border:1.5px solid var(--ink-3)}
+.qopsi.centang .qopsi-b{border-radius:4px}
+/* formulir gabung: kotak centang (boleh beberapa) */
+.f.f-lebar{grid-column:1/-1}
+.cek-grup{display:flex;flex-wrap:wrap;gap:8px}
+.cek-i{display:inline-flex;align-items:center;gap:9px;padding:10px 14px;border:1px solid var(--line);border-radius:11px;background:var(--card);font-size:14px;color:var(--ink-2);cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.cek-i input{width:17px;height:17px;margin:0;accent-color:var(--blue);cursor:pointer}
+.cek-i:has(input:checked){border-color:var(--blue);background:var(--blue-wash);color:var(--blue-ink)}
+.cek-i:has(input:focus-visible){outline:3px solid var(--ring);outline-offset:2px}
+.f.salah .cek-i{border-color:var(--red)}
 .qopsi-tambah{justify-self:start;border:0;background:transparent;color:var(--blue-ink);font:600 13px/1 "Poppins",system-ui,sans-serif;padding:6px 0;cursor:pointer}
 .qopsi-tambah:hover{text-decoration:underline}
 /* dashboard: saring jawaban */
@@ -4435,6 +4444,7 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
     <ul class="steps">
       <li class="step"><span class="no">1</span><div><strong>Sebar link ke grup</strong><p>Satu link, tidak perlu Google Form lagi. Yang mendaftar mengisi profilnya sendiri.</p></div></li>
       <li class="step"><span class="no">2</span><div><strong>Setujui yang mendaftar</strong><p>Kamu yang menentukan siapa yang boleh masuk. Setelah disetujui, daftar anggota kebuka buat mereka.</p></div></li>
+      <li class="step"><span class="no">3</span><div><strong>Isi jawabanmu sendiri</strong><p>Kamu juga anggota. Jawab pertanyaan pendaftaran lewat tombol “Isi jawabanku” di halaman komunitas.</p></div></li>
     </ul>
 
     <div class="empty-cta">
@@ -6561,9 +6571,37 @@ function hitung(){}
         : '<span class="opt">Opsional</span>');
       f.appendChild(lbl);
 
-      let kolom;
+      let kolom, grup = null;
+      /* kotak centang: boleh beberapa. Nilainya dititipkan ke input tersembunyi
+         (dipisah koma) supaya pembaca jawaban lain cukup membaca .value */
+      if(t.tipe === 'centang'){
+        kolom = document.createElement('input');
+        kolom.type = 'hidden';
+        f.classList.add('f-lebar');
+        grup = document.createElement('div');
+        grup.className = 'cek-grup';
+        grup.setAttribute('role', 'group');
+        grup.setAttribute('aria-label', t.judul);
+        (t.opsi || []).forEach(function(v){
+          const l = document.createElement('label');
+          l.className = 'cek-i';
+          const c = document.createElement('input');
+          c.type = 'checkbox'; c.value = v;
+          const s = document.createElement('span'); s.textContent = v;
+          l.appendChild(c); l.appendChild(s); grup.appendChild(l);
+        });
+        grup.addEventListener('change', function(){
+          kolom.value = [].filter.call(grup.querySelectorAll('input'), function(c){ return c.checked; })
+            .map(function(c){ return c.value; }).join(', ');
+        });
+        /* dipanggil saat jawaban tersimpan dipasang ulang (Edit data pendaftaran) */
+        kolom._isi = function(){
+          const pilih = kolom.value ? kolom.value.split(', ') : [];
+          grup.querySelectorAll('input').forEach(function(c){ c.checked = pilih.indexOf(c.value) >= 0; });
+        };
+      }
       /* pilihan jawaban yang disusun pengurus di layar Buat */
-      if(t.tipe === 'pilihan'){
+      else if(t.tipe === 'pilihan'){
         kolom = document.createElement('select');
         kolom.className = 'sel';
         kolom.innerHTML = '<option value="">Pilih jawaban</option>';
@@ -6596,6 +6634,7 @@ function hitung(){}
       kolom.dataset.tanyaId = t.id;
       kolom.dataset.judul = t.judul;
       if(t.wajib) kolom.dataset.wajib = '';
+      if(grup) f.appendChild(grup);
       f.appendChild(kolom);
 
       const why = document.createElement('p');
@@ -7872,7 +7911,7 @@ function hitung(){}
 
   function pasangJawaban(peta){
     document.querySelectorAll('#gabungList [data-tanya-id]').forEach(function(e){
-      if(peta[e.dataset.tanyaId] != null) e.value = peta[e.dataset.tanyaId];
+      if(peta[e.dataset.tanyaId] != null){ e.value = peta[e.dataset.tanyaId]; if(e._isi) e._isi(); }
     });
   }
 
@@ -8122,6 +8161,10 @@ function hitung(){}
       if(!v && t.tipe === 'tahun') v = o.a ? String(o.a) : String(2008 + acak(nama, 15));
       if(!v && t.tipe === 'angka') v = String(1 + acak(nama, 9));
       if(!v && t.tipe === 'pilihan' && t.opsi && t.opsi.length) v = t.opsi[acak(nama + t.id, t.opsi.length)];
+      if(!v && t.tipe === 'centang' && t.opsi && t.opsi.length){
+        const a = acak(nama + t.id, t.opsi.length), b = (a + 1 + acak(nama, t.opsi.length - 1 || 1)) % t.opsi.length;
+        v = a === b ? t.opsi[a] : [t.opsi[a], t.opsi[b]].join(', ');
+      }
       if(!v){
         const cocok = ISIAN_CONTOH.filter(function(c){ return c[0].test(t.judul + ' ' + (t.tanya || '')); })[0];
         v = cocok ? cocok[1][acak(nama, cocok[1].length)] : ((o.j || [])[0] || o.bio || '—');
@@ -8637,6 +8680,7 @@ function hitung(){}
     const anggota = !founder && (window.KolavoApp.diajukan || {})[kini.kelas] === 'anggota';
     baris.insertAdjacentHTML('beforeend',
       (anggota ? tombolIkon('pensil', 'Edit data pendaftaran', 'id="komEdit"') : '') +
+      (founder ? tombolIkon('dokumen', 'Jawaban pendaftaranku', 'id="komEdit"') : '') +
       (founder ? tombolIkon('pensil', 'Sunting halaman komunitas', 'data-kom-sunting') : '') +
       tombolIkon('bagikan', 'Bagikan tautan', 'data-kom-bagikan'));
   }
@@ -8842,6 +8886,19 @@ function hitung(){}
     if(!founder){ fb.hidden = true; fb.innerHTML = ''; return; }
     const D = window.KolavoDashboard;
     const pend = (D && D.minta) ? D.minta.length : 0;
+    /* pembuat komunitas juga anggota: selama jawaban pertanyaan pendaftarannya
+       belum diisi, ajakan ini didahulukan (revisi 4 Nov 2026) */
+    const adaTanya = ((kini && kini.tanya) || []).some(function(t){ return t.id !== 'nickname'; });
+    if(adaTanya && !((window.KolavoApp.jawabanTersimpan || {})[kini.kelas])){
+      fb.hidden = false;
+      fb.className = 'kom-founder ada';
+      fb.innerHTML =
+        '<div class="kom-founder-t"><span class="kom-founder-badge">' + window.KolavoIkon('dokumen') + '</span>' +
+          '<div><strong>Kamu juga anggota komunitas ini</strong>' +
+          '<p>Jawab pertanyaan pendaftaran komunitasmu sendiri, supaya profilmu di daftar anggota lengkap seperti anggota lain.</p></div></div>' +
+        '<div class="kom-founder-aksi"><button type="button" class="btn sm" data-isi-jawaban>Isi jawabanku</button></div>';
+      return;
+    }
     /* yang menunggu sudah ditandai di tombol Dashboard pengurus — tidak perlu kotak kedua */
     fb.hidden = !!pend;
     fb.className = 'kom-founder';
@@ -9073,13 +9130,18 @@ function hitung(){}
       if(window.KolavoToast) window.KolavoToast('Mode demo — di produk, ini membuka WhatsApp ke nomornya.');
       return;
     }
-    if(e.target.closest('#komEdit')){
+    if(e.target.closest('#komEdit, [data-isi-jawaban]')){
       const g = el('komGabung');
       modeSunting = true;
+      /* formulir digambar dari App.komunitas (komunitas terakhir dari direktori) — di
+         halaman pemilik, pinjamkan sebentar pertanyaan komunitas yang sedang dibuka */
+      const A = window.KolavoApp, lama = A.komunitas;
+      if(founder) A.komunitas = { nama: kini.nama, kelas: kini.kelas, bentuk: kini.bentuk, tanya: kini.tanya };
       window.KolavoGambarTanya('gabungList');
+      if(founder) A.komunitas = lama;
       pasangJawaban(((window.KolavoApp || {}).jawabanTersimpan || {})[kini.kelas] || {});
-      el('gabungKirim').textContent = 'Simpan perubahan';
-      el('gabungH').textContent = 'Pertanyaan dari pengurus ' + kini.nama;
+      el('gabungKirim').textContent = founder ? 'Simpan jawabanku' : 'Simpan perubahan';
+      el('gabungH').textContent = founder ? 'Jawabanmu sebagai anggota ' + kini.nama : 'Pertanyaan dari pengurus ' + kini.nama;
       g.hidden = false;
       g.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
@@ -9111,12 +9173,15 @@ function hitung(){}
 
       if(modeSunting){
         modeSunting = false;
+        /* pembuat komunitas: jawabannya masuk ke datanya sebagai anggota di dashboard */
+        const D = window.KolavoDashboard;
+        if(founder && D && D.isiJawabanAku) D.isiJawabanAku(window.KolavoApp.jawabanTersimpan[kini.kelas]);
         el('komGabung').hidden = true;
         el('gabungKirim').textContent = 'Kirim permintaan gabung';
         gambar();
         if(window.KolavoIsiProfil) window.KolavoIsiProfil();
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        if(window.KolavoToast) window.KolavoToast('Data pendaftaranmu diperbarui.');
+        if(window.KolavoToast) window.KolavoToast(founder ? 'Jawabanmu tersimpan. Profilmu di daftar anggota sekarang lengkap.' : 'Data pendaftaranmu diperbarui.');
         return;
       }
 
@@ -10244,6 +10309,8 @@ function hitung(){}
   const MINAT = function(id){ return { id: id, judul: 'Minat Kegiatan', tanya: 'Kegiatan apa yang paling ingin kamu ikuti?', tipe: 'pilihan',
     opsi: ['Acara & reuni', 'Kegiatan sosial', 'Mentoring & karier', 'Usaha & jejaring'], wajib: false, bawaan: false }; };
   const OPSI_MAKS = 10;
+  /* jenis yang memakai daftar opsi dari pengurus: pilih satu, atau kotak centang (boleh beberapa) */
+  const punyaOpsi = function(tipe){ return tipe === 'pilihan' || tipe === 'centang'; };
   let tanya  = [{ id: 'q1', judul: '', tanya: '', tipe: 'tahun', wajib: false, bawaan: true },
                 { id: 'q2', judul: 'Alasan Bergabung', tanya: 'Kenapa kamu ingin bergabung di komunitas ini?', tipe: 'teks', wajib: false, bawaan: false },
                 MINAT('q3')];
@@ -10362,7 +10429,8 @@ function hitung(){}
     return [el('bkKota').value, el('bkProvinsi').value, el('bkNegara').value].filter(N.sah)[0] || '';
   }
   function pilihanBersih(t){
-    return (t.opsi || []).map(function(v){ return String(v || '').trim(); }).filter(Boolean)
+    /* koma dipakai pemisah jawaban kotak centang, jadi tidak boleh ada di dalam opsi */
+    return (t.opsi || []).map(function(v){ return String(v || '').replace(/,/g, ' ').replace(/\s+/g, ' ').trim(); }).filter(Boolean)
       .filter(function(v, i, a){ return a.indexOf(v) === i; });
   }
 
@@ -10396,11 +10464,12 @@ function hitung(){}
               '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="teks"' + (t.tipe === 'teks' ? ' checked' : '') + '><span>Jawaban teks</span></label>' +
               '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="angka"' + (t.tipe === 'angka' ? ' checked' : '') + '><span>Jawaban angka</span></label>' +
               '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="pilihan"' + (t.tipe === 'pilihan' ? ' checked' : '') + '><span>Pilihan jawaban</span></label>' +
+              '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="centang"' + (t.tipe === 'centang' ? ' checked' : '') + '><span>Kotak centang</span></label>' +
             '</div>' +
             '<label class="sw"><input type="checkbox" data-k="wajib"' + (t.wajib ? ' checked' : '') + '><i></i>Wajib diisi</label>' +
           '</div>' +
-          (t.tipe === 'pilihan' ? gambarOpsi(t) : '') +
-          '<p class="f-galat">' + (t.tipe === 'pilihan' ? 'Isi judul dan minimal dua pilihan jawaban, atau hapus kartunya.' : 'Judul pertanyaan perlu diisi, atau hapus kartunya.') + '</p>' +
+          (punyaOpsi(t.tipe) ? gambarOpsi(t) : '') +
+          '<p class="f-galat">' + (punyaOpsi(t.tipe) ? 'Isi judul dan minimal dua pilihan jawaban, atau hapus kartunya.' : 'Judul pertanyaan perlu diisi, atau hapus kartunya.') + '</p>' +
         '</div>';
       }).join('');
 
@@ -10417,7 +10486,8 @@ function hitung(){}
   /* daftar pilihan jawaban yang disusun pengurus — pendaftar memilih salah satu */
   function gambarOpsi(t){
     const opsi = t.opsi && t.opsi.length ? t.opsi : ['', ''];
-    return '<div class="qopsi"><p class="qopsi-h">Pilihan jawaban <span>· pendaftar memilih satu</span></p>' +
+    const centang = t.tipe === 'centang';
+    return '<div class="qopsi' + (centang ? ' centang' : '') + '"><p class="qopsi-h">Pilihan jawaban <span>· ' + (centang ? 'pendaftar boleh mencentang lebih dari satu' : 'pendaftar memilih satu') + '</span></p>' +
       opsi.map(function(v, j){
         return '<div class="qopsi-i"><span class="qopsi-b" aria-hidden="true"></span>' +
           '<input class="inp" data-k="opsi" maxlength="40" value="' + lolos(v) + '" placeholder="Pilihan ' + (j + 1) + '" aria-label="Pilihan jawaban ' + (j + 1) + '">' +
@@ -10536,7 +10606,7 @@ function hitung(){}
     if(e.target.dataset && e.target.dataset.k === 'tipe'){
       simpanTanya();
       gambarTanya();
-      if(e.target.value === 'pilihan'){
+      if(punyaOpsi(e.target.value)){
         const f = scr.querySelector('.qcard[data-q="' + e.target.closest('.qcard').dataset.q + '"] [data-k="opsi"]');
         if(f && !f.value) f.focus();
       }
@@ -10563,7 +10633,7 @@ function hitung(){}
     if(!el('bkAjak').value.trim())  tandai(el('bkAjak').closest('.f'));
 
     tanya.forEach(function(t){
-      const kurangOpsi = t.tipe === 'pilihan' && pilihanBersih(t).length < 2;
+      const kurangOpsi = punyaOpsi(t.tipe) && pilihanBersih(t).length < 2;
       if(!t.judul.trim() || kurangOpsi) tandai(scr.querySelector('.qcard[data-q="' + t.id + '"]'));
     });
     return pertama;
@@ -10584,7 +10654,7 @@ function hitung(){}
         return { id: t.id,
                  judul: t.judul.trim() || (t.bawaan ? b.judul : 'Pertanyaan'),
                  tanya: t.tanya.trim() || (t.bawaan ? b.tanya : ''),
-                 tipe: t.tipe, wajib: t.wajib, opsi: t.tipe === 'pilihan' ? pilihanBersih(t) : undefined };
+                 tipe: t.tipe, wajib: t.wajib, opsi: punyaOpsi(t.tipe) ? pilihanBersih(t) : undefined };
       }));
     const kom = {
       nama: nama,
@@ -10643,7 +10713,7 @@ function hitung(){}
                 tanya: 'Apa nama panggilan kamu di komunitas ini?', tipe: 'teks', wajib: true }]
               .concat(tanya.map(function(t){
                 return { id: t.id, judul: t.judul.trim(), tanya: t.tanya.trim(),
-                         tipe: t.tipe, wajib: t.wajib, opsi: t.tipe === 'pilihan' ? pilihanBersih(t) : undefined };
+                         tipe: t.tipe, wajib: t.wajib, opsi: punyaOpsi(t.tipe) ? pilihanBersih(t) : undefined };
               }))
     };
     if(modeSunting && dibuat){
@@ -10993,6 +11063,10 @@ function hitung(){}
     for(let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
     return h % n;
   }
+  function centangContoh(kunci, opsi){
+    const a = acakNama(kunci, opsi.length), dua = acakNama(kunci + 'x', 2) && opsi.length > 1;
+    return dua ? [opsi[a], opsi[(a + 1) % opsi.length]].sort(function(x, y){ return opsi.indexOf(x) - opsi.indexOf(y); }).join(', ') : opsi[a];
+  }
   function jawabanFor(s){
     const tanya = (D.kom && D.kom.tanya) || [];
     const teks = Array.isArray(s.teks) ? s.teks : (s.teks ? [s.teks] : []);
@@ -11005,6 +11079,8 @@ function hitung(){}
       const nilai = t.tipe === 'tahun' ? String(s.tahun)
         /* pilihan jawaban: contoh tetap per orang, dari opsi yang disusun pengurus */
         : (t.tipe === 'pilihan' && t.opsi && t.opsi.length) ? t.opsi[acakNama((s.nama || '') + t.id, t.opsi.length)]
+        /* kotak centang: satu atau dua opsi, dipisah koma */
+        : (t.tipe === 'centang' && t.opsi && t.opsi.length) ? centangContoh((s.nama || '') + t.id, t.opsi)
         : (s.alasan && soalAlasan.test((t.judul || '') + ' ' + (t.tanya || ''))) ? s.alasan
         : (teks[ti++] || '—');
       return { id: t.id, judul: t.judul || 'Pertanyaan', nilai: nilai };
@@ -11354,6 +11430,7 @@ function hitung(){}
     const v = nilaiSaring(o, s);
     if(f.v === '__kosong__') return !v;
     if(s.tipe === 'teks') return v.toLowerCase().indexOf(f.v.trim().toLowerCase()) >= 0;
+    if(s.tipe === 'centang') return v.split(', ').indexOf(f.v) >= 0;
     return v === f.v;
   }
   function saringAktif(f){ return !!(f && f.q && f.v); }
@@ -11367,9 +11444,14 @@ function hitung(){}
         nilai = '<input class="inp" data-saring-v="' + kunci + '" maxlength="40" value="' + lolos(f.v) + '" placeholder="Jawaban mengandung kata…" aria-label="Kata dalam jawaban">';
       } else {
         const hitung = {}; let kosong = 0;
-        orang.forEach(function(o){ const v = nilaiSaring(o, s); if(v) hitung[v] = (hitung[v] || 0) + 1; else kosong++; });
+        orang.forEach(function(o){
+          const v = nilaiSaring(o, s);
+          if(!v){ kosong++; return; }
+          /* kotak centang: dihitung per opsi yang dicentang, bukan per kombinasi */
+          (s.tipe === 'centang' ? v.split(', ') : [v]).forEach(function(x){ hitung[x] = (hitung[x] || 0) + 1; });
+        });
         let urut = Object.keys(hitung);
-        if(s.tipe === 'pilihan') urut = (s.opsi || []).concat(urut.filter(function(v){ return (s.opsi || []).indexOf(v) < 0; }));
+        if(s.tipe === 'pilihan' || s.tipe === 'centang') urut = (s.opsi || []).concat(urut.filter(function(v){ return (s.opsi || []).indexOf(v) < 0; }));
         else if(s.tipe === 'tahun' || s.tipe === 'angka') urut.sort(function(a, b){ return parseFloat(b) - parseFloat(a); });
         else urut.sort(function(a, b){ return hitung[b] - hitung[a] || a.localeCompare(b); });
         nilai = '<select class="sel" data-saring-v="' + kunci + '" aria-label="Jawaban">' +
@@ -12115,6 +12197,31 @@ function hitung(){}
     D.minta = D.minta.filter(function(x){ return x.id !== r.id; });
     D.riwayat.unshift({ nama: r.nama, panggil: r.panggil, kerja: r.kerja, kota: r.kota, status: 'ditolak', oleh: D.aku, waktu: 'baru saja', catatan: catatan || '' });
   }
+  /* pembuat komunitas mengisi pertanyaan pendaftarannya sendiri dari halaman komunitas
+     (revisi 4 Nov 2026) — disimpan per id pertanyaan seperti anggota lain, jadi ikut
+     tampil di profil, saringan jawaban, dan persebaran */
+  D.isiJawabanAku = function(peta){
+    if(!D.built && !bangun()) return;
+    const m = D.mem[D.aku];
+    if(!m || !peta) return;
+    m.jwb = {};
+    Object.keys(peta).forEach(function(id){
+      const v = String(peta[id] || '').trim();
+      if(id === 'nickname'){ if(v) m.nick = v; return; }
+      if(v) m.jwb[id] = v;
+    });
+    const t = pertanyaanPengurus().filter(function(q){ return q.tipe === 'tahun'; })[0];
+    if(t && m.jwb[t.id]) m.tahun = m.jwb[t.id];
+    if(!Object.getOwnPropertyDescriptor(m, 'jawaban')){
+      Object.defineProperty(m, 'jawaban', { enumerable: true, get: function(){
+        return pertanyaanPengurus().map(function(q){
+          const ada = Object.prototype.hasOwnProperty.call(m.jwb, q.id);
+          return { id: q.id, judul: q.judul || 'Pertanyaan', nilai: ada ? m.jwb[q.id] : '—', kosong: !ada };
+        });
+      }});
+    }
+    gambar();
+  };
   D.terima = terima;
   D.gambar = function(){ gambar(); };
   D.pilihTab = pilihTab;
@@ -13355,7 +13462,7 @@ function hitung(){}
   function kandidatSebaran(){
     const q = window.KolavoPertanyaanPengurus ? window.KolavoPertanyaanPengurus() : [];
     return [{ id: 'kerja', judul: 'Pekerjaan & keahlian' }, { id: 'kota', judul: 'Domisili' }].concat(q.map(function(t){
-      return { id: 'q:' + t.id, judul: t.judul || 'Pertanyaan', qid: t.id, tahun: t.tipe === 'tahun' };
+      return { id: 'q:' + t.id, judul: t.judul || 'Pertanyaan', qid: t.id, tahun: t.tipe === 'tahun', centang: t.tipe === 'centang' };
     }));
   }
   /* nilai seseorang di satu sumbu — label kelompok (Kelompokkan) didahulukan */
@@ -13380,7 +13487,11 @@ function hitung(){}
   /* lima teratas + sisanya (dan yang belum menjawab) jadi "Lainnya" */
   function hitungSebaran(k){
     const peta = {};
-    semuaOrang().forEach(function(n){ const v = nilaiSebaran(n, k) || 'Lainnya'; peta[v] = (peta[v] || 0) + 1; });
+    /* kotak centang dihitung per opsi yang dicentang */
+    semuaOrang().forEach(function(n){
+      const v = nilaiSebaran(n, k) || 'Lainnya';
+      (k.centang ? v.split(', ') : [v]).forEach(function(x){ peta[x] = (peta[x] || 0) + 1; });
+    });
     const urut = Object.keys(peta).filter(function(v){ return v !== 'Lainnya'; })
       .sort(function(a, b){ return peta[b] - peta[a] || a.localeCompare(b); });
     const atas = urut.slice(0, 5).map(function(v){ return [v, peta[v]]; });

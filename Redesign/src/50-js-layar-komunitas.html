@@ -462,7 +462,7 @@
 
   function pasangJawaban(peta){
     document.querySelectorAll('#gabungList [data-tanya-id]').forEach(function(e){
-      if(peta[e.dataset.tanyaId] != null) e.value = peta[e.dataset.tanyaId];
+      if(peta[e.dataset.tanyaId] != null){ e.value = peta[e.dataset.tanyaId]; if(e._isi) e._isi(); }
     });
   }
 
@@ -712,6 +712,10 @@
       if(!v && t.tipe === 'tahun') v = o.a ? String(o.a) : String(2008 + acak(nama, 15));
       if(!v && t.tipe === 'angka') v = String(1 + acak(nama, 9));
       if(!v && t.tipe === 'pilihan' && t.opsi && t.opsi.length) v = t.opsi[acak(nama + t.id, t.opsi.length)];
+      if(!v && t.tipe === 'centang' && t.opsi && t.opsi.length){
+        const a = acak(nama + t.id, t.opsi.length), b = (a + 1 + acak(nama, t.opsi.length - 1 || 1)) % t.opsi.length;
+        v = a === b ? t.opsi[a] : [t.opsi[a], t.opsi[b]].join(', ');
+      }
       if(!v){
         const cocok = ISIAN_CONTOH.filter(function(c){ return c[0].test(t.judul + ' ' + (t.tanya || '')); })[0];
         v = cocok ? cocok[1][acak(nama, cocok[1].length)] : ((o.j || [])[0] || o.bio || '—');
@@ -1227,6 +1231,7 @@
     const anggota = !founder && (window.KolavoApp.diajukan || {})[kini.kelas] === 'anggota';
     baris.insertAdjacentHTML('beforeend',
       (anggota ? tombolIkon('pensil', 'Edit data pendaftaran', 'id="komEdit"') : '') +
+      (founder ? tombolIkon('dokumen', 'Jawaban pendaftaranku', 'id="komEdit"') : '') +
       (founder ? tombolIkon('pensil', 'Sunting halaman komunitas', 'data-kom-sunting') : '') +
       tombolIkon('bagikan', 'Bagikan tautan', 'data-kom-bagikan'));
   }
@@ -1432,6 +1437,19 @@
     if(!founder){ fb.hidden = true; fb.innerHTML = ''; return; }
     const D = window.KolavoDashboard;
     const pend = (D && D.minta) ? D.minta.length : 0;
+    /* pembuat komunitas juga anggota: selama jawaban pertanyaan pendaftarannya
+       belum diisi, ajakan ini didahulukan (revisi 4 Nov 2026) */
+    const adaTanya = ((kini && kini.tanya) || []).some(function(t){ return t.id !== 'nickname'; });
+    if(adaTanya && !((window.KolavoApp.jawabanTersimpan || {})[kini.kelas])){
+      fb.hidden = false;
+      fb.className = 'kom-founder ada';
+      fb.innerHTML =
+        '<div class="kom-founder-t"><span class="kom-founder-badge">' + window.KolavoIkon('dokumen') + '</span>' +
+          '<div><strong>Kamu juga anggota komunitas ini</strong>' +
+          '<p>Jawab pertanyaan pendaftaran komunitasmu sendiri, supaya profilmu di daftar anggota lengkap seperti anggota lain.</p></div></div>' +
+        '<div class="kom-founder-aksi"><button type="button" class="btn sm" data-isi-jawaban>Isi jawabanku</button></div>';
+      return;
+    }
     /* yang menunggu sudah ditandai di tombol Dashboard pengurus — tidak perlu kotak kedua */
     fb.hidden = !!pend;
     fb.className = 'kom-founder';
@@ -1663,13 +1681,18 @@
       if(window.KolavoToast) window.KolavoToast('Mode demo — di produk, ini membuka WhatsApp ke nomornya.');
       return;
     }
-    if(e.target.closest('#komEdit')){
+    if(e.target.closest('#komEdit, [data-isi-jawaban]')){
       const g = el('komGabung');
       modeSunting = true;
+      /* formulir digambar dari App.komunitas (komunitas terakhir dari direktori) — di
+         halaman pemilik, pinjamkan sebentar pertanyaan komunitas yang sedang dibuka */
+      const A = window.KolavoApp, lama = A.komunitas;
+      if(founder) A.komunitas = { nama: kini.nama, kelas: kini.kelas, bentuk: kini.bentuk, tanya: kini.tanya };
       window.KolavoGambarTanya('gabungList');
+      if(founder) A.komunitas = lama;
       pasangJawaban(((window.KolavoApp || {}).jawabanTersimpan || {})[kini.kelas] || {});
-      el('gabungKirim').textContent = 'Simpan perubahan';
-      el('gabungH').textContent = 'Pertanyaan dari pengurus ' + kini.nama;
+      el('gabungKirim').textContent = founder ? 'Simpan jawabanku' : 'Simpan perubahan';
+      el('gabungH').textContent = founder ? 'Jawabanmu sebagai anggota ' + kini.nama : 'Pertanyaan dari pengurus ' + kini.nama;
       g.hidden = false;
       g.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
@@ -1701,12 +1724,15 @@
 
       if(modeSunting){
         modeSunting = false;
+        /* pembuat komunitas: jawabannya masuk ke datanya sebagai anggota di dashboard */
+        const D = window.KolavoDashboard;
+        if(founder && D && D.isiJawabanAku) D.isiJawabanAku(window.KolavoApp.jawabanTersimpan[kini.kelas]);
         el('komGabung').hidden = true;
         el('gabungKirim').textContent = 'Kirim permintaan gabung';
         gambar();
         if(window.KolavoIsiProfil) window.KolavoIsiProfil();
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        if(window.KolavoToast) window.KolavoToast('Data pendaftaranmu diperbarui.');
+        if(window.KolavoToast) window.KolavoToast(founder ? 'Jawabanmu tersimpan. Profilmu di daftar anggota sekarang lengkap.' : 'Data pendaftaranmu diperbarui.');
         return;
       }
 
