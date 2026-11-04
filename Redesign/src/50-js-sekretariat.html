@@ -1513,7 +1513,7 @@
             '<p class="sek-kecil sek-penuh">' + IK.kunci + 'Diproses penyedia pembayaran berlisensi Bank Indonesia. Kolavo tidak menyimpan nomor kartu.</p></div>';
     } else if(B.metode === 'gopay'){
       detail = '<div class="sb-detail"><label class="sek-lbl" for="sbHp">Nomor HP yang terhubung GoPay</label>' +
-        '<div class="tel"><span class="tel-pfx">🇮🇩 +62</span><input id="sbHp" type="tel" inputmode="numeric" placeholder="812 3456 7890"></div>' +
+        '<div class="tel">' + window.KolavoNegara.kodeHtml('sbHpKode', 'Indonesia') + '<input id="sbHp" type="tel" inputmode="numeric" placeholder="812 3456 7890"></div>' +
         '<p class="sek-kecil">Permintaan bayar dikirim ke aplikasi Gojek. Konfirmasi dengan PIN GoPay-mu.</p></div>';
     } else {
       detail = '<div class="sb-detail sb-qris"><div class="krd-qris"><div class="krd-qris-h"><b>QRIS</b><span>Kolavo · Advance</span></div>' +

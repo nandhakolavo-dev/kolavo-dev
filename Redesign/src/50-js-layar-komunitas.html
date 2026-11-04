@@ -709,6 +709,7 @@
       if(!v && o.alasan && /alasan|kenapa/i.test(t.judul + ' ' + (t.tanya || ''))) v = o.alasan;
       if(!v && t.tipe === 'tahun') v = o.a ? String(o.a) : String(2008 + acak(nama, 15));
       if(!v && t.tipe === 'angka') v = String(1 + acak(nama, 9));
+      if(!v && t.tipe === 'pilihan' && t.opsi && t.opsi.length) v = t.opsi[acak(nama + t.id, t.opsi.length)];
       if(!v){
         const cocok = ISIAN_CONTOH.filter(function(c){ return c[0].test(t.judul + ' ' + (t.tanya || '')); })[0];
         v = cocok ? cocok[1][acak(nama, cocok[1].length)] : ((o.j || [])[0] || o.bio || '—');
@@ -718,12 +719,13 @@
   }
 
   /* akun media sosial: data asli bila ada, selain itu contoh dari nama (tetap per orang) */
-  const SOS_URL = { Instagram: 'https://instagram.com/', TikTok: 'https://tiktok.com/@', X: 'https://x.com/' };
+  const SOS_URL = { Instagram: 'https://instagram.com/', TikTok: 'https://tiktok.com/@', X: 'https://x.com/', Threads: 'https://www.threads.net/@' };
   const SOS_IKON = {
     Instagram: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor"/>',
     LinkedIn: '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.5V16M8 7.6v.1M11.5 16v-5.5M11.5 13c0-1.6 1-2.6 2.3-2.6s2.2.9 2.2 2.6V16"/>',
     TikTok: '<path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.4 2 4 4.5 4.3"/>',
-    X: '<path d="M5 5l14 14M19 5 5 19"/>'
+    X: '<path d="M5 5l14 14M19 5 5 19"/>',
+    Threads: '<circle cx="12" cy="12" r="3.5"/><path d="M15.5 12v1.5a2.5 2.5 0 0 0 5 0V12a8.5 8.5 0 1 0-3.4 6.8"/>'
   };
   function sosmedOrang(nama, o){
     if(o.sosmed && o.sosmed.length) return o.sosmed;

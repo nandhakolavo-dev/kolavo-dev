@@ -223,7 +223,17 @@
       f.appendChild(lbl);
 
       let kolom;
-      if(t.tipe === 'tahun'){
+      /* pilihan jawaban yang disusun pengurus di layar Buat */
+      if(t.tipe === 'pilihan'){
+        kolom = document.createElement('select');
+        kolom.className = 'sel';
+        kolom.innerHTML = '<option value="">Pilih jawaban</option>';
+        (t.opsi || []).forEach(function(v){
+          const o = document.createElement('option');
+          o.textContent = v;
+          kolom.appendChild(o);
+        });
+      } else if(t.tipe === 'tahun'){
         kolom = document.createElement('select');
         kolom.className = 'sel';
         kolom.innerHTML = '<option value="">Pilih tahun</option>';
@@ -282,9 +292,10 @@
   const WAJIB = [
     { id: 'wa',       uji: function(e){ return e.value.replace(/\D/g,'').length >= 8; } },
     { id: 'lahir',    uji: function(e){ return !!e.value; } },
-    { id: 'negara',   uji: function(e){ return !!e.value; }, grup: 'domisili' },
-    { id: 'provinsi', uji: function(e){ return !!e.value; }, grup: 'domisili' },
-    { id: 'kota',     uji: function(e){ return !!e.value; }, grup: 'domisili' }
+    /* "__lain__" = baris tulis-sendiri masih terbuka, belum ditambahkan */
+    { id: 'negara',   uji: function(e){ return !!e.value && e.value !== '__lain__'; }, grup: 'domisili' },
+    { id: 'provinsi', uji: function(e){ return !!e.value && e.value !== '__lain__'; }, grup: 'domisili' },
+    { id: 'kota',     uji: function(e){ return !!e.value && e.value !== '__lain__'; }, grup: 'domisili' }
   ];
 
   function periksa(){
@@ -373,15 +384,12 @@
   let pfEdit = null, pfSos = null;
   const elv = function(id){ const e = document.getElementById(id); return e ? e.value : ''; };
   const escA = function(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-  function opsi(daftar, pilih, kosong){
-    return '<option value="">' + kosong + '</option>' + daftar.map(function(n){ return '<option' + (n === pilih ? ' selected' : '') + '>' + escA(n) + '</option>'; }).join('');
-  }
   function editorDom(neg, prov, kota){
-    const W = window.KolavoWilayah || {}, P = W[neg] || {}, K = P[prov] || [];
+    const N = window.KolavoNegara;
     return '<div class="pf-ed-g3">' +
-      '<select class="sel" id="pfENeg" aria-label="Negara">' + opsi(Object.keys(W), neg, 'Negara') + '</select>' +
-      '<select class="sel" id="pfEProv" aria-label="Provinsi"' + (neg ? '' : ' disabled') + '>' + opsi(Object.keys(P), prov, 'Provinsi') + '</select>' +
-      '<select class="sel" id="pfEKota" aria-label="Kota atau kabupaten"' + (prov ? '' : ' disabled') + '>' + opsi(K, kota, 'Kota/kabupaten') + '</select></div>';
+      '<select class="sel" id="pfENeg" aria-label="Negara" data-tambah="negara">' + N.opsiNegara(neg) + '</select>' +
+      '<select class="sel" id="pfEProv" aria-label="Provinsi" data-tambah="provinsi" data-induk="pfENeg"' + (neg ? '' : ' disabled') + '>' + N.opsiProvinsi(neg, prov) + '</select>' +
+      '<select class="sel" id="pfEKota" aria-label="Kota atau kabupaten" data-tambah="kota" data-induk="pfEProv"' + (prov ? '' : ' disabled') + '>' + N.opsiKota(neg, prov, kota) + '</select></div>';
   }
   function editorSos(){
     const PL = window.KolavoSosmedPlatform || [];
@@ -395,7 +403,7 @@
   function editorIsian(k){
     let isi = '';
     if(k === 'nama') isi = '<input class="inp" id="pfE" maxlength="60" value="' + escA((document.getElementById('idNama') || {}).textContent || '') + '" aria-label="Nama lengkap">';
-    else if(k === 'wa') isi = '<div class="tel"><span class="tel-pfx">🇮🇩 +62</span><input id="pfE" type="tel" inputmode="numeric" placeholder="812 3456 7890" value="' + escA(elv('wa')) + '" aria-label="Nomor WhatsApp"></div>';
+    else if(k === 'wa') isi = '<div class="tel">' + window.KolavoNegara.kodeHtml('pfEKode', elv('waKode') || 'Indonesia') + '<input id="pfE" type="tel" inputmode="numeric" placeholder="812 3456 7890" value="' + escA(elv('wa')) + '" aria-label="Nomor WhatsApp"></div>';
     else if(k === 'lahir') isi = '<input class="inp" id="pfE" type="date" max="' + new Date().toISOString().slice(0, 10) + '" value="' + escA(elv('lahir')) + '" aria-label="Tanggal lahir">';
     else if(k === 'dom') isi = editorDom(elv('negara') || 'Indonesia', elv('provinsi'), elv('kota'));
     else if(k === 'kerja'){
@@ -423,7 +431,7 @@
   function simpanIsian(){
     const k = pfEdit, v = elv('pfE');
     if(k === 'nama'){ if(!window.KolavoGantiNama || !window.KolavoGantiNama(v)){ toastP('Nama tidak boleh kosong.'); return; } }
-    else if(k === 'wa') tulis('wa', v.trim());
+    else if(k === 'wa'){ if(elv('pfEKode') && elv('pfEKode') !== '__lain__') tulis('waKode', elv('pfEKode'), 'change'); tulis('wa', v.trim()); }
     else if(k === 'lahir'){ if(window.KolavoSetLahir) window.KolavoSetLahir(v); }
     else if(k === 'dom'){ tulis('negara', elv('pfENeg'), 'change'); tulis('provinsi', elv('pfEProv'), 'change'); tulis('kota', elv('pfEKota'), 'change'); }
     else if(k === 'kerja'){ tulis('kerja', v, 'change'); if(v === '__lain__') tulis('kerjaLain', elv('pfE2').trim()); }
@@ -465,7 +473,7 @@
     const t = e.target;
     const p = t.getAttribute && t.getAttribute('data-pf-sos-p');
     if(p !== null && pfSos){ pfSos[+p].p = t.value; return; }
-    if(t.id === 'pfENeg' || t.id === 'pfEProv'){
+    if((t.id === 'pfENeg' || t.id === 'pfEProv') && t.value !== '__lain__'){
       const w = t.closest('.pf-ed');
       const neg = elv('pfENeg'), prov = t.id === 'pfENeg' ? '' : elv('pfEProv');
       const wadah = w.querySelector('.pf-ed-g3');
@@ -549,6 +557,7 @@
         'LinkedIn': '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.5V16M8 7.6v.1M11.5 16v-5.5M11.5 13c0-1.6 1-2.6 2.3-2.6s2.2.9 2.2 2.6V16"/>',
         'TikTok': '<path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.4 2 4 4.5 4.3"/>',
         'X (Twitter)': '<path d="M5 5l14 14M19 5 5 19"/>',
+        'Threads': '<circle cx="12" cy="12" r="3.5"/><path d="M15.5 12v1.5a2.5 2.5 0 0 0 5 0V12a8.5 8.5 0 1 0-3.4 6.8"/>',
         'Facebook': '<path d="M14 8h2V4.5h-2.5A3.5 3.5 0 0 0 10 8v2.5H8V14h2v6.5h3.5V14H16l.5-3.5h-3V8.5c0-.3.2-.5.5-.5Z"/>',
         'YouTube': '<rect x="2.5" y="6" width="19" height="12" rx="4"/><path d="m10.5 9.5 4 2.5-4 2.5Z"/>',
         'Situs web': '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 2.5 15.2 0 18M12 3c-2.5 2.8-2.5 15.2 0 18"/>'
@@ -584,7 +593,7 @@
           ['orang', 'Nama lengkap', teks('idNama') || (nm ? nm.textContent : ''), 'Pengurus komunitas', 'idKartu', 'nama'],
           ['surat', 'Email', (document.querySelector('.acct-em') || {}).textContent || '', 'Hanya kamu', 'idKartu', '']]],
         ['perisai', 'Cuma buat pengurus', 'Tidak tampil di daftar anggota.', [
-          ['telp', 'Nomor WhatsApp', nilai('wa') ? '+62 ' + nilai('wa') : '', 'Pengurus & anggota yang kenalan denganmu', 'wa', 'wa'],
+          ['telp', 'Nomor WhatsApp', nilai('wa') ? (window.KolavoNegara ? window.KolavoNegara.kodeWa() : '+62') + ' ' + nilai('wa') : '', 'Pengurus & anggota yang kenalan denganmu', 'wa', 'wa'],
           ['kalender', 'Tanggal lahir', lahir, 'Pengurus komunitas', 'lblLahir', 'lahir']]],
         ['orang2', 'Dilihat sesama anggota', 'Dipakai di semua komunitas yang kamu ikuti.', [
           ['pin', 'Domisili', [nilai('kota'), nilai('provinsi'), nilai('negara')].filter(Boolean).join(', '), 'Sesama anggota', 'lblDom', 'dom'],

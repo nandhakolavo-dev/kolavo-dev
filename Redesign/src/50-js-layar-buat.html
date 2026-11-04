@@ -38,9 +38,15 @@
   /* pertanyaan kedua bawaan: alasan bergabung — paling sering dipakai pengurus
      untuk menyaring, dan jadi bahan Tinjau jawaban / Kelompokkan. Tetap bisa
      diubah atau dihapus seperti pertanyaan biasa. */
+  /* pertanyaan ketiga bawaan: contoh pilihan jawaban (revisi 4 Nov 2026) — jawabannya
+     seragam, jadi langsung bisa dipakai menyaring pendaftar di dashboard */
+  const MINAT = function(id){ return { id: id, judul: 'Minat Kegiatan', tanya: 'Kegiatan apa yang paling ingin kamu ikuti?', tipe: 'pilihan',
+    opsi: ['Acara & reuni', 'Kegiatan sosial', 'Mentoring & karier', 'Usaha & jejaring'], wajib: false, bawaan: false }; };
+  const OPSI_MAKS = 10;
   let tanya  = [{ id: 'q1', judul: '', tanya: '', tipe: 'tahun', wajib: false, bawaan: true },
-                { id: 'q2', judul: 'Alasan Bergabung', tanya: 'Kenapa kamu ingin bergabung di komunitas ini?', tipe: 'teks', wajib: false, bawaan: false }];
-  let urut   = 2;
+                { id: 'q2', judul: 'Alasan Bergabung', tanya: 'Kenapa kamu ingin bergabung di komunitas ini?', tipe: 'teks', wajib: false, bawaan: false },
+                MINAT('q3')];
+  let urut   = 3;
   let warna  = WARNA[0];
   let logo   = '';
   /* gambar asli sebelum dipotong, supaya "Atur posisi" bisa diulang tanpa makin buram */
@@ -136,39 +142,28 @@
   }
 
   /* ---------- domisili bertingkat ---------- */
+  /* Hanya negara yang wajib (revisi 4 Nov 2026): komunitas online atau se-negara tidak
+     punya satu provinsi/kota. Daftar & "Lainnya — tulis sendiri" dari 50-js-negara. */
+  const N = window.KolavoNegara;
   (function(){
-    const WILAYAH = window.KolavoWilayah || {};
     const negara = el('bkNegara'), provinsi = el('bkProvinsi'), kota = el('bkKota');
-
-    function kosongkan(sel, teks){
-      sel.innerHTML = '';
-      const o = document.createElement('option');
-      o.value = ''; o.textContent = teks;
-      sel.appendChild(o);
-    }
-    function isi(sel, daftar){
-      daftar.forEach(function(v){
-        const o = document.createElement('option');
-        o.textContent = v;
-        sel.appendChild(o);
-      });
-    }
-
+    N.isiNegara(negara, '');
     negara.addEventListener('change', function(){
-      kosongkan(provinsi, 'Provinsi');
-      kosongkan(kota, 'Kota/kabupaten');
-      kota.disabled = true;
-      const p = WILAYAH[negara.value];
-      provinsi.disabled = !p;
-      if(p) isi(provinsi, Object.keys(p));
+      N.isiProvinsi(provinsi, negara.value, '');
+      N.isiKota(kota, '', '', '');
     });
     provinsi.addEventListener('change', function(){
-      kosongkan(kota, 'Kota/kabupaten');
-      const k = WILAYAH[negara.value] && WILAYAH[negara.value][provinsi.value];
-      kota.disabled = !k;
-      if(k) isi(kota, k);
+      N.isiKota(kota, negara.value, provinsi.value, '');
     });
   })();
+  /* lokasi untuk ditampilkan: yang paling spesifik, sampai negara */
+  function lokasiTampil(){
+    return [el('bkKota').value, el('bkProvinsi').value, el('bkNegara').value].filter(N.sah)[0] || '';
+  }
+  function pilihanBersih(t){
+    return (t.opsi || []).map(function(v){ return String(v || '').trim(); }).filter(Boolean)
+      .filter(function(v, i, a){ return a.indexOf(v) === i; });
+  }
 
   /* ---------- kartu pertanyaan ---------- */
   const X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>';
@@ -199,10 +194,12 @@
               '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="tahun"' + (t.tipe === 'tahun' ? ' checked' : '') + '><span>Pilih tahun</span></label>' +
               '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="teks"' + (t.tipe === 'teks' ? ' checked' : '') + '><span>Jawaban teks</span></label>' +
               '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="angka"' + (t.tipe === 'angka' ? ' checked' : '') + '><span>Jawaban angka</span></label>' +
+              '<label class="pill-r"><input type="radio" name="tipe-' + t.id + '" data-k="tipe" value="pilihan"' + (t.tipe === 'pilihan' ? ' checked' : '') + '><span>Pilihan jawaban</span></label>' +
             '</div>' +
             '<label class="sw"><input type="checkbox" data-k="wajib"' + (t.wajib ? ' checked' : '') + '><i></i>Wajib diisi</label>' +
           '</div>' +
-          '<p class="f-galat">Judul pertanyaan perlu diisi, atau hapus kartunya.</p>' +
+          (t.tipe === 'pilihan' ? gambarOpsi(t) : '') +
+          '<p class="f-galat">' + (t.tipe === 'pilihan' ? 'Isi judul dan minimal dua pilihan jawaban, atau hapus kartunya.' : 'Judul pertanyaan perlu diisi, atau hapus kartunya.') + '</p>' +
         '</div>';
       }).join('');
 
@@ -214,6 +211,20 @@
 
   function lolos(s){
     return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+
+  /* daftar pilihan jawaban yang disusun pengurus — pendaftar memilih salah satu */
+  function gambarOpsi(t){
+    const opsi = t.opsi && t.opsi.length ? t.opsi : ['', ''];
+    return '<div class="qopsi"><p class="qopsi-h">Pilihan jawaban <span>· pendaftar memilih satu</span></p>' +
+      opsi.map(function(v, j){
+        return '<div class="qopsi-i"><span class="qopsi-b" aria-hidden="true"></span>' +
+          '<input class="inp" data-k="opsi" maxlength="40" value="' + lolos(v) + '" placeholder="Pilihan ' + (j + 1) + '" aria-label="Pilihan jawaban ' + (j + 1) + '">' +
+          (opsi.length > 2 ? '<button type="button" class="qcard-x" data-opsi-hapus="' + t.id + ':' + j + '" aria-label="Hapus pilihan ' + (j + 1) + '">' + X + '</button>' : '') +
+        '</div>';
+      }).join('') +
+      (opsi.length < OPSI_MAKS ? '<button type="button" class="qopsi-tambah" data-opsi-tambah="' + t.id + '">+ Tambah pilihan</button>' : '') +
+    '</div>';
   }
 
   function pilihBentuk(){
@@ -232,6 +243,19 @@
   });
 
   scr.addEventListener('click', function(e){
+    const ot = e.target.closest('[data-opsi-tambah]'), oh = e.target.closest('[data-opsi-hapus]');
+    if(ot || oh){
+      simpanTanya();
+      const id = ot ? ot.dataset.opsiTambah : oh.dataset.opsiHapus.split(':')[0];
+      const t = tanya.filter(function(x){ return x.id === id; })[0];
+      if(!t) return;
+      t.opsi = t.opsi && t.opsi.length ? t.opsi : ['', ''];
+      if(ot && t.opsi.length < OPSI_MAKS) t.opsi.push('');
+      if(oh) t.opsi.splice(+oh.dataset.opsiHapus.split(':')[1], 1);
+      gambarTanya();
+      if(ot){ const f = scr.querySelectorAll('.qcard[data-q="' + id + '"] [data-k="opsi"]'); if(f.length) f[f.length - 1].focus(); }
+      return;
+    }
     const h = e.target.closest('[data-hapus]');
     if(!h) return;
     simpanTanya();
@@ -258,6 +282,8 @@
       t.tanya = utuh ? '' : isi;
       t.tipe  = tipe ? tipe.value : t.tipe;
       t.wajib = kartu.querySelector('[data-k="wajib"]').checked;
+      const opsi = kartu.querySelectorAll('[data-k="opsi"]');
+      if(opsi.length) t.opsi = [].map.call(opsi, function(o){ return o.value; });
     });
   }
 
@@ -266,7 +292,7 @@
     let beres = 0;
     if(el('bkNama').value.trim()) beres++;
     if(pilihBentuk()) beres++;
-    if(el('bkKota').value) beres++;
+    if(N.sah(el('bkNegara').value)) beres++;
     if(el('bkAjak').value.trim()) beres++;
     el('bkN').textContent = beres;
     el('bkFill').style.width = (beres / 4 * 100) + '%';
@@ -305,6 +331,15 @@
       gambarTanya();   /* kartu bawaan ikut ganti judul selama belum diketik */
     }
     if(e.target.name === 'bkNomor'){ nomorMode = e.target.value; gambarNomor(); }
+    /* ganti jenis jawaban: kartu digambar ulang (pilihan jawaban membuka daftar opsinya) */
+    if(e.target.dataset && e.target.dataset.k === 'tipe'){
+      simpanTanya();
+      gambarTanya();
+      if(e.target.value === 'pilihan'){
+        const f = scr.querySelector('.qcard[data-q="' + e.target.closest('.qcard').dataset.q + '"] [data-k="opsi"]');
+        if(f && !f.value) f.focus();
+      }
+    }
     progres();
     const f = e.target.closest('.f.salah, .qcard.salah');
     if(f) f.classList.remove('salah');
@@ -323,11 +358,12 @@
 
     if(!el('bkNama').value.trim())  tandai(el('bkNama').closest('.f'));
     if(!pilihBentuk())              tandai(scr.querySelector('input[name="bkBentuk"]').closest('.f'));
-    if(!el('bkKota').value)         tandai(el('bkKota').closest('.f'));
+    if(!N.sah(el('bkNegara').value)) tandai(el('bkNegara').closest('.f'));
     if(!el('bkAjak').value.trim())  tandai(el('bkAjak').closest('.f'));
 
     tanya.forEach(function(t){
-      if(!t.judul.trim()) tandai(scr.querySelector('.qcard[data-q="' + t.id + '"]'));
+      const kurangOpsi = t.tipe === 'pilihan' && pilihanBersih(t).length < 2;
+      if(!t.judul.trim() || kurangOpsi) tandai(scr.querySelector('.qcard[data-q="' + t.id + '"]'));
     });
     return pertama;
   }
@@ -347,14 +383,14 @@
         return { id: t.id,
                  judul: t.judul.trim() || (t.bawaan ? b.judul : 'Pertanyaan'),
                  tanya: t.tanya.trim() || (t.bawaan ? b.tanya : ''),
-                 tipe: t.tipe, wajib: t.wajib };
+                 tipe: t.tipe, wajib: t.wajib, opsi: t.tipe === 'pilihan' ? pilihanBersih(t) : undefined };
       }));
     const kom = {
       nama: nama,
       alias: el('bkAlias').value.trim(),
       slug: el('bkSlug').value.trim() || keSlug(nama) || 'komunitasmu',
       bentuk: bentuk,
-      kota: el('bkKota').value || 'Indonesia',
+      kota: lokasiTampil() || 'Indonesia',
       warna: warna, logo: logo, inisial: inisial(nama),
       ajakan: el('bkAjak').value.trim() || 'Tempat kita saling kenal, bukan cuma saling punya nomor.',
       tanya: tanyaPrev
@@ -388,9 +424,11 @@
       alias: el('bkAlias').value.trim(),
       slug: slug,
       bentuk: pilihBentuk(),
-      kota: el('bkKota').value,
+      /* kota = lokasi tampilan (kota → provinsi → negara); isian aslinya di negara/provinsi/kotaIsi */
+      kota: lokasiTampil(),
       /* negara & provinsi ikut disimpan untuk filter lokasi di direktori */
-      negara: el('bkNegara').value, provinsi: el('bkProvinsi').value,
+      negara: el('bkNegara').value, provinsi: N.sah(el('bkProvinsi').value) ? el('bkProvinsi').value : '',
+      kotaIsi: N.sah(el('bkKota').value) ? el('bkKota').value : '',
       warna: warna,
       logo: logo,
       inisial: inisial(nama),
@@ -404,7 +442,7 @@
                 tanya: 'Apa nama panggilan kamu di komunitas ini?', tipe: 'teks', wajib: true }]
               .concat(tanya.map(function(t){
                 return { id: t.id, judul: t.judul.trim(), tanya: t.tanya.trim(),
-                         tipe: t.tipe, wajib: t.wajib };
+                         tipe: t.tipe, wajib: t.wajib, opsi: t.tipe === 'pilihan' ? pilihanBersih(t) : undefined };
               }))
     };
     if(modeSunting && dibuat){
@@ -509,12 +547,16 @@
     el('bkAjak').value = dibuat.ajakan || '';
     const rb = scr.querySelector('input[name="bkBentuk"][value="' + (dibuat.bentuk || '') + '"]');
     if(rb) rb.checked = true;
-    const kotaSel = el('bkKota');
-    if(dibuat.kota){
-      if(![].some.call(kotaSel.options, function(o){ return o.value === dibuat.kota; })){
-        const o = document.createElement('option'); o.value = dibuat.kota; o.textContent = dibuat.kota; kotaSel.appendChild(o);
-      }
-      kotaSel.disabled = false; kotaSel.value = dibuat.kota;
+    /* lokasi: isian asli negara/provinsi/kota (komunitas lama hanya punya kota) */
+    const negIsi = dibuat.negara || 'Indonesia', provIsi = dibuat.provinsi || '';
+    const kotaIsi = dibuat.kotaIsi != null ? dibuat.kotaIsi : (dibuat.kota !== negIsi && dibuat.kota !== provIsi ? dibuat.kota || '' : '');
+    if(provIsi) N.tambahWilayah(negIsi, provIsi, kotaIsi);
+    N.isiNegara(el('bkNegara'), negIsi);
+    N.isiProvinsi(el('bkProvinsi'), negIsi, provIsi);
+    N.isiKota(el('bkKota'), negIsi, provIsi, kotaIsi);
+    if(kotaIsi && el('bkKota').value !== kotaIsi){
+      const o = document.createElement('option'); o.textContent = kotaIsi; el('bkKota').appendChild(o);
+      el('bkKota').disabled = false; el('bkKota').value = kotaIsi;
     }
     warna = dibuat.warna || warna;
     const wr = scr.querySelector('input[name="bkWarna"][value="' + warna + '"]');
@@ -524,7 +566,7 @@
     nomorMode = dibuat.nomorMode || 'manual';
     el('bkKode').value = dibuat.kode || ''; kodeKetik = true;
     tanya = (dibuat.tanya || []).filter(function(t){ return t.id !== 'nickname'; }).map(function(t){
-      return { id: t.id, judul: t.judul || '', tanya: t.tanya || '', tipe: t.tipe || 'teks', wajib: !!t.wajib, bawaan: false };
+      return { id: t.id, judul: t.judul || '', tanya: t.tanya || '', tipe: t.tipe || 'teks', wajib: !!t.wajib, bawaan: false, opsi: (t.opsi || []).slice() };
     });
     if(!tanya.length) tanya = [{ id: 'q' + (++urut), judul: '', tanya: '', tipe: 'tahun', wajib: false, bawaan: true }];
     const h1 = scr.querySelector('.ph-h1'); if(h1) h1.textContent = 'Pengaturan komunitas';
@@ -561,14 +603,14 @@
     modeSunting = false; slugKetik = false; kodeKetik = false;
     ['bkNama', 'bkAlias', 'bkSlug', 'bkAjak', 'bkKode'].forEach(function(id){ const x = el(id); if(x) x.value = ''; });
     scr.querySelectorAll('input[name="bkBentuk"]').forEach(function(r){ r.checked = false; });
-    const neg = el('bkNegara'); if(neg) neg.value = '';
-    ['bkProvinsi', 'bkKota'].forEach(function(id){ const x = el(id); if(x){ x.value = ''; x.disabled = true; } });
+    N.isiNegara(el('bkNegara'), ''); N.isiProvinsi(el('bkProvinsi'), '', ''); N.isiKota(el('bkKota'), '', '', '');
     warna = WARNA[0];
     const wr = scr.querySelector('input[name="bkWarna"][value="' + warna + '"]'); if(wr) wr.checked = true;
     pakaiWarna();
     logo = ''; logoAsli = ''; nomorMode = 'manual';
     tanya = [{ id: 'q' + (++urut), judul: '', tanya: '', tipe: 'tahun', wajib: false, bawaan: true },
-             { id: 'q' + (++urut), judul: 'Alasan Bergabung', tanya: 'Kenapa kamu ingin bergabung di komunitas ini?', tipe: 'teks', wajib: false, bawaan: false }];
+             { id: 'q' + (++urut), judul: 'Alasan Bergabung', tanya: 'Kenapa kamu ingin bergabung di komunitas ini?', tipe: 'teks', wajib: false, bawaan: false },
+             MINAT('q' + (++urut))];
     const h1 = scr.querySelector('.ph-h1'); if(h1) h1.textContent = 'Bikin basecamp komunitasmu.';
     el('bkKirim').textContent = 'Buat halaman komunitas';
     el('buatForm').hidden = false; el('buatDone').hidden = true;

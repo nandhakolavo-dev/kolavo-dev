@@ -52,6 +52,8 @@
         <span class="kl-nav-h">Kelola</span>
         <button type="button" class="kl-tab on" data-tab="minta" role="tab"><i class="kl-tab-ic" data-ic="tambahOrang"></i>Permintaan gabung<span class="kl-badge" id="klMintaN">0</span></button>
         <button type="button" class="kl-tab" data-tab="anggota" role="tab"><i class="kl-tab-ic" data-ic="orang"></i>Anggota<span class="kl-badge" id="klAnggotaN">0</span></button>
+        <!-- revisi 4 Nov 2026: kontribusi & yang dicari semua orang dalam satu halaman (50-js-dashboard-pengurus) -->
+        <button type="button" class="kl-tab" data-tab="kontri" role="tab"><i class="kl-tab-ic" data-ic="tangan"></i>Kontribusi &amp; dicari</button>
         <!-- V4: Serah terima ditahan, jadi tak ada sub-menu. Labelnya diisi JS: "Peninjau" (Esensial) / "Struktur Kepengurusan" (Advance) -->
         <button type="button" class="kl-tab" data-tab="pengurus" role="tab"><i class="kl-tab-ic" data-ic="pengurus"></i><span id="klTabPengurusL">Peninjau</span></button>
       </nav>
@@ -73,6 +75,8 @@
         <!-- V4: tab Riwayat dilebur ke sini — catatan keputusan ikut di baris anggota, yang ditolak di bawahnya -->
         <div id="klRiwayatList"></div>
       </section>
+
+      <section class="kl-panel" id="klPanelKontri" data-panel="kontri" role="tabpanel" hidden></section>
 
       <section class="kl-panel" id="klPanelPengurus" data-panel="pengurus" role="tabpanel" hidden>
         <div id="klPengurusList"></div>

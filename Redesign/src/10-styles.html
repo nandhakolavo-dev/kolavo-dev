@@ -2957,4 +2957,60 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 .sek-ingat-pemicu{flex-basis:100%}
 .sek-surat-tombol{display:inline-block;padding:9px 20px;border-radius:100px;background:var(--blue);color:var(--card);font-weight:600;font-size:13px}
 
+/* ---------- revisi 4 Nov 2026 ---------- */
+/* kode negara WhatsApp: menu asli transparan di atas label bendera + kode */
+.tel-kode{position:relative;gap:4px;cursor:pointer}
+.tel-kode svg{width:14px;height:14px;color:var(--ink-3)}
+.tel-kode-v{font-variant-numeric:tabular-nums;pointer-events:none}
+.tel-kode select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px}
+.tel-kode:focus-within{color:var(--blue-ink)}
+/* baris "Lainnya — tulis sendiri" di bawah menu negara/provinsi/kota/kode */
+.ngr-tambah{margin-top:10px;padding:12px;border:1px dashed var(--line);border-radius:11px;background:var(--bg-alt)}
+.ngr-tambah-r{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ngr-tambah-r .inp{flex:1 1 160px;min-width:0;height:42px}
+.ngr-tambah .f-why{margin-top:8px}
+.ngr-galat{margin-top:6px;font-size:12.5px;color:var(--red)}
+/* kartu pertanyaan: daftar pilihan jawaban */
+.qopsi{margin-top:12px;display:grid;gap:8px}
+.qopsi-h{font-size:12px;font-weight:600;color:var(--ink-2)}
+.qopsi-h span{font-weight:400;color:var(--ink-3)}
+.qopsi-i{display:flex;align-items:center;gap:8px}
+.qopsi-i .inp{flex:1;min-width:0;height:40px}
+.qopsi-b{flex:none;width:16px;height:16px;border-radius:100px;border:1.5px solid var(--ink-3)}
+.qopsi-tambah{justify-self:start;border:0;background:transparent;color:var(--blue-ink);font:600 13px/1 "Poppins",system-ui,sans-serif;padding:6px 0;cursor:pointer}
+.qopsi-tambah:hover{text-decoration:underline}
+/* dashboard: saring jawaban */
+.kl-saring{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px;padding:10px 12px;border:1px solid var(--line);border-radius:13px;background:var(--card)}
+.kl-saring-l{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.kl-saring-l svg{width:16px;height:16px}
+.kl-saring .sel,.kl-saring .inp{height:40px;width:auto;flex:1 1 180px;min-width:0;max-width:280px;font-size:13.5px}
+.kl-saring .sel{background-position:calc(100% - 19px) 17px,calc(100% - 14px) 17px}
+.kl-saring-x{border:0;background:transparent;color:var(--blue-ink);font:600 12.5px/1 "Poppins",system-ui,sans-serif;cursor:pointer;padding:6px 4px}
+.kl-saring-n{flex-basis:100%;font-size:12.5px;color:var(--ink-3)}
+.kl-saring-n b{color:var(--ink)}
+.kl-saring-kosong{padding:18px 4px;font-size:13.5px;color:var(--ink-3)}
+/* dashboard: Kontribusi & dicari */
+.kt-alat{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.kt-alat .inp{flex:2 1 220px;height:42px;min-width:0}
+.kt-alat .sel{flex:1 1 170px;height:42px;width:auto;min-width:0;background-position:calc(100% - 19px) 18px,calc(100% - 14px) 18px}
+.kt-g{border:1px solid var(--line);border-radius:13px;background:var(--card);margin-bottom:14px;overflow:hidden}
+.kt-gh{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 16px;background:var(--bg-alt);border-bottom:1px solid var(--line);font-size:13px}
+.kt-gh > span{color:var(--ink-3)}
+.kt-cocok{margin-left:auto;padding:3px 10px;border-radius:100px;background:var(--orange-wash);color:var(--orange-ink);font-size:11.5px;font-weight:600}
+.kt-i{display:flex;align-items:flex-start;gap:12px;padding:14px 16px}
+.kt-i + .kt-i{border-top:1px solid var(--line)}
+.kt-i .t{flex:1;min-width:0}
+.kt-i .btn{flex:none}
+.kt-nm{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
+.kt-pend{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:100px;background:var(--blue-wash);color:var(--blue-ink)}
+.kt-q{margin-top:6px;font-size:14px;line-height:1.5;color:var(--ink)}
+.kt-lawan{margin-top:4px;font-size:12.5px;line-height:1.5;color:var(--ink-3)}
+.kt-lawan b{font-weight:600;color:var(--ink-2)}
+.kt-belum{font-size:12.5px;color:var(--ink-3);margin-top:4px}
+@media (max-width:560px){
+  .kt-i{flex-wrap:wrap}
+  .kt-i .btn{margin-left:52px}
+  .kl-saring .sel,.kl-saring .inp{max-width:none}
+}
+
 </style>
