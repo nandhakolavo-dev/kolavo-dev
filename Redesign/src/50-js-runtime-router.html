@@ -293,9 +293,8 @@
     { id: 'wa',       uji: function(e){ return e.value.replace(/\D/g,'').length >= 8; } },
     { id: 'lahir',    uji: function(e){ return !!e.value; } },
     /* "__lain__" = baris tulis-sendiri masih terbuka, belum ditambahkan */
-    { id: 'negara',   uji: function(e){ return !!e.value && e.value !== '__lain__'; }, grup: 'domisili' },
-    { id: 'provinsi', uji: function(e){ return !!e.value && e.value !== '__lain__'; }, grup: 'domisili' },
-    { id: 'kota',     uji: function(e){ return !!e.value && e.value !== '__lain__'; }, grup: 'domisili' }
+    { id: 'negara',   uji: function(e){ return !!e.value && e.value !== '__lain__'; }, grup: 'domisili' }
+    /* provinsi & kota opsional (revisi 4 Nov 2026) — cukup negara */
   ];
 
   function periksa(){
@@ -495,7 +494,8 @@
           tags = document.getElementById('pfTags'),
           list = document.getElementById('pfList');
 
-    if(loc) loc.textContent = [nilai('kota'), nilai('provinsi')].filter(Boolean).join(', ') || '—';
+    const sahW = function(v){ return v && v !== '__lain__'; };
+    if(loc) loc.textContent = [nilai('kota'), nilai('provinsi')].filter(sahW).join(', ') || (sahW(nilai('negara')) ? nilai('negara') : '—');
 
     if(tags){
       tags.innerHTML = '';
@@ -511,7 +511,7 @@
       /* opsional, tapi biar kartu profil tidak terlihat kosong, pakai default
          kalau belum diisi — sekaligus jadi tag pertama yang selalu ada */
       pasang(nilai('kerja') || window.KolavoKerjaDefault || 'Anggota komunitas', true);
-      pasang(nilai('kota'), false);
+      pasang([nilai('kota'), nilai('provinsi'), nilai('negara')].filter(function(v){ return v && v !== '__lain__'; })[0] || '', false);
       pasang([nilai('didik'), nilai('didikDi').trim()].filter(Boolean).join(' · '), false);
       if(!tags.children.length){
         const s = document.createElement('span');
@@ -596,7 +596,7 @@
           ['telp', 'Nomor WhatsApp', nilai('wa') ? (window.KolavoNegara ? window.KolavoNegara.kodeWa() : '+62') + ' ' + nilai('wa') : '', 'Pengurus & anggota yang kenalan denganmu', 'wa', 'wa'],
           ['kalender', 'Tanggal lahir', lahir, 'Pengurus komunitas', 'lblLahir', 'lahir']]],
         ['orang2', 'Dilihat sesama anggota', 'Dipakai di semua komunitas yang kamu ikuti.', [
-          ['pin', 'Domisili', [nilai('kota'), nilai('provinsi'), nilai('negara')].filter(Boolean).join(', '), 'Sesama anggota', 'lblDom', 'dom'],
+          ['pin', 'Domisili', [nilai('kota'), nilai('provinsi'), nilai('negara')].filter(function(v){ return v && v !== '__lain__'; }).join(', '), 'Sesama anggota', 'lblDom', 'dom'],
           ['tas', 'Pekerjaan atau keahlian', kerja, 'Sesama anggota', 'kerja', 'kerja'],
           ['toga', 'Pendidikan terakhir', [nilai('didik'), nilai('didikDi').trim()].filter(Boolean).join(' · '), 'Hanya angka persebaran', 'didik', 'didik'],
           ['tangan', 'Kontribusi', nilai('beri').trim(), 'Sesama anggota', 'beri', 'beri'],

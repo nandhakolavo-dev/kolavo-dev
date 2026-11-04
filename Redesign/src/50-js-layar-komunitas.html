@@ -228,7 +228,9 @@
   /* profil pengguna untuk pencocokan kenalan di onboarding */
   window.KolavoProfilKu = function(){
     const k = nilaiProfil('kerja');
-    return { kerja: k === '__lain__' ? nilaiProfil('kerjaLain') : (k || window.KolavoKerjaDefault || ''), kota: nilaiProfil('kota') };
+    return { kerja: k === '__lain__' ? nilaiProfil('kerjaLain') : (k || window.KolavoKerjaDefault || ''),
+      /* kota opsional: kosong → provinsi → negara */
+      kota: ['kota', 'provinsi', 'negara'].map(nilaiProfil).filter(function(v){ return v && v !== '__lain__'; })[0] || '' };
   };
 
   function akuAnggota(){

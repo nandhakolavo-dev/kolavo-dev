@@ -111,7 +111,8 @@ function hitung(){}
     var lahir = document.getElementById('lahir');
     if(lahir && lahir.value) beres++;
     if(document.querySelector('#scrLengkapi input[name="jk"]:checked')) beres++;
-    if(kota && kota.value && kota.value !== '__lain__') beres++;
+    var neg = document.getElementById('negara');
+    if(neg && neg.value && neg.value !== '__lain__') beres++;
 
     if(progN) progN.textContent = beres;
     if(document.getElementById('progTotal')) document.getElementById('progTotal').textContent = total;

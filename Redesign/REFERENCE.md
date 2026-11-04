@@ -1877,7 +1877,8 @@ diterapkan ke prototipe kecuali disebut.
    Dipakai di Lengkapi, Buat, editor Profil & Setting, dan nomor HP Langganan.
 3. **Titik kumpul komunitas**: hanya negara yang wajib; provinsi & kota opsional (komunitas online/se-negara).
    `kom.kota` = lokasi tampilan paling spesifik (kota → provinsi → negara); isian asli di
-   `negara`/`provinsi`/`kotaIsi`. Domisili anggota di Lengkapi tetap wajib tiga tingkat.
+   `negara`/`provinsi`/`kotaIsi`. Domisili anggota di Lengkapi juga: hanya negara wajib, provinsi & kota
+   opsional (tag/lokasi profil jatuh ke provinsi → negara bila kota kosong).
 4. **Threads** ditambahkan ke platform media sosial (ikon "@", URL `threads.net/@`).
 5. **Pertanyaan pilihan jawaban** (`tipe: 'pilihan'`, `opsi: [..]`, 2–10 opsi, pendaftar memilih satu).
    Kartu Buat: pil "Pilihan jawaban" membuka daftar opsi. Pertanyaan bawaan ketiga: **Minat Kegiatan**

@@ -136,9 +136,10 @@
         <span class="f-lbl" id="lblDom">Domisili<span class="must" aria-hidden="true">*</span></span>
         <div class="f-grid tiga" role="group" aria-labelledby="lblDom">
           <select class="sel" id="negara" aria-label="Negara" data-wajib data-tambah="negara"><option value="">Negara</option><option>Indonesia</option></select>
-          <select class="sel" id="provinsi" aria-label="Provinsi" disabled data-wajib data-tambah="provinsi" data-induk="negara"><option value="">Provinsi</option></select>
-          <select class="sel" id="kota" aria-label="Kota atau kabupaten" disabled data-wajib data-tambah="kota" data-induk="provinsi"><option value="">Kota/kabupaten</option></select>
+          <select class="sel" id="provinsi" aria-label="Provinsi (opsional)" data-kosong="Provinsi (opsional)" disabled data-tambah="provinsi" data-induk="negara"><option value="">Provinsi (opsional)</option></select>
+          <select class="sel" id="kota" aria-label="Kota atau kabupaten (opsional)" data-kosong="Kota (opsional)" disabled data-tambah="kota" data-induk="provinsi"><option value="">Kota (opsional)</option></select>
         </div>
+        <p class="f-why">Cukup negaranya kalau kamu belum mau menyebut kota. Provinsi dan kota membantu anggota lain menemukan teman yang dekat.</p>
       </div>
 
       <div class="f">

@@ -3873,9 +3873,10 @@ button.peng-i:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
         <span class="f-lbl" id="lblDom">Domisili<span class="must" aria-hidden="true">*</span></span>
         <div class="f-grid tiga" role="group" aria-labelledby="lblDom">
           <select class="sel" id="negara" aria-label="Negara" data-wajib data-tambah="negara"><option value="">Negara</option><option>Indonesia</option></select>
-          <select class="sel" id="provinsi" aria-label="Provinsi" disabled data-wajib data-tambah="provinsi" data-induk="negara"><option value="">Provinsi</option></select>
-          <select class="sel" id="kota" aria-label="Kota atau kabupaten" disabled data-wajib data-tambah="kota" data-induk="provinsi"><option value="">Kota/kabupaten</option></select>
+          <select class="sel" id="provinsi" aria-label="Provinsi (opsional)" data-kosong="Provinsi (opsional)" disabled data-tambah="provinsi" data-induk="negara"><option value="">Provinsi (opsional)</option></select>
+          <select class="sel" id="kota" aria-label="Kota atau kabupaten (opsional)" data-kosong="Kota (opsional)" disabled data-tambah="kota" data-induk="provinsi"><option value="">Kota (opsional)</option></select>
         </div>
+        <p class="f-why">Cukup negaranya kalau kamu belum mau menyebut kota. Provinsi dan kota membantu anggota lain menemukan teman yang dekat.</p>
       </div>
 
       <div class="f">
@@ -6203,7 +6204,8 @@ function hitung(){}
     var lahir = document.getElementById('lahir');
     if(lahir && lahir.value) beres++;
     if(document.querySelector('#scrLengkapi input[name="jk"]:checked')) beres++;
-    if(kota && kota.value && kota.value !== '__lain__') beres++;
+    var neg = document.getElementById('negara');
+    if(neg && neg.value && neg.value !== '__lain__') beres++;
 
     if(progN) progN.textContent = beres;
     if(document.getElementById('progTotal')) document.getElementById('progTotal').textContent = total;
@@ -6630,9 +6632,8 @@ function hitung(){}
     { id: 'wa',       uji: function(e){ return e.value.replace(/\D/g,'').length >= 8; } },
     { id: 'lahir',    uji: function(e){ return !!e.value; } },
     /* "__lain__" = baris tulis-sendiri masih terbuka, belum ditambahkan */
-    { id: 'negara',   uji: function(e){ return !!e.value && e.value !== '__lain__'; }, grup: 'domisili' },
-    { id: 'provinsi', uji: function(e){ return !!e.value && e.value !== '__lain__'; }, grup: 'domisili' },
-    { id: 'kota',     uji: function(e){ return !!e.value && e.value !== '__lain__'; }, grup: 'domisili' }
+    { id: 'negara',   uji: function(e){ return !!e.value && e.value !== '__lain__'; }, grup: 'domisili' }
+    /* provinsi & kota opsional (revisi 4 Nov 2026) — cukup negara */
   ];
 
   function periksa(){
@@ -6832,7 +6833,8 @@ function hitung(){}
           tags = document.getElementById('pfTags'),
           list = document.getElementById('pfList');
 
-    if(loc) loc.textContent = [nilai('kota'), nilai('provinsi')].filter(Boolean).join(', ') || '—';
+    const sahW = function(v){ return v && v !== '__lain__'; };
+    if(loc) loc.textContent = [nilai('kota'), nilai('provinsi')].filter(sahW).join(', ') || (sahW(nilai('negara')) ? nilai('negara') : '—');
 
     if(tags){
       tags.innerHTML = '';
@@ -6848,7 +6850,7 @@ function hitung(){}
       /* opsional, tapi biar kartu profil tidak terlihat kosong, pakai default
          kalau belum diisi — sekaligus jadi tag pertama yang selalu ada */
       pasang(nilai('kerja') || window.KolavoKerjaDefault || 'Anggota komunitas', true);
-      pasang(nilai('kota'), false);
+      pasang([nilai('kota'), nilai('provinsi'), nilai('negara')].filter(function(v){ return v && v !== '__lain__'; })[0] || '', false);
       pasang([nilai('didik'), nilai('didikDi').trim()].filter(Boolean).join(' · '), false);
       if(!tags.children.length){
         const s = document.createElement('span');
@@ -6933,7 +6935,7 @@ function hitung(){}
           ['telp', 'Nomor WhatsApp', nilai('wa') ? (window.KolavoNegara ? window.KolavoNegara.kodeWa() : '+62') + ' ' + nilai('wa') : '', 'Pengurus & anggota yang kenalan denganmu', 'wa', 'wa'],
           ['kalender', 'Tanggal lahir', lahir, 'Pengurus komunitas', 'lblLahir', 'lahir']]],
         ['orang2', 'Dilihat sesama anggota', 'Dipakai di semua komunitas yang kamu ikuti.', [
-          ['pin', 'Domisili', [nilai('kota'), nilai('provinsi'), nilai('negara')].filter(Boolean).join(', '), 'Sesama anggota', 'lblDom', 'dom'],
+          ['pin', 'Domisili', [nilai('kota'), nilai('provinsi'), nilai('negara')].filter(function(v){ return v && v !== '__lain__'; }).join(', '), 'Sesama anggota', 'lblDom', 'dom'],
           ['tas', 'Pekerjaan atau keahlian', kerja, 'Sesama anggota', 'kerja', 'kerja'],
           ['toga', 'Pendidikan terakhir', [nilai('didik'), nilai('didikDi').trim()].filter(Boolean).join(' · '), 'Hanya angka persebaran', 'didik', 'didik'],
           ['tangan', 'Kontribusi', nilai('beri').trim(), 'Sesama anggota', 'beri', 'beri'],
@@ -7636,7 +7638,9 @@ function hitung(){}
   /* profil pengguna untuk pencocokan kenalan di onboarding */
   window.KolavoProfilKu = function(){
     const k = nilaiProfil('kerja');
-    return { kerja: k === '__lain__' ? nilaiProfil('kerjaLain') : (k || window.KolavoKerjaDefault || ''), kota: nilaiProfil('kota') };
+    return { kerja: k === '__lain__' ? nilaiProfil('kerjaLain') : (k || window.KolavoKerjaDefault || ''),
+      /* kota opsional: kosong → provinsi → negara */
+      kota: ['kota', 'provinsi', 'negara'].map(nilaiProfil).filter(function(v){ return v && v !== '__lain__'; })[0] || '' };
   };
 
   function akuAnggota(){
